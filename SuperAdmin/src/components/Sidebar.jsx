@@ -234,7 +234,7 @@ const NavItem = ({ item, onClose }) => {
   );
 };
 
-const Sidebar = ({ open, onClose }) => {
+const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onToggleDesktop }) => {
   const [search, setSearch] = useState('');
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -254,13 +254,15 @@ const Sidebar = ({ open, onClose }) => {
     ? flatItems.filter(item => item.label?.toLowerCase().includes(search.toLowerCase()))
     : null;
 
+  const isMobileVisible = mobileOpen ?? open;
+
   return (
     <aside
       className={`
         fixed left-0 top-0 h-screen w-64 z-30 flex flex-col overflow-hidden
-        transition-transform duration-300 ease-in-out
-        ${open ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 bg-[#131927] border-r border-[#1e2638] shadow-2xl
+        transition-transform duration-300 ease-in-out bg-[#131927] border-r border-[#1e2638] shadow-2xl
+        ${isMobileVisible ? 'translate-x-0' : '-translate-x-full'}
+        ${desktopOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full'}
       `}
     >
       {/* Top glow */}
@@ -280,8 +282,20 @@ const Sidebar = ({ open, onClose }) => {
             <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
             <span className="text-[9px] font-extrabold text-orange-400">PRO</span>
           </div>
-          {/* Close button — mobile only */}
-          <button onClick={onClose} className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+          {/* Close button — mobile */}
+          <button 
+            onClick={onClose} 
+            className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Close Menu"
+          >
+            <X className="w-4 h-4" />
+          </button>
+          {/* Collapse button — desktop */}
+          <button 
+            onClick={onToggleDesktop || onClose} 
+            className="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            title="Collapse Sidebar"
+          >
             <X className="w-4 h-4" />
           </button>
         </div>

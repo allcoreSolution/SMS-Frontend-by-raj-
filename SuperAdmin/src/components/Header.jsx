@@ -24,7 +24,7 @@ const allPages = [
   { label: 'Profile', path: '/profile' },
 ];
 
-const Header = ({ onMenuClick }) => {
+const Header = ({ onMenuClick, sidebarOpen = true }) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [showNotif, setShowNotif] = useState(false);
@@ -65,11 +65,15 @@ const Header = ({ onMenuClick }) => {
   ];
 
   return (
-    <header className="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 lg:left-64 z-20 shadow-xs">
+    <header className={`h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 transition-all duration-300 ease-in-out z-20 shadow-xs ${sidebarOpen ? 'lg:left-64' : 'lg:left-0'}`}>
 
       {/* Left */}
       <div className="flex items-center gap-3">
-        <button onClick={onMenuClick} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors">
+        <button 
+          onClick={onMenuClick} 
+          className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
+          title={sidebarOpen ? "Collapse Sidebar" : "Expand Sidebar"}
+        >
           <Menu className="w-5 h-5" />
         </button>
 

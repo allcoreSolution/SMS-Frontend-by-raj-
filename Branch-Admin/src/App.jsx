@@ -76,7 +76,7 @@ class ErrorBoundary extends Component {
   }
 }
 
-const Sidebar = ({ isOpen, setOpen, onLogout }) => {
+const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) => {
   const location = useLocation();
   const [reportsOpen, setReportsOpen] = useState(location.pathname.startsWith('/reports'));
   const [branchesCount, setBranchesCount] = useState(5);
@@ -97,10 +97,10 @@ const Sidebar = ({ isOpen, setOpen, onLogout }) => {
   ];
 
   return (
-    <div className={`fixed inset-y-0 left-0 bg-[#0b1329] w-[240px] text-gray-300 flex flex-col z-50 transform transition-transform duration-200 ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 shadow-[4px_0_24px_rgba(0,0,0,0.15)] border-r border-slate-800/80`}>
+    <div className={`fixed inset-y-0 left-0 bg-[#0b1329] w-[240px] text-gray-300 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} ${isDesktopOpen ? 'md:translate-x-0' : 'md:-translate-x-full'} shadow-[4px_0_24px_rgba(0,0,0,0.15)] border-r border-slate-800/80`}>
       
       {/* Branding Header */}
-      <div className="h-[70px] flex items-center px-4 border-b border-slate-800 bg-[#070d1e]">
+      <div className="h-[70px] flex items-center justify-between px-4 border-b border-slate-800 bg-[#070d1e]">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#fd7e14] to-[#f59e0b] flex items-center justify-center font-bold text-white shadow-md ring-2 ring-orange-500/30">
             <School className="w-5 h-5 text-white" />
@@ -114,6 +114,15 @@ const Sidebar = ({ isOpen, setOpen, onLogout }) => {
             </span>
           </div>
         </div>
+
+        {/* Toggle / Close Button */}
+        <button 
+          onClick={onToggle || (() => setOpen(false))}
+          className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          title="Toggle Sidebar"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Navigation Menu */}
@@ -223,7 +232,7 @@ const Sidebar = ({ isOpen, setOpen, onLogout }) => {
   );
 };
 
-const Header = ({ setOpen, onLogout }) => {
+const Header = ({ onToggle, isDesktopOpen = true, onLogout }) => {
   const navigate = useNavigate();
   const [langOpen, setLangOpen] = useState(false);
   const [currentLang, setCurrentLang] = useState('English (US)');
@@ -277,10 +286,11 @@ const Header = ({ setOpen, onLogout }) => {
     <div className="h-[70px] bg-white flex items-center justify-between px-4 sm:px-6 shadow-sm sticky top-0 z-40 border-b border-gray-100">
       
       {/* Left: Mobile Toggle & Fast Navigation Search */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <button 
-          className="text-gray-600 hover:text-gray-900 md:hidden p-1.5 rounded-md hover:bg-gray-100 transition-colors" 
-          onClick={() => setOpen(old => !old)}
+          className="text-gray-600 hover:text-orange-600 p-2 rounded-lg hover:bg-orange-50 transition-colors cursor-pointer flex items-center justify-center border border-gray-200/80 shadow-3xs" 
+          onClick={onToggle}
+          title={isDesktopOpen ? "Collapse Sidebar" : "Expand Sidebar"}
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -430,13 +440,35 @@ const Header = ({ setOpen, onLogout }) => {
 };
 
 const App = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(() => {
+    try {
+      const saved = localStorage.getItem('branch_admin_sidebar_open');
+      return saved !== null ? saved === 'true' : true;
+    } catch (_) {
+      return true;
+    }
+  });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try {
       authService.ensureDemoSession();
     } catch (_) {}
     return true;
   });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('branch_admin_sidebar_open', String(desktopSidebarOpen));
+    } catch (_) {}
+  }, [desktopSidebarOpen]);
+
+  const handleToggleSidebar = () => {
+    if (window.innerWidth < 768) {
+      setMobileSidebarOpen(prev => !prev);
+    } else {
+      setDesktopSidebarOpen(prev => !prev);
+    }
+  };
 
   const handleLogout = () => {
     Swal.fire({
@@ -472,15 +504,21 @@ const App = () => {
     <ErrorBoundary>
       <BrowserRouter>
         <div className="flex h-screen overflow-hidden bg-[#f4f7fa]">
-          <Sidebar isOpen={sidebarOpen} setOpen={setSidebarOpen} onLogout={handleLogout} />
+          <Sidebar 
+            isOpen={mobileSidebarOpen} 
+            isDesktopOpen={desktopSidebarOpen}
+            setOpen={setMobileSidebarOpen} 
+            onToggle={handleToggleSidebar}
+            onLogout={handleLogout} 
+          />
           
           {/* Mobile Sidebar Overlay */}
-          {sidebarOpen && (
-            <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
+          {mobileSidebarOpen && (
+            <div className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity" onClick={() => setMobileSidebarOpen(false)} />
           )}
 
-          <div className="flex-1 flex flex-col overflow-hidden md:ml-[240px] transition-all">
-            <Header setOpen={setSidebarOpen} onLogout={handleLogout} />
+          <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${desktopSidebarOpen ? 'md:ml-[240px]' : 'md:ml-0'}`}>
+            <Header onToggle={handleToggleSidebar} isDesktopOpen={desktopSidebarOpen} onLogout={handleLogout} />
             
             <main className="flex-1 overflow-y-auto bg-[#f4f7fa]">
               <Routes>
