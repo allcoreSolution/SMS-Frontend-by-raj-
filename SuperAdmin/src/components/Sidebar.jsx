@@ -6,7 +6,7 @@ import {
   Users, LayoutTemplate, BarChart3,
   Settings, FileText, LifeBuoy, Server,
   MonitorPlay, Rss, BookOpen, BrainCircuit, LayoutList,
-  LogOut, ChevronDown, Sparkles, Zap, Bell, X, Puzzle, CreditCard, Wallet, Plug,
+  LogOut, ChevronDown, ChevronLeft, Sparkles, Zap, Bell, X, Puzzle, CreditCard, Wallet, Plug,
   Megaphone, Headset, Landmark, ShieldCheck
 } from 'lucide-react';
 
@@ -268,24 +268,41 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
       {/* Top glow */}
       <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,92,10,0.6), transparent)' }} />
 
-      {/* Logo */}
-      <div className="h-16 flex items-center px-5 flex-shrink-0 border-b border-[#1e2638] bg-[#0f1420]/60">
-        <div className="relative mr-3 w-9 h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c55] flex items-center justify-center flex-shrink-0 shadow-md shadow-orange-500/20 ring-2 ring-orange-500/30">
-          <Sparkles className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <p className="text-white font-extrabold text-[15px] leading-tight tracking-tight">Multi-School ERP</p>
-          <p className="text-orange-400 text-[10px] font-bold uppercase tracking-wider">v3.7 • Platform Owner</p>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-orange-500/15 border border-orange-500/30 px-2 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-400 animate-pulse"></span>
-            <span className="text-[9px] font-extrabold text-orange-400">PRO</span>
+      {/* Brand Header */}
+      <div className="h-14 flex items-center justify-between px-3.5 flex-shrink-0 border-b border-[#1e2638] bg-[#0f1420]/80 backdrop-blur-sm">
+        <NavLink 
+          to="/" 
+          onClick={onClose}
+          className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
+          title="Multi-School ERP - Platform Owner Dashboard"
+        >
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c55] flex items-center justify-center flex-shrink-0 shadow-md shadow-orange-500/20 ring-1 ring-orange-500/40 group-hover:scale-105 transition-transform">
+            <Sparkles className="w-4 h-4 text-white" />
           </div>
+          <div className="min-w-0 flex flex-col justify-center">
+            <div className="flex items-center gap-1.5">
+              <span className="text-white font-bold text-[13px] tracking-tight truncate leading-none group-hover:text-orange-400 transition-colors">
+                Multi-School ERP
+              </span>
+              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none">
+                PRO
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              <span className="text-[10px] text-slate-400 font-medium tracking-wide leading-none truncate">
+                v3.7 • Platform Owner
+              </span>
+            </div>
+          </div>
+        </NavLink>
+
+        {/* Action Toggle / Close Button */}
+        <div className="flex items-center flex-shrink-0 ml-1">
           {/* Close button — mobile */}
           <button 
             onClick={onClose} 
-            className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="lg:hidden w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             title="Close Menu"
           >
             <X className="w-4 h-4" />
@@ -293,10 +310,10 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
           {/* Collapse button — desktop */}
           <button 
             onClick={onToggleDesktop || onClose} 
-            className="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             title="Collapse Sidebar"
           >
-            <X className="w-4 h-4" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
         </div>
       </div>
