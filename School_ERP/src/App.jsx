@@ -719,6 +719,7 @@ function App() {
         <Route path="/assets/:tab" element={<AssetManagementDashboard />} />
         <Route path="/asset-management" element={<AssetManagementDashboard />} />
         <Route path="/asset-management/dashboard" element={<AssetManagementDashboard />} />
+        <Route path="/asset-management/:tab" element={<AssetManagementDashboard />} />
         <Route path="/inventory" element={<Navigate to="/asset-management/dashboard" replace />} />
         <Route path="/inventory/dashboard" element={<Navigate to="/asset-management/dashboard" replace />} />
 

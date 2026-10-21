@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { 
   Search, 
   LayoutDashboard, 
@@ -51,6 +51,7 @@ import { getTranslation } from "../../utils/translations";
 
 const Sidebar = ({ isCollapsed }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [openMenu, setOpenMenu] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentLang, setCurrentLang] = useState(() => {
@@ -583,12 +584,21 @@ const Sidebar = ({ isCollapsed }) => {
                 {item.children ? (
                   <div className="flex flex-col">
                     <button 
-                      onClick={() => !isCollapsed && toggleMenu(item.name)}
+                      onClick={() => {
+                        if (isCollapsed) {
+                          if (item.children && item.children.length > 0 && item.children[0].path) {
+                            navigate(item.children[0].path);
+                          }
+                        } else {
+                          toggleMenu(item.name);
+                        }
+                      }}
                       className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-2.5 text-[13.5px] transition-all duration-200 rounded-lg mx-1 group cursor-pointer ${
                         isActiveGroup && !isCollapsed 
                           ? 'bg-slate-800/80 text-white font-medium' 
                           : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
                       }`}
+                      title={isCollapsed ? getTranslation(item.name, currentLang) : undefined}
                     >
                       <div className="flex items-center gap-3">
                         <item.icon className={`w-[18px] h-[18px] transition-colors ${isActiveGroup ? 'text-[#ff5c0a]' : 'text-slate-400 group-hover:text-slate-200'}`} />
@@ -727,6 +737,7 @@ const Sidebar = ({ isCollapsed }) => {
                 <li key={item.name} title={isCollapsed ? getTranslation(item.name, currentLang) : undefined}>
                   <NavLink 
                     to={item.path}
+                    end={item.path === '/'}
                     className={({ isActive }) => 
                       `flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
                         isActive
@@ -735,10 +746,14 @@ const Sidebar = ({ isCollapsed }) => {
                       }`
                     }
                   >
-                    <item.icon className={`w-[18px] h-[18px] flex-shrink-0 ${
-                      item.path === '/' ? 'text-[#ff5c0a]' : 'text-slate-400'
-                    }`} />
-                    {!isCollapsed && <span className="truncate">{getTranslation(item.name, currentLang)}</span>}
+                    {({ isActive }) => (
+                      <>
+                        <item.icon className={`w-[18px] h-[18px] flex-shrink-0 transition-colors ${
+                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'
+                        }`} />
+                        {!isCollapsed && <span className="truncate">{getTranslation(item.name, currentLang)}</span>}
+                      </>
+                    )}
                   </NavLink>
                 </li>
               ))}
