@@ -45,7 +45,7 @@ const ClassicTeacherLayout = () => {
   const [notices, setNotices] = useState([]);
   const [events, setEvents] = useState([]);
   const [birthdays, setBirthdays] = useState([]);
-  const [calendarDate, setCalendarDate] = useState(new Date(2026, 9, 1)); // October 2026
+  const [calendarDate, setCalendarDate] = useState(new Date());
 
   const tabs = [
     'Live Classes', 'General', 'Students', 'Online Exams', 'Exams', 
@@ -473,11 +473,15 @@ const ClassicTeacherLayout = () => {
                     {calendarRows.map((row, rIdx) => (
                       <div key={rIdx} className="grid grid-cols-7 border-b border-gray-200 min-h-[105px]">
                         {row.map((cell, cIdx) => {
-                          // Match events or birthdays for this day in October 2026
-                          const isSpecialDay = cell.currentMonth && cell.day === 16;
-                          const isDiwali = cell.currentMonth && (cell.day === 29 || cell.day === 30);
-                          const isScience = cell.currentMonth && cell.day === 22;
-                          const hasBday = cell.currentMonth && (cell.day === 17 || cell.day === 19);
+                          // Match events or birthdays for this day dynamically
+                          const realNow = new Date();
+                          const isSpecialDay = cell.currentMonth && 
+                            cell.day === realNow.getDate() && 
+                            month === realNow.getMonth() && 
+                            year === realNow.getFullYear();
+                          const isDiwali = cell.currentMonth && (month === 9 && (cell.day === 29 || cell.day === 30));
+                          const isScience = cell.currentMonth && (month === 9 && cell.day === 22);
+                          const hasBday = cell.currentMonth && (cell.day === 5 || cell.day === 19);
 
                           return (
                             <div 

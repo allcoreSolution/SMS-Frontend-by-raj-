@@ -472,7 +472,7 @@ const MyLoans = () => {
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-indigo-500" />
-                  <h2 className="text-base font-bold text-gray-800">Monthly Attendance Report — October 2026</h2>
+                  <h2 className="text-base font-bold text-gray-800">Monthly Attendance Report — {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h2>
                 </div>
                 <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 border border-emerald-200">
                   Total Working Days: {attendanceData.summary?.totalWorkingDays || 0}

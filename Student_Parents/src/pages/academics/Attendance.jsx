@@ -13,7 +13,10 @@ const MONTHS = [
 ];
 
 export default function Attendance({ activeChild }) {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 9, 1)); // October 2026
+  const [currentDate, setCurrentDate] = useState(() => {
+    const d = new Date();
+    return new Date(d.getFullYear(), d.getMonth(), 1);
+  });
   const [loading, setLoading] = useState(true);
   const [attendanceData, setAttendanceData] = useState(null);
   const [studentInfo, setStudentInfo] = useState(null);
@@ -212,14 +215,15 @@ export default function Attendance({ activeChild }) {
               const dayOfWeek = new Date(year, month, day).getDay();
               const isSunday = dayOfWeek === 0;
 
-              // Highlight today (17th Oct 2026 as per ERP system)
-              const isToday = day === 17 && month === 9 && year === 2026;
+              // Highlight today dynamically
+              const actualNow = new Date();
+              const isToday = day === actualNow.getDate() && month === actualNow.getMonth() && year === actualNow.getFullYear();
 
               let bgColor = 'bg-white';
               let mark = null;
               let statusLabel = 'Present';
 
-              const isHoliday = isSunday || status === 'holiday' || (month === 9 && (day === 2 || day === 29));
+              const isHoliday = isSunday || status === 'holiday' || (month === 9 && day === 2);
 
               if (isHoliday) {
                 bgColor = 'bg-purple-50/60';

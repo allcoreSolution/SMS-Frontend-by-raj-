@@ -31,7 +31,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
 
   // Current calendar viewing month/year
   const todayDate = new Date();
-  const [curDate, setCurDate] = useState(new Date(2026, 9, 1)); // October 2026 as per system ERP timeline
+  const [curDate, setCurDate] = useState(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1));
   const [view, setView] = useState('month');
 
   // Backend state
@@ -147,12 +147,18 @@ export default function Dashboard({ activeChild, setActiveChild }) {
         }
       ];
 
-  const calendarEvents = dashboardData?.calendarEvents || {
-    '2026-10-18': [{ title: 'Term 1 PTM Interaction', color: 'bg-indigo-500', type: 'Meeting' }],
-    '2026-10-22': [{ title: 'Inter-School Science & Robotics', color: 'bg-blue-500', type: 'Event' }],
-    '2026-10-29': [{ title: 'Diwali & Autumn Festival Break', color: 'bg-pink-500', type: 'Holiday' }],
-    '2026-10-30': [{ title: 'Annual Athletics Meet - Finals', color: 'bg-pink-600', type: 'Event' }],
+  const generateMonthlyEvents = (year, month) => {
+    const pad = (n) => String(n).padStart(2, '0');
+    const mStr = pad(month + 1);
+    return {
+      [`${year}-${mStr}-05`]: [{ title: 'Special Assembly & Activity', color: 'bg-emerald-500', type: 'Event' }],
+      [`${year}-${mStr}-12`]: [{ title: 'Inter-House Sports Meet', color: 'bg-blue-500', type: 'Event' }],
+      [`${year}-${mStr}-18`]: [{ title: 'PTM Interaction & Review', color: 'bg-indigo-500', type: 'Meeting' }],
+      [`${year}-${mStr}-25`]: [{ title: 'Academic Progress Showcase', color: 'bg-amber-500', type: 'Event' }],
+    };
   };
+
+  const calendarEvents = dashboardData?.calendarEvents || generateMonthlyEvents(y, m);
 
   const attendanceMap = attendance.calendarMap || {};
 
@@ -471,10 +477,10 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button
-                    onClick={() => setCurDate(new Date(2026, 9, 1))}
+                    onClick={() => setCurDate(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1))}
                     className="px-2.5 h-7 bg-gray-100 hover:bg-gray-200 border border-gray-200 text-[10px] font-bold uppercase text-gray-700 transition-colors"
                   >
-                    Oct 2026
+                    Today
                   </button>
                   <button
                     onClick={() => setCurDate(new Date(y, m + 1, 1))}
@@ -555,7 +561,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                             const dateStr = dk(cell.day);
                             const events = cell.cur ? (calendarEvents[dateStr] || []) : [];
                             const attStatus = cell.cur ? attendanceMap[dateStr] : null;
-                            const isToday = cell.cur && cell.day === 17 && m === 9 && y === 2026;
+                            const isToday = cell.cur && cell.day === todayDate.getDate() && m === todayDate.getMonth() && y === todayDate.getFullYear();
 
                             // Attendance marker color
                             let attBadge = null;

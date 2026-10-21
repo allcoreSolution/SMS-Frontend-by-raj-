@@ -17,7 +17,10 @@ export default function Meetings({ activeChild }) {
 
   // Request form state
   const [agenda, setAgenda] = useState('');
-  const [preferredDate, setPreferredDate] = useState('2026-10-25');
+  const [preferredDate, setPreferredDate] = useState(() => {
+    const d = new Date(Date.now() + 3 * 24 * 3600 * 1000);
+    return d.toISOString().split('T')[0];
+  });
   const [preferredTime, setPreferredTime] = useState('11:00 AM');
   const [preferredMode, setPreferredMode] = useState('In person');
   const [teacherSelected, setTeacherSelected] = useState('Class Teacher (Mrs. Anjali Rao)');

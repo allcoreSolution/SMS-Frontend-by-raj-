@@ -25,9 +25,9 @@ const EVENT_TYPE_STYLES = {
 };
 
 export default function CalendarPage({ activeChild }) {
-  // ERP timeline defaults to October 2026
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 9, 1));
-  const [selectedDate, setSelectedDate] = useState(new Date(2026, 9, 17));
+  const realNow = new Date();
+  const [currentDate, setCurrentDate] = useState(new Date(realNow.getFullYear(), realNow.getMonth(), 1));
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [tab, setTab] = useState('Monthly'); // 'Monthly' | 'Yearly'
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [loading, setLoading] = useState(true);
@@ -46,8 +46,8 @@ export default function CalendarPage({ activeChild }) {
   const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
   const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
   const handleJumpToday = () => {
-    const today = new Date(2026, 9, 17);
-    setCurrentDate(new Date(2026, 9, 1));
+    const today = new Date();
+    setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1));
     setSelectedDate(today);
   };
 
@@ -106,10 +106,11 @@ export default function CalendarPage({ activeChild }) {
         });
       }
 
-      // Add standard institutional milestones if October 2026
-      if (month === 9 && year === 2026) {
-        if (!map['2026-10-02']) {
-          map['2026-10-02'] = [{
+      // Add standard institutional milestones
+      if (month === 9) {
+        const gjKey = `${year}-10-02`;
+        if (!map[gjKey]) {
+          map[gjKey] = [{
             title: 'Gandhi Jayanti Holiday',
             type: 'Holiday',
             time: 'Full Day',
@@ -308,7 +309,8 @@ export default function CalendarPage({ activeChild }) {
                 const dateObj = new Date(year, month, day);
                 const dateKey = getDateKey(year, month, day);
                 const isSelected = selectedDateKey === dateKey;
-                const isToday = day === 17 && month === 9 && year === 2026;
+                const actualToday = new Date();
+                const isToday = day === actualToday.getDate() && month === actualToday.getMonth() && year === actualToday.getFullYear();
                 const dayEvents = eventsMap[dateKey] || [];
                 const hasEvents = dayEvents.length > 0;
                 const attStatus = attendanceMap[dateKey];
@@ -317,7 +319,7 @@ export default function CalendarPage({ activeChild }) {
 
                 // Holiday detection: Sundays or database events of type Holiday/Festival
                 const isHolidayEvent = dayEvents.some(e => e.type === 'Holiday' || e.type === 'Festival');
-                const isHoliday = isSunday || isHolidayEvent || (month === 9 && (day === 2 || day === 29 || day === 30));
+                const isHoliday = isSunday || isHolidayEvent || (month === 9 && day === 2);
 
                 let cellBg = 'bg-white hover:bg-gray-50';
                 if (isSelected) cellBg = 'bg-indigo-50/90 ring-2 ring-indigo-600 ring-inset z-10';

@@ -52,13 +52,14 @@ export const SetupStatus = () => {
 
 // 2. Attendance (Donut)
 export const AttendanceDonut = () => {
+  const todayStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
   const data = [
     { name: 'Present', value: 66, color: '#3b82f6' },
     { name: 'Absent', value: 19, color: '#f59e0b' },
     { name: 'Resolved', value: 25, color: '#6366f1' },
   ];
   return (
-    <Card title="Today's Attendance" subtitle="Students • 20 Aug">
+    <Card title="Today's Attendance" subtitle={`Students • ${todayStr}`}>
       <div className="flex items-center gap-4 mt-2">
         <div className="w-24 h-24 relative">
           <ResponsiveContainer width="100%" height="100%">
@@ -164,10 +165,30 @@ export const Timetable = () => {
 
 // 5. Events
 export const UpcomingEvents = () => {
+  const now = new Date();
+  const day1 = new Date(now.getTime() + 2 * 24 * 3600 * 1000);
+  const day2 = new Date(now.getTime() + 6 * 24 * 3600 * 1000);
+  const day3 = new Date(now.getTime() + 10 * 24 * 3600 * 1000);
+
   const events = [
-    { date: '22', month: 'Aug', title: 'Annual Art & Craft Fair', desc: 'Parents are welcome to see student artworks.' },
-    { date: '28', month: 'Aug', title: 'Winter Sports Meet', desc: 'Inter-house winter sports featuring athletics...' },
-    { date: '30', month: 'Aug', title: 'Field Trip to Science Museum', desc: 'Educational excursion for classes V...' },
+    { 
+      date: String(day1.getDate()), 
+      month: day1.toLocaleDateString('en-US', { month: 'short' }), 
+      title: 'Annual Art & Craft Fair', 
+      desc: 'Parents are welcome to see student artworks.' 
+    },
+    { 
+      date: String(day2.getDate()), 
+      month: day2.toLocaleDateString('en-US', { month: 'short' }), 
+      title: 'Winter Sports & Athletics Meet', 
+      desc: 'Inter-house championship featuring track & field.' 
+    },
+    { 
+      date: String(day3.getDate()), 
+      month: day3.toLocaleDateString('en-US', { month: 'short' }), 
+      title: 'Science & Robotics Exhibition', 
+      desc: 'Educational excursion and project presentation.' 
+    },
   ];
   return (
     <Card title="Upcoming Events" subtitle="This month">

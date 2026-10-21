@@ -736,7 +736,7 @@ const Profile = () => {
               {/* ATTENDANCE TAB */}
               {activeTab === 'Attendance' && (
                 <div>
-                  <SectionTitle icon={Shield} title="Attendance Summary — October 2026" />
+                  <SectionTitle icon={Shield} title={`Attendance Summary — ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`} />
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     {[
                       { label: 'Present', val: attendance.present || 22, color: 'green' },

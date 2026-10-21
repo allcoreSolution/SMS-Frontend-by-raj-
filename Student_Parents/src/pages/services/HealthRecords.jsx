@@ -1277,7 +1277,7 @@ export default function HealthRecords({ activeChild }) {
                   <div className="inline-block border-2 border-dashed border-gray-300 p-3 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                     Official Campus Medical Seal
                   </div>
-                  <div className="text-gray-500 text-[11px] mt-1">Date: 13 October 2026</div>
+                  <div className="text-gray-500 text-[11px] mt-1">Date: {new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                 </div>
               </div>
             </div>
