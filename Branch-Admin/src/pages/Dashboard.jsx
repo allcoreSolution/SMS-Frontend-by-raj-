@@ -3,11 +3,12 @@ import {
   Globe, Users, Handshake, User, BookOpen, Contact, CreditCard, ChevronRight, 
   Key, Scale, Settings, BarChart2, Plus, Building2, TrendingUp, ShieldCheck,
   CheckCircle2, AlertCircle, ArrowUpRight, School, Sparkles, Calendar, Layers,
-  LayoutTemplate
+  LayoutTemplate, RotateCw
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { branchAdminService } from '../api/branchAdminService';
 import branchLocalDb from '../api/branchLocalDb';
+
 
 const ExecutiveStatCard = ({ title, value, subText, icon: Icon, gradient, badge }) => (
   <div className={`p-5 rounded-xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-md relative overflow-hidden text-white ${gradient}`}>
@@ -106,20 +107,23 @@ const Dashboard = () => {
   const [stats, setStats] = useState(() => {
     try {
       return branchLocalDb.getDashboardStats() || {
-        branchesCount: 5,
+        branchesCount: 4,
+        activeBranches: 4,
         totalStudents: 3840,
         totalStaff: 250,
-        totalCollected: '₹36.95 Lakhs'
+        totalCollected: '₹35.66 Lakhs'
       };
     } catch (_) {
       return {
-        branchesCount: 5,
+        branchesCount: 4,
+        activeBranches: 4,
         totalStudents: 3840,
         totalStaff: 250,
-        totalCollected: '₹36.95 Lakhs'
+        totalCollected: '₹35.66 Lakhs'
       };
     }
   });
+  const [recentLeads, setRecentLeads] = useState([]);
   const [loginLogs, setLoginLogs] = useState(() => {
     try {
       return (branchLocalDb.getLoginLogs() || []).slice(0, 4);
@@ -135,21 +139,33 @@ const Dashboard = () => {
 
   const loadDashboardData = async () => {
     try {
-      const bRes = await branchAdminService.getBranches();
-      if (bRes && bRes.success && Array.isArray(bRes.data) && bRes.data.length > 0) {
-        setBranches(bRes.data);
+      setLoading(true);
+      // Fetch live real-time stats from Central MongoDB via API
+      const statsRes = await branchAdminService.getDashboardStats();
+      if (statsRes?.data) {
+        setStats(statsRes.data);
+        if (Array.isArray(statsRes.data.branches) && statsRes.data.branches.length > 0) {
+          setBranches(statsRes.data.branches);
+        }
+        if (Array.isArray(statsRes.data.recentLeads)) {
+          setRecentLeads(statsRes.data.recentLeads);
+        }
       } else {
-        setBranches(branchLocalDb.getBranches());
+        const bRes = await branchAdminService.getBranches();
+        if (bRes?.success && Array.isArray(bRes.data) && bRes.data.length > 0) {
+          setBranches(bRes.data);
+        } else {
+          setBranches(branchLocalDb.getBranches());
+        }
       }
-
-      const s = branchLocalDb.getDashboardStats();
-      if (s) setStats(s);
 
       const logs = branchLocalDb.getLoginLogs();
       if (logs) setLoginLogs(logs.slice(0, 4));
     } catch (e) {
       console.error('Error loading dashboard data:', e);
       setBranches(branchLocalDb.getBranches());
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -159,8 +175,13 @@ const Dashboard = () => {
       {/* Executive Welcome Ribbon */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <div className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-700 text-[11px] font-bold px-3 py-1 rounded-full mb-2.5 uppercase tracking-wider border border-orange-200/80">
-            <Globe className="w-3.5 h-3.5 text-orange-600" /> Multi-School Head Office • Network Command Center
+          <div className="inline-flex items-center gap-2 mb-2.5">
+            <span className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-700 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-orange-200/80">
+              <Globe className="w-3.5 h-3.5 text-orange-600" /> Multi-School Head Office • Network Command Center
+            </span>
+            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Live Central Database
+            </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
             Executive Branch Manager Dashboard
@@ -171,6 +192,15 @@ const Dashboard = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <button 
+            onClick={loadDashboardData}
+            disabled={loading}
+            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-lg text-[13px] font-bold shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+            title="Refresh Live Data from Central Database"
+          >
+            <RotateCw className={`w-4 h-4 text-orange-500 ${loading ? 'animate-spin' : ''}`} />
+            <span>{loading ? 'Syncing...' : 'Live Sync'}</span>
+          </button>
           <Link 
             to="/branches" 
             className="bg-gradient-to-r from-[#fd7e14] to-[#f59e0b] hover:from-[#e86e04] hover:to-[#d97706] text-white px-5 py-2.5 rounded-lg text-[13.5px] font-bold shadow-sm flex items-center gap-2 transition-all hover:shadow-md cursor-pointer"
@@ -190,8 +220,8 @@ const Dashboard = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         <ExecutiveStatCard 
           title="Managed Branches" 
-          value={branches.length.toString()} 
-          subText={`${branches.filter(b => b.status === 'Active').length} Active • 1 Expiring Soon`}
+          value={String(stats.branchesCount || branches.length)} 
+          subText={`${stats.activeBranches || branches.filter(b => b.status === 'Active').length} Active • Live Synced`}
           icon={Building2} 
           gradient="bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8]" 
           badge="100% Online"
@@ -199,7 +229,7 @@ const Dashboard = () => {
         <ExecutiveStatCard 
           title="Total Enrolled Students" 
           value={Number(stats.totalStudents || 3840).toLocaleString('en-IN')} 
-          subText="Across 5 Linked School Campuses"
+          subText={`Across ${branches.length} Linked School Campuses`}
           icon={BookOpen} 
           gradient="bg-gradient-to-br from-[#10b981] to-[#047857]" 
           badge="+8.4% YoY"
@@ -221,6 +251,7 @@ const Dashboard = () => {
           badge="+14.2% MoM"
         />
       </div>
+
 
       {/* Branch Network Grid */}
       <div className="mb-8">
@@ -377,8 +408,64 @@ const Dashboard = () => {
 
       </div>
 
+      {/* Live Cross-Campus Leads & Enquiries Pipeline */}
+      {recentLeads && recentLeads.length > 0 && (
+        <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-6 mb-8 font-sans">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-3 border-b border-gray-100">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
+                <Users className="w-4.5 h-4.5" />
+              </div>
+              <div>
+                <h3 className="text-[16px] font-bold text-gray-900 leading-tight">Live Campus Leads & Inquiries</h3>
+                <p className="text-[11.5px] text-gray-400 font-medium">Real-time enquiries received across web portals and admissions CRM</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold text-orange-700 bg-orange-50 px-2.5 py-1 rounded-full border border-orange-200">
+                {recentLeads.length} Central Inquiries
+              </span>
+              <a 
+                href="http://localhost:5176/leads/all" 
+                target="_blank" 
+                rel="noreferrer" 
+                className="text-xs text-orange-600 hover:text-orange-700 font-bold flex items-center gap-1 hover:underline ml-2"
+              >
+                Open Full CRM Pipeline <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3.5">
+            {recentLeads.map((lead, idx) => (
+              <div key={lead._id || idx} className="p-3.5 rounded-lg border border-gray-200/90 hover:border-orange-400 hover:shadow-xs transition-all bg-gray-50/40 flex flex-col justify-between min-h-[110px]">
+                <div>
+                  <div className="flex justify-between items-start mb-1.5">
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-100 uppercase tracking-wide truncate max-w-[90px]">
+                      {lead.targetClass || 'Admission'}
+                    </span>
+                    <span className="text-[10px] font-semibold text-gray-400">
+                      {lead.createdAt ? new Date(lead.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) : 'Today'}
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-[13px] text-gray-900 line-clamp-1">{lead.studentName}</h4>
+                  <p className="text-[11px] text-gray-500 truncate mt-0.5">Parent: {lead.parentName || 'Parent'}</p>
+                </div>
+                <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-gray-200/60 text-[10.5px]">
+                  <span className="text-gray-500 font-mono truncate max-w-[85px]">{lead.contactNumber}</span>
+                  <span className="font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded text-[9.5px]">
+                    {lead.stage || lead.status || 'Enquiry'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Enterprise Management Toolkit */}
       <div className="bg-gradient-to-br from-[#f8f9fc] to-white rounded-xl shadow-xs border border-gray-200/80 p-6 sm:p-8 relative overflow-hidden">
+
         <div className="mb-6 relative z-10">
           <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-orange-600 uppercase tracking-widest mb-1">
             <Sparkles className="w-3.5 h-3.5" /> Executive Command Toolkit

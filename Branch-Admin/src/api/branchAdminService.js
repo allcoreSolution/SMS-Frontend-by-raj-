@@ -28,10 +28,10 @@ const normalizeBranch = (b, index = 0) => {
 };
 
 export const branchAdminService = {
-  // Dashboard & Schools Aggregates
+  // Dashboard & Schools Aggregates from Central MongoDB
   getDashboardStats: async () => {
     try {
-      const res = await axiosInstance.get('/superadmin/dashboard-analytics');
+      const res = await axiosInstance.get('/branches/dashboard-stats');
       if (res.data && res.data.success) {
         return res.data;
       }
