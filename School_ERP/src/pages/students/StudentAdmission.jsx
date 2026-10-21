@@ -12,6 +12,7 @@ import StudentsTabs from '../../components/students/StudentsTabs';
 import { studentService } from '../../api/studentService';
 import { academicService } from '../../api/academicService';
 import QuickAddClassModal from '../../components/academics/QuickAddClassModal';
+import QuickAddSectionModal from '../../components/academics/QuickAddSectionModal';
 
 const StudentAdmission = () => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const StudentAdmission = () => {
   const [loading, setLoading] = useState(false);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+  const [isAddSectionOpen, setIsAddSectionOpen] = useState(false);
 
   // Password visibility
   const [showStudentPass, setShowStudentPass] = useState(false);
@@ -477,7 +479,16 @@ const StudentAdmission = () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Section</label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-slate-700">Section</label>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddSectionOpen(true)}
+                        className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 cursor-pointer"
+                      >
+                        + Add Section
+                      </button>
+                    </div>
                     <select
                       name="sectionId"
                       value={formData.sectionId}
@@ -1600,6 +1611,25 @@ const StudentAdmission = () => {
               setClasses(clsRes.data);
               if (newCls?._id) {
                 setFormData(prev => ({ ...prev, classId: newCls._id }));
+              }
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        }}
+      />
+
+      {/* Quick Add Section Modal */}
+      <QuickAddSectionModal
+        isOpen={isAddSectionOpen}
+        onClose={() => setIsAddSectionOpen(false)}
+        onSectionAdded={async (newSec) => {
+          try {
+            const secRes = await academicService.getSections();
+            if (secRes?.data) {
+              setSections(secRes.data);
+              if (newSec?._id) {
+                setFormData(prev => ({ ...prev, sectionId: newSec._id }));
               }
             }
           } catch (e) {
