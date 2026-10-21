@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
 import { 
   Filter, Search, CheckCircle2, XCircle, Clock, 
-  Calendar, Check, X, RefreshCw, Sparkles, UserCheck
+  Calendar, Check, X, RefreshCw, Sparkles, UserCheck, Plus
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import StudentsTabs from '../../components/students/StudentsTabs';
 import { studentService } from '../../api/studentService';
 import { academicService } from '../../api/academicService';
+import QuickAddSectionModal from '../../components/academics/QuickAddSectionModal';
 
 const StudentAttendance = () => {
   const [classes, setClasses] = useState([]);
@@ -19,6 +19,19 @@ const StudentAttendance = () => {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [isAddSectionOpen, setIsAddSectionOpen] = useState(false);
+
+  const refreshSections = async (newSectionId = null) => {
+    try {
+      const res = await academicService.getSections();
+      if (res?.data) {
+        setSections(res.data);
+        if (newSectionId) setSelectedSection(newSectionId);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     const fetchMeta = async () => {
@@ -33,7 +46,6 @@ const StudentAttendance = () => {
         }
         if (secRes?.data) {
           setSections(secRes.data);
-          if (secRes.data.length > 0) setSelectedSection(secRes.data[0]._id);
         }
       } catch (err) {
         console.error(err);
@@ -80,6 +92,9 @@ const StudentAttendance = () => {
           rollNo: s.rollNo || '-',
           admissionNo: s.admissionNo || s.aparId,
           photo: s.studentPhoto,
+          classId: s.classId?._id || s.classId || selectedClass,
+          sectionId: s.sectionId?._id || s.sectionId || '',
+          sectionName: s.sectionId?.sectionName || '',
           status: match ? match.status : 'Present', // default to Present
           remark: match ? (match.remarks || match.remark || '') : ''
         };
@@ -112,15 +127,17 @@ const StudentAttendance = () => {
     try {
       setSaving(true);
       // Payload format expected by attendanceController:
-      // Can take array of records
-      const payload = students.map(s => ({
-        student: s._id,
-        academicClass: selectedClass,
-        section: selectedSection || undefined,
-        date: selectedDate,
-        status: s.status,
-        remarks: s.remark
-      }));
+      const payload = students.map(s => {
+        const sec = selectedSection || s.sectionId || null;
+        return {
+          student: s._id,
+          academicClass: selectedClass || s.classId || null,
+          section: (sec && sec !== '') ? sec : null,
+          date: selectedDate,
+          status: s.status,
+          remarks: s.remark
+        };
+      });
 
       await studentService.saveAttendanceBatch(payload);
 
@@ -184,13 +201,22 @@ const StudentAttendance = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1.5">Section</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-xs font-bold text-slate-700">Section (Optional)</label>
+              <button
+                type="button"
+                onClick={() => setIsAddSectionOpen(true)}
+                className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5"
+              >
+                <Plus className="w-3 h-3" /> Add Section
+              </button>
+            </div>
             <select
               value={selectedSection}
               onChange={(e) => setSelectedSection(e.target.value)}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
             >
-              <option value="">-- Select Section --</option>
+              <option value="">-- All Sections / Class Wide --</option>
               {sections.map(s => (
                 <option key={s._id} value={s._id}>{s.sectionName}</option>
               ))}
@@ -336,6 +362,15 @@ const StudentAttendance = () => {
           <p className="text-xs text-slate-400">Please verify class selection or admit students to this grade.</p>
         </div>
       )}
+
+      {/* Quick Add Section Modal */}
+      <QuickAddSectionModal
+        isOpen={isAddSectionOpen}
+        onClose={() => setIsAddSectionOpen(false)}
+        onSectionAdded={(newSec) => {
+          refreshSections(newSec?._id);
+        }}
+      />
 
     </div>
   );
