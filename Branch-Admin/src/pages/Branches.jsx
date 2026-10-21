@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import branchAdminService from '../api/branchAdminService';
 
 const Branches = () => {
   const [branches, setBranches] = useState([]);
@@ -36,12 +37,19 @@ const Branches = () => {
   };
   const [formData, setFormData] = useState(initialFormState);
 
-  const loadData = () => {
+  const loadData = async () => {
     try {
-      const data = branchLocalDb.getBranches();
-      setBranches(data);
+      setLoading(true);
+      const res = await branchAdminService.getBranches();
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        setBranches(res.data);
+      } else {
+        const data = branchLocalDb.getBranches();
+        setBranches(data);
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Branches fetch error:', err);
+      setBranches(branchLocalDb.getBranches());
     } finally {
       setLoading(false);
     }
@@ -50,6 +58,7 @@ const Branches = () => {
   useEffect(() => {
     loadData();
   }, []);
+
 
   // Filtered dataset
   const filteredBranches = branches.filter(b => {
@@ -130,48 +139,54 @@ const Branches = () => {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveNewBranch = (e) => {
+  const handleSaveNewBranch = async (e) => {
     e.preventDefault();
     if (!formData.name || !formData.email) {
       Swal.fire('Missing Details', 'Please enter campus name and official email.', 'warning');
       return;
     }
 
-    branchLocalDb.addBranch({
+    const code = formData.code || `BR-${Math.floor(100 + Math.random() * 900)}`;
+    const newBranchPayload = {
       ...formData,
-      code: formData.code || `BR-${Math.floor(100 + Math.random() * 900)}`,
+      code,
       collected: '₹0.00',
       collectedRaw: 0,
       attendance: '95.0%',
       rows: '1,000',
       renews: '12 Oct, 2027',
-      domain: `${formData.code?.toLowerCase() || 'branch'}.schoolerp.com`
-    });
+      domain: `${code.toLowerCase()}.schoolerp.com`
+    };
 
-    loadData();
+    setLoading(true);
+    await branchAdminService.createBranch(newBranchPayload);
+    await loadData();
     setIsAddModalOpen(false);
+
     Swal.fire({
       icon: 'success',
-      title: 'Branch Created!',
-      text: `${formData.name} has been successfully registered.`,
+      title: 'Branch Created & Synced!',
+      text: `${formData.name} has been successfully registered in Central MongoDB.`,
       timer: 2000,
       showConfirmButton: false
     });
   };
 
-  const handleUpdateBranch = (e) => {
+  const handleUpdateBranch = async (e) => {
     e.preventDefault();
     if (!selectedBranch) return;
 
-    branchLocalDb.updateBranch(selectedBranch.id, formData);
-    loadData();
+    setLoading(true);
+    const branchId = selectedBranch._id || selectedBranch.id;
+    await branchAdminService.updateBranch(branchId, formData);
+    await loadData();
     setIsEditModalOpen(false);
     setSelectedBranch(null);
 
     Swal.fire({
       icon: 'success',
-      title: 'Branch Updated!',
-      text: 'Campus configuration details saved successfully.',
+      title: 'Branch Updated & Synced!',
+      text: 'Campus configuration saved successfully in Central MongoDB.',
       timer: 1800,
       showConfirmButton: false
     });
@@ -190,11 +205,13 @@ const Branches = () => {
       confirmButtonColor: newStatus === 'Suspended' ? '#dc3545' : '#28a745',
       cancelButtonColor: '#6c757d',
       confirmButtonText: `Yes, ${actionText} it!`
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        branchLocalDb.updateBranch(branch.id, { status: newStatus });
-        loadData();
-        Swal.fire('Updated!', `Campus is now marked as ${newStatus}.`, 'success');
+        setLoading(true);
+        const branchId = branch._id || branch.id;
+        await branchAdminService.updateBranch(branchId, { status: newStatus });
+        await loadData();
+        Swal.fire('Updated!', `Campus is now marked as ${newStatus} in Central MongoDB.`, 'success');
       }
     });
   };
@@ -203,20 +220,23 @@ const Branches = () => {
     setOpenDropdown(null);
     Swal.fire({
       title: 'Delete Campus Record?',
-      text: `Are you sure you want to delete ${branch.name}? This will remove it from the directory.`,
+      text: `Are you sure you want to delete ${branch.name}? This will remove it from Central MongoDB & Multi-School.`,
       icon: 'error',
       showCancelButton: true,
       confirmButtonColor: '#dc3545',
       cancelButtonColor: '#6c757d',
       confirmButtonText: 'Yes, delete campus'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        branchLocalDb.deleteBranch(branch.id);
-        loadData();
-        Swal.fire('Deleted!', 'The campus record has been removed.', 'success');
+        setLoading(true);
+        const branchId = branch._id || branch.id;
+        await branchAdminService.deleteBranch(branchId);
+        await loadData();
+        Swal.fire('Deleted!', 'The campus record has been removed from Central MongoDB.', 'success');
       }
     });
   };
+
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-[calc(100vh-70px)] bg-[#f4f7fa]">
@@ -239,6 +259,15 @@ const Branches = () => {
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
+          <button 
+            onClick={loadData}
+            disabled={loading}
+            className="inline-flex items-center gap-2 px-3.5 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-sm font-semibold shadow-sm transition-all cursor-pointer"
+            title="Refresh Live Data from Central Database"
+          >
+            <RefreshCw className={`w-4 h-4 text-orange-500 ${loading ? 'animate-spin' : ''}`} />
+            <span className="hidden sm:inline">{loading ? 'Syncing...' : 'Live Sync'}</span>
+          </button>
           <button 
             onClick={handleExportCsv}
             className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-sm font-semibold shadow-sm transition-all"

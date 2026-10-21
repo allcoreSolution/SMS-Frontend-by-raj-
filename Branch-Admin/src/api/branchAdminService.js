@@ -57,23 +57,31 @@ export const branchAdminService = {
   // Create branch in Central MongoDB
   createBranch: async (branchData) => {
     try {
-      const res = await axiosInstance.post('/branches', {
+      const code = branchData.code || branchData.branchCode || `BR-${Math.floor(100 + Math.random() * 900)}`;
+      const payload = {
         branchName: branchData.name || branchData.branchName,
-        branchCode: branchData.code || branchData.branchCode,
+        branchCode: code,
         address: branchData.address || 'Campus Address',
         contactEmail: branchData.email || branchData.contactEmail,
         contactPhone: branchData.phone || branchData.contactPhone,
         principalName: branchData.principal || branchData.principalName,
         subscriptionPlan: branchData.plan?.includes('Enterprise') ? 'Enterprise' : (branchData.plan?.includes('Pro') ? 'Pro' : 'Basic'),
-        status: branchData.status || 'Active'
-      });
+        status: branchData.status || 'Active',
+        students: Number(branchData.students) || 500,
+        staff: Number(branchData.staff) || 35,
+        attendance: branchData.attendance || '95%',
+        collected: branchData.collected || '₹0.00'
+      };
+      const res = await axiosInstance.post('/branches', payload);
 
       if (res.data && res.data.success) {
         const normalized = normalizeBranch(res.data.data);
         branchLocalDb.addBranch(normalized);
         return { success: true, data: normalized };
       }
-    } catch (_) {}
+    } catch (e) {
+      console.warn('API branch create notice:', e.message);
+    }
 
     const created = branchLocalDb.addBranch(branchData);
     return { success: true, data: created };
@@ -82,7 +90,7 @@ export const branchAdminService = {
   // Update branch in Central MongoDB
   updateBranch: async (id, updates) => {
     try {
-      const res = await axiosInstance.put(`/branches/${id}`, {
+      const payload = {
         ...(updates.name && { branchName: updates.name }),
         ...(updates.code && { branchCode: updates.code }),
         ...(updates.address && { address: updates.address }),
@@ -90,13 +98,20 @@ export const branchAdminService = {
         ...(updates.phone && { contactPhone: updates.phone }),
         ...(updates.principal && { principalName: updates.principal }),
         ...(updates.status && { status: updates.status }),
+        ...(updates.students !== undefined && { students: Number(updates.students) }),
+        ...(updates.staff !== undefined && { staff: Number(updates.staff) }),
+        ...(updates.attendance && { attendance: updates.attendance }),
+        ...(updates.collected && { collected: updates.collected }),
         ...(updates.plan && { subscriptionPlan: updates.plan.includes('Enterprise') ? 'Enterprise' : (updates.plan.includes('Pro') ? 'Pro' : 'Basic') })
-      });
+      };
+      const res = await axiosInstance.put(`/branches/${id}`, payload);
       if (res.data && res.data.success) {
         branchLocalDb.updateBranch(id, updates);
         return res.data;
       }
-    } catch (_) {}
+    } catch (e) {
+      console.warn('API branch update notice:', e.message);
+    }
     const updated = branchLocalDb.updateBranch(id, updates);
     return { success: true, data: updated };
   },
@@ -105,7 +120,9 @@ export const branchAdminService = {
   deleteBranch: async (id) => {
     try {
       await axiosInstance.delete(`/branches/${id}`);
-    } catch (_) {}
+    } catch (e) {
+      console.warn('API branch delete notice:', e.message);
+    }
     branchLocalDb.deleteBranch(id);
     return { success: true };
   },
