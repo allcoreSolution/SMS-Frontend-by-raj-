@@ -220,13 +220,16 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
         </button>
       </div>
 
-      {/* Sidebar Footer */}
-      <div className="bg-[#070d1e] px-4 py-3 border-t border-slate-800/80 flex items-center justify-between">
-        <div>
-          <p className="text-[10.5px] text-slate-400 font-bold">Branch Network Admin</p>
-          <p className="text-[9.5px] text-slate-500">v3.0 • Verified Secure Session</p>
+      {/* Sidebar Footer - Developer Attribution */}
+      <div className="bg-[#070d1e] px-3 py-2.5 border-t border-slate-800/80 text-center">
+        <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+          <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
+            &copy; 2026 School ERP
+          </p>
+          <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
+            Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+          </p>
         </div>
-        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="System Online" />
       </div>
     </div>
   );
