@@ -75,10 +75,8 @@ const Sidebar = ({ isCollapsed }) => {
 
   const mainNav = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
-    { name: "All ERP Portals", icon: LayoutGrid, path: "/portals" },
     { name: "Lead Management", icon: TrendingUp, path: "/leads/dashboard" },
     { name: "Competency-Based (CBC)", icon: Network, path: "/cbc/dashboard" },
-    { name: "ERP Navigator", icon: Compass, path: "/erp-navigator" },
     { name: "Contact Support", icon: Headset, path: "/contact-support" },
   ];
 
@@ -731,7 +729,7 @@ const Sidebar = ({ isCollapsed }) => {
                     to={item.path}
                     className={({ isActive }) => 
                       `flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
-                        isActive && item.path !== "/erp-navigator"
+                        isActive
                           ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-semibold shadow-md shadow-orange-500/20' 
                           : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
                       }`
