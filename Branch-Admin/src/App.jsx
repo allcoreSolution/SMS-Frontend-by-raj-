@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate, Navigate 
 import { 
   Menu, Bell, User, Search, Globe, ChevronDown, ChevronRight,
   LogOut, School, CreditCard, LayoutTemplate, BarChart2, BookOpen,
-  Building2, Users, FileText, CheckCircle2, X, Sparkles, ShieldCheck
+  Building2, Users, FileText, CheckCircle2, X, Sparkles, ShieldCheck, Check
 } from 'lucide-react';
 import Dashboard from './pages/Dashboard';
 import GenericPage from './pages/GenericPage';
@@ -235,10 +235,89 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
   );
 };
 
+const branchSupportedLanguages = [
+  { name: 'English (US)', native: 'English', code: 'en', flag: '🇬🇧' },
+  { name: 'Hindi (हिन्दी)', native: 'हिन्दी', code: 'hi', flag: '🇮🇳' },
+  { name: 'Gujarati (ગુજરાતી)', native: 'ગુજરાતી', code: 'gu', flag: '🇮🇳' },
+  { name: 'Marathi (मराठी)', native: 'मराठी', code: 'mr', flag: '🇮🇳' },
+  { name: 'Punjabi (ਪੰਜਾਬੀ)', native: 'ਪੰਜਾਬੀ', code: 'pa', flag: '🇮🇳' },
+  { name: 'Bengali (বাংলা)', native: 'বাংলা', code: 'bn', flag: '🇮🇳' },
+  { name: 'Tamil (தமிழ்)', native: 'தமிழ்', code: 'ta', flag: '🇮🇳' },
+  { name: 'Telugu (తెలుగు)', native: 'తెలుగు', code: 'te', flag: '🇮🇳' },
+  { name: 'Urdu (اُردُو)', native: 'اُردُو', code: 'ur', flag: '🇵🇰' },
+  { name: 'Arabic (العربية)', native: 'العربية', code: 'ar', flag: '🇸🇦' },
+  { name: 'Spanish (Español)', native: 'Español', code: 'es', flag: '🇪🇸' },
+  { name: 'French (Français)', native: 'Français', code: 'fr', flag: '🇫🇷' },
+  { name: 'German (Deutsch)', native: 'Deutsch', code: 'de', flag: '🇩🇪' },
+  { name: 'Russian (Русский)', native: 'Русский', code: 'ru', flag: '🇷🇺' },
+  { name: 'Chinese (中文)', native: '中文', code: 'zh-CN', flag: '🇨🇳' },
+  { name: 'Japanese (日本語)', native: '日本語', code: 'ja', flag: '🇯🇵' },
+];
+
+const triggerGoogleTranslate = (langCode) => {
+  try {
+    if (!langCode || langCode === 'en') {
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        combo.value = '';
+        combo.dispatchEvent(new Event('change'));
+      }
+      return;
+    }
+
+    const val = `/en/${langCode}`;
+    document.cookie = `googtrans=${val}; path=/;`;
+    document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
+
+    const applyToCombo = () => {
+      const combo = document.querySelector('.goog-te-combo');
+      if (combo) {
+        combo.value = langCode;
+        combo.dispatchEvent(new Event('change'));
+        return true;
+      }
+      return false;
+    };
+
+    if (!applyToCombo()) {
+      setTimeout(applyToCombo, 300);
+      setTimeout(applyToCombo, 800);
+      setTimeout(applyToCombo, 1500);
+    }
+  } catch (e) {
+    console.warn('Translate trigger error:', e);
+  }
+};
+
 const Header = ({ onToggle, isDesktopOpen = true, onLogout }) => {
   const navigate = useNavigate();
   const [langOpen, setLangOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState('English (US)');
+  const [currentLang, setCurrentLang] = useState(() => {
+    try {
+      return localStorage.getItem('branch_language') || 'English (US)';
+    } catch (_) {
+      return 'English (US)';
+    }
+  });
+
+  useEffect(() => {
+    const savedCode = localStorage.getItem('branch_lang_code');
+    if (savedCode && savedCode !== 'en') {
+      setTimeout(() => triggerGoogleTranslate(savedCode), 600);
+    }
+  }, []);
+
+  const handleSelectLang = (lang) => {
+    setCurrentLang(lang.name);
+    try {
+      localStorage.setItem('branch_language', lang.name);
+      localStorage.setItem('branch_lang_code', lang.code);
+    } catch (_) {}
+    triggerGoogleTranslate(lang.code);
+    setLangOpen(false);
+  };
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -322,24 +401,40 @@ const Header = ({ onToggle, isDesktopOpen = true, onLogout }) => {
         <div className="relative">
           <div 
             onClick={() => toggleMenu('lang')}
-            className={`flex items-center gap-1.5 cursor-pointer px-2.5 py-1.5 rounded-md hover:bg-gray-50 text-[13px] font-semibold transition-colors ${langOpen ? 'text-[#fd7e14]' : 'text-gray-600'}`}
+            className={`flex items-center gap-1.5 cursor-pointer px-2.5 py-1.5 rounded-lg hover:bg-gray-50 text-[13px] font-semibold transition-colors border border-transparent hover:border-slate-200 ${langOpen ? 'text-[#fd7e14] bg-orange-50/60' : 'text-gray-600'}`}
           >
-            <Globe className="w-4 h-4" />
-            <span className="hidden md:inline">{currentLang}</span>
+            <Globe className="w-4 h-4 text-[#fd7e14]" />
+            <span className="hidden md:inline font-bold">{currentLang.split(' ')[0]}</span>
             <ChevronDown className={`w-3 h-3 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
           </div>
 
           {langOpen && (
-            <div className="absolute right-0 mt-2 w-44 bg-white border border-gray-100 rounded-md shadow-lg py-1.5 z-50">
-              {['English (US)', 'Hindi (हिन्दी)', 'Spanish (Español)', 'French (Français)'].map((lang) => (
-                <div 
-                  key={lang}
-                  onClick={() => { setCurrentLang(lang); setLangOpen(false); }}
-                  className={`px-4 py-2 text-[12.5px] cursor-pointer transition-colors ${currentLang === lang ? 'bg-orange-50 text-orange-600 font-bold' : 'text-gray-700 hover:bg-gray-50'}`}
-                >
-                  {lang}
-                </div>
-              ))}
+            <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-2xl shadow-2xl py-1.5 z-50 animate-in fade-in slide-in-from-top-2">
+              <div className="px-3.5 py-1.5 border-b border-slate-100 mb-1">
+                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Language ({branchSupportedLanguages.length})</p>
+              </div>
+              <div className="max-h-64 overflow-y-auto px-1 space-y-0.5 custom-scrollbar">
+                {branchSupportedLanguages.map((lang) => {
+                  const isSelected = currentLang === lang.name;
+                  return (
+                    <div 
+                      key={lang.code}
+                      onClick={() => handleSelectLang(lang)}
+                      className={`flex items-center justify-between px-3 py-2 text-[12.5px] rounded-xl cursor-pointer transition-colors ${
+                        isSelected 
+                          ? 'bg-orange-50 text-orange-600 font-bold shadow-xs' 
+                          : 'text-gray-700 hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 truncate">
+                        <span className="text-base leading-none shrink-0">{lang.flag}</span>
+                        <span className="truncate">{lang.name}</span>
+                      </div>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-orange-600 stroke-[3] shrink-0" />}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

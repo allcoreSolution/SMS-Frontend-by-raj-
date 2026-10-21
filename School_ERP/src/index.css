@@ -136,3 +136,29 @@ table:not([class*="border-none"]):not([class*="modern-table"]) tbody tr:hover {
     transform: translateY(-2px);
   }
 }
+
+/* Google Translate Full-Site Real-Time Engine Styles */
+.goog-te-banner-frame.skiptranslate, 
+.goog-te-banner-frame, 
+#goog-gt-tt, 
+.goog-te-balloon-frame { 
+  display: none !important; 
+}
+body { 
+  top: 0px !important; 
+  position: static !important; 
+}
+.goog-tooltip, 
+.goog-tooltip:hover { 
+  display: none !important; 
+}
+.goog-text-highlight { 
+  background-color: transparent !important; 
+  box-shadow: none !important; 
+}
+#google_translate_element { 
+  display: none !important; 
+}
+.skiptranslate iframe {
+  display: none !important;
+}
