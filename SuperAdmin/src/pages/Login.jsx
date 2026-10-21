@@ -210,10 +210,10 @@ export default function Login() {
         {/* Left Column Bottom Footer */}
         <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-800/70">
           <span>&copy; {new Date().getFullYear()} Multi-School ERP Suite</span>
-          <div className="flex items-center gap-1.5 font-semibold text-slate-400">
-            <span>Built by</span>
-            <span className="text-[#ff5c0a] font-bold">RAJ</span>
-            <span>@ALLCORE SOLUTION</span>
+          <div className="flex items-center gap-1 font-semibold text-slate-400">
+            <span>Built with ❤️ by</span>
+            <span className="text-white font-bold">RAJ YADAV</span>
+            <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
           </div>
         </div>
       </div>
@@ -411,8 +411,9 @@ export default function Login() {
         </div>
 
         {/* Bottom copyright on right */}
-        <div className="text-[10px] text-slate-400 py-1">
-          Multi-School ERP System &bull; Platform Owner Portal
+        <div className="text-[10px] text-slate-400 py-1 flex items-center justify-center gap-1">
+          <span>Multi-School ERP &bull;</span>
+          <span>Built with ❤️ by <strong className="text-white">RAJ YADAV</strong> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span></span>
         </div>
 
       </div>

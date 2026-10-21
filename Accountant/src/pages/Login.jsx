@@ -160,7 +160,7 @@ const Login = () => {
 
           <div className="mt-6 text-center">
             <p className="text-[11px] text-gray-400">&copy; {new Date().getFullYear()} School ERP — Accountant Portal</p>
-            <p className="text-[11px] font-bold text-gray-500">Developed by <span className="text-[#3c8dbc]">RAJ</span> @ALLCORE SOLUTION</p>
+            <p className="text-[11px] font-bold text-gray-500">Built with ❤️ by <span className="text-[#3c8dbc]">RAJ YADAV</span> @ALLCORE SOLUTION</p>
           </div>
         </div>
       </div>

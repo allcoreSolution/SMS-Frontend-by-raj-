@@ -278,7 +278,7 @@ const Login = () => {
 
           <div className="pt-2 text-center text-xs text-slate-400">
             <p>&copy; {new Date().getFullYear()} School ERP. All rights reserved.</p>
-            <p className="font-semibold text-slate-500 mt-0.5">Developed by <span className="text-indigo-600 font-bold">RAJ</span> @ALLCORE SOLUTION</p>
+            <p className="font-semibold text-slate-500 mt-0.5">Built with ❤️ by <span className="text-indigo-600 font-bold">RAJ YADAV</span> @ALLCORE SOLUTION</p>
           </div>
 
         </div>
