@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", "Inter", sans-serif;
+  
+  --color-brand-50: #f0f9ff;
+  --color-brand-100: #e0f2fe;
+  --color-brand-500: #0ea5e9;
+  --color-brand-600: #0284c7;
+  --color-brand-900: #0c4a6e;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #1f2937;
+  background-color: #f9fafb;
+}
+
+/* ========================================================
+   COMMAND CENTER THEMES
+   ======================================================== */
+
+/* 1. THEME: ENTERPRISE (Default - handled by inline tailwind classes) */
+
+/* 2. THEME: MODERN LIGHT */
+.theme-modern .theme-sidebar { background-color: #ffffff !important; color: #4b5563 !important; border-right: 1px solid #e5e7eb !important; }
+.theme-modern .theme-nav-item { border-radius: 0.75rem !important; margin: 0 0.25rem !important; }
+.theme-modern .theme-nav-item:hover { background-color: #f3f4f6 !important; color: #111827 !important; }
+.theme-modern .theme-nav-active { background-color: #eff6ff !important; color: #2563eb !important; }
+.theme-modern .theme-app-bg { background-color: #f8fafc !important; }
+.theme-modern .theme-card { background-color: #ffffff !important; border: none !important; border-radius: 1.25rem !important; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05) !important; }
+.theme-modern .theme-header { border-bottom: none !important; box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important; }
+.theme-modern .theme-image-radius { border-radius: 50% !important; }
+.theme-modern .theme-icon { border-radius: 0.75rem !important; }
+
+/* 3. THEME: DARK MODE */
+.theme-dark .theme-sidebar { background-color: #000000 !important; color: #9ca3af !important; border-right: 1px solid #1f2937 !important; }
+.theme-dark .theme-nav-item:hover { background-color: #111827 !important; color: #f3f4f6 !important; }
+.theme-dark .theme-nav-active { background-color: #374151 !important; color: #ffffff !important; }
+.theme-dark .theme-app-bg { background-color: #0f1115 !important; }
+.theme-dark .theme-card { background-color: #1a1d24 !important; border: 1px solid #2a2e37 !important; border-radius: 0.75rem !important; color: #f3f4f6 !important;}
+.theme-dark .theme-header { background-color: #1a1d24 !important; border-bottom: 1px solid #2a2e37 !important; }
+.theme-dark .theme-text { color: #f3f4f6 !important; }
+.theme-dark .theme-icon { border-radius: 0.75rem !important; }
+
+/* 4. THEME: NEO BRUTALISM */
+.theme-neo .theme-sidebar { background-color: #ffffff !important; color: #000 !important; border-right: 3px solid #000 !important; font-weight: 700; }
+.theme-neo .theme-nav-active { background-color: #FFE873 !important; color: #000 !important; border: 2px solid #000 !important; }
+.theme-neo .theme-app-bg { background-color: #a3e635 !important; }
+.theme-neo .theme-card { background-color: #ffffff !important; border: 3px solid #000 !important; box-shadow: 6px 6px 0px #000 !important; border-radius: 0 !important; }
+.theme-neo .theme-header { background-color: #ffffff !important; border-bottom: 3px solid #000 !important; }
+.theme-neo .theme-text { color: #000 !important; font-weight: bold !important; }
+.theme-neo .theme-icon { border: 2px solid #000 !important; box-shadow: 2px 2px 0px #000; }
+
+/* 5. THEME: GLASSMORPHISM */
+.theme-glass .theme-sidebar { background-color: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(16px); color: #fff !important; border-right: 1px solid rgba(255, 255, 255, 0.2) !important; }
+.theme-glass .theme-nav-active { background-color: rgba(255, 255, 255, 0.2) !important; color: #fff !important; border-radius: 1rem !important; }
+.theme-glass .theme-app-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important; }
+.theme-glass .theme-card { background-color: rgba(255, 255, 255, 0.15) !important; backdrop-filter: blur(12px) !important; border: 1px solid rgba(255, 255, 255, 0.3) !important; border-radius: 1.5rem !important; color: #fff !important; box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15) !important;}
+.theme-glass .theme-header { background-color: rgba(255, 255, 255, 0.1) !important; backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important; }
+.theme-glass .theme-text { color: #ffffff !important; }
+.theme-glass .text-gray-500, .theme-glass .text-gray-400 { color: rgba(255, 255, 255, 0.7) !important; }
+.theme-glass .theme-icon { border-radius: 1rem !important; background-color: rgba(255,255,255,0.2) !important; }
+
+/* 6. THEME: NATURE GREEN */
+.theme-nature .theme-sidebar { background-color: #2E4F32 !important; color: #d1fae5 !important; border-right: none !important; }
+.theme-nature .theme-nav-active { background-color: #436F48 !important; color: #fff !important; border-radius: 9999px !important; }
+.theme-nature .theme-app-bg { background-color: #F2F4EB !important; }
+.theme-nature .theme-card { background-color: #ffffff !important; border: 1px solid #d1d5db !important; border-radius: 1rem !important; }
+.theme-nature .theme-header { background-color: #F2F4EB !important; border-bottom: 1px solid #d1d5db !important; }
+.theme-nature .theme-icon { border-radius: 999px !important; }
+
+/* 7. THEME: DEEP OCEAN */
+.theme-ocean .theme-sidebar { background-color: #0f172a !important; color: #cbd5e1 !important; border-right: none !important; }
+.theme-ocean .theme-nav-active { background-color: #0284c7 !important; color: #fff !important; }
+.theme-ocean .theme-app-bg { background-color: #e0f2fe !important; }
+.theme-ocean .theme-card { background-color: #ffffff !important; border: none !important; border-radius: 1rem !important; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.1) !important;}
+.theme-ocean .theme-header { background-color: #ffffff !important; border-bottom: none !important; }
+
+/* 8. THEME: SUNSET VIBE */
+.theme-sunset .theme-sidebar { background-color: #450a0a !important; color: #fecaca !important; border-right: none !important; }
+.theme-sunset .theme-nav-active { background-color: #b91c1c !important; color: #fff !important; border-radius: 0.5rem !important; }
+.theme-sunset .theme-app-bg { background-color: #fff1f2 !important; }
+.theme-sunset .theme-card { background-color: #ffffff !important; border: 1px solid #fecaca !important; border-radius: 1rem !important; }
+.theme-sunset .theme-header { background-color: #fff1f2 !important; border-bottom: 1px solid #fecaca !important; }
+
+/* 9. THEME: MONOCHROME */
+.theme-monochrome .theme-sidebar { background-color: #000000 !important; color: #cccccc !important; }
+.theme-monochrome .theme-nav-active { background-color: #ffffff !important; color: #000000 !important; }
+.theme-monochrome .theme-app-bg { background-color: #e5e5e5 !important; filter: grayscale(100%) !important; }
+.theme-monochrome .theme-card { background-color: #ffffff !important; border: 2px solid #000000 !important; border-radius: 0 !important; }
+.theme-monochrome .theme-header { background-color: #ffffff !important; border-bottom: 2px solid #000000 !important; }
+
+/* 10. THEME: PLAYFUL KIDS */
+.theme-playful .theme-sidebar { background-color: #fdf2f8 !important; color: #db2777 !important; border-right: 2px dashed #fbcfe8 !important; font-family: 'Comic Sans MS', cursive, sans-serif; }
+.theme-playful .theme-nav-active { background-color: #fbcfe8 !important; color: #9d174d !important; border-radius: 9999px !important; }
+.theme-playful .theme-app-bg { background-color: #f0fdf4 !important; font-family: 'Comic Sans MS', cursive, sans-serif; }
+.theme-playful .theme-card { background-color: #ffffff !important; border: 4px solid #fde047 !important; border-radius: 2rem !important; box-shadow: 0 8px 0px #fbbf24 !important;}
+.theme-playful .theme-header { background-color: #eff6ff !important; border-bottom: 4px solid #bfdbfe !important; font-family: 'Comic Sans MS', cursive, sans-serif; }
+.theme-playful .theme-icon { border-radius: 50% !important; }
+
+/* ========================================================
+   FULL SITE DYNAMIC TRANSLATION ENGINE STYLES
+   ======================================================== */
+.goog-te-banner-frame.skiptranslate, 
+.goog-te-banner-frame, 
+#goog-gt-tt, 
+.goog-te-balloon-frame { 
+  display: none !important; 
+}
+body { 
+  top: 0px !important; 
+  position: static !important; 
+}
+.goog-tooltip, 
+.goog-tooltip:hover { 
+  display: none !important; 
+}
+.goog-text-highlight { 
+  background-color: transparent !important; 
+  box-shadow: none !important; 
+}
+#google_translate_element { 
+  display: none !important; 
+}
+.skiptranslate iframe {
+  display: none !important;
+}
+
+/* ========================================================
+   DASHBOARD STAT CARDS RISE UP ANIMATIONS
+   ======================================================== */
+@keyframes riseUp {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulseUp {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+.animate-rise-up {
+  animation: riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+
+

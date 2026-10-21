@@ -1,0 +1,19 @@
+{
+  "name": "school-erp-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Root workspace runner for School ERP panels with all 7 panels started together",
+  "scripts": {
+    "dev": "node run_all.js",
+    "dev:all": "node run_all.js",
+    "dev:landing": "npm --prefix Multi_School_Erp run dev",
+    "dev:school": "npm --prefix School_ERP run dev",
+    "dev:admin": "npm --prefix School_ERP run dev",
+    "dev:superadmin": "npm --prefix SuperAdmin run dev",
+    "dev:accountant": "npm --prefix Accountant run dev",
+    "dev:branch": "npm --prefix Branch-Admin run dev",
+    "dev:teacher": "npm --prefix Teache_Panel run dev",
+    "dev:student": "npm --prefix Student_Parents run dev",
+    "build": "npm --prefix Multi_School_Erp run build"
+  }
+}

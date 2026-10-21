@@ -1,0 +1,678 @@
+import React, { useEffect, useState } from 'react';
+import { 
+  Search, ChevronDown, Download, Plus, CheckCircle2, Clock, 
+  AlertCircle, CreditCard, DollarSign, Printer, X, RefreshCw, 
+  Building2, ShieldCheck, FileText, ArrowUpRight
+} from 'lucide-react';
+import Swal from 'sweetalert2';
+import branchLocalDb from '../api/branchLocalDb';
+
+const Payments = () => {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [methodFilter, setMethodFilter] = useState('All');
+
+  // Modals
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+  const [selectedReceipt, setSelectedReceipt] = useState(null);
+
+  // Form State
+  const initialForm = {
+    name: 'Yug International School',
+    plan: 'Enterprise Plan',
+    amount: '₹50,000.00',
+    method: 'Razorpay',
+    transId: 'TXN_' + Math.floor(100000 + Math.random() * 900000),
+    proof: 'UTR-' + Math.floor(10000000 + Math.random() * 90000000),
+    status: 'Paid'
+  };
+  const [formData, setFormData] = useState(initialForm);
+
+  const loadData = () => {
+    try {
+      const data = branchLocalDb.getPayments();
+      setPayments(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  // Filtered dataset
+  const filteredPayments = payments.filter((p) => {
+    const matchesTab = activeTab === 'All' ? true : p.status === activeTab;
+    const matchesMethod = methodFilter === 'All' ? true : p.method === methodFilter;
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch = !q ||
+      p.id?.toLowerCase().includes(q) ||
+      p.name?.toLowerCase().includes(q) ||
+      p.plan?.toLowerCase().includes(q) ||
+      p.transId?.toLowerCase().includes(q) ||
+      p.method?.toLowerCase().includes(q);
+    return matchesTab && matchesMethod && matchesSearch;
+  });
+
+  const tabs = [
+    { name: 'All', count: payments.length },
+    { name: 'Paid', count: payments.filter(p => p.status === 'Paid').length },
+    { name: 'Pending', count: payments.filter(p => p.status === 'Pending').length },
+    { name: 'Verify', count: payments.filter(p => p.status === 'Verify').length },
+    { name: 'Failed', count: payments.filter(p => p.status === 'Failed').length },
+  ];
+
+  // Financial aggregates
+  const totalPaid = payments
+    .filter(p => p.status === 'Paid')
+    .reduce((sum, p) => {
+      const num = Number(p.amount?.replace(/[^0-9.-]+/g, '')) || 0;
+      return sum + num;
+    }, 0);
+
+  const pendingAmount = payments
+    .filter(p => p.status === 'Pending' || p.status === 'Verify')
+    .reduce((sum, p) => {
+      const num = Number(p.amount?.replace(/[^0-9.-]+/g, '')) || 0;
+      return sum + num;
+    }, 0);
+
+  // Handlers
+  const handleExportCsv = () => {
+    const headers = [
+      { key: 'id', label: 'Order ID' },
+      { key: 'name', label: 'School / Campus' },
+      { key: 'plan', label: 'Subscription Plan' },
+      { key: 'amount', label: 'Amount' },
+      { key: 'method', label: 'Payment Gateway' },
+      { key: 'transId', label: 'Transaction ID' },
+      { key: 'proof', label: 'Proof / UTR' },
+      { key: 'status', label: 'Payment Status' },
+      { key: 'date', label: 'Timestamp' }
+    ];
+    const success = branchLocalDb.exportToCsv('subscriptions_billing_audit', headers, filteredPayments);
+    if (success) {
+      Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Billing records exported to CSV!',
+        showConfirmButton: false,
+        timer: 2500
+      });
+    }
+  };
+
+  const handleApprovePayment = (payment) => {
+    Swal.fire({
+      title: 'Approve & Mark as Paid?',
+      text: `Confirm receipt of ${payment.amount} for ${payment.name}?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Approve Payment'
+    }).then((res) => {
+      if (res.isConfirmed) {
+        branchLocalDb.updatePaymentStatus(payment.id, 'Paid');
+        loadData();
+        Swal.fire('Payment Approved!', 'Subscription status updated to Paid successfully.', 'success');
+      }
+    });
+  };
+
+  const handleRecordPayment = (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.amount) {
+      Swal.fire('Required Fields', 'Please specify school name and payment amount.', 'warning');
+      return;
+    }
+
+    branchLocalDb.addPayment(formData);
+    loadData();
+    setIsRecordModalOpen(false);
+    Swal.fire({
+      icon: 'success',
+      title: 'Payment Logged!',
+      text: `Transaction for ${formData.name} recorded.`,
+      timer: 2000,
+      showConfirmButton: false
+    });
+  };
+
+  return (
+    <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-[calc(100vh-70px)] bg-[#f4f7fa]">
+      
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-emerald-600 mb-1">
+            <CreditCard className="w-4 h-4" /> Global Finance & Licensing
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
+            Subscription Billing & Payments
+            <span className="text-xs bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full font-bold">
+              {payments.length} Transactions
+            </span>
+          </h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Audit school license fees, gateway settlements, offline bank transfers and receipts.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <button 
+            onClick={handleExportCsv}
+            className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-sm font-semibold shadow-sm transition-all"
+          >
+            <Download className="w-4 h-4 text-emerald-600" /> Export CSV
+          </button>
+          <button 
+            onClick={() => { setFormData(initialForm); setIsRecordModalOpen(true); }}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg text-sm font-bold shadow-md shadow-emerald-600/20 transition-all hover:scale-[1.02]"
+          >
+            <Plus className="w-4 h-4" /> Record Payment
+          </button>
+        </div>
+      </div>
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Revenue Realized</p>
+            <h3 className="text-2xl font-black text-gray-900 mt-1">₹{(totalPaid / 100000).toFixed(2)} Lakhs</h3>
+            <p className="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Settled across all branches
+            </p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <DollarSign className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pending Settlements</p>
+            <h3 className="text-2xl font-black text-amber-600 mt-1">₹{(pendingAmount / 1000).toFixed(1)}k</h3>
+            <p className="text-xs text-gray-500 font-medium mt-1">
+              Awaiting gateway or UTR verify
+            </p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+            <Clock className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Paid Invoices</p>
+            <h3 className="text-2xl font-black text-blue-600 mt-1">
+              {payments.filter(p => p.status === 'Paid').length}
+            </h3>
+            <p className="text-xs text-blue-600 font-medium mt-1">100% verified status</p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
+          <div>
+            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Disputes / Failed</p>
+            <h3 className="text-2xl font-black text-rose-600 mt-1">
+              {payments.filter(p => p.status === 'Failed').length}
+            </h3>
+            <p className="text-xs text-rose-600 font-medium mt-1">Requires immediate review</p>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+        </div>
+      </div>
+
+      {/* Main Table Card */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        
+        {/* Navigation Tabs */}
+        <div className="flex border-b border-gray-200 px-6 pt-2 font-medium text-sm overflow-x-auto bg-gray-50/50">
+          {tabs.map((tab) => (
+            <button
+              key={tab.name}
+              onClick={() => setActiveTab(tab.name)}
+              className={`px-5 py-3 whitespace-nowrap transition-all flex items-center gap-2 border-b-2 font-bold ${
+                activeTab === tab.name 
+                  ? 'text-emerald-700 border-emerald-600 bg-white rounded-t-lg shadow-xs' 
+                  : 'text-gray-500 border-transparent hover:text-gray-800 hover:border-gray-200'
+              }`}
+            >
+              {tab.name}
+              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                activeTab === tab.name ? 'bg-emerald-100 text-emerald-800' : 'bg-gray-200 text-gray-600'
+              }`}>
+                {tab.count}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Filters */}
+        <div className="p-5 border-b border-gray-100 bg-white grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
+          <div className="relative md:col-span-6">
+            <Search className="w-4 h-4 absolute left-3.5 top-[12px] text-gray-400" />
+            <input 
+              type="text" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search school name, order #, gateway or transaction ID..." 
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-[10px] text-xs text-gray-400 hover:text-gray-600 bg-gray-100 rounded-full w-5 h-5 flex items-center justify-center"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          <div className="md:col-span-3">
+            <div className="relative">
+              <select 
+                value={methodFilter}
+                onChange={(e) => setMethodFilter(e.target.value)}
+                className="w-full appearance-none pl-3.5 pr-8 py-2 border border-gray-200 rounded-lg text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+              >
+                <option value="All">All Gateways & Methods</option>
+                <option value="Razorpay">Razorpay</option>
+                <option value="Flutterwave">Flutterwave</option>
+                <option value="Stripe">Stripe</option>
+                <option value="Direct Bank Transfer">Direct Bank Transfer</option>
+                <option value="Cash / Cheque">Cash / Cheque</option>
+              </select>
+              <ChevronDown className="w-4 h-4 absolute right-3 top-[11px] text-gray-400 pointer-events-none" />
+            </div>
+          </div>
+
+          <div className="md:col-span-3 flex items-center gap-2">
+            <button 
+              onClick={() => { setSearchQuery(''); setMethodFilter('All'); setActiveTab('All'); }}
+              className="w-full py-2 px-3 border border-gray-200 text-gray-600 hover:bg-gray-50 rounded-lg text-sm font-semibold flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" /> Reset Filters
+            </button>
+          </div>
+        </div>
+
+        {/* Data Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50/80 text-[12px] font-bold text-gray-600 uppercase tracking-wider border-b border-gray-200">
+                <th className="py-3 px-4">Order ID</th>
+                <th className="py-3 px-4">Campus / School</th>
+                <th className="py-3 px-4">Tier Plan</th>
+                <th className="py-3 px-4 text-right">Amount</th>
+                <th className="py-3 px-4 text-center">Gateway</th>
+                <th className="py-3 px-4">Transaction / UTR</th>
+                <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Timestamp</th>
+                <th className="py-3 px-4 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-[13px]">
+              {loading ? (
+                <tr>
+                  <td colSpan="9" className="py-12 text-center text-gray-500 font-medium">
+                    <div className="animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto mb-2"></div>
+                    Loading payments registry...
+                  </td>
+                </tr>
+              ) : filteredPayments.length === 0 ? (
+                <tr>
+                  <td colSpan="9" className="py-12 text-center text-gray-500">
+                    <CreditCard className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-base font-semibold text-gray-700">No payment records found</p>
+                    <p className="text-xs text-gray-400 mt-1">Try modifying your search or filter tab.</p>
+                  </td>
+                </tr>
+              ) : (
+                filteredPayments.map((p, i) => (
+                  <tr 
+                    key={p.id || i}
+                    className="hover:bg-emerald-50/20 transition-colors"
+                  >
+                    {/* Order ID */}
+                    <td className="py-3.5 px-4 font-mono font-bold text-gray-900 text-xs">
+                      {p.id}
+                    </td>
+
+                    {/* School Name */}
+                    <td className="py-3.5 px-4">
+                      <div className="font-bold text-gray-900">{p.name}</div>
+                      <div className="text-[11px] text-gray-400 flex items-center gap-1 mt-0.5">
+                        <Building2 className="w-3 h-3" /> Licensed Campus
+                      </div>
+                    </td>
+
+                    {/* Plan */}
+                    <td className="py-3.5 px-4 text-xs font-semibold text-gray-600">
+                      {p.plan}
+                    </td>
+
+                    {/* Amount */}
+                    <td className="py-3.5 px-4 text-right font-black text-gray-900 text-sm">
+                      {p.amount}
+                    </td>
+
+                    {/* Gateway */}
+                    <td className="py-3.5 px-4 text-center">
+                      <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-teal-50 text-teal-700 border border-teal-200">
+                        {p.method}
+                      </span>
+                    </td>
+
+                    {/* Trans ID */}
+                    <td className="py-3.5 px-4">
+                      <div className="font-mono text-xs text-gray-700">
+                        {p.transId && p.transId !== '—' ? p.transId : 'Auto-Settled'}
+                      </div>
+                      {p.proof && p.proof !== '—' && (
+                        <div className="text-[10px] text-gray-400 font-mono mt-0.5">
+                          {p.proof}
+                        </div>
+                      )}
+                    </td>
+
+                    {/* Status */}
+                    <td className="py-3.5 px-4">
+                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
+                        p.status === 'Paid'
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                          : p.status === 'Verify'
+                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                          : p.status === 'Pending'
+                          ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                          : 'bg-rose-50 text-rose-700 border border-rose-200'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${
+                          p.status === 'Paid' ? 'bg-emerald-500' :
+                          p.status === 'Verify' ? 'bg-blue-500' :
+                          p.status === 'Pending' ? 'bg-amber-500' : 'bg-rose-500'
+                        }`} />
+                        {p.status}
+                      </span>
+                    </td>
+
+                    {/* Timestamp */}
+                    <td className="py-3.5 px-4 text-xs text-gray-500 whitespace-nowrap">
+                      {p.date}
+                    </td>
+
+                    {/* Action */}
+                    <td className="py-3.5 px-4 text-center">
+                      <div className="flex items-center justify-center gap-1.5">
+                        {p.status !== 'Paid' && (
+                          <button
+                            onClick={() => handleApprovePayment(p)}
+                            title="Verify & Mark as Paid"
+                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-xs font-bold transition-all shadow-xs"
+                          >
+                            Approve
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setSelectedReceipt(p)}
+                          title="View Digital Receipt"
+                          className="p-1.5 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 rounded transition-colors"
+                        >
+                          <FileText className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-2">
+          <div>
+            Showing <span className="font-bold text-gray-800">{filteredPayments.length}</span> of {payments.length} transactions
+          </div>
+          <div className="flex items-center gap-2">
+            <span>PCI-DSS Audited Payment Pipeline</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span className="font-semibold text-emerald-700">Encrypted</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= RECORD PAYMENT MODAL ================= */}
+      {isRecordModalOpen && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-100 animate-in fade-in duration-200">
+            <div className="px-6 py-4.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center font-bold">
+                  <CreditCard className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold">Record Subscription Payment</h3>
+                  <p className="text-xs text-emerald-100">Log bank transfer, cheque or offline fee</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsRecordModalOpen(false)}
+                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleRecordPayment} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  School / Campus Name *
+                </label>
+                <input 
+                  type="text"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="e.g. Yug International School"
+                  className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Subscription Tier
+                  </label>
+                  <select 
+                    value={formData.plan}
+                    onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
+                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                  >
+                    <option value="Enterprise Plan">Enterprise Plan</option>
+                    <option value="Growth Plan">Growth Plan</option>
+                    <option value="Standard Plan">Standard Plan</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Amount (₹) *
+                  </label>
+                  <input 
+                    type="text"
+                    required
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    placeholder="₹50,000.00"
+                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm font-bold text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Payment Method
+                  </label>
+                  <select 
+                    value={formData.method}
+                    onChange={(e) => setFormData({ ...formData, method: e.target.value })}
+                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                  >
+                    <option value="Razorpay">Razorpay</option>
+                    <option value="Direct Bank Transfer">Direct Bank Transfer</option>
+                    <option value="UPI / QR Code">UPI / QR Code</option>
+                    <option value="Cash / Cheque">Cash / Cheque</option>
+                    <option value="Stripe">Stripe</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                    Initial Status
+                  </label>
+                  <select 
+                    value={formData.status}
+                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                    className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 bg-white"
+                  >
+                    <option value="Paid">Paid / Settled</option>
+                    <option value="Pending">Pending Review</option>
+                    <option value="Verify">Awaiting UTR</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
+                  Transaction / UTR Reference
+                </label>
+                <input 
+                  type="text"
+                  value={formData.transId}
+                  onChange={(e) => setFormData({ ...formData, transId: e.target.value })}
+                  placeholder="UTR or Cheque No."
+                  className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm font-mono text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsRecordModalOpen(false)}
+                  className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-sm font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-lg text-sm font-bold shadow-md shadow-emerald-600/20"
+                >
+                  Save & Log Payment
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================= RECEIPT VIEW MODAL ================= */}
+      {selectedReceipt && (
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-gray-100 animate-in fade-in duration-200">
+            {/* Header */}
+            <div className="px-6 py-4 bg-[#0b1329] text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+                <span className="font-bold text-sm tracking-wide">OFFICIAL PAYMENT RECEIPT</span>
+              </div>
+              <button 
+                onClick={() => setSelectedReceipt(null)}
+                className="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Receipt Body */}
+            <div className="p-6 text-gray-800" id="printable-receipt">
+              <div className="text-center pb-6 border-b border-gray-100">
+                <div className="w-12 h-12 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center mx-auto mb-2 font-bold text-xl">
+                  ✓
+                </div>
+                <h3 className="text-xl font-black text-gray-900">{selectedReceipt.amount}</h3>
+                <p className="text-xs text-emerald-600 font-bold uppercase tracking-wider mt-0.5">
+                  Status: {selectedReceipt.status}
+                </p>
+                <p className="text-xs text-gray-400 mt-1">Order Ref: {selectedReceipt.id}</p>
+              </div>
+
+              <div className="py-4 space-y-3 text-xs">
+                <div className="flex justify-between py-1 border-b border-gray-50">
+                  <span className="text-gray-400 font-semibold uppercase">Licensed Institution</span>
+                  <span className="font-bold text-gray-900 text-right">{selectedReceipt.name}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-gray-50">
+                  <span className="text-gray-400 font-semibold uppercase">Subscription Plan</span>
+                  <span className="font-bold text-gray-900">{selectedReceipt.plan}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-gray-50">
+                  <span className="text-gray-400 font-semibold uppercase">Payment Gateway</span>
+                  <span className="font-bold text-teal-700">{selectedReceipt.method}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-gray-50">
+                  <span className="text-gray-400 font-semibold uppercase">Transaction Reference</span>
+                  <span className="font-mono text-gray-700">{selectedReceipt.transId || 'Direct-Settled'}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-gray-50">
+                  <span className="text-gray-400 font-semibold uppercase">Timestamp</span>
+                  <span className="text-gray-700">{selectedReceipt.date}</span>
+                </div>
+              </div>
+
+              <div className="mt-4 p-3 rounded-lg bg-gray-50 border border-gray-200 text-center text-[11px] text-gray-500">
+                This digital receipt certifies that the campus license is verified and active on the platform.
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => setSelectedReceipt(null)}
+                className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-white rounded-lg text-xs font-semibold"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#0b1329] hover:bg-gray-800 text-white rounded-lg text-xs font-bold shadow-sm"
+              >
+                <Printer className="w-3.5 h-3.5" /> Print Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+export default Payments;
