@@ -6,6 +6,7 @@ import {
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const IncomeExpense = () => {
   const [branches, setBranches] = useState([]);
@@ -203,51 +204,57 @@ const IncomeExpense = () => {
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gradient-to-br from-[#17a2b8] to-[#138496] p-5 rounded-xl text-white shadow-md flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-white/80 uppercase tracking-wider">Total Gross Revenue</p>
-            <h3 className="text-2xl font-black mt-1">₹{(totalIncome / 100000).toFixed(2)}L</h3>
-            <p className="text-[11px] text-white/75 mt-0.5">Fees & auxiliary receipts</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
-            <TrendingUp className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-[#dc3545] to-[#c82333] p-5 rounded-xl text-white shadow-md flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-white/80 uppercase tracking-wider">Operating Expenses</p>
-            <h3 className="text-2xl font-black mt-1">₹{(totalExpense / 100000).toFixed(2)}L</h3>
-            <p className="text-[11px] text-white/75 mt-0.5">Salaries, utilities & supplies</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
-            <TrendingDown className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-[#28a745] to-[#218838] p-5 rounded-xl text-white shadow-md flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-white/80 uppercase tracking-wider">Net Operating Surplus</p>
-            <h3 className="text-2xl font-black mt-1">₹{(netSurplus / 100000).toFixed(2)}L</h3>
-            <p className="text-[11px] text-white/75 mt-0.5">Positive net EBITDA</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
-            <Scale className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-br from-indigo-700 to-indigo-900 p-5 rounded-xl text-white shadow-md flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-white/80 uppercase tracking-wider">Campuses Audited</p>
-            <h3 className="text-2xl font-black mt-1">{filteredAccounts.length}</h3>
-            <p className="text-[11px] text-white/75 mt-0.5">Active ledger branches</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
-            <Building2 className="w-6 h-6" />
-          </div>
-        </div>
+      {/* KPI Cards Grid - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Gross Revenue"
+          value={`₹${(totalIncome / 100000).toFixed(2)}L`}
+          subText="Fees & auxiliary receipts"
+          icon={TrendingUp}
+          glowColor="#0891b2"
+          stroke="#0891b2"
+          iconBg="linear-gradient(135deg, #06b6d4, #0891b2)"
+          iconColor="#ffffff"
+          spark={[30, 35, 42, 45, 50, 55, 60]}
+          badge="Gross"
+        />
+        <KpiCard 
+          title="Operating Expenses"
+          value={`₹${(totalExpense / 100000).toFixed(2)}L`}
+          subText="Salaries, utilities & supplies"
+          icon={TrendingDown}
+          glowColor="#ef4444"
+          stroke="#ef4444"
+          iconBg="linear-gradient(135deg, #f87171, #ef4444)"
+          iconColor="#ffffff"
+          spark={[22, 25, 28, 27, 30, 32, 34]}
+          badge="Opex"
+        />
+        <KpiCard 
+          title="Net Operating Surplus"
+          value={`₹${(netSurplus / 100000).toFixed(2)}L`}
+          subText="Positive net EBITDA margin"
+          icon={Scale}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[8, 10, 14, 18, 20, 23, 26]}
+          badge="EBITDA"
+        />
+        <KpiCard 
+          title="Campuses Audited"
+          value={String(filteredAccounts.length)}
+          subText="Active ledger branches"
+          isLive={true}
+          icon={Building2}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[2, 3, 3, 4, 4, 4, 4]}
+          badge="Reconciled"
+        />
       </div>
 
       {/* Chart Section */}
@@ -342,6 +349,16 @@ const IncomeExpense = () => {
           </table>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

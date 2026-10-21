@@ -8,31 +8,8 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { branchAdminService } from '../api/branchAdminService';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
-
-const ExecutiveStatCard = ({ title, value, subText, icon: Icon, gradient, badge }) => (
-  <div className={`p-5 rounded-xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-md relative overflow-hidden text-white ${gradient}`}>
-    <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 pointer-events-none" />
-    <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-10 -mb-10 pointer-events-none" />
-    
-    <div className="flex justify-between items-start mb-3 relative z-10">
-      <div className="w-11 h-11 rounded-lg flex items-center justify-center bg-white/20 backdrop-blur-sm border border-white/20 shadow-xs">
-        <Icon className="w-6 h-6 text-white" />
-      </div>
-      {badge && (
-        <span className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-sm border border-white/25">
-          {badge}
-        </span>
-      )}
-    </div>
-
-    <div className="relative z-10">
-      <h3 className="text-3xl font-black tracking-tight leading-none mb-1">{value}</h3>
-      <p className="text-[13.5px] font-bold opacity-90">{title}</p>
-      {subText && <p className="text-[11.5px] opacity-75 mt-0.5 font-medium">{subText}</p>}
-    </div>
-  </div>
-);
 
 const BranchCard = ({ branch = {} }) => {
   const name = branch.name || branch.branchName || 'Campus Branch';
@@ -216,38 +193,67 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Top 4 Primary KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-        <ExecutiveStatCard 
+      {/* Top 5 Primary KPI Cards - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8 pt-1">
+        <KpiCard 
           title="Managed Branches" 
           value={String(stats.branchesCount || branches.length)} 
-          subText={`${stats.activeBranches || branches.filter(b => b.status === 'Active').length} Active • Live Synced`}
+          subText={`${stats.activeBranches || branches.filter(b => b.status === 'Active').length} Active Campuses`}
           icon={Building2} 
-          gradient="bg-gradient-to-br from-[#3b82f6] to-[#1d4ed8]" 
-          badge="100% Online"
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[2, 3, 3, 4, 4, 4, 4]}
+          badge="Live Synced"
         />
-        <ExecutiveStatCard 
-          title="Total Enrolled Students" 
+        <KpiCard 
+          title="Active Campuses" 
+          value={String(stats.activeBranches || branches.filter(b => b.status === 'Active').length)} 
+          subText="100% Operational"
+          isLive={true}
+          icon={CheckCircle2} 
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[3, 3, 4, 4, 4, 4, 4]}
+          badge="Healthy"
+        />
+        <KpiCard 
+          title="Total Students" 
           value={Number(stats.totalStudents || 3840).toLocaleString('en-IN')} 
-          subText={`Across ${branches.length} Linked School Campuses`}
+          subText={`Across ${branches.length} linked campuses`}
           icon={BookOpen} 
-          gradient="bg-gradient-to-br from-[#10b981] to-[#047857]" 
+          glowColor="#ec4899"
+          stroke="#ec4899"
+          iconBg="linear-gradient(135deg, #f472b6, #ec4899)"
+          iconColor="#ffffff"
+          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
           badge="+8.4% YoY"
         />
-        <ExecutiveStatCard 
-          title="Active Faculty & Staff" 
+        <KpiCard 
+          title="Faculty & Staff" 
           value={Number(stats.totalStaff || 250).toLocaleString('en-IN')} 
-          subText="Teaching & Administration Staff"
+          subText="Teaching & Administration"
           icon={Contact} 
-          gradient="bg-gradient-to-br from-[#8b5cf6] to-[#6d28d9]" 
-          badge="Full Roster"
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[120, 145, 170, 190, 205, 218, 250]}
+          badge="Roster"
         />
-        <ExecutiveStatCard 
-          title="Total Fee Collection (MTD)" 
-          value={stats.totalCollected || '₹36.95 Lakhs'} 
-          subText="Tuition, Labs & Route Transport"
+        <KpiCard 
+          title="Fee Collected (MTD)" 
+          value={stats.totalCollected || '₹35.66 Lakhs'} 
+          subText="Fees, Labs & Transport"
           icon={CreditCard} 
-          gradient="bg-gradient-to-br from-[#f59e0b] to-[#d97706]" 
+          glowColor="#f59e0b"
+          stroke="#f59e0b"
+          iconBg="linear-gradient(135deg, #fbbf24, #f59e0b)"
+          iconColor="#ffffff"
+          spark={[10, 15, 18, 22, 28, 32, 35.6]}
           badge="+14.2% MoM"
         />
       </div>
@@ -558,6 +564,16 @@ const Dashboard = () => {
           </Link>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

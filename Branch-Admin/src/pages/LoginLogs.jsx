@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const LoginLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -160,6 +161,59 @@ const LoginLogs = () => {
         </div>
       </div>
 
+      {/* KPI Cards - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Audit Events"
+          value={String(filteredLogs.length)}
+          subText="Recorded access attempts"
+          isLive={true}
+          icon={ShieldAlert}
+          glowColor="#f43f5e"
+          stroke="#f43f5e"
+          iconBg="linear-gradient(135deg, #fb7185, #f43f5e)"
+          iconColor="#ffffff"
+          spark={[12, 16, 20, 24, 28, 30, 32]}
+          badge="Live Trace"
+        />
+        <KpiCard 
+          title="Admin Logins"
+          value={String(filteredLogs.filter(l => l.role?.includes('Admin')).length)}
+          subText="Privileged session authentications"
+          icon={ShieldCheck}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[2, 3, 4, 3, 5, 4, 6]}
+          badge="Elevated"
+        />
+        <KpiCard 
+          title="Teacher & Staff"
+          value={String(filteredLogs.filter(l => l.role?.includes('Teacher') || l.role?.includes('Staff')).length)}
+          subText="Faculty credentials logged"
+          icon={UserCheck}
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[8, 10, 12, 14, 15, 18, 20]}
+          badge="Faculty"
+        />
+        <KpiCard 
+          title="Security Health"
+          value="100% Secure"
+          subText="Zero unauthorized intrusions"
+          icon={Laptop}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[100, 100, 100, 100, 100, 100, 100]}
+          badge="Guarded"
+        />
+      </div>
+
       {/* Search & Filters */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 mb-6 overflow-hidden">
         <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between">
@@ -308,6 +362,16 @@ const LoginLogs = () => {
           </table>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const SchoolsUsage = () => {
   const [branches, setBranches] = useState([]);
@@ -124,6 +125,59 @@ const SchoolsUsage = () => {
             <Download className="w-4 h-4" /> Export to CSV
           </button>
         </div>
+      </div>
+
+      {/* KPI Cards - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Total Campuses"
+          value={String(filtered.length)}
+          subText="Configured educational sites"
+          isLive={true}
+          icon={Building2}
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[2, 3, 3, 4, 4, 4, 4]}
+          badge="Live Synced"
+        />
+        <KpiCard 
+          title="Enrolled Students"
+          value={filtered.reduce((s, b) => s + (Number(b.students) || 0), 0).toLocaleString()}
+          subText="Active database profiles"
+          icon={Users}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
+          badge="Capacity: 85%"
+        />
+        <KpiCard 
+          title="Staff Quota Seats"
+          value={filtered.reduce((s, b) => s + (Number(b.staff) || 0), 0).toLocaleString()}
+          subText="Licensed teacher accounts"
+          icon={ShieldCheck}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[120, 145, 170, 190, 205, 218]}
+          badge="Allocated"
+        />
+        <KpiCard 
+          title="System Latency"
+          value="18ms"
+          subText="Multi-tenant cloud latency"
+          icon={HardDrive}
+          glowColor="#0891b2"
+          stroke="#0891b2"
+          iconBg="linear-gradient(135deg, #06b6d4, #0891b2)"
+          iconColor="#ffffff"
+          spark={[25, 22, 19, 18, 17, 18, 18]}
+          badge="Optimal"
+        />
       </div>
 
       {/* Search & Filters */}
@@ -287,6 +341,16 @@ const SchoolsUsage = () => {
           </table>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

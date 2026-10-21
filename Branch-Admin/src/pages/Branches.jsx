@@ -7,6 +7,8 @@ import {
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
 import branchAdminService from '../api/branchAdminService';
+import KpiCard from '../components/common/KpiCard';
+
 
 const Branches = () => {
   const [branches, setBranches] = useState([]);
@@ -284,55 +286,60 @@ const Branches = () => {
         </div>
       </div>
 
-      {/* KPI Cards */}
+      {/* KPI Cards - Standardized h-[110px] */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Campuses</p>
-            <h3 className="text-2xl font-black text-gray-900 mt-1">{branches.length}</h3>
-            <p className="text-xs text-emerald-600 font-medium mt-1 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5" /> All systems online
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center">
-            <Building2 className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Active Campuses</p>
-            <h3 className="text-2xl font-black text-emerald-600 mt-1">{activeCount}</h3>
-            <p className="text-xs text-gray-500 font-medium mt-1">
-              {branches.length - activeCount} paused / suspended
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Enrolled</p>
-            <h3 className="text-2xl font-black text-blue-600 mt-1">{totalStudents.toLocaleString()}</h3>
-            <p className="text-xs text-blue-600 font-medium mt-1">Students across network</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-            <Users className="w-6 h-6" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4.5 border border-gray-100 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Faculty & Staff</p>
-            <h3 className="text-2xl font-black text-indigo-600 mt-1">{totalStaff.toLocaleString()}</h3>
-            <p className="text-xs text-gray-500 font-medium mt-1">Teachers & admins</p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <Sparkles className="w-6 h-6" />
-          </div>
-        </div>
+        <KpiCard 
+          title="Total Campuses"
+          value={String(branches.length)}
+          subText="Registered Institutes"
+          isLive={true}
+          icon={Building2}
+          glowColor="#f97316"
+          stroke="#f97316"
+          iconBg="linear-gradient(135deg, #fb923c, #f97316)"
+          iconColor="#ffffff"
+          spark={[2, 3, 3, 4, 4, 4, 4]}
+          badge="Live Synced"
+        />
+        <KpiCard 
+          title="Active Campuses"
+          value={String(activeCount)}
+          subText={`${branches.length - activeCount} paused / suspended`}
+          isLive={false}
+          icon={ShieldCheck}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[2, 2, 3, 3, 4, 4, 4]}
+          badge="Healthy"
+        />
+        <KpiCard 
+          title="Total Enrolled"
+          value={totalStudents.toLocaleString('en-IN')}
+          subText="Students across network"
+          isLive={false}
+          icon={Users}
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
+          badge="+8.4% YoY"
+        />
+        <KpiCard 
+          title="Faculty & Staff"
+          value={totalStaff.toLocaleString('en-IN')}
+          subText="Teachers & administrative team"
+          isLive={false}
+          icon={Sparkles}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[120, 145, 170, 190, 205, 218]}
+          badge="Full Roster"
+        />
       </div>
 
       {/* Main Table Card */}
@@ -894,6 +901,16 @@ const Branches = () => {
           </div>
         </div>
       )}
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

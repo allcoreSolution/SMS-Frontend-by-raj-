@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Filter, ChevronDown, Download, RotateCcw, Calendar, Search, PieChart, Info, Building2, FileText, CheckCircle2 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const FeeCollections = () => {
   const [collections, setCollections] = useState([]);
@@ -144,6 +145,59 @@ const FeeCollections = () => {
             <Download className="w-4 h-4" /> Export to CSV
           </button>
         </div>
+      </div>
+
+      {/* KPI Cards - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Total Collections"
+          value={`₹${(totalFilteredAmount / 100000).toFixed(2)} Lakhs`}
+          subText="Across filtered campuses"
+          isLive={true}
+          icon={Building2}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[20, 25, 28, 32, 36, 40, 45]}
+          badge="Reconciled"
+        />
+        <KpiCard 
+          title="Total Receipts"
+          value={String(filteredData.length)}
+          subText="Issued fee vouchers"
+          icon={FileText}
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[15, 18, 22, 26, 30, 35, 38]}
+          badge="Verified"
+        />
+        <KpiCard 
+          title="Online PG Volume"
+          value={`₹${((modeCluster['ONLINE'] || 0) / 100000).toFixed(2)}L`}
+          subText="Digital gateway payments"
+          icon={CheckCircle2}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[10, 14, 18, 20, 25, 28, 30]}
+          badge="Razorpay"
+        />
+        <KpiCard 
+          title="Cash & Cheque"
+          value={`₹${(((modeCluster['CASH'] || 0) + (modeCluster['CHEQUE'] || 0)) / 100000).toFixed(2)}L`}
+          subText="School counter collections"
+          icon={PieChart}
+          glowColor="#f59e0b"
+          stroke="#f59e0b"
+          iconBg="linear-gradient(135deg, #fbbf24, #f59e0b)"
+          iconColor="#ffffff"
+          spark={[8, 10, 11, 12, 14, 15, 16]}
+          badge="Counter"
+        />
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-8">
@@ -344,6 +398,16 @@ const FeeCollections = () => {
           </table>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

@@ -6,6 +6,7 @@ import {
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const AttendanceTrends = () => {
   const [branches, setBranches] = useState([]);
@@ -122,6 +123,59 @@ const AttendanceTrends = () => {
             <Download className="w-4 h-4" /> Export CSV
           </button>
         </div>
+      </div>
+
+      {/* KPI Cards - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Network Presence"
+          value="93.1%"
+          subText="30-day cross-campus average"
+          isLive={true}
+          icon={Activity}
+          glowColor="#0891b2"
+          stroke="#0891b2"
+          iconBg="linear-gradient(135deg, #06b6d4, #0891b2)"
+          iconColor="#ffffff"
+          spark={[88, 90, 92, 91, 94, 93, 95]}
+          badge="Live Register"
+        />
+        <KpiCard 
+          title="Students Present"
+          value="4,168"
+          subText="Out of 4,478 enrolled students"
+          icon={Users}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[3900, 4000, 4100, 4080, 4150, 4168]}
+          badge="93.1% Present"
+        />
+        <KpiCard 
+          title="Faculty on Duty"
+          value="242"
+          subText="Out of 250 registered faculty"
+          icon={CheckCircle2}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[235, 238, 240, 241, 242, 242]}
+          badge="96.8% Turnout"
+        />
+        <KpiCard 
+          title="Campuses Active"
+          value={String(branches.length || 4)}
+          subText="Biometric & digital sync active"
+          icon={Building2}
+          glowColor="#f97316"
+          stroke="#f97316"
+          iconBg="linear-gradient(135deg, #fb923c, #f97316)"
+          iconColor="#ffffff"
+          spark={[3, 3, 4, 4, 4, 4, 4]}
+          badge="100% Synced"
+        />
       </div>
 
       {/* Chart Section */}
@@ -250,6 +304,16 @@ const AttendanceTrends = () => {
           </table>
         </div>
       </div>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );

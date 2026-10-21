@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import branchLocalDb from '../api/branchLocalDb';
+import KpiCard from '../components/common/KpiCard';
 
 const CommunicationsReport = () => {
   const [branches, setBranches] = useState([]);
@@ -152,51 +153,57 @@ const CommunicationsReport = () => {
         </div>
       </div>
 
-      {/* KPI Stats Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Total Dispatched</p>
-            <h3 className="text-2xl font-black text-gray-900 mt-1">1,746</h3>
-            <p className="text-[11px] text-emerald-600 font-semibold mt-0.5">98.4% Delivered</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-            <Send className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">WhatsApp &amp; SMS</p>
-            <h3 className="text-2xl font-black text-emerald-600 mt-1">1,024</h3>
-            <p className="text-[11px] text-gray-500 font-medium mt-0.5">Direct Parent Alerts</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-            <MessageSquare className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Email Broadcasts</p>
-            <h3 className="text-2xl font-black text-indigo-600 mt-1">540</h3>
-            <p className="text-[11px] text-gray-500 font-medium mt-0.5">Circulars & Receipts</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <Mail className="w-5 h-5" />
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Failed / Undelivered</p>
-            <h3 className="text-2xl font-black text-rose-600 mt-1">18</h3>
-            <p className="text-[11px] text-rose-600 font-semibold mt-0.5">Invalid phone or DND</p>
-          </div>
-          <div className="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-            <AlertCircle className="w-5 h-5" />
-          </div>
-        </div>
+      {/* KPI Stats Bar - Standardized h-[110px] */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <KpiCard 
+          title="Total Dispatched"
+          value="1,746"
+          subText="98.4% Delivered successfully"
+          isLive={true}
+          icon={Send}
+          glowColor="#3b82f6"
+          stroke="#3b82f6"
+          iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
+          iconColor="#ffffff"
+          spark={[120, 150, 180, 220, 260, 280, 310]}
+          badge="98.4% Sent"
+        />
+        <KpiCard 
+          title="WhatsApp & SMS"
+          value="1,024"
+          subText="Direct parent instant alerts"
+          icon={MessageSquare}
+          glowColor="#10b981"
+          stroke="#10b981"
+          iconBg="linear-gradient(135deg, #34d399, #10b981)"
+          iconColor="#ffffff"
+          spark={[80, 100, 130, 160, 190, 210, 240]}
+          badge="High Priority"
+        />
+        <KpiCard 
+          title="Email Broadcasts"
+          value="540"
+          subText="Circulars, fees & notices"
+          icon={Mail}
+          glowColor="#8b5cf6"
+          stroke="#8b5cf6"
+          iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
+          iconColor="#ffffff"
+          spark={[30, 45, 60, 75, 90, 100, 110]}
+          badge="SMTP Verified"
+        />
+        <KpiCard 
+          title="Failed / Undelivered"
+          value="18"
+          subText="Invalid numbers or DND flags"
+          icon={AlertCircle}
+          glowColor="#ef4444"
+          stroke="#ef4444"
+          iconBg="linear-gradient(135deg, #f87171, #ef4444)"
+          iconColor="#ffffff"
+          spark={[4, 5, 2, 3, 1, 2, 1]}
+          badge="1.0% Rate"
+        />
       </div>
 
       {/* Filters Section */}
@@ -404,6 +411,16 @@ const CommunicationsReport = () => {
           </div>
         </div>
       )}
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
+        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
+          &copy; 2026 School ERP • Multi-Branch Operations
+        </p>
+        <p className="text-[11px] font-medium text-gray-500">
+          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+        </p>
+      </footer>
 
     </div>
   );
