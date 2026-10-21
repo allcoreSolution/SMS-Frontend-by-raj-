@@ -537,14 +537,16 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </span>
           </button>
           
-          {/* Developed by RAJ @ALLCORE SOLUTION - Exact Teacher Panel Style */}
-          <div className="mx-3 mt-6 mb-4 p-2.5 bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-none border border-slate-700/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
-            <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-              &copy; 2026 School ERP
-            </p>
-            <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
-              Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-            </p>
+          {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+          <div className="mt-6 mb-3 pt-3 border-t border-white/10 px-2 text-center">
+            <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-3 border border-white/10 shadow-xs hover:border-[#ff5c0a]/40 transition-colors text-center">
+              <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
+                &copy; 2026 School ERP
+              </p>
+              <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
+                Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+              </p>
+            </div>
           </div>
           
         </nav>
