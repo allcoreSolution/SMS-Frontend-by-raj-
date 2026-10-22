@@ -189,7 +189,7 @@ const Login = () => {
 
           <div className="mt-4 text-center">
             <p className="text-[11px] text-gray-400">&copy; {new Date().getFullYear()} School ERP</p>
-            <p className="text-[11px] font-bold text-gray-500">Developed by <span className="text-[#00a65a]">Sachin</span> @ALLCORE SOLUTION</p>
+            <p className="text-[11px] font-bold text-gray-500">Developed by <span className="text-[#00a65a]">RAJ YADAV</span> @ALLCORE SOLUTION</p>
           </div>
         </div>
       </div>

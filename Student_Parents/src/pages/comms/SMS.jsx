@@ -18,13 +18,13 @@ const messages = [
     id: 3, 
     title: 'Registered Number', 
     date: '02 Sep 2026', 
-    body: 'Welcome to Yug International. Admission Successful for Kabir. Parent Login: parent@projectworlds.com / 6263056779. Login: https://multischoolv2.projectworlds.com/login' 
+    body: 'Welcome to Yug International. Admission Successful for Kabir. Parent Login: parent@projectworlds.com. Login: https://multischoolv2.projectworlds.com/login' 
   },
   { 
     id: 4, 
     title: 'Registered Number', 
     date: '02 Sep 2026', 
-    body: 'Welcome to Yug International. Admission Successful for Kabir. Parent Login: parent@projectworlds.com / 6263056779. Login: https://multischoolv2.projectworlds.com/login' 
+    body: 'Welcome to Yug International. Admission Successful for Kabir. Parent Login: parent@projectworlds.com. Login: https://multischoolv2.projectworlds.com/login' 
   },
 ];
 

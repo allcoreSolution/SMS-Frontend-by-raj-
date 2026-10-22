@@ -93,7 +93,7 @@ export default function Pricing() {
                 </h3>
                 
                 <a 
-                  href="https://wa.me/916263056779?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20purchase%20Multi-School%20ERP%20Source%20Code" 
+                  href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20purchase%20Multi-School%20ERP%20Source%20Code" 
                   target="_blank" 
                   rel="noreferrer" 
                   className="flex items-center gap-3 bg-[#111827] border-[1.5px] border-gray-600 p-2.5 hover:border-amber-400 hover:bg-gray-800 transition-colors group"
@@ -101,7 +101,7 @@ export default function Pricing() {
                   <div className="w-7 h-7 rounded-full bg-green-900/40 border border-green-500/30 flex items-center justify-center text-green-400 group-hover:scale-110 transition-transform text-xs">
                      📱
                   </div>
-                  <span className="text-gray-100 font-bold text-[12px]">WhatsApp: +91 6263056779</span>
+                  <span className="text-gray-100 font-bold text-[12px]">WhatsApp Support</span>
                 </a>
                 
                 <a 

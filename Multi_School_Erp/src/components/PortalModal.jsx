@@ -600,13 +600,13 @@ export default function PortalModal() {
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a
-                      href={`https://wa.me/916263056779?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20have%20submitted%20license%20enquiry%20Ref%3A%20${submittedLead.ref}%20for%20Multi-School%20ERP.`}
+                      href={`https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20have%20submitted%20license%20enquiry%20Ref%3A%20${submittedLead.ref}%20for%20Multi-School%20ERP.`}
                       target="_blank"
                       rel="noreferrer"
                       className="w-full sm:w-auto bg-[#25D366] text-white px-6 py-2.5 font-black text-xs uppercase tracking-wider border-[2px] border-gray-900 shadow-[2px_2px_0_0_#111827] flex items-center justify-center gap-2 hover:bg-[#20ba59]"
                     >
                       <Phone className="w-4 h-4" />
-                      <span>Chat on WhatsApp (+91 6263056779)</span>
+                      <span>Chat on WhatsApp</span>
                     </a>
                     <button
                       onClick={() => setSubmittedLead(null)}
@@ -1005,7 +1005,7 @@ export default function PortalModal() {
           <div className="flex items-center gap-2 font-bold text-gray-600">
             <span>Developed by RAJ YADAV @ALLCORE SOLUTION</span>
             <span className="hidden sm:inline">•</span>
-            <span className="hidden sm:inline text-amber-600">Support: +91 6263056779</span>
+            <span className="hidden sm:inline text-amber-600">Support: contact@allcoresolution.com</span>
           </div>
           <button
             onClick={closeModal}

@@ -50,14 +50,14 @@ export default function FooterLanding() {
             </button>
             
             <a 
-              href="https://wa.me/916263056779?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20inquire%20about%20Multi-School%20ERP%20Source%20Code" 
+              href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20inquire%20about%20Multi-School%20ERP%20Source%20Code" 
               target="_blank" 
               rel="noreferrer" 
               className="w-full sm:w-auto relative group"
             >
                <div className="absolute inset-0 bg-emerald-500 blur-md opacity-20 group-hover:opacity-40 transition-opacity" />
                <div className="relative bg-slate-900 border border-gray-700 hover:border-emerald-500 text-gray-200 px-7 py-3.5 sm:py-4 font-bold text-sm tracking-wider uppercase transition-colors flex items-center justify-center gap-2.5">
-                  <span className="text-emerald-400 text-lg">📱</span> WhatsApp (+91 6263056779)
+                  <span className="text-emerald-400 text-lg">📱</span> WhatsApp Support
                </div>
             </a>
 

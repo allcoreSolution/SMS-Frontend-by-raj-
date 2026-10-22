@@ -61,7 +61,7 @@ const FeeReceipt = () => {
           <div className="text-center">
             <h1 className="text-xl font-bold text-[#5c6e81] tracking-widest mb-1">ACS School</h1>
             <p className="text-[10px] text-gray-500">Marine Drive Road, Raipur<br />(Chhattisgarh)</p>
-            <p className="text-[10px] text-gray-500">Phone: +916263056779 | Email:<br />contact@projectworlds.com</p>
+            <p className="text-[10px] text-gray-500">Email: contact@projectworlds.com</p>
           </div>
 
           <div className="text-right">

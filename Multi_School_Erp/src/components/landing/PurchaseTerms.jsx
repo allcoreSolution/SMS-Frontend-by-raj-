@@ -64,7 +64,7 @@ export default function PurchaseTerms() {
              </h3>
            </div>
            <p className="text-gray-500 font-medium text-[12px] leading-relaxed">
-             Get the full source, all 3 apps, docs & store-publish guides, plus free install help for one deployment. WhatsApp +91 62630 56779.
+             Get the full source, all 3 apps, docs & store-publish guides, plus free install help for one deployment.
            </p>
         </a>
 

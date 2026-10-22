@@ -113,12 +113,12 @@ export default function PricingPage() {
                    <div>
                      <h4 className="font-black text-gray-100 uppercase tracking-widest text-xs mb-3">Direct Support</h4>
                      <a 
-                       href="https://wa.me/916263056779?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20purchase%20Multi-School%20ERP%20Source%20Code" 
+                       href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20purchase%20Multi-School%20ERP%20Source%20Code" 
                        target="_blank" 
                        rel="noreferrer" 
                        className="flex items-center gap-3 text-xs font-bold text-gray-300 hover:text-green-400 transition-colors mb-3"
                      >
-                       <span className="text-lg">📱</span> WhatsApp: +91 6263056779
+                       <span className="text-lg">📱</span> WhatsApp Support
                      </a>
                      <a 
                        href="mailto:contact@allcoresolution.com" 
