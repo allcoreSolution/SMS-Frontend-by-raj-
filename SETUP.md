@@ -55,7 +55,7 @@ flutter run
 ```
 
 ## Notes
-- All "Sachin" branding replaced with **RAJ**
+- All "Allcore solutions" branding replaced with **RAJ YADAV**
 - Git history / .git folders removed for clean push to your own GitHub
 - node_modules not included — run `npm install` in each project
 - Backend port is **5050** (not 5000)

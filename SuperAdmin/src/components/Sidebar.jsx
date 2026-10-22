@@ -154,22 +154,15 @@ const navSections = [
   }
 ];
 
-const NavItem = ({ item, onClose }) => {
+const NavItem = ({ item, onClose, isOpen, onToggle }) => {
   const location = useLocation();
   const isChildActive = item.children?.some(c => location.pathname === c.to || (c.to !== '/' && location.pathname.startsWith(c.to + '/')));
-  const [open, setOpen] = useState(isChildActive);
-
-  useEffect(() => {
-    if (isChildActive) {
-      setOpen(true);
-    }
-  }, [isChildActive]);
 
   if (item.children) {
     return (
       <li className="mb-0.5">
         <button
-          onClick={() => setOpen(o => !o)}
+          onClick={onToggle}
           className={`w-full flex items-center justify-between px-3 py-2 -ml-3 relative transition-all duration-200 border-l-[3px] rounded-r-xl ` +
             (isChildActive ? 'text-white shadow-xs font-bold' : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent')
           }
@@ -181,9 +174,9 @@ const NavItem = ({ item, onClose }) => {
             </div>
             <span className={`text-[13px] tracking-wide relative z-10 pl-1 ${isChildActive ? 'font-bold text-white' : 'font-medium'}`}>{item.label}</span>
           </div>
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${open ? 'rotate-180 text-orange-400' : 'text-gray-400'}`} />
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180 text-orange-400' : 'text-gray-400'}`} />
         </button>
-        {open && (
+        {isOpen && (
           <ul className="mt-1.5 mb-2 ml-11 space-y-1 pr-3">
             {item.children.map((child, i) => (
               <li key={i}>
@@ -235,9 +228,37 @@ const NavItem = ({ item, onClose }) => {
 };
 
 const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onToggleDesktop }) => {
+  const location = useLocation();
   const [search, setSearch] = useState('');
+  const [openSection, setOpenSection] = useState('PLATFORM');
+  const [openSubmenu, setOpenSubmenu] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    for (const section of navSections) {
+      for (const item of section.items) {
+        if (item.to && (location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to + '/')))) {
+          setOpenSection(section.label);
+          setOpenSubmenu(null);
+          return;
+        }
+        if (item.children && item.children.some(c => location.pathname === c.to || (c.to !== '/' && location.pathname.startsWith(c.to + '/')))) {
+          setOpenSection(section.label);
+          setOpenSubmenu(item.label);
+          return;
+        }
+      }
+    }
+  }, [location.pathname]);
+
+  const toggleSection = (label) => {
+    setOpenSection(prev => prev === label ? null : label);
+  };
+
+  const toggleSubmenu = (label) => {
+    setOpenSubmenu(prev => prev === label ? null : label);
+  };
 
   const handleLogout = () => {
     logout();
@@ -347,30 +368,53 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
             </ul>
           </div>
         ) : (
-          navSections.map((section, si) => (
-            <div key={si} className="mb-5">
-              <p className="px-3 text-[10px] font-bold uppercase tracking-wider mb-2 text-slate-400/70">
-                {section.label}
-              </p>
-              {section.label.toUpperCase() === 'ACCOUNT' ? (
-                <ul className="space-y-0.5">
-                  <li>
-                    <button onClick={handleLogout}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group">
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
-                        <LogOut className="w-4 h-4" />
-                      </div>
-                      <span className="text-xs font-bold">Logout</span>
-                    </button>
-                  </li>
-                </ul>
-              ) : (
-                <ul className="space-y-0.5">
-                  {section.items.map((item, i) => <NavItem key={i} item={item} onClose={onClose} />)}
-                </ul>
-              )}
-            </div>
-          ))
+          navSections.map((section, si) => {
+            const isSectionOpen = !!search.trim() || openSection === section.label;
+            return (
+              <div key={si} className="mb-3">
+                <button
+                  type="button"
+                  onClick={() => toggleSection(section.label)}
+                  className="w-full flex items-center justify-between px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400/80 hover:text-white transition-colors cursor-pointer group rounded-lg hover:bg-white/5 my-0.5"
+                >
+                  <span className="flex items-center gap-2">
+                    <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isSectionOpen ? 'bg-[#ff5c0a]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                    {section.label}
+                  </span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isSectionOpen ? 'rotate-180 text-orange-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                </button>
+                <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+                  <div className="overflow-hidden">
+                    {section.label.toUpperCase() === 'ACCOUNT' ? (
+                      <ul className="space-y-0.5 pt-1">
+                        <li>
+                          <button onClick={handleLogout}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-all duration-200 group">
+                            <div className="w-7 h-7 rounded-lg flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                              <LogOut className="w-4 h-4" />
+                            </div>
+                            <span className="text-xs font-bold">Logout</span>
+                          </button>
+                        </li>
+                      </ul>
+                    ) : (
+                      <ul className="space-y-0.5 pt-1">
+                        {section.items.map((item, i) => (
+                          <NavItem 
+                            key={i} 
+                            item={item} 
+                            onClose={onClose} 
+                            isOpen={openSubmenu === item.label || !!search.trim()}
+                            onToggle={() => toggleSubmenu(item.label)}
+                          />
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })
         )}
 
         {/* Developer Branding & Attribution Footer (Scrollable with menu, exactly like Teacher Panel) */}

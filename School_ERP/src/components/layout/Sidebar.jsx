@@ -52,6 +52,7 @@ import { getTranslation } from "../../utils/translations";
 const Sidebar = ({ isCollapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [openSection, setOpenSection] = useState("MAIN MENU");
   const [openMenu, setOpenMenu] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentLang, setCurrentLang] = useState(() => {
@@ -69,6 +70,10 @@ const Sidebar = ({ isCollapsed }) => {
     window.addEventListener('app_language_changed', handleLangChange);
     return () => window.removeEventListener('app_language_changed', handleLangChange);
   }, []);
+
+  const toggleSection = (sectionName) => {
+    setOpenSection(prev => (prev === sectionName ? null : sectionName));
+  };
 
   const toggleMenu = (name) => {
     setOpenMenu(prev => (prev === name ? null : name));
@@ -536,15 +541,37 @@ const Sidebar = ({ isCollapsed }) => {
   ];
 
   useEffect(() => {
-    const allGroups = [...managementNav, ...modulesNav, ...systemNav, ...communicationNav, ...accountNav];
-    for (const group of allGroups) {
-      if (group.children && group.children.some(child => location.pathname === child.path || location.pathname.startsWith(child.path + '/'))) {
-        setOpenMenu(group.name);
-        break;
+    // If route matches an item in MAIN MENU
+    const isMainMatch = mainNav.some(item => location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path + '/')));
+    if (isMainMatch) {
+      setOpenSection("MAIN MENU");
+      setOpenMenu(null);
+      return;
+    }
+
+    const sectionMap = [
+      { name: "MANAGEMENT", items: managementNav },
+      { name: "MODULES", items: modulesNav },
+      { name: "SYSTEM", items: systemNav },
+      { name: "COMMUNICATION", items: communicationNav },
+      { name: "ACCOUNT", items: accountNav },
+    ];
+
+    for (const sec of sectionMap) {
+      for (const item of sec.items) {
+        if (item.path && item.path !== '#' && (location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path + '/')))) {
+          setOpenSection(sec.name);
+          setOpenMenu(null);
+          return;
+        }
+        if (item.children && item.children.some(child => location.pathname === child.path || (child.path !== '/' && location.pathname.startsWith(child.path + '/')))) {
+          setOpenSection(sec.name);
+          setOpenMenu(item.name);
+          return;
+        }
       }
     }
   }, [location.pathname]);
-
 
   const filterItems = (items) => {
     if (!searchQuery.trim()) return items;
@@ -570,12 +597,25 @@ const Sidebar = ({ isCollapsed }) => {
     const filtered = filterItems(items);
     if (filtered.length === 0) return null;
 
+    const isSectionExpanded = isCollapsed || !!searchQuery.trim() || openSection === title;
+
     return (
-      <div className="mb-4">
+      <div className="mb-2">
         {!isCollapsed && (
-          <h3 className="px-5 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 mt-3">{getTranslation(title, currentLang)}</h3>
+          <button
+            type="button"
+            onClick={() => toggleSection(title)}
+            className="w-full flex items-center justify-between px-3.5 py-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-white transition-all cursor-pointer group rounded-lg hover:bg-slate-800/50 my-0.5"
+          >
+            <span className="flex items-center gap-2">
+              <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isSectionExpanded ? 'bg-[#ff5c0a]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+              {getTranslation(title, currentLang)}
+            </span>
+            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isSectionExpanded ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+          </button>
         )}
-        <ul className="space-y-0.5">
+        <div className={`grid transition-all duration-300 ease-in-out ${isSectionExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+          <ul className="overflow-hidden space-y-0.5 pt-0.5">
           {filtered.map((item) => {
             const isSearchActive = !!searchQuery.trim();
             const isActiveGroup = isSearchActive || openMenu === item.name;
@@ -677,6 +717,7 @@ const Sidebar = ({ isCollapsed }) => {
             );
           })}
         </ul>
+        </div>
       </div>
     );
   };
@@ -730,34 +771,48 @@ const Sidebar = ({ isCollapsed }) => {
       <div className="flex-1 px-1.5 py-2 space-y-1">
         {/* Main Navigation */}
         {filteredMainNav.length > 0 && (
-          <div className={`mb-3 ${isCollapsed ? 'mt-2' : ''}`}>
-            {!isCollapsed && <h3 className="px-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">{getTranslation('MAIN MENU', currentLang)}</h3>}
-            <ul className="space-y-0.5">
-              {filteredMainNav.map((item) => (
-                <li key={item.name} title={isCollapsed ? getTranslation(item.name, currentLang) : undefined}>
-                  <NavLink 
-                    to={item.path}
-                    end={item.path === '/'}
-                    className={({ isActive }) => 
-                      `flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
-                        isActive
-                          ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-semibold shadow-md shadow-orange-500/20' 
-                          : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
-                      }`
-                    }
-                  >
-                    {({ isActive }) => (
-                      <>
-                        <item.icon className={`w-[18px] h-[18px] flex-shrink-0 transition-colors ${
-                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'
-                        }`} />
-                        {!isCollapsed && <span className="truncate">{getTranslation(item.name, currentLang)}</span>}
-                      </>
-                    )}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
+          <div className={`mb-2 ${isCollapsed ? 'mt-2' : ''}`}>
+            {!isCollapsed && (
+              <button
+                type="button"
+                onClick={() => toggleSection("MAIN MENU")}
+                className="w-full flex items-center justify-between px-3.5 py-1.5 text-[10.5px] font-bold text-slate-400 uppercase tracking-widest hover:text-white transition-all cursor-pointer group rounded-lg hover:bg-slate-800/50 my-0.5"
+              >
+                <span className="flex items-center gap-2">
+                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${openSection === "MAIN MENU" || !!searchQuery.trim() ? 'bg-[#ff5c0a]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                  {getTranslation('MAIN MENU', currentLang)}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${openSection === "MAIN MENU" || !!searchQuery.trim() ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+              </button>
+            )}
+            <div className={`grid transition-all duration-300 ease-in-out ${isCollapsed || !!searchQuery.trim() || openSection === "MAIN MENU" ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+              <ul className="overflow-hidden space-y-0.5 pt-0.5">
+                {filteredMainNav.map((item) => (
+                  <li key={item.name} title={isCollapsed ? getTranslation(item.name, currentLang) : undefined}>
+                    <NavLink 
+                      to={item.path}
+                      end={item.path === '/'}
+                      className={({ isActive }) => 
+                        `flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
+                          isActive
+                            ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-semibold shadow-md shadow-orange-500/20' 
+                            : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
+                        }`
+                      }
+                    >
+                      {({ isActive }) => (
+                        <>
+                          <item.icon className={`w-[18px] h-[18px] flex-shrink-0 transition-colors ${
+                            isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'
+                          }`} />
+                          {!isCollapsed && <span className="truncate">{getTranslation(item.name, currentLang)}</span>}
+                        </>
+                      )}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         )}
 

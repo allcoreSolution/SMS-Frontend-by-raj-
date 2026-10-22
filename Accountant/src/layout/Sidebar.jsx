@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import { 
   Gauge, UserCircle2, HandCoins, Send, Users, 
   HandHeart, FileSearch, UserPlus, Layers, Tags, 
-  ArrowDown, ArrowUp, Tag, Filter, LogOut, ChevronLeft, Search, X, Settings as SettingsIcon
+  ArrowDown, ArrowUp, Tag, Filter, LogOut, ChevronLeft, ChevronDown, Search, X, Settings as SettingsIcon
 } from 'lucide-react';
 
-const NavItem = ({ to, icon: Icon, label, iconColor, subItems, closeSidebar }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const NavItem = ({ to, icon: Icon, label, iconColor, subItems, closeSidebar, isOpen, onToggle }) => {
   const isDropdown = subItems && subItems.length > 0;
   
   if (isDropdown) {
     return (
       <li className="my-0.5">
         <div 
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={onToggle}
           className={`flex items-center justify-between mx-2.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${isOpen ? 'bg-[#ff5c0a]/15 text-[#ff5c0a]' : 'text-slate-300 hover:text-white hover:bg-slate-800/70'}`}
         >
           <div className="flex items-center gap-3">
             <Icon className={`w-4 h-4 ${isOpen ? 'text-[#ff5c0a]' : iconColor}`} />
             <span>{label}</span>
           </div>
-          <ChevronLeft className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? '-rotate-90 text-[#ff5c0a]' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isOpen ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-400'}`} />
         </div>
         {isOpen && (
           <ul className="bg-slate-900/60 rounded-xl mx-2.5 my-1 py-1.5 space-y-0.5 border border-slate-800/60">
@@ -110,7 +109,35 @@ const MENU_SECTIONS = [
 ];
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
+  const location = useLocation();
   const [menuSearch, setMenuSearch] = useState('');
+  const [openCategory, setOpenCategory] = useState('Main Navigation');
+  const [openSubmenu, setOpenSubmenu] = useState(null);
+
+  useEffect(() => {
+    for (const section of MENU_SECTIONS) {
+      for (const item of section.items) {
+        if (item.to && (location.pathname === item.to || (item.to !== '/' && location.pathname.startsWith(item.to + '/')))) {
+          setOpenCategory(section.category);
+          setOpenSubmenu(null);
+          return;
+        }
+        if (item.subItems && item.subItems.some(sub => location.pathname === sub.to || (sub.to !== '/' && location.pathname.startsWith(sub.to + '/')))) {
+          setOpenCategory(section.category);
+          setOpenSubmenu(item.label);
+          return;
+        }
+      }
+    }
+  }, [location.pathname]);
+
+  const toggleCategory = (cat) => {
+    setOpenCategory(prev => prev === cat ? null : cat);
+  };
+
+  const toggleSubmenu = (label) => {
+    setOpenSubmenu(prev => prev === label ? null : label);
+  };
 
   const closeSidebar = () => {
     if (window.innerWidth < 1024) {
@@ -186,28 +213,45 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         </div>
 
         {/* Categories & Links */}
-        <ul className="space-y-0.5 text-xs pb-10">
+        <div className="space-y-1 text-xs pb-10">
           {filteredSections.length > 0 ? (
-            filteredSections.map((section, sIdx) => (
-              <React.Fragment key={sIdx}>
-                <li className="px-4 pt-3 pb-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                  {section.category}
-                </li>
-                {section.items.map((item, iIdx) => (
-                  <NavItem 
-                    key={iIdx} 
-                    closeSidebar={closeSidebar} 
-                    to={item.to} 
-                    icon={item.icon} 
-                    iconColor={item.iconColor} 
-                    label={item.label} 
-                    subItems={item.subItems} 
-                  />
-                ))}
-              </React.Fragment>
-            ))
+            filteredSections.map((section, sIdx) => {
+              const isCategoryOpen = !!menuSearch.trim() || openCategory === section.category;
+              return (
+                <div key={sIdx} className="mb-1.5">
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(section.category)}
+                    className="w-full flex items-center justify-between px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-white transition-all cursor-pointer group rounded-lg hover:bg-slate-800/50 my-0.5"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full transition-colors ${isCategoryOpen ? 'bg-[#ff5c0a]' : 'bg-slate-600 group-hover:bg-slate-400'}`} />
+                      {section.category}
+                    </span>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isCategoryOpen ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                  </button>
+                  <div className={`grid transition-all duration-300 ease-in-out ${isCategoryOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+                    <ul className="overflow-hidden space-y-0.5 pt-0.5">
+                      {section.items.map((item, iIdx) => (
+                        <NavItem 
+                          key={iIdx} 
+                          closeSidebar={closeSidebar} 
+                          to={item.to} 
+                          icon={item.icon} 
+                          iconColor={item.iconColor} 
+                          label={item.label} 
+                          subItems={item.subItems} 
+                          isOpen={openSubmenu === item.label || !!menuSearch.trim()}
+                          onToggle={() => toggleSubmenu(item.label)}
+                        />
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              );
+            })
           ) : (
-            <li className="p-4 text-center text-xs text-slate-400">
+            <div className="p-4 text-center text-xs text-slate-400">
               No menu items matching "{menuSearch}"
               <button 
                 onClick={() => setMenuSearch('')}
@@ -215,9 +259,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
               >
                 Show all menu items
               </button>
-            </li>
+            </div>
           )}
-        </ul>
+        </div>
 
         {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
         <div className="mt-4 mb-4 pt-3 border-t border-slate-800/80 px-3 text-center">
