@@ -402,20 +402,20 @@ const Dashboard = () => {
                           onClick={() => setHubTab(tab)}
                           className={`px-4 py-1.5 rounded-none text-xs font-bold border transition-colors theme-icon ${hubTab === tab ? 'bg-blue-50 text-blue-600 border-blue-100 theme-nav-active' : 'bg-transparent text-gray-500 hover:bg-gray-50 border-gray-200 theme-text font-medium'}`}
                         >
-                          {tab}
+                          {t(tab, tab)}
                         </button>
                       ))}
                     </div>
 
                     <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3">
                       {filteredHubModules.slice(0, 29).map((mod, idx) => (
-                        <AppIcon key={idx} title={mod.title} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
+                        <AppIcon key={idx} title={t(mod.title, mod.title)} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
                       ))}
                       <div onClick={() => setIsModalOpen(true)} className="flex flex-col items-center justify-center gap-2 p-3 bg-white border-2 border-dashed border-indigo-400 rounded-none cursor-pointer hover:bg-indigo-50 transition-colors theme-card">
                         <div className="w-10 h-10 rounded-none flex items-center justify-center bg-indigo-500 text-white shadow-sm theme-icon">
                           <Plus className="w-5 h-5" />
                         </div>
-                        <span className="text-[10px] text-center font-bold text-indigo-600 leading-tight">More</span>
+                        <span className="text-[10px] text-center font-bold text-indigo-600 leading-tight">{t('More', 'More')}</span>
                       </div>
                     </div>
                   </div>
@@ -538,7 +538,7 @@ const Dashboard = () => {
                           onClick={() => setHubTab(tab)}
                           className={`px-4 py-1.5 rounded-none text-xs font-bold border transition-colors theme-icon ${hubTab === tab ? 'bg-blue-50 text-blue-600 border-blue-100 theme-nav-active' : 'bg-transparent text-gray-500 hover:bg-gray-50 border-gray-200 theme-text font-medium'}`}
                         >
-                          {tab}
+                          {t(tab, tab)}
                         </button>
                       ))}
                     </div>
@@ -546,7 +546,7 @@ const Dashboard = () => {
                     {/* Apps Grid */}
                     <div className={`grid gap-3 ${currentLayout === 'layout-compact' ? 'grid-cols-4 sm:grid-cols-5 lg:grid-cols-6' : 'grid-cols-3 sm:grid-cols-5 lg:grid-cols-7'}`}>
                       {filteredHubModules.slice(0, 29).map((mod, idx) => (
-                        <AppIcon key={idx} title={mod.title} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
+                        <AppIcon key={idx} title={t(mod.title, mod.title)} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
                       ))}
                       
                       {/* + More Button */}
@@ -554,7 +554,7 @@ const Dashboard = () => {
                         <div className="w-10 h-10 rounded-none flex items-center justify-center bg-indigo-500 text-white shadow-sm theme-icon">
                           <Plus className="w-5 h-5" />
                         </div>
-                        <span className="text-[10px] text-center font-bold text-indigo-600 leading-tight">More</span>
+                        <span className="text-[10px] text-center font-bold text-indigo-600 leading-tight">{t('More', 'More')}</span>
                       </div>
                     </div>
                   </div>
@@ -565,27 +565,27 @@ const Dashboard = () => {
                   <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 h-full theme-card">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
                       <div>
-                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">Live Activity</h2>
-                        <p className="text-[11px] font-semibold text-gray-400">Real-time updates</p>
+                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">{t('Live Activity', 'Live Activity')}</h2>
+                        <p className="text-[11px] font-semibold text-gray-400">{t('Real-time updates', 'Real-time updates')}</p>
                       </div>
                       <div className="flex gap-2">
                         <button 
                           onClick={() => setActivityTab('All')}
                           className={`text-[10px] font-semibold px-2 py-1 rounded-none cursor-pointer transition-colors ${activityTab === 'All' ? 'bg-gray-100 text-gray-700 font-bold theme-icon' : 'text-gray-400 hover:text-gray-600'}`}
                         >
-                          All
+                          {t('All', 'All')}
                         </button>
                         <button 
                           onClick={() => setActivityTab('Notice')}
                           className={`text-[10px] font-semibold px-2 py-1 rounded-none cursor-pointer transition-colors ${activityTab === 'Notice' ? 'bg-pink-100 text-pink-700 font-bold theme-icon' : 'text-gray-400 hover:text-gray-600'}`}
                         >
-                          Notices
+                          {t('Notices', 'Notices')}
                         </button>
                         <button 
                           onClick={() => setActivityTab('Fees')}
                           className={`text-[10px] font-semibold px-2 py-1 rounded-none cursor-pointer transition-colors ${activityTab === 'Fees' ? 'bg-emerald-100 text-emerald-700 font-bold theme-icon' : 'text-gray-400 hover:text-gray-600'}`}
                         >
-                          Fees
+                          {t('Fees', 'Fees')}
                         </button>
                       </div>
                     </div>
@@ -813,7 +813,7 @@ const Dashboard = () => {
                   {filteredModalModules.length > 0 ? (
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-7 gap-3">
                       {filteredModalModules.map((mod, idx) => (
-                        <AppIcon key={idx} title={mod.title} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
+                        <AppIcon key={idx} title={t(mod.title, mod.title)} icon={mod.icon} colorName={mod.colorName} onClick={() => handleModuleClick(mod.route)} />
                       ))}
                     </div>
                   ) : (
