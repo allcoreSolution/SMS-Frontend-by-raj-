@@ -85,7 +85,7 @@ export function LanguageProvider({ children }) {
   // Initialize on mount
   useEffect(() => {
     if (currentLang === 'hi') {
-      setTimeout(() => triggerGoogleTranslate('hi'), 600);
+      triggerGoogleTranslate('hi');
     } else {
       triggerGoogleTranslate('en');
     }

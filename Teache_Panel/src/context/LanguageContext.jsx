@@ -82,8 +82,8 @@ export const triggerGoogleTranslate = (langCode) => {
 export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState(() => {
     try {
-      const saved = localStorage.getItem('erp_language') || localStorage.getItem('portal_language') || 'English';
-      return (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi') ? 'Hindi' : 'English';
+      const saved = localStorage.getItem('erp_language');
+      return (saved && (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi')) ? 'Hindi' : 'English';
     } catch (e) {
       return 'English';
     }
@@ -91,27 +91,35 @@ export const LanguageProvider = ({ children }) => {
 
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     try {
-      const saved = localStorage.getItem('erp_language') || localStorage.getItem('portal_language') || 'English';
-      return (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi') ? 'hi' : 'en';
+      const saved = localStorage.getItem('erp_language');
+      return (saved && (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi')) ? 'hi' : 'en';
     } catch (e) {
       return 'en';
     }
   });
 
-  // Initialize on mount and apply Google Translate if Hindi is active
+  // Initialize on mount
   useEffect(() => {
     const initLang = async () => {
-      let selectedLang = localStorage.getItem('erp_language') || localStorage.getItem('portal_language') || 'English';
+      // 1. Strictly respect local storage first so refresh NEVER resets user choice
+      let selectedLang = localStorage.getItem('erp_language');
 
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const res = await axiosInstance.get('/profile/me');
-          const backendLang = res.data?.data?.preferences?.language;
-          if (backendLang) {
-            selectedLang = backendLang;
-          }
-        } catch (err) {}
+      // 2. Only if no local preference exists at all, fallback to backend profile
+      if (!selectedLang) {
+        const token = localStorage.getItem('token');
+        if (token) {
+          try {
+            const res = await axiosInstance.get('/profile/me');
+            const backendLang = res.data?.data?.preferences?.language;
+            if (backendLang) {
+              selectedLang = backendLang;
+            }
+          } catch (err) {}
+        }
+      }
+
+      if (!selectedLang) {
+        selectedLang = 'English';
       }
 
       const isHindi = selectedLang.toLowerCase() === 'hindi' || selectedLang.toLowerCase() === 'hi';
@@ -124,7 +132,7 @@ export const LanguageProvider = ({ children }) => {
       localStorage.setItem('erp_lang_code', targetCode);
 
       if (isHindi) {
-        setTimeout(() => triggerGoogleTranslate('hi'), 600);
+        triggerGoogleTranslate('hi');
       } else {
         triggerGoogleTranslate('en');
       }
@@ -144,7 +152,6 @@ export const LanguageProvider = ({ children }) => {
     try {
       localStorage.setItem('erp_language', targetName);
       localStorage.setItem('erp_lang_code', targetCode);
-      localStorage.setItem('portal_language', targetCode);
     } catch (e) {}
 
     // Trigger Google Translate engine

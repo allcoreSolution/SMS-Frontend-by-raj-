@@ -10,6 +10,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   </head>
   <body>
+    <script type="text/javascript">
+      (function() {
+        try {
+          var saved = localStorage.getItem('portal_language') || localStorage.getItem('app_language');
+          var isHindi = saved === 'hi';
+          var host = window.location.hostname;
+          if (isHindi) {
+            document.cookie = 'googtrans=/en/hi; path=/;';
+            document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
+          } else {
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
+            document.cookie = 'googtrans=/en/en; path=/;';
+            document.cookie = 'googtrans=/en/en; path=/; domain=' + host + ';';
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <div id="google_translate_element" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
     <script type="text/javascript">
