@@ -3,6 +3,60 @@ import { LANGUAGES, getT } from '../utils/translations';
 
 const LanguageContext = createContext();
 
+export const triggerGoogleTranslate = (langCode) => {
+  try {
+    const isEn = !langCode || langCode === 'en' || langCode.toLowerCase() === 'english';
+    if (isEn) {
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        combo.value = '';
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+
+    const val = `/en/${langCode}`;
+    document.cookie = `googtrans=${val}; path=/;`;
+    document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
+
+    const applyToCombo = () => {
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        const desiredVal = langCode.toLowerCase();
+        if (combo.options && combo.options.length > 0) {
+          for (let i = 0; i < combo.options.length; i++) {
+            const optVal = (combo.options[i].value || '').toLowerCase();
+            if (optVal === desiredVal) {
+              combo.selectedIndex = i;
+              combo.options[i].selected = true;
+              break;
+            }
+          }
+        }
+        combo.value = desiredVal;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        try {
+          combo.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (_) {}
+        return true;
+      }
+      return false;
+    };
+
+    if (!applyToCombo()) {
+      setTimeout(applyToCombo, 100);
+      setTimeout(applyToCombo, 300);
+      setTimeout(applyToCombo, 700);
+      setTimeout(applyToCombo, 1500);
+      setTimeout(applyToCombo, 3000);
+    }
+  } catch (e) {
+    console.warn('Google translate trigger error:', e);
+  }
+};
+
 export function LanguageProvider({ children }) {
   const [currentLang, setCurrentLangState] = useState(() => {
     try {
@@ -15,6 +69,15 @@ export function LanguageProvider({ children }) {
 
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Initialize on mount
+  useEffect(() => {
+    if (currentLang === 'hi') {
+      setTimeout(() => triggerGoogleTranslate('hi'), 600);
+    } else {
+      triggerGoogleTranslate('en');
+    }
+  }, []);
+
   const setLanguage = (langCode) => {
     const validCode = langCode === 'hi' ? 'hi' : 'en';
     setCurrentLangState(validCode);
@@ -23,6 +86,9 @@ export function LanguageProvider({ children }) {
       localStorage.setItem('app_language', validCode);
       localStorage.setItem('app_language_code', validCode);
     } catch (e) {}
+
+    // Trigger Google Translate engine
+    triggerGoogleTranslate(validCode);
 
     // Global custom events for any listener
     window.dispatchEvent(new CustomEvent('portal_language_changed', { detail: validCode }));
@@ -40,6 +106,7 @@ export function LanguageProvider({ children }) {
     const handleExternalChange = (e) => {
       if (e.detail && (e.detail === 'en' || e.detail === 'hi') && e.detail !== currentLang) {
         setCurrentLangState(e.detail);
+        triggerGoogleTranslate(e.detail);
       }
     };
     window.addEventListener('portal_language_changed', handleExternalChange);

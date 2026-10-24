@@ -11,6 +11,61 @@ export const supportedLanguages = [
   { code: 'hi', name: 'Hindi', native: 'हिन्दी', region: 'India', flag: '🇮🇳' }
 ];
 
+// Trigger Google Translate engine programmatically
+export const triggerGoogleTranslate = (langCode) => {
+  try {
+    const isEn = !langCode || langCode === 'en' || langCode.toLowerCase() === 'english';
+    if (isEn) {
+      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        combo.value = '';
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return;
+    }
+
+    const val = `/en/${langCode}`;
+    document.cookie = `googtrans=${val}; path=/;`;
+    document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
+
+    const applyToCombo = () => {
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        const desiredVal = langCode.toLowerCase();
+        if (combo.options && combo.options.length > 0) {
+          for (let i = 0; i < combo.options.length; i++) {
+            const optVal = (combo.options[i].value || '').toLowerCase();
+            if (optVal === desiredVal) {
+              combo.selectedIndex = i;
+              combo.options[i].selected = true;
+              break;
+            }
+          }
+        }
+        combo.value = desiredVal;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        try {
+          combo.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (_) {}
+        return true;
+      }
+      return false;
+    };
+
+    if (!applyToCombo()) {
+      setTimeout(applyToCombo, 100);
+      setTimeout(applyToCombo, 300);
+      setTimeout(applyToCombo, 700);
+      setTimeout(applyToCombo, 1500);
+      setTimeout(applyToCombo, 3000);
+    }
+  } catch (e) {
+    console.warn('Google translate trigger error:', e);
+  }
+};
+
 export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState(() => {
     try {
@@ -30,17 +85,8 @@ export const LanguageProvider = ({ children }) => {
     }
   });
 
-  const isTranslatingRef = React.useRef(false);
-
-  // Clean any legacy Google Translate artifacts
+  // Initialize on mount and apply Google Translate if Hindi is active
   useEffect(() => {
-    try {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-      const el = document.getElementById('google_translate_element');
-      if (el) el.remove();
-    } catch (e) {}
-
     const initLang = async () => {
       let selectedLang = localStorage.getItem('erp_language') || localStorage.getItem('portal_language') || 'English';
 
@@ -63,132 +109,16 @@ export const LanguageProvider = ({ children }) => {
       setCurrentLangCode(targetCode);
       localStorage.setItem('erp_language', targetName);
       localStorage.setItem('erp_lang_code', targetCode);
+
+      if (isHindi) {
+        setTimeout(() => triggerGoogleTranslate('hi'), 600);
+      } else {
+        triggerGoogleTranslate('en');
+      }
     };
 
     initLang();
   }, []);
-
-  // Safe non-destructive DOM translation for all data, tables, cards and widgets
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-
-    const translateTextNode = (node) => {
-      if (!node || isTranslatingRef.current) return;
-      const tag = node.parentElement ? node.parentElement.tagName.toUpperCase() : '';
-      if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'CODE', 'PRE', 'NOSCRIPT'].includes(tag)) return;
-
-      if (node.nodeType === Node.TEXT_NODE) {
-        const currentVal = node.nodeValue;
-        if (!currentVal || typeof currentVal !== 'string') return;
-        const trimmed = currentVal.trim();
-        if (trimmed.length < 2) return;
-
-        if (currentLang === 'Hindi') {
-          if (node.__erpOrig === undefined) {
-            node.__erpOrig = currentVal;
-          }
-          const baseToTranslate = node.__erpOrig.trim();
-          const translated = translateString(baseToTranslate);
-          if (translated !== baseToTranslate) {
-            node.nodeValue = node.__erpOrig.replace(baseToTranslate, translated);
-          }
-        } else {
-          if (node.__erpOrig !== undefined) {
-            node.nodeValue = node.__erpOrig;
-            delete node.__erpOrig;
-          }
-        }
-      }
-    };
-
-    const translateInputs = (el) => {
-      if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
-      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-        if (el.placeholder) {
-          if (currentLang === 'Hindi') {
-            if (el.__erpOrigPlaceholder === undefined) {
-              el.__erpOrigPlaceholder = el.placeholder;
-            }
-            const translated = translateString(el.__erpOrigPlaceholder);
-            if (translated !== el.__erpOrigPlaceholder) {
-              el.placeholder = translated;
-            }
-          } else {
-            if (el.__erpOrigPlaceholder !== undefined) {
-              el.placeholder = el.__erpOrigPlaceholder;
-              delete el.__erpOrigPlaceholder;
-            }
-          }
-        }
-      }
-    };
-
-    const walk = (root) => {
-      if (!root) return;
-      const walker = document.createTreeWalker(
-        root,
-        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-        {
-          acceptNode: (n) => {
-            if (n.nodeType === Node.ELEMENT_NODE) {
-              const tag = n.tagName.toUpperCase();
-              if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'CODE', 'PRE', 'NOSCRIPT'].includes(tag)) {
-                return NodeFilter.FILTER_REJECT;
-              }
-              return NodeFilter.FILTER_ACCEPT;
-            }
-            return NodeFilter.FILTER_ACCEPT;
-          }
-        }
-      );
-
-      let curr = walker.nextNode();
-      while (curr) {
-        if (curr.nodeType === Node.TEXT_NODE) {
-          translateTextNode(curr);
-        } else if (curr.nodeType === Node.ELEMENT_NODE) {
-          translateInputs(curr);
-        }
-        curr = walker.nextNode();
-      }
-    };
-
-    isTranslatingRef.current = true;
-    try {
-      walk(document.body);
-    } finally {
-      isTranslatingRef.current = false;
-    }
-
-    let debounceTimer;
-    const observer = new MutationObserver((mutations) => {
-      if (isTranslatingRef.current) return;
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        isTranslatingRef.current = true;
-        try {
-          mutations.forEach((mut) => {
-            mut.addedNodes.forEach((node) => {
-              if (node.nodeType === Node.TEXT_NODE) {
-                translateTextNode(node);
-              } else if (node.nodeType === Node.ELEMENT_NODE) {
-                walk(node);
-              }
-            });
-          });
-        } finally {
-          isTranslatingRef.current = false;
-        }
-      }, 60);
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      observer.disconnect();
-      clearTimeout(debounceTimer);
-    };
-  }, [currentLang]);
 
   const changeLanguage = async (langNameOrCode) => {
     const isHindi = (langNameOrCode || '').toLowerCase() === 'hindi' || (langNameOrCode || '').toLowerCase() === 'hi';
@@ -203,6 +133,9 @@ export const LanguageProvider = ({ children }) => {
       localStorage.setItem('erp_lang_code', targetCode);
       localStorage.setItem('portal_language', targetCode);
     } catch (e) {}
+
+    // Trigger Google Translate engine
+    triggerGoogleTranslate(targetCode);
 
     // Custom events so any component or window listener can sync
     window.dispatchEvent(new CustomEvent('erp_language_changed', { detail: { name: targetName, code: targetCode } }));
@@ -232,6 +165,17 @@ export const LanguageProvider = ({ children }) => {
       showConfirmButton: false,
       timer: 2000
     });
+
+    // If switching back to English from Hindi, reload if needed to restore DOM completely
+    if (!isHindi) {
+      setTimeout(() => {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo && combo.value !== '') {
+          combo.value = '';
+          combo.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }, 300);
+    }
   };
 
   const t = (key, fallback = '') => {
@@ -262,6 +206,7 @@ export const LanguageProvider = ({ children }) => {
       changeLanguage, 
       languages: supportedLanguages.map(l => l.name), 
       supportedLanguages,
+      triggerGoogleTranslate,
       t 
     }}>
       {children}
