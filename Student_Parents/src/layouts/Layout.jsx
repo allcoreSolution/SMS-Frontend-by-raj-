@@ -120,7 +120,7 @@ const navSectionsConfig = [
   },
 ];
 
-function NavItem({ item, active, navigate, location, lang }) {
+function NavItem({ item, active, navigate, location, lang, onSelect }) {
   const [open, setOpen] = useState(false);
   const Icon = item.icon;
   const itemLabel = getT(item.key, lang) || item.label;
@@ -154,7 +154,10 @@ function NavItem({ item, active, navigate, location, lang }) {
               <div key={subItem.route} className="relative flex items-center">
                 <div className="w-3 h-[1px] bg-white/10 absolute left-[-16px]" />
                 <button
-                  onClick={() => navigate(subItem.route)}
+                  onClick={() => {
+                    navigate(subItem.route);
+                    if (onSelect) onSelect();
+                  }}
                   className={`w-full text-left flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
                     ${location.pathname === subItem.route ? 'text-gray-100 font-medium' : 'text-gray-400 hover:text-white'}`}
                 >
@@ -171,7 +174,10 @@ function NavItem({ item, active, navigate, location, lang }) {
 
   return (
     <button
-      onClick={() => navigate(item.route)}
+      onClick={() => {
+        navigate(item.route);
+        if (onSelect) onSelect();
+      }}
       className={`w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 transition-all text-left group
         ${active
           ? 'bg-white/10 border-l-[3px] border-orange-400 pl-2.5'
@@ -308,7 +314,10 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
 
         {/* Logo: ALL CORE SOLUTION */}
         <div 
-          onClick={() => navigate('/dashboard')} 
+          onClick={() => {
+            navigate('/dashboard');
+            setSideOpen(false);
+          }} 
           className="flex items-center gap-2.5 px-[15px] py-3.5 flex-shrink-0 border-b border-[#2a2e33] cursor-pointer hover:bg-white/5 transition-colors"
           title="All Core Solution School ERP - Go to Dashboard"
         >
@@ -409,6 +418,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                       navigate={navigate}
                       location={location}
                       lang={currentLang}
+                      onSelect={() => setSideOpen(false)}
                     />
                   ))}
                 </div>
@@ -428,6 +438,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 navigate={navigate}
                 location={location}
                 lang={currentLang}
+                onSelect={() => setSideOpen(false)}
               />
 
               {/* Viewing: child dropdown */}
@@ -463,6 +474,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                           key={childId}
                           onClick={() => {
                             if (setActiveChild) setActiveChild(childId);
+                            setSideOpen(false);
                           }}
                           className={`w-full text-left flex items-center justify-between pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
                             ${isSelected ? 'bg-white/10 text-white font-bold' : 'text-gray-400 hover:text-white'}`}
@@ -483,6 +495,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 navigate={navigate}
                 location={location}
                 lang={currentLang}
+                onSelect={() => setSideOpen(false)}
               />
 
               {/* Other Sections */}
@@ -499,6 +512,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                       navigate={navigate}
                       location={location}
                       lang={currentLang}
+                      onSelect={() => setSideOpen(false)}
                     />
                   ))}
                 </div>
@@ -516,6 +530,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             type="button"
             onClick={() => {
               handleSelectLanguage(currentLang === 'hi' ? 'en' : 'hi');
+              setSideOpen(false);
             }}
             className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5 cursor-pointer"
             style={{ width: 'calc(100% - 8px)' }}
@@ -534,7 +549,10 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </div>
           </button>
           <button
-            onClick={() => navigate('/logout')}
+            onClick={() => {
+              navigate('/logout');
+              setSideOpen(false);
+            }}
             className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5"
             style={{ width: 'calc(100% - 8px)' }}
           >
