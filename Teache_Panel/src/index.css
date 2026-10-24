@@ -103,34 +103,6 @@ body {
 .theme-playful .theme-icon { border-radius: 50% !important; }
 
 /* ========================================================
-   FULL SITE DYNAMIC TRANSLATION ENGINE STYLES
-   ======================================================== */
-.goog-te-banner-frame.skiptranslate, 
-.goog-te-banner-frame, 
-#goog-gt-tt, 
-.goog-te-balloon-frame { 
-  display: none !important; 
-}
-body { 
-  top: 0px !important; 
-  position: static !important; 
-}
-.goog-tooltip, 
-.goog-tooltip:hover { 
-  display: none !important; 
-}
-.goog-text-highlight { 
-  background-color: transparent !important; 
-  box-shadow: none !important; 
-}
-#google_translate_element { 
-  display: none !important; 
-}
-.skiptranslate iframe {
-  display: none !important;
-}
-
-/* ========================================================
    DASHBOARD STAT CARDS RISE UP ANIMATIONS
    ======================================================== */
 @keyframes riseUp {

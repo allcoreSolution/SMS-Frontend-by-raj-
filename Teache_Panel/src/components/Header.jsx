@@ -353,28 +353,28 @@ const Header = () => {
             <ChevronDown className="w-3 h-3 text-gray-400" />
           </button>
           {activeMenu === 'lang' && (
-            <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 theme-card overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+            <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 theme-card overflow-hidden animate-in fade-in zoom-in-95 duration-100">
               <div className="px-3.5 py-1.5 border-b border-gray-100 flex items-center justify-between">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('language', 'Select Language')}</span>
-                <span className="text-[10px] text-[#ff5c0a] font-bold">{supportedLanguages.length} Languages</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('selectLanguage', 'Select Language')}</span>
+                <span className="text-[10px] text-[#ff5c0a] font-bold">2 Languages</span>
               </div>
-              <div className="max-h-80 overflow-y-auto divide-y divide-gray-50 p-1">
+              <div className="p-1 space-y-1">
                 {supportedLanguages.map(l => (
                   <div 
                     key={l.code} 
                     onClick={() => { changeLanguage(l.name); setActiveMenu(null); }} 
-                    className={`px-3 py-2 rounded-xl text-xs cursor-pointer flex items-center justify-between font-medium transition-colors ${
-                      currentLang === l.name ? 'bg-orange-50 text-[#ff5c0a]' : 'hover:bg-slate-50 text-gray-700'
+                    className={`px-3 py-2.5 rounded-xl text-xs cursor-pointer flex items-center justify-between font-medium transition-colors ${
+                      currentLang === l.name ? 'bg-orange-50 text-[#ff5c0a] font-bold' : 'hover:bg-slate-50 text-gray-700'
                     }`}
                   >
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base">{l.flag || '🌐'}</span>
+                      <div className="flex flex-col">
                         <span className="font-bold text-xs">{l.native}</span>
-                        <span className="text-[11px] text-gray-500">({l.name})</span>
+                        <span className="text-[10px] text-gray-400 font-normal">{l.name}</span>
                       </div>
-                      <span className="text-[10px] text-gray-400">{l.region}</span>
                     </div>
-                    {currentLang === l.name && <Check className="w-3.5 h-3.5 text-[#ff5c0a] flex-shrink-0"/>}
+                    {currentLang === l.name && <Check className="w-4 h-4 text-[#ff5c0a] flex-shrink-0"/>}
                   </div>
                 ))}
               </div>
@@ -671,20 +671,23 @@ const Header = () => {
           <div className="p-6 space-y-5">
             {/* Language Option */}
             <div>
-              <label className="text-xs font-bold text-gray-700 block mb-2">{t('language', 'Language Selection')} ({supportedLanguages.length})</label>
-              <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto p-1.5 border border-gray-100 rounded-xl bg-gray-50/50">
+              <label className="text-xs font-bold text-gray-700 block mb-2">{t('selectLanguage', 'Select Language')} ({supportedLanguages.length})</label>
+              <div className="grid grid-cols-2 gap-2 p-1.5 border border-gray-100 rounded-xl bg-gray-50/50">
                 {supportedLanguages.map((l) => (
                   <button
                     key={l.code}
                     onClick={() => changeLanguage(l.name)}
-                    className={`py-2 px-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex flex-col items-center justify-center text-center ${
+                    className={`py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-2 text-center ${
                       currentLang === l.name 
                         ? 'bg-orange-50 border-[#ff5c0a] text-[#ff5c0a] shadow-xs' 
                         : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <span className="font-bold text-xs">{l.native}</span>
-                    <span className="text-[9px] text-gray-400 font-normal">{l.name}</span>
+                    <span className="text-sm">{l.flag || '🌐'}</span>
+                    <div className="flex flex-col text-left">
+                      <span className="font-bold text-xs">{l.native}</span>
+                      <span className="text-[10px] text-gray-400 font-normal">{l.name}</span>
+                    </div>
                   </button>
                 ))}
               </div>

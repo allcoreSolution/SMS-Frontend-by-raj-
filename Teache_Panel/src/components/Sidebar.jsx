@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
-  Search, PieChart, LayoutDashboard, User, DollarSign, Video, AlertCircle, FileText,
-  Heart, CalendarDays, Users, CheckCircle, HelpCircle, ChevronLeft, ChevronDown,
+  Search, LayoutDashboard, User, DollarSign, Video, AlertCircle, FileText,
+  Heart, CalendarDays, Users, CheckCircle, ChevronDown,
   PenTool, List, Edit, UploadCloud, Printer, Book, Grid, Handshake, Clipboard, ClipboardCheck, 
-  Filter, BarChart, MessageCircle, LogOut, PhoneCall, Accessibility, CreditCard,
+  Filter, BarChart, MessageCircle, LogOut, Accessibility, CreditCard,
   Settings
 } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
@@ -71,127 +71,127 @@ const CollapsibleSubMenu = ({
   return isDiv ? <div className="my-0.5">{content}</div> : <li className="my-0.5">{content}</li>;
 };
 
-const LiveClassesMenu = (props) => (
+const LiveClassesMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     isDiv={true}
     icon={Video}
     iconColor="text-blue-400"
-    label="Live Classes"
+    label={t('liveClasses', 'Live Classes')}
     checkActive={(path) => path.startsWith('/live')}
     items={[
-      { path: '/live/manage', label: 'Manage Live Classes' },
-      { path: '/live/settings', label: 'Live Class Settings' }
+      { path: '/live/manage', label: t('manageLiveClasses', 'Manage Live Classes') },
+      { path: '/live/settings', label: t('liveClassSettings', 'Live Class Settings') }
     ]}
     {...props}
   />
 );
 
-const PTMMenu = (props) => (
+const PTMMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={Handshake}
     iconColor="text-pink-400"
-    label="PTM Meetings"
+    label={t('ptm', 'PTM Meetings')}
     checkActive={(path) => path.startsWith('/ptm')}
     items={[
-      { path: '/ptm-dashboard', label: 'PTM Dashboard' },
-      { path: '/ptm-guide', label: 'PTM Guide' },
-      { path: '/ptm-attendance', label: 'PTM Attendance & Rec' },
-      { path: '/ptm-followups', label: 'PTM Follow-ups' },
-      { path: '/ptm', label: 'PTM Reports' }
+      { path: '/ptm-dashboard', label: t('ptmDashboard', 'PTM Dashboard') },
+      { path: '/ptm-guide', label: t('ptmGuide', 'PTM Guide') },
+      { path: '/ptm-attendance', label: t('ptmAttendance', 'PTM Attendance & Rec') },
+      { path: '/ptm-followups', label: t('ptmFollowups', 'PTM Follow-ups') },
+      { path: '/ptm', label: t('ptmReports', 'PTM Reports') }
     ]}
     {...props}
   />
 );
 
-const LessonPlannerMenu = (props) => (
+const LessonPlannerMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={Clipboard}
     iconColor="text-emerald-400"
-    label="Lesson Planner"
+    label={t('lessonPlanner', 'Lesson Planner')}
     checkActive={(path) => path.startsWith('/lesson-planner') || path.startsWith('/lesson-plans')}
     items={[
-      { path: '/lesson-planner', label: 'Lesson Planner Dashboard' },
-      { path: '/lesson-plans', label: 'Lesson Plans' },
-      { path: '/lesson-planner-guide', label: 'Lesson Planner Guide' },
-      { path: '/lesson-plan-review', label: 'Lesson Plan Review' },
-      { path: '/lesson-plan-coverage', label: 'Lesson Plan Coverage' },
-      { path: '/lesson-plan-reports', label: 'Lesson Plan Reports' }
+      { path: '/lesson-planner', label: t('lessonPlanner', 'Lesson Planner Dashboard') },
+      { path: '/lesson-plans', label: t('lessonPlans', 'Lesson Plans') },
+      { path: '/lesson-planner-guide', label: t('lessonPlannerGuide', 'Lesson Planner Guide') },
+      { path: '/lesson-plan-review', label: t('lessonPlanReview', 'Lesson Plan Review') },
+      { path: '/lesson-plan-coverage', label: t('lessonPlanCoverage', 'Lesson Plan Coverage') },
+      { path: '/lesson-plan-reports', label: t('lessonPlanReports', 'Lesson Plan Reports') }
     ]}
     {...props}
   />
 );
 
-const OSMMenu = (props) => (
+const OSMMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={PenTool}
     iconColor="text-purple-400"
-    label="OSM Module"
+    label={t('osm', 'OSM Module')}
     checkActive={(path) => path.startsWith('/osm')}
     items={[
-      { path: '/osm-dashboard', label: 'OSM Dashboard' },
-      { path: '/osm-evaluate', label: 'OSM Evaluate' },
-      { path: '/osm-reports', label: 'OSM Reports' },
-      { path: '/osm-guide', label: 'OSM Guide' }
+      { path: '/osm-dashboard', label: t('osmDashboard', 'OSM Dashboard') },
+      { path: '/osm-evaluate', label: t('osmEvaluate', 'OSM Evaluate') },
+      { path: '/osm-reports', label: t('osmReports', 'OSM Reports') },
+      { path: '/osm-guide', label: t('osmGuide', 'OSM Guide') }
     ]}
     {...props}
   />
 );
 
-const SurveysMenu = (props) => (
+const SurveysMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={BarChart}
     iconColor="text-amber-400"
-    label="Surveys & Feedback"
+    label={t('surveys', 'Surveys & Feedback')}
     checkActive={(path) => path.startsWith('/my-surveys') || path.startsWith('/feedback-triage') || path.startsWith('/surveys')}
     items={[
-      { path: '/my-surveys', label: 'My Surveys' },
-      { path: '/feedback-triage', label: 'Feedback Triage' }
+      { path: '/my-surveys', label: t('mySurveys', 'My Surveys') },
+      { path: '/feedback-triage', label: t('feedbackTriage', 'Feedback Triage') }
     ]}
     {...props}
   />
 );
 
-const AssessmentMenu = (props) => (
+const AssessmentMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={ClipboardCheck}
     iconColor="text-cyan-400"
-    label="Assessment"
+    label={t('assessment', 'Assessment')}
     checkActive={(path) => path.startsWith('/assessment')}
     items={[
-      { path: '/assessment-dashboard', label: 'Assessment Dashboard' },
-      { path: '/assessments', label: 'Assessments' },
-      { path: '/assessment-guide', label: 'Assessment Guide' },
-      { path: '/assessment-reports', label: 'Assessment Reports' }
+      { path: '/assessment-dashboard', label: t('assessmentDashboard', 'Assessment Dashboard') },
+      { path: '/assessments', label: t('assessments', 'Assessments') },
+      { path: '/assessment-guide', label: t('assessmentGuide', 'Assessment Guide') },
+      { path: '/assessment-reports', label: t('assessmentReports', 'Assessment Reports') }
     ]}
     {...props}
   />
 );
 
-const LeadManagementMenu = (props) => (
+const LeadManagementMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={Filter}
     iconColor="text-teal-400"
-    label="Lead Management"
+    label={t('leadManagement', 'Lead Management')}
     checkActive={(path) => path.startsWith('/lead')}
     items={[
-      { path: '/lead-dashboard', label: 'Lead Dashboard' },
-      { path: '/lead-pipeline', label: 'Lead Pipeline Board' },
-      { path: '/lead-sources', label: 'Lead Sources & Stages' }
+      { path: '/lead-dashboard', label: t('leadDashboard', 'Lead Dashboard') },
+      { path: '/lead-pipeline', label: t('leadPipeline', 'Lead Pipeline Board') },
+      { path: '/lead-sources', label: t('leadSources', 'Lead Sources & Stages') }
     ]}
     {...props}
   />
 );
 
-const HolisticProgressMenu = (props) => (
+const HolisticProgressMenu = ({ t, ...props }) => (
   <CollapsibleSubMenu
     icon={Accessibility}
     iconColor="text-sky-400"
-    label="Holistic Progress Card"
+    label={t('hpc', 'Holistic Progress Card')}
     checkActive={(path) => path.startsWith('/hpc') || path.startsWith('/progress-cards')}
     items={[
-      { path: '/hpc-dashboard', label: 'HPC Dashboard' },
-      { path: '/hpc-activities', label: 'HPC Activities' },
-      { path: '/progress-cards', label: 'Progress Cards' }
+      { path: '/hpc-dashboard', label: t('hpcDashboard', 'HPC Dashboard') },
+      { path: '/hpc-activities', label: t('hpcActivities', 'HPC Activities') },
+      { path: '/progress-cards', label: t('progressCards', 'Progress Cards') }
     ]}
     {...props}
   />
@@ -199,13 +199,6 @@ const HolisticProgressMenu = (props) => (
 
 const navLinkClass = ({ isActive }) => 
   `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all my-0.5 ${
-    isActive 
-      ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white shadow-md shadow-orange-500/20' 
-      : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
-  }`;
-
-const navLinkFlexBetweenClass = ({ isActive }) => 
-  `flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all my-0.5 ${
     isActive 
       ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white shadow-md shadow-orange-500/20' 
       : 'text-slate-300 hover:text-white hover:bg-slate-800/70'
@@ -313,7 +306,7 @@ const Sidebar = () => {
             </div>
           </div>
           <div className="flex flex-col">
-            <span className="text-[14px] font-bold text-white tracking-tight leading-tight">Teacher Portal</span>
+            <span className="text-[14px] font-bold text-white tracking-tight leading-tight">{t('teacherPortal', 'Teacher Portal')}</span>
             <span className="text-[10px] text-slate-400 font-medium">Multi-School ERP v3.7</span>
           </div>
         </div>
@@ -324,7 +317,7 @@ const Sidebar = () => {
          <div className="flex bg-slate-900/90 rounded-xl overflow-hidden border border-slate-700/70 focus-within:border-[#ff5c0a] transition-colors">
            <input 
              type="text" 
-             placeholder="Search Menu..." 
+             placeholder={t('searchMenu', 'Search Menu...')} 
              className="w-full bg-transparent text-xs px-3 py-2 focus:outline-none placeholder-slate-400 text-white"
              value={search}
              onChange={e => setSearch(e.target.value)}
@@ -340,53 +333,53 @@ const Sidebar = () => {
         
         {/* MAIN NAVIGATION */}
         <div className="mb-2 mt-2">
-          {renderSectionHeader('MAIN NAVIGATION', 'Main Navigation')}
+          {renderSectionHeader('MAIN NAVIGATION', t('mainNavigation', 'Main Navigation'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'MAIN NAVIGATION' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/" className={navLinkClass}><LayoutDashboard className="w-[18px] h-[18px]" /> Dashboard</NavLink></li>
-              <li><NavLink to="/my-profile" className={navLinkClass}><User className="w-[18px] h-[18px] text-red-400" /> My Profile</NavLink></li>
-              <li><NavLink to="/loans" className={navLinkClass}><DollarSign className="w-[18px] h-[18px] text-purple-400" /> My Loans &amp; Advances</NavLink></li>
-              <li><LiveClassesMenu isOpen={openSubmenu === 'Live Classes' || !!search.trim()} onToggle={() => toggleSubmenu('Live Classes')} /></li>
-              <li><NavLink to="/complaints" className={navLinkClass}><AlertCircle className="w-[18px] h-[18px] text-orange-400" /> Complaints</NavLink></li>
-              <li><NavLink to="/leave" className={navLinkClass}><FileText className="w-[18px] h-[18px] text-pink-500" /> Apply Leave</NavLink></li>
-              <li><NavLink to="/health" className={navLinkClass}><Heart className="w-[18px] h-[18px] text-green-400" /> Health Records</NavLink></li>
-              <li><NavLink to="/timetable" className={navLinkClass}><CalendarDays className="w-[18px] h-[18px] text-purple-500" /> My Timetable</NavLink></li>
+              <li><NavLink to="/" className={navLinkClass}><LayoutDashboard className="w-[18px] h-[18px]" /> {t('dashboard', 'Dashboard')}</NavLink></li>
+              <li><NavLink to="/my-profile" className={navLinkClass}><User className="w-[18px] h-[18px] text-red-400" /> {t('myProfile', 'My Profile')}</NavLink></li>
+              <li><NavLink to="/loans" className={navLinkClass}><DollarSign className="w-[18px] h-[18px] text-purple-400" /> {t('loans', 'My Loans & Advances')}</NavLink></li>
+              <li><LiveClassesMenu t={t} isOpen={openSubmenu === 'Live Classes' || !!search.trim()} onToggle={() => toggleSubmenu('Live Classes')} /></li>
+              <li><NavLink to="/complaints" className={navLinkClass}><AlertCircle className="w-[18px] h-[18px] text-orange-400" /> {t('complaints', 'Complaints')}</NavLink></li>
+              <li><NavLink to="/leave" className={navLinkClass}><FileText className="w-[18px] h-[18px] text-pink-500" /> {t('leave', 'Apply Leave')}</NavLink></li>
+              <li><NavLink to="/health" className={navLinkClass}><Heart className="w-[18px] h-[18px] text-green-400" /> {t('health', 'Health Records')}</NavLink></li>
+              <li><NavLink to="/timetable" className={navLinkClass}><CalendarDays className="w-[18px] h-[18px] text-purple-500" /> {t('timetable', 'My Timetable')}</NavLink></li>
             </ul>
           </div>
         </div>
         
         {/* STUDENTS */}
         <div className="mb-2">
-          {renderSectionHeader('STUDENTS', 'Students')}
+          {renderSectionHeader('STUDENTS', t('students', 'Students'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDENTS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> Student List</NavLink></li>
-              <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> Student Attendance</NavLink></li>
+              <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> {t('studentList', 'Student List')}</NavLink></li>
+              <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> {t('studentAttendance', 'Student Attendance')}</NavLink></li>
             </ul>
           </div>
         </div>
 
         {/* ONLINE EXAMS */}
         <div className="mb-2">
-          {renderSectionHeader('ONLINE EXAMS', 'Online Exams')}
+          {renderSectionHeader('ONLINE EXAMS', t('onlineExams', 'Online Exams'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'ONLINE EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/online-exams" className={navLinkClass}><PenTool className="w-[18px] h-[18px] text-purple-400" /> Manage Online Exams</NavLink></li>
-              <li><NavLink to="/question-bank" className={navLinkClass}><List className="w-[18px] h-[18px] text-cyan-400" /> Question Bank</NavLink></li>
+              <li><NavLink to="/online-exams" className={navLinkClass}><PenTool className="w-[18px] h-[18px] text-purple-400" /> {t('manageOnlineExams', 'Manage Online Exams')}</NavLink></li>
+              <li><NavLink to="/question-bank" className={navLinkClass}><List className="w-[18px] h-[18px] text-cyan-400" /> {t('questionBank', 'Question Bank')}</NavLink></li>
             </ul>
           </div>
         </div>
 
         {/* EXAMS */}
         <div className="mb-2">
-          {renderSectionHeader('EXAMS', 'Exams')}
+          {renderSectionHeader('EXAMS', t('exams', 'Exams'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/offline-exams" className={navLinkClass}><List className="w-[18px] h-[18px] text-pink-400" /> Manage Offline Exams</NavLink></li>
-              <li><NavLink to="/admit-cards" className={navLinkClass}><CreditCard className="w-[18px] h-[18px] text-amber-400" /> Admit Cards</NavLink></li>
-              <li><NavLink to="/enter-marks" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-green-400" /> Enter Marks</NavLink></li>
-              <li><NavLink to="/upload-marksheet" className={navLinkClass}><UploadCloud className="w-[18px] h-[18px] text-purple-400" /> Upload Marksheet</NavLink></li>
-              <li><NavLink to="/generate-marksheet" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-blue-400" /> Generate Marksheet</NavLink></li>
+              <li><NavLink to="/offline-exams" className={navLinkClass}><List className="w-[18px] h-[18px] text-pink-400" /> {t('manageOfflineExams', 'Manage Offline Exams')}</NavLink></li>
+              <li><NavLink to="/admit-cards" className={navLinkClass}><CreditCard className="w-[18px] h-[18px] text-amber-400" /> {t('admitCards', 'Admit Cards')}</NavLink></li>
+              <li><NavLink to="/enter-marks" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-green-400" /> {t('enterMarks', 'Enter Marks')}</NavLink></li>
+              <li><NavLink to="/upload-marksheet" className={navLinkClass}><UploadCloud className="w-[18px] h-[18px] text-purple-400" /> {t('uploadMarksheet', 'Upload Marksheet')}</NavLink></li>
+              <li><NavLink to="/generate-marksheet" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-blue-400" /> {t('generateMarksheet', 'Generate Marksheet')}</NavLink></li>
             </ul>
           </div>
         </div>
@@ -396,8 +389,8 @@ const Sidebar = () => {
           {renderSectionHeader('STUDY MANAGEMENT', t('studyManagement', 'Study Management'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDY MANAGEMENT' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/classwork" className={navLinkClass}><Book className="w-[18px] h-[18px] text-yellow-500" /> Classwork & Logbook</NavLink></li>
-              <li><NavLink to="/assignments" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-red-400" /> Homework & Assignments</NavLink></li>
+              <li><NavLink to="/classwork" className={navLinkClass}><Book className="w-[18px] h-[18px] text-yellow-500" /> {t('classwork', 'Classwork & Logbook')}</NavLink></li>
+              <li><NavLink to="/assignments" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-red-400" /> {t('assignments', 'Homework & Assignments')}</NavLink></li>
             </ul>
           </div>
         </div>
@@ -407,14 +400,14 @@ const Sidebar = () => {
           {renderSectionHeader('DOCUMENTS', t('documents', 'Documents'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'DOCUMENTS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/certificates" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-cyan-500" /> Certificates & Documents</NavLink></li>
-              <li><NavLink to="/apps-center" className={navLinkClass}><Grid className="w-[18px] h-[18px] text-orange-400" /> Apps Center</NavLink></li>
-              <PTMMenu isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
-              <LessonPlannerMenu isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
-              <OSMMenu isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
-              <AssessmentMenu isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
-              <LeadManagementMenu isOpen={openSubmenu === 'Lead Management' || !!search.trim()} onToggle={() => toggleSubmenu('Lead Management')} />
-              <SurveysMenu isOpen={openSubmenu === 'Surveys & Feedback' || !!search.trim()} onToggle={() => toggleSubmenu('Surveys & Feedback')} />
+              <li><NavLink to="/certificates" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-cyan-500" /> {t('certificates', 'Certificates & Documents')}</NavLink></li>
+              <li><NavLink to="/apps-center" className={navLinkClass}><Grid className="w-[18px] h-[18px] text-orange-400" /> {t('appsCenter', 'Apps Center')}</NavLink></li>
+              <PTMMenu t={t} isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
+              <LessonPlannerMenu t={t} isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
+              <OSMMenu t={t} isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
+              <AssessmentMenu t={t} isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
+              <LeadManagementMenu t={t} isOpen={openSubmenu === 'Lead Management' || !!search.trim()} onToggle={() => toggleSubmenu('Lead Management')} />
+              <SurveysMenu t={t} isOpen={openSubmenu === 'Surveys & Feedback' || !!search.trim()} onToggle={() => toggleSubmenu('Surveys & Feedback')} />
             </ul>
           </div>
         </div>
@@ -424,8 +417,8 @@ const Sidebar = () => {
           {renderSectionHeader('COMMUNICATION', t('communication', 'Communication'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'COMMUNICATION' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/messages" className={navLinkClass}><MessageCircle className="w-[18px] h-[18px] text-purple-400" /> Messages</NavLink></li>
-              <HolisticProgressMenu isOpen={openSubmenu === 'Holistic Progress Card' || !!search.trim()} onToggle={() => toggleSubmenu('Holistic Progress Card')} />
+              <li><NavLink to="/messages" className={navLinkClass}><MessageCircle className="w-[18px] h-[18px] text-purple-400" /> {t('messages', 'Messages')}</NavLink></li>
+              <HolisticProgressMenu t={t} isOpen={openSubmenu === 'Holistic Progress Card' || !!search.trim()} onToggle={() => toggleSubmenu('Holistic Progress Card')} />
             </ul>
           </div>
         </div>

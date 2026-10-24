@@ -10,6 +10,7 @@ import {
   List, FileQuestion, MessageSquare, MessageCircle, Activity, CreditCard, X, ArrowRight
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useLanguage } from '../context/LanguageContext';
 import ClassicTeacherLayout from './layouts/ClassicTeacherLayout';
 import { teacherService } from '../api/teacherService';
 
@@ -207,6 +208,7 @@ const ecosystemModules = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const { currentTheme, currentLayout } = useTheme();
+  const { t } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hubSearch, setHubSearch] = useState('');
   const [hubTab, setHubTab] = useState('All');
@@ -217,10 +219,10 @@ const Dashboard = () => {
   // Dynamic time-based greeting (Morning, Afternoon, Evening, Night)
   const getTimeGreeting = () => {
     const hour = new Date().getHours();
-    if (hour >= 4 && hour < 12) return 'Good Morning';
-    if (hour >= 12 && hour < 17) return 'Good Afternoon';
-    if (hour >= 17 && hour < 22) return 'Good Evening';
-    return 'Good Evening';
+    if (hour >= 4 && hour < 12) return t('goodMorning', 'Good Morning');
+    if (hour >= 12 && hour < 17) return t('goodAfternoon', 'Good Afternoon');
+    if (hour >= 17 && hour < 22) return t('goodEvening', 'Good Evening');
+    return t('goodEvening', 'Good Evening');
   };
 
   // Teacher profile state for personalized greeting (prevents showing superadmin in Teacher Portal)
@@ -425,14 +427,14 @@ const Dashboard = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
               <StatCard 
                 id="students"
-                title="My Students" 
-                fullName="Total Enrolled Students"
+                title={t('myStudents', 'My Students')} 
+                fullName={t('totalEnrolledStudents', 'Total Enrolled Students')}
                 value={stats.students || 29} 
                 icon={Users} 
                 iconBg="bg-[#0ea5e9]" 
                 strokeColor="#0284c7"
                 linkTo="/students"
-                actionText="View all students"
+                actionText={t('viewAllStudents', 'View all students')}
                 trend="Active Batch"
                 trendType="positive"
                 delay={0}
@@ -441,14 +443,14 @@ const Dashboard = () => {
               />
               <StatCard 
                 id="classes"
-                title="My Classes" 
-                fullName="Assigned Classes & Lectures"
+                title={t('myClasses', 'My Classes')} 
+                fullName={t('assignedClassesLectures', 'Assigned Classes & Lectures')}
                 value={stats.classes || 15} 
                 icon={BookOpen} 
                 iconBg="bg-[#10b981]" 
                 strokeColor="#059669"
                 linkTo="/timetable"
-                actionText="View class schedule"
+                actionText={t('viewClassSchedule', 'View class schedule')}
                 trend="1133% Active"
                 trendType="positive"
                 delay={80}
@@ -457,14 +459,14 @@ const Dashboard = () => {
               />
               <StatCard 
                 id="attendance"
-                title="Attendance Today" 
-                fullName="Today's Student Attendance"
+                title={t('attendanceToday', 'Attendance Today')} 
+                fullName={t('todaysStudentAttendance', "Today's Student Attendance")}
                 value={(stats.attendance && stats.attendance !== '0%') ? stats.attendance : '100%'} 
                 icon={CheckCircle} 
                 iconBg="bg-[#6366f1]" 
                 strokeColor="#4f46e5"
                 linkTo="/student-attendance"
-                actionText="Mark attendance"
+                actionText={t('markAttendance', 'Mark attendance')}
                 trend="100% Present"
                 trendType="positive"
                 delay={160}
@@ -473,14 +475,14 @@ const Dashboard = () => {
               />
               <StatCard 
                 id="exams"
-                title="Pending Exams" 
-                fullName="Upcoming & Scheduled Exams"
+                title={t('pendingExams', 'Pending Exams')} 
+                fullName={t('upcomingScheduledExams', 'Upcoming & Scheduled Exams')}
                 value={stats.exams || 4} 
                 icon={AlertCircle} 
                 iconBg="bg-[#8b5cf6]" 
                 strokeColor="#7c3aed"
                 linkTo="/offline-exams"
-                actionText="View exam schedule"
+                actionText={t('viewExamSchedule', 'View exam schedule')}
                 trend="4 Scheduled"
                 trendType="alert"
                 delay={240}
@@ -489,14 +491,14 @@ const Dashboard = () => {
               />
               <StatCard 
                 id="notices"
-                title="Notices" 
-                fullName="Active School Circulars"
+                title={t('notices', 'Notices')} 
+                fullName={t('activeSchoolCirculars', 'Active School Circulars')}
                 value={stats.notices || 4} 
                 icon={Bell} 
                 iconBg="bg-[#f43f5e]" 
                 strokeColor="#e11d48"
                 linkTo="/messages"
-                actionText="View all notices"
+                actionText={t('viewAllNotices', 'View all notices')}
                 trend="4 Live Bulletins"
                 trendType="positive"
                 delay={320}

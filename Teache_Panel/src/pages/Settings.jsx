@@ -173,8 +173,8 @@ const Settings = () => {
             <SettingsIcon className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800">Settings &amp; Preferences</h1>
-            <p className="text-xs text-gray-500">Configure language, visual aesthetics, notifications, and security</p>
+            <h1 className="text-xl font-bold text-gray-800">{t('settingsPreferences', 'Settings & Preferences')}</h1>
+            <p className="text-xs text-gray-500">{t('settingsDesc', 'Configure language, visual aesthetics, notifications, and security')}</p>
           </div>
         </div>
       </div>
@@ -184,10 +184,10 @@ const Settings = () => {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-gray-200 pb-2 overflow-x-auto">
           {[
-            { id: 'general', label: 'General & Localization', icon: Globe },
-            { id: 'notifications', label: 'Notifications & Alerts', icon: Bell },
-            { id: 'security', label: 'Account & Password', icon: Shield },
-            { id: 'themes', label: 'Theme & Aesthetics', icon: Palette }
+            { id: 'general', label: t('generalLocalization', 'General & Localization'), icon: Globe },
+            { id: 'notifications', label: t('notificationsAlerts', 'Notifications & Alerts'), icon: Bell },
+            { id: 'security', label: t('accountPassword', 'Account & Password'), icon: Shield },
+            { id: 'themes', label: t('themeAesthetics', 'Theme & Aesthetics'), icon: Palette }
           ].map(tab => {
             const Icon = tab.icon;
             return (
@@ -216,29 +216,32 @@ const Settings = () => {
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                 <div className="flex items-center gap-2">
                   <Globe className="w-5 h-5 text-sky-500" />
-                  <h3 className="text-sm font-bold text-gray-800">Portal Language ({supportedLanguages.length})</h3>
+                  <h3 className="text-sm font-bold text-gray-800">{t('portalLanguage', 'Portal Language')} (2)</h3>
                 </div>
                 <span className="text-[10px] bg-sky-50 text-sky-600 font-bold px-2 py-0.5 rounded-full">
                   Current: {currentLang}
                 </span>
               </div>
               <p className="text-xs text-gray-500">
-                Choose your preferred portal language. Changing language immediately translates the entire website in real-time.
+                Choose your preferred portal language (English or Hindi). Changing language immediately updates the portal interface in real-time.
               </p>
               
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-72 overflow-y-auto p-1 border border-gray-100 rounded-xl bg-gray-50/50">
+              <div className="grid grid-cols-2 gap-3 p-1.5 border border-gray-100 rounded-xl bg-gray-50/50">
                 {supportedLanguages.map((l) => (
                   <button
                     key={l.code}
                     onClick={() => changeLanguage(l.name)}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer flex flex-col items-center text-center ${
+                    className={`py-3 px-4 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-3 text-center ${
                       currentLang === l.name
                         ? 'bg-orange-50 border-[#ff5c0a] text-[#ff5c0a] shadow-xs'
                         : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-100'
                     }`}
                   >
-                    <span className="font-bold text-xs">{l.native}</span>
-                    <span className="text-[10px] text-gray-400 font-normal">{l.name}</span>
+                    <span className="text-xl">{l.flag || '🌐'}</span>
+                    <div className="flex flex-col text-left">
+                      <span className="font-bold text-xs">{l.native}</span>
+                      <span className="text-[10px] text-gray-400 font-normal">{l.name}</span>
+                    </div>
                   </button>
                 ))}
               </div>
