@@ -136,5 +136,15 @@ body {
 .goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-balloon, .goog-tooltip, .goog-tooltip:hover { display: none !important; visibility: hidden !important; }
 body { top: 0px !important; position: static !important; }
 .skiptranslate > iframe { display: none !important; }
-#google_translate_element, .goog-te-gadget { display: none !important; }
+#google_translate_element,
+.goog-te-gadget {
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 font { background-color: transparent !important; box-shadow: none !important; }

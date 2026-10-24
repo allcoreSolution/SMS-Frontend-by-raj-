@@ -6,36 +6,51 @@ const LanguageContext = createContext();
 export const triggerGoogleTranslate = (langCode) => {
   try {
     const isEn = !langCode || langCode === 'en' || langCode.toLowerCase() === 'english';
+    const targetCode = isEn ? 'en' : 'hi';
+    const host = window.location.hostname;
+
     if (isEn) {
       document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
-      if (combo) {
-        combo.value = '';
-        combo.dispatchEvent(new Event('change', { bubbles: true }));
-      }
-      return;
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
+      document.cookie = 'googtrans=/en/en; path=/;';
+      document.cookie = `googtrans=/en/en; path=/; domain=${host};`;
+    } else {
+      const val = `/en/${targetCode}`;
+      document.cookie = `googtrans=${val}; path=/;`;
+      document.cookie = `googtrans=${val}; path=/; domain=${host};`;
+      document.cookie = `googtrans=/auto/${targetCode}; path=/;`;
     }
-
-    const val = `/en/${langCode}`;
-    document.cookie = `googtrans=${val}; path=/;`;
-    document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
 
     const applyToCombo = () => {
       const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
       if (combo) {
-        const desiredVal = langCode.toLowerCase();
+        let matched = false;
         if (combo.options && combo.options.length > 0) {
           for (let i = 0; i < combo.options.length; i++) {
             const optVal = (combo.options[i].value || '').toLowerCase();
-            if (optVal === desiredVal) {
-              combo.selectedIndex = i;
-              combo.options[i].selected = true;
-              break;
+            const optText = (combo.options[i].text || '').toLowerCase();
+            if (isEn) {
+              if (optVal === 'en' || optVal === '' || optText.includes('english') || optText.includes('select')) {
+                combo.selectedIndex = i;
+                combo.options[i].selected = true;
+                combo.value = combo.options[i].value;
+                matched = true;
+                break;
+              }
+            } else {
+              if (optVal === 'hi' || optText.includes('hindi') || optText.includes('हिन्दी')) {
+                combo.selectedIndex = i;
+                combo.options[i].selected = true;
+                combo.value = combo.options[i].value;
+                matched = true;
+                break;
+              }
             }
           }
         }
-        combo.value = desiredVal;
+        if (!matched) {
+          combo.value = isEn ? '' : targetCode;
+        }
         combo.dispatchEvent(new Event('change', { bubbles: true }));
         try {
           combo.dispatchEvent(new Event('input', { bubbles: true }));
@@ -46,11 +61,9 @@ export const triggerGoogleTranslate = (langCode) => {
     };
 
     if (!applyToCombo()) {
-      setTimeout(applyToCombo, 100);
-      setTimeout(applyToCombo, 300);
-      setTimeout(applyToCombo, 700);
-      setTimeout(applyToCombo, 1500);
-      setTimeout(applyToCombo, 3000);
+      [50, 150, 350, 700, 1200, 2000, 3500].forEach((delay) => {
+        setTimeout(applyToCombo, delay);
+      });
     }
   } catch (e) {
     console.warn('Google translate trigger error:', e);
