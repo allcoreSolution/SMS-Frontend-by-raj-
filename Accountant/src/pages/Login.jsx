@@ -56,11 +56,7 @@ const Login = () => {
           didOpen: () => Swal.showLoading()
         });
 
-        const res = await fetch('http://localhost:5050/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: resetEmail })
-        }).then(r => r.json());
+        const res = await authService.forgotPassword(resetEmail);
 
         if (res.success) {
           const { value: formValues } = await Swal.fire({
@@ -96,15 +92,11 @@ const Login = () => {
               didOpen: () => Swal.showLoading()
             });
 
-            const resetRes = await fetch('http://localhost:5050/api/auth/reset-password', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                email: resetEmail, 
-                otp: formValues.otp, 
-                newPassword: formValues.newPassword 
-              })
-            }).then(r => r.json());
+            const resetRes = await authService.resetPassword({ 
+              email: resetEmail, 
+              otp: formValues.otp, 
+              newPassword: formValues.newPassword 
+            });
 
             if (resetRes.success) {
               Swal.fire({
