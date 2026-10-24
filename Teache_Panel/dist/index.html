@@ -5,20 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teacher Portal - Multi-School ERP</title>
-    <script type="module" crossorigin src="/assets/index-BEmPxR8f.js"></script>
+    <script type="module" crossorigin src="/assets/index-gEBkYndt.js"></script>
     <link rel="stylesheet" crossorigin href="/assets/index-DHFRtLtg.css">
   </head>
   <body>
     <script type="text/javascript">
       (function() {
         try {
-          var saved = localStorage.getItem('erp_language');
-          var isHindi = saved && (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi');
+          var sessionLang = sessionStorage.getItem('erp_language');
+          var isHindi = sessionLang && (sessionLang.toLowerCase() === 'hindi' || sessionLang.toLowerCase() === 'hi');
           var host = window.location.hostname;
           if (isHindi) {
             document.cookie = 'googtrans=/en/hi; path=/;';
             document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
           } else {
+            // Default on open is strictly English!
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
             document.cookie = 'googtrans=/en/en; path=/;';

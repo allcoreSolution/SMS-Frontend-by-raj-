@@ -71,9 +71,10 @@ export const triggerGoogleTranslate = (langCode) => {
 };
 
 export function LanguageProvider({ children }) {
+  // Always default to English on open
   const [currentLang, setCurrentLangState] = useState(() => {
     try {
-      const saved = localStorage.getItem('portal_language') || localStorage.getItem('app_language');
+      const saved = sessionStorage.getItem('portal_language');
       return saved === 'hi' ? 'hi' : 'en';
     } catch (e) {
       return 'en';
@@ -82,11 +83,14 @@ export function LanguageProvider({ children }) {
 
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Initialize on mount
+  // Initialize on mount: default English on open
   useEffect(() => {
-    if (currentLang === 'hi') {
+    const session = sessionStorage.getItem('portal_language');
+    if (session === 'hi') {
+      setCurrentLangState('hi');
       triggerGoogleTranslate('hi');
     } else {
+      setCurrentLangState('en');
       triggerGoogleTranslate('en');
     }
   }, []);
@@ -95,9 +99,7 @@ export function LanguageProvider({ children }) {
     const validCode = langCode === 'hi' ? 'hi' : 'en';
     setCurrentLangState(validCode);
     try {
-      localStorage.setItem('portal_language', validCode);
-      localStorage.setItem('app_language', validCode);
-      localStorage.setItem('app_language_code', validCode);
+      sessionStorage.setItem('portal_language', validCode);
     } catch (e) {}
 
     // Trigger Google Translate engine

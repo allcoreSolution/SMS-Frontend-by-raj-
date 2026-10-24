@@ -13,13 +13,14 @@
     <script type="text/javascript">
       (function() {
         try {
-          var saved = localStorage.getItem('portal_language') || localStorage.getItem('app_language');
-          var isHindi = saved === 'hi';
           var host = window.location.hostname;
+          var sessionLang = sessionStorage.getItem('portal_language');
+          var isHindi = sessionLang === 'hi';
           if (isHindi) {
             document.cookie = 'googtrans=/en/hi; path=/;';
             document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
           } else {
+            // Default on open is strictly English!
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
             document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
             document.cookie = 'googtrans=/en/en; path=/;';

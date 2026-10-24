@@ -80,10 +80,11 @@ export const triggerGoogleTranslate = (langCode) => {
 };
 
 export const LanguageProvider = ({ children }) => {
+  // Always default to English on open
   const [currentLang, setCurrentLang] = useState(() => {
     try {
-      const saved = localStorage.getItem('erp_language');
-      return (saved && (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi')) ? 'Hindi' : 'English';
+      const session = sessionStorage.getItem('erp_language');
+      return (session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi')) ? 'Hindi' : 'English';
     } catch (e) {
       return 'English';
     }
@@ -91,49 +92,26 @@ export const LanguageProvider = ({ children }) => {
 
   const [currentLangCode, setCurrentLangCode] = useState(() => {
     try {
-      const saved = localStorage.getItem('erp_language');
-      return (saved && (saved.toLowerCase() === 'hindi' || saved.toLowerCase() === 'hi')) ? 'hi' : 'en';
+      const session = sessionStorage.getItem('erp_language');
+      return (session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi')) ? 'hi' : 'en';
     } catch (e) {
       return 'en';
     }
   });
 
-  // Initialize on mount
+  // Initialize on mount: default on open is strictly English
   useEffect(() => {
-    const initLang = async () => {
-      // 1. Strictly respect local storage first so refresh NEVER resets user choice
-      let selectedLang = localStorage.getItem('erp_language');
-
-      // 2. Only if no local preference exists at all, fallback to backend profile
-      if (!selectedLang) {
-        const token = localStorage.getItem('token');
-        if (token) {
-          try {
-            const res = await axiosInstance.get('/profile/me');
-            const backendLang = res.data?.data?.preferences?.language;
-            if (backendLang) {
-              selectedLang = backendLang;
-            }
-          } catch (err) {}
-        }
-      }
-
-      if (!selectedLang) {
-        selectedLang = 'English';
-      }
-
-      const isHindi = selectedLang.toLowerCase() === 'hindi' || selectedLang.toLowerCase() === 'hi';
-      const targetName = isHindi ? 'Hindi' : 'English';
-      const targetCode = isHindi ? 'hi' : 'en';
-
-      setCurrentLang(targetName);
-      setCurrentLangCode(targetCode);
-      localStorage.setItem('erp_language', targetName);
-      localStorage.setItem('erp_lang_code', targetCode);
+    const initLang = () => {
+      const session = sessionStorage.getItem('erp_language');
+      const isHindi = session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi');
 
       if (isHindi) {
+        setCurrentLang('Hindi');
+        setCurrentLangCode('hi');
         triggerGoogleTranslate('hi');
       } else {
+        setCurrentLang('English');
+        setCurrentLangCode('en');
         triggerGoogleTranslate('en');
       }
     };
@@ -150,8 +128,8 @@ export const LanguageProvider = ({ children }) => {
     setCurrentLangCode(targetCode);
 
     try {
-      localStorage.setItem('erp_language', targetName);
-      localStorage.setItem('erp_lang_code', targetCode);
+      sessionStorage.setItem('erp_language', targetName);
+      sessionStorage.setItem('erp_lang_code', targetCode);
     } catch (e) {}
 
     // Trigger Google Translate engine
