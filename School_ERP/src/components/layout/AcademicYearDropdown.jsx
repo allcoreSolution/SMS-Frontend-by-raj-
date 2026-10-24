@@ -26,10 +26,10 @@ const AcademicYearDropdown = () => {
   }, []);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative shrink-0" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
+        className="flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
       >
         <CalendarDays className="w-3.5 h-3.5 text-gray-500" />
         <span>{selectedYear.replace('20', '').replace('-20', '-')}</span>

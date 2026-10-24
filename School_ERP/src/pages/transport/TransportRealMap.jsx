@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useId } from "react";
-import { Navigation, Bus, MapPin, Compass, Layers, Crosshair, RefreshCw, AlertCircle, Phone, Gauge, Fuel } from "lucide-react";
+import { Navigation, Bus, MapPin, Compass, Layers, Crosshair, RefreshCw, AlertCircle, Phone, Gauge, Fuel, Radio, ShieldAlert } from "lucide-react";
+import { io } from "socket.io-client";
 import { transportService } from "../../api/transportService";
 
 export default function TransportRealMap({
@@ -8,7 +9,8 @@ export default function TransportRealMap({
   selectedVehicle = null,
   onSelectVehicle = () => {},
   height = "520px",
-  onRefresh = () => {}
+  onRefresh = () => {},
+  onVehicleLocationUpdate = null
 }) {
   const containerId = useId().replace(/:/g, "_");
   const mapContainerRef = useRef(null);
@@ -22,6 +24,8 @@ export default function TransportRealMap({
   const [mapInitError, setMapInitError] = useState(false);
   const [gpsSyncing, setGpsSyncing] = useState(false);
   const [syncStatus, setSyncStatus] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [activeSos, setActiveSos] = useState(null);
 
   // Ensure Leaflet is available safely
   useEffect(() => {
@@ -63,6 +67,68 @@ export default function TransportRealMap({
       if (timeoutId) clearTimeout(timeoutId);
     };
   }, []);
+
+  // Real-Time Socket.IO Listener for Live Driver GPS Updates & SOS Alerts
+  useEffect(() => {
+    let socket = null;
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5050/api";
+      const socketUrl = apiUrl.replace(/\/api\/?$/, "");
+      const token = localStorage.getItem("token") || "";
+
+      socket = io(socketUrl, {
+        auth: { token },
+        transports: ["websocket", "polling"],
+        reconnectionAttempts: 10,
+        reconnectionDelay: 2000
+      });
+
+      socket.on("connect", () => {
+        setSocketConnected(true);
+      });
+
+      socket.on("disconnect", () => {
+        setSocketConnected(false);
+      });
+
+      socket.on("transport:location_update", (telemetry) => {
+        if (!telemetry || !telemetry.currentLocation) return;
+        const { vehicleNumber, currentLocation, speed, lastPing } = telemetry;
+
+        // Animate/update the specific bus marker immediately on Leaflet map
+        const marker = markersRef.current[vehicleNumber] || markersRef.current[telemetry.vehicleId];
+        if (marker && marker.setLatLng) {
+          marker.setLatLng([currentLocation.lat, currentLocation.lng]);
+        }
+
+        setSyncStatus(`Live Telemetry: ${vehicleNumber} @ ${currentLocation.lat.toFixed(4)}, ${currentLocation.lng.toFixed(4)} (${speed || 0} km/h)`);
+        setTimeout(() => setSyncStatus(""), 4000);
+
+        if (onVehicleLocationUpdate) {
+          onVehicleLocationUpdate(telemetry);
+        }
+      });
+
+      socket.on("transport:sos_alert", (sos) => {
+        setActiveSos(sos);
+      });
+
+      socket.on("transport:trip_status", (tripData) => {
+        setSyncStatus(`Trip Alert: Bus ${tripData.vehicleNumber} status is now ${tripData.status}`);
+        setTimeout(() => setSyncStatus(""), 5000);
+        if (onRefresh) onRefresh();
+      });
+
+    } catch (e) {
+      console.warn("Socket.io transport listener error handled:", e);
+    }
+
+    return () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    };
+  }, [onVehicleLocationUpdate, onRefresh]);
 
   // Initialize Leaflet Map Safely
   useEffect(() => {
@@ -404,6 +470,14 @@ export default function TransportRealMap({
           <span>{gpsSyncing ? "Acquiring GPS..." : "📡 Sync Real Device GPS"}</span>
         </button>
 
+        {/* Socket.IO Live Status Indicator */}
+        <div className="bg-white/95 backdrop-blur-md border border-slate-200/80 shadow-sm rounded-xl px-2.5 py-1.5 flex items-center gap-1.5 text-xs font-bold text-slate-700">
+          <Radio className={`w-3.5 h-3.5 ${socketConnected ? 'text-emerald-600 animate-pulse' : 'text-slate-400'}`} />
+          <span className="text-[11px]">
+            {socketConnected ? "Live Socket: Online" : "Socket: Polling"}
+          </span>
+        </div>
+
         {/* Fit All Bounds Button */}
         <button
           onClick={handleFitAll}
@@ -422,6 +496,35 @@ export default function TransportRealMap({
           <RefreshCw className="w-3.5 h-3.5 text-slate-600" />
         </button>
       </div>
+
+      {/* EMERGENCY SOS BANNER OVERLAY */}
+      {activeSos && (
+        <div className="absolute top-16 left-3 right-3 z-30 bg-red-600/95 backdrop-blur-md text-white p-3.5 rounded-2xl border-2 border-red-400 shadow-2xl flex items-center justify-between animate-bounce">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-white text-red-600 flex items-center justify-center font-black text-lg shadow-md">
+              <ShieldAlert className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <div className="font-extrabold text-sm uppercase tracking-wider flex items-center gap-2">
+                <span>🚨 EMERGENCY {activeSos.type || 'SOS'} ALERT</span>
+                <span className="bg-white text-red-700 text-[10px] px-2 py-0.5 rounded-full font-black">HIGH PRIORITY</span>
+              </div>
+              <div className="text-xs text-red-100 font-semibold mt-0.5">
+                Bus <strong className="text-white underline">{activeSos.vehicleNumber}</strong> - Driver: <strong>{activeSos.driverName || 'Assigned'}</strong>
+              </div>
+              <div className="text-[11px] text-red-200 mt-0.5">
+                {activeSos.description || 'Emergency panic trigger activated from Driver App'}
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => setActiveSos(null)}
+            className="bg-white/20 hover:bg-white/30 text-white border-none px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition-all"
+          >
+            Acknowledge
+          </button>
+        </div>
+      )}
 
       {/* GPS Status Toast Bar */}
       {syncStatus && (

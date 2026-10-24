@@ -155,11 +155,11 @@ const Header = ({ toggleSidebar }) => {
   const menuRef = useRef(null);
   const searchInputRef = useRef(null);
 
-  const activeUser = currentUserData || userData;
+  const activeUser = currentUserData || {};
   const displayName = activeUser?.name || activeUser?.username || 'Administrator';
   const displayEmail = activeUser?.email || 'admin@schoolerp.com';
   const userAvatar = activeUser?.avatar || '';
-  const initials = displayName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'AD';
+  const initials = String(displayName).trim().split(/\s+/).map(n => n[0] || '').join('').substring(0, 2).toUpperCase() || 'AD';
   const schoolName = activeUser?.tenant?.schoolName || 'ALL CORE SOLUTION';
 
   const quickLinks = [
@@ -356,13 +356,13 @@ const Header = ({ toggleSidebar }) => {
             <Menu className="w-5 h-5" />
           </button>
           
-          <div className="flex items-center gap-3">
-            <span className="text-sm sm:text-base font-bold text-gray-800 tracking-tight">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none">
               ALL CORE SOLUTION
             </span>
             
-            {/* Command Center Pill */}
-            <div className="relative">
+            {/* Command Center Pill - Desktop */}
+            <div className="hidden lg:block relative shrink-0">
               <button 
                 onClick={() => setIsDesignsModalOpen(true)}
                 className="flex items-center gap-1.5 bg-white border border-gray-200/90 hover:border-gray-300 hover:bg-gray-50 px-3 py-1 rounded-full text-xs font-semibold text-gray-700 shadow-2xs transition-colors cursor-pointer"
@@ -382,40 +382,40 @@ const Header = ({ toggleSidebar }) => {
         </div>
 
         {/* Right side - Matching Screenshot */}
-        <div ref={menuRef} className="flex items-center gap-1.5 sm:gap-2.5">
+        <div ref={menuRef} className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 ml-auto">
           {/* Academic Session & Language */}
-          <div className="flex items-center gap-1 sm:gap-2 text-xs font-semibold text-gray-700">
+          <div className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-gray-700 shrink-0">
             <AcademicYearDropdown />
             <LanguageDropdown />
           </div>
 
-          {/* Search Bar Trigger on Header */}
+          {/* Search Bar Trigger - Large desktop only */}
           <button 
             type="button"
             onClick={() => setIsSearchModalOpen(true)}
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200/80 text-slate-500 rounded-xl text-xs font-medium border border-slate-200/80 transition-all cursor-pointer w-44 md:w-60 lg:w-72 shadow-2xs group"
+            className="hidden 2xl:flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200/80 text-slate-500 rounded-xl text-xs font-medium border border-slate-200/80 transition-all cursor-pointer w-48 shadow-2xs group shrink-0"
             title="Search screens, students, parents, fees... (Ctrl+K)"
           >
             <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-600 transition-colors shrink-0" />
-            <span className="flex-1 text-left truncate text-slate-400 group-hover:text-slate-600">Search screens, parents, fees...</span>
+            <span className="flex-1 text-left truncate text-slate-400 group-hover:text-slate-600">Search screens, fees...</span>
             <kbd className="hidden md:inline-flex text-[9px] font-bold text-slate-400 bg-white border border-slate-200 rounded px-1.5 py-0.5 shadow-2xs">Ctrl+K</kbd>
           </button>
 
-          {/* Search Icon Trigger for Mobile */}
+          {/* Search Icon Trigger for Laptop, Tablet & Mobile */}
           <button 
             type="button"
             onClick={() => setIsSearchModalOpen(true)}
-            className="sm:hidden w-8 h-8 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
+            className="2xl:hidden w-8 h-8 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
             title="Search (Ctrl+K)"
           >
             <Search className="w-4 h-4" />
           </button>
 
-          {/* Quick Add Menu */}
-          <div className="relative">
+          {/* Quick Add Menu - Large screens */}
+          <div className="hidden xl:block relative shrink-0">
             <button 
               onClick={() => setActiveMenu(activeMenu === 'add' ? null : 'add')}
-              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer ${
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors cursor-pointer shrink-0 ${
                 activeMenu === 'add' ? 'bg-orange-50 text-[#ff5c0a]' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
               }`}
               title="Quick Add"
@@ -468,10 +468,10 @@ const Header = ({ toggleSidebar }) => {
             )}
           </div>
             
-          {/* Direct Messages & Real Calls Quick Button */}
+          {/* Direct Messages & Real Calls Quick Button - Desktop XL only */}
           <button
             onClick={() => handleNavigate('/messages')}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors cursor-pointer relative"
+            className="hidden xl:flex w-8 h-8 rounded-full items-center justify-center text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 transition-colors cursor-pointer relative shrink-0"
             title="Messages, Voice & Video Calling"
           >
             <MessageCircle className="w-4 h-4" />
@@ -479,139 +479,139 @@ const Header = ({ toggleSidebar }) => {
           </button>
 
           {/* Notifications Menu */}
-          <div className="relative">
-              <button 
-                onClick={() => setActiveMenu(activeMenu === 'notif' ? null : 'notif')}
-                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all relative ${
-                  activeMenu === 'notif' ? 'bg-orange-50 text-[#ff5c0a] ring-2 ring-orange-500/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-                title="Notifications"
-              >
-                <Bell className="w-4 h-4" />
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black flex items-center justify-center shadow-xs animate-in zoom-in-50">
-                    {unreadCount > 99 ? '99+' : unreadCount}
-                  </span>
-                )}
-              </button>
-              
-              {activeMenu === 'notif' && (
-                <div className="absolute top-[calc(100%+8px)] right-0 w-80 bg-white border border-slate-100 rounded-2xl shadow-xl ring-1 ring-slate-900/5 z-50 py-2 animate-in fade-in slide-in-from-top-2">
-                  <div className="px-4 py-2 border-b border-slate-100 flex justify-between items-center">
-                    <p className="text-xs font-bold text-slate-800">
-                      {getTranslation('notifications', currentLang)} ({notifications.length})
-                    </p>
-                    {unreadCount > 0 ? (
-                      <button 
-                        onClick={markAllRead} 
-                        className="text-[11px] text-[#ff5c0a] font-semibold hover:underline cursor-pointer"
-                      >
-                        {getTranslation('markAllRead', currentLang)}
-                      </button>
-                    ) : (
-                      <span className="text-[10px] font-semibold text-emerald-600">All read ✓</span>
-                    )}
-                  </div>
-                  <div className="divide-y divide-slate-50 max-h-72 overflow-y-auto">
-                    {notifications.length > 0 ? (
-                      notifications.map(item => (
-                        <div 
-                           key={item.id} 
-                          onClick={() => handleNotificationClick(item)}
-                          className={`p-3 flex gap-3 hover:bg-slate-50 transition-colors cursor-pointer ${item.unread ? 'bg-orange-50/30' : ''}`}
-                        >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                            item.type === 'fee' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-[#ff5c0a]'
-                          }`}>
-                            <CheckCircle2 className="w-4 h-4" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between gap-1">
-                              <p className={`text-xs font-semibold truncate ${item.unread ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>{item.title}</p>
-                              {item.unread && (
-                                <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" title="Unread" />
-                              )}
-                            </div>
-                            <p className="text-[11px] text-slate-500 line-clamp-2">{item.desc}</p>
-                            <span className="text-[10px] text-slate-400 mt-0.5 block">{item.time}</span>
-                          </div>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="p-6 text-center text-xs text-slate-400">
-                        {getTranslation('noNotifications', currentLang)}
-                      </div>
-                    )}
-                  </div>
-                  <div className="p-2 border-t border-slate-100 text-center">
-                    <Link to="/communicate/notice-board" onClick={() => setActiveMenu(null)} className="text-xs font-semibold text-[#ff5c0a] hover:underline">
-                      {getTranslation('viewAll', currentLang)} →
-                    </Link>
-                  </div>
-                </div>
+          <div className="relative shrink-0">
+            <button 
+              onClick={() => setActiveMenu(activeMenu === 'notif' ? null : 'notif')}
+              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center transition-all relative shrink-0 cursor-pointer ${
+                activeMenu === 'notif' ? 'bg-orange-50 text-[#ff5c0a] ring-2 ring-orange-500/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+              title="Notifications"
+            >
+              <Bell className="w-4 h-4" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 bg-amber-500 text-slate-950 rounded-full text-[10px] font-black flex items-center justify-center shadow-xs animate-in zoom-in-50">
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
               )}
-            </div>
+            </button>
             
-            {/* Settings Quick Menu */}
-            <div className="relative">
-              <button 
-                onClick={() => setActiveMenu(activeMenu === 'settings' ? null : 'settings')}
-                className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all ${
-                  activeMenu === 'settings' ? 'bg-orange-50 text-[#ff5c0a] ring-2 ring-orange-500/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-                title="System Settings"
-              >
-                <Settings className={`w-4 h-4 transition-transform duration-300 ${activeMenu === 'settings' ? 'rotate-90' : ''}`} />
-              </button>
-              
-              {activeMenu === 'settings' && (
-                <div className="absolute top-[calc(100%+8px)] right-0 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl ring-1 ring-slate-900/5 z-50 p-2 animate-in fade-in slide-in-from-top-2">
-                  <div className="px-2.5 py-1.5 border-b border-slate-100 mb-1">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Administration</p>
-                  </div>
-                  <button 
-                    onClick={() => handleNavigate('/settings/school-settings')} 
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
-                  >
-                    <Settings className="w-4 h-4 text-slate-500"/> School Settings
-                  </button>
-                  <button 
-                    onClick={() => handleNavigate('/settings/roles-permissions')} 
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-slate-500"/> Roles & Permissions
-                  </button>
-                  <button 
-                    onClick={() => handleNavigate('/settings/notification-settings')} 
-                    className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
-                  >
-                    <Bell className="w-4 h-4 text-slate-500"/> Notification Alerts
-                  </button>
+            {activeMenu === 'notif' && (
+              <div className="absolute top-[calc(100%+8px)] right-0 w-72 sm:w-80 max-w-[calc(100vw-20px)] bg-white border border-slate-100 rounded-2xl shadow-xl ring-1 ring-slate-900/5 z-50 py-2 animate-in fade-in slide-in-from-top-2">
+                <div className="px-4 py-2 border-b border-slate-100 flex justify-between items-center">
+                  <p className="text-xs font-bold text-slate-800">
+                    {getTranslation('notifications', currentLang)} ({notifications.length})
+                  </p>
+                  {unreadCount > 0 ? (
+                    <button 
+                      onClick={markAllRead} 
+                      className="text-[11px] text-[#ff5c0a] font-semibold hover:underline cursor-pointer"
+                    >
+                      {getTranslation('markAllRead', currentLang)}
+                    </button>
+                  ) : (
+                    <span className="text-[10px] font-semibold text-emerald-600">All read ✓</span>
+                  )}
                 </div>
-              )}
-            </div>
+                <div className="divide-y divide-slate-50 max-h-72 overflow-y-auto">
+                  {notifications.length > 0 ? (
+                    notifications.map(item => (
+                      <div 
+                         key={item.id} 
+                        onClick={() => handleNotificationClick(item)}
+                        className={`p-3 flex gap-3 hover:bg-slate-50 transition-colors cursor-pointer ${item.unread ? 'bg-orange-50/30' : ''}`}
+                      >
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
+                          item.type === 'fee' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-[#ff5c0a]'
+                        }`}>
+                          <CheckCircle2 className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <p className={`text-xs font-semibold truncate ${item.unread ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>{item.title}</p>
+                            {item.unread && (
+                              <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0" title="Unread" />
+                            )}
+                          </div>
+                          <p className="text-[11px] text-slate-500 line-clamp-2">{item.desc}</p>
+                          <span className="text-[10px] text-slate-400 mt-0.5 block">{item.time}</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="p-6 text-center text-xs text-slate-400">
+                      {getTranslation('noNotifications', currentLang)}
+                    </div>
+                  )}
+                </div>
+                <div className="p-2 border-t border-slate-100 text-center">
+                  <Link to="/communicate/notice-board" onClick={() => setActiveMenu(null)} className="text-xs font-semibold text-[#ff5c0a] hover:underline">
+                    {getTranslation('viewAll', currentLang)} →
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          {/* Settings Quick Menu - Desktop XL only */}
+          <div className="hidden xl:block relative shrink-0">
+            <button 
+              onClick={() => setActiveMenu(activeMenu === 'settings' ? null : 'settings')}
+              className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all cursor-pointer ${
+                activeMenu === 'settings' ? 'bg-orange-50 text-[#ff5c0a] ring-2 ring-orange-500/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              }`}
+              title="System Settings"
+            >
+              <Settings className={`w-4 h-4 transition-transform duration-300 ${activeMenu === 'settings' ? 'rotate-90' : ''}`} />
+            </button>
+            
+            {activeMenu === 'settings' && (
+              <div className="absolute top-[calc(100%+8px)] right-0 w-52 bg-white border border-slate-100 rounded-2xl shadow-xl ring-1 ring-slate-900/5 z-50 p-2 animate-in fade-in slide-in-from-top-2">
+                <div className="px-2.5 py-1.5 border-b border-slate-100 mb-1">
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Administration</p>
+                </div>
+                <button 
+                  onClick={() => handleNavigate('/settings/school-settings')} 
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
+                >
+                  <Settings className="w-4 h-4 text-slate-500"/> School Settings
+                </button>
+                <button 
+                  onClick={() => handleNavigate('/settings/roles-permissions')} 
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4 text-slate-500"/> Roles & Permissions
+                </button>
+                <button 
+                  onClick={() => handleNavigate('/settings/notification-settings')} 
+                  className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-[#ff5c0a] rounded-xl transition-colors cursor-pointer"
+                >
+                  <Bell className="w-4 h-4 text-slate-500"/> Notification Alerts
+                </button>
+              </div>
+            )}
+          </div>
 
-          {/* User Profile */}
-          <div className="relative">
+          {/* User Profile - Always fully visible with right safe margin */}
+          <div className="relative shrink-0 pr-1 sm:pr-2">
             <button 
               onClick={() => setActiveMenu(activeMenu === 'profile' ? null : 'profile')}
-              className="w-9 h-9 rounded-full bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 transition-all cursor-pointer overflow-hidden"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 transition-all cursor-pointer overflow-hidden shrink-0 border border-white"
               title={displayName}
             >
               {userAvatar ? (
-                <img src={userAvatar} alt={displayName} className="w-full h-full object-cover" />
+                <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
               ) : (
                 initials
               )}
             </button>
             
             {activeMenu === 'profile' && (
-              <div className="absolute top-[calc(100%+8px)] right-0 w-64 bg-white border border-slate-100 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+              <div className="absolute top-[calc(100%+8px)] right-0 w-60 sm:w-64 max-w-[calc(100vw-20px)] bg-white border border-slate-100 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
                 {/* Dark Blue Header Card */}
-                <div className="bg-[#1e293b] p-5 text-center text-white">
-                  <div className="w-14 h-14 bg-[#ea580c] text-white rounded-full flex items-center justify-center font-bold text-base mx-auto mb-2.5 shadow-md overflow-hidden">
+                <div className="bg-[#1e293b] p-4 sm:p-5 text-center text-white">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#ea580c] text-white rounded-full flex items-center justify-center font-bold text-base mx-auto mb-2.5 shadow-md overflow-hidden border-2 border-white/20">
                     {userAvatar ? (
-                      <img src={userAvatar} alt={displayName} className="w-full h-full object-cover" />
+                      <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
                     ) : (
                       initials
                     )}

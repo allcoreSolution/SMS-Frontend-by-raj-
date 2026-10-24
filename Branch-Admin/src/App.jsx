@@ -221,7 +221,7 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
       </div>
 
       {/* Sidebar Footer - Developer Attribution */}
-      <div className="bg-[#070d1e] px-3 py-2.5 border-t border-slate-800/80 text-center">
+      <div className="shrink-0 bg-[#070d1e] px-3 py-2.5 border-t border-slate-800/80 text-center">
         <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
           <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
             &copy; 2026 School ERP
@@ -618,28 +618,40 @@ const App = () => {
           <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${desktopSidebarOpen ? 'md:ml-[240px]' : 'md:ml-0'}`}>
             <Header onToggle={handleToggleSidebar} isDesktopOpen={desktopSidebarOpen} onLogout={handleLogout} />
             
-            <main className="flex-1 overflow-y-auto bg-[#f4f7fa]">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/overview" element={<Dashboard />} />
-                <Route path="/branch-overview" element={<Dashboard />} />
-                <Route path="/branch_overview" element={<Dashboard />} />
-                <Route path="/branches-overview" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/branches" element={<Branches />} />
-                <Route path="/payments" element={<Payments />} />
-                <Route path="/templates" element={<Templates />} />
-                <Route path="/reports/login-logs" element={<LoginLogs />} />
-                <Route path="/reports/schools-usage" element={<SchoolsUsage />} />
-                <Route path="/reports/fee-collections" element={<FeeCollections />} />
-                <Route path="/reports/income-expense" element={<IncomeExpense />} />
-                <Route path="/reports/attendance-trends" element={<AttendanceTrends />} />
-                <Route path="/reports/engagement-audit" element={<EngagementAudit />} />
-                <Route path="/reports/communications" element={<CommunicationsReport />} />
-                {/* Fallback to Dashboard to avoid any dead ends */}
-                <Route path="*" element={<Dashboard />} />
-              </Routes>
+            <main className="flex-1 overflow-y-auto bg-[#f4f7fa] flex flex-col justify-between">
+              <div className="flex-1">
+                <Routes>
+                  <Route path="/" element={<Dashboard />} />
+                  <Route path="/overview" element={<Dashboard />} />
+                  <Route path="/branch-overview" element={<Dashboard />} />
+                  <Route path="/branch_overview" element={<Dashboard />} />
+                  <Route path="/branches-overview" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route path="/branches" element={<Branches />} />
+                  <Route path="/payments" element={<Payments />} />
+                  <Route path="/templates" element={<Templates />} />
+                  <Route path="/reports/login-logs" element={<LoginLogs />} />
+                  <Route path="/reports/schools-usage" element={<SchoolsUsage />} />
+                  <Route path="/reports/fee-collections" element={<FeeCollections />} />
+                  <Route path="/reports/income-expense" element={<IncomeExpense />} />
+                  <Route path="/reports/attendance-trends" element={<AttendanceTrends />} />
+                  <Route path="/reports/engagement-audit" element={<EngagementAudit />} />
+                  <Route path="/reports/communications" element={<CommunicationsReport />} />
+                  {/* Fallback to Dashboard to avoid any dead ends */}
+                  <Route path="*" element={<Dashboard />} />
+                </Routes>
+              </div>
+
+              {/* Main Portal Bottom Footer */}
+              <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
+                <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
+                  &copy; 2026 School ERP
+                </p>
+                <p className="text-[11px] font-medium text-gray-500">
+                  Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+                </p>
+              </footer>
             </main>
           </div>
         </div>

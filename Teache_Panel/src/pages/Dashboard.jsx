@@ -67,55 +67,55 @@ const StatCard = ({
 }) => (
   <div 
     style={{ animation: `riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` }}
-    className="bg-white rounded-xl p-3 sm:p-3.5 shadow-xs border border-slate-100 hover:shadow-lg hover:border-slate-200 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group theme-card cursor-pointer"
+    className="bg-white rounded-xl p-2.5 sm:px-3 sm:py-2.5 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group theme-card cursor-pointer"
   >
     {/* Live Pulse Dot in Top Right */}
-    <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-      <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-tighter">Live</span>
+      <span className="text-[7.5px] font-bold text-emerald-600 uppercase tracking-tighter">Live</span>
     </div>
 
     {/* Top Row: Icon Badge & Trend Pill */}
-    <div className="flex items-center justify-between mb-2 z-10">
-      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
-        <Icon className="w-4 h-4" />
+    <div className="flex items-center justify-between mb-1.5 z-10">
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
+        <Icon className="w-3.5 h-3.5" />
       </div>
       {trend && (
-        <span className={`text-[9.5px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs ${
+        <span className={`text-[8.5px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
           trendType === 'positive' 
             ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'
             : trendType === 'alert'
             ? 'text-rose-700 bg-rose-50 border border-rose-200/60'
             : 'text-indigo-700 bg-indigo-50 border border-indigo-200/60'
         }`}>
-          <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
+          <span className="inline-block text-[8px] transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
           {trend}
         </span>
       )}
     </div>
 
     {/* Middle Row: Big Number + Full Name on Left, Sparkline Trend Area on Right */}
-    <div className="flex items-end justify-between z-10 gap-1.5 mb-2.5">
+    <div className="flex items-end justify-between z-10 gap-1.5 mb-1.5">
       <div className="min-w-0 pr-0.5">
-        <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mb-1 theme-text flex items-center">
+        <h3 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight leading-none mb-0.5 theme-text flex items-center">
           <AnimatedCounter targetValue={value} />
         </h3>
-        <p className="text-xs font-bold text-gray-800 leading-tight truncate">
+        <p className="text-[11px] font-bold text-gray-800 leading-tight truncate">
           {title}
         </p>
         {fullName && (
-          <p className="text-[9.5px] font-medium text-gray-400 mt-0.5 leading-tight truncate">
+          <p className="text-[9px] font-medium text-gray-400 mt-0.5 leading-none truncate">
             {fullName}
           </p>
         )}
       </div>
 
       {/* Trend Area Chart (Sparkline) */}
-      <div className="w-20 sm:w-24 h-9 relative flex-shrink-0 -mb-0.5">
+      <div className="w-16 sm:w-20 h-6 sm:h-7 relative flex-shrink-0 -mb-0.5">
         <svg viewBox="0 0 100 45" className="w-full h-full overflow-visible" preserveAspectRatio="none">
           <defs>
             <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={strokeColor} stopOpacity="0.35" />
+              <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />
               <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
             </linearGradient>
           </defs>
@@ -124,10 +124,10 @@ const StatCard = ({
             d={linePath} 
             fill="none" 
             stroke={strokeColor} 
-            strokeWidth="2.2" 
+            strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round" 
-            className="transition-all duration-300 group-hover:stroke-[2.8]"
+            className="transition-all duration-300 group-hover:stroke-[2.5]"
           />
         </svg>
       </div>
@@ -137,10 +137,10 @@ const StatCard = ({
     {linkTo && (
       <Link 
         to={linkTo} 
-        className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
+        className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
       >
         <span>{actionText || 'More info'}</span>
-        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
+        <ArrowRight className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
       </Link>
     )}
   </div>
@@ -421,8 +421,8 @@ const Dashboard = () => {
               </div>
             )}
 
-            {/* Top Stats (Live Animated Trend Sparklines - Medium Balanced Size) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-3.5 mb-6">
+            {/* Top Stats (Live Animated Trend Sparklines - Sleek Compact Size) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
               <StatCard 
                 id="students"
                 title="My Students" 
@@ -777,16 +777,6 @@ const Dashboard = () => {
             </div>
 
           </div>
-
-          {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-          <footer className="mt-8 pt-4 pb-4 border-t border-gray-200/80 text-center">
-            <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
-              &copy; 2026 School ERP
-            </p>
-            <p className="text-[11px] font-medium text-gray-500">
-              Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-            </p>
-          </footer>
 
           {/* Full Ecosystem Modal */}
           {isModalOpen && (

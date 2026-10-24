@@ -22,7 +22,7 @@ export const KpiCard = ({
   const safeId = (title || 'kpi').replace(/[^a-zA-Z0-9]/g, '');
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] border border-slate-200/60 relative overflow-hidden group hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-300 ease-out h-[110px] flex flex-col justify-between">
+    <div className="bg-white rounded-xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] border border-slate-200/60 relative overflow-hidden group hover:shadow-[0_8px_20px_-6px_rgba(0,0,0,0.1)] hover:-translate-y-0.5 transition-all duration-300 ease-out h-[102px] flex flex-col justify-between">
       
       {/* Subtle Glow Effect on Hover */}
       <div 
@@ -30,16 +30,16 @@ export const KpiCard = ({
         style={{ background: `radial-gradient(circle at top right, ${glowColor}15, transparent 70%)` }}
       />
       
-      <div className="p-4 relative z-10 flex flex-col h-full justify-between">
+      <div className="p-2.5 sm:px-3 sm:py-2.5 relative z-10 flex flex-col h-full justify-between">
         <div className="flex justify-between items-start mb-auto">
           <div className="flex flex-col gap-0.5 min-w-0 flex-1 pr-2">
-            <div className="text-[11px] font-bold text-slate-500 tracking-wide uppercase truncate" title={title}>
+            <div className="text-[10px] font-bold text-slate-500 tracking-wide uppercase truncate" title={title}>
               {title}
             </div>
-            <div className="text-[22px] font-black text-slate-800 leading-none tracking-tight flex items-center gap-2 mt-0.5">
+            <div className="text-[18px] sm:text-[20px] font-black text-slate-800 leading-none tracking-tight flex items-center gap-1.5 mt-0.5">
               <span>{value}</span>
               {isLive && (
-                <span className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 uppercase tracking-widest shadow-xs border border-emerald-100">
+                <span className="inline-flex items-center gap-1 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 uppercase tracking-widest shadow-xs border border-emerald-100">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live
                 </span>
@@ -48,21 +48,21 @@ export const KpiCard = ({
           </div>
           
           <div className="relative shrink-0">
-            <div className="absolute inset-0 rounded-lg blur-md opacity-40 transition-transform group-hover:scale-110" style={{ background: iconBg }}></div>
+            <div className="absolute inset-0 rounded-lg blur-md opacity-40 transition-transform group-hover:scale-105" style={{ background: iconBg }}></div>
             <div 
-              className="w-[34px] h-[34px] rounded-lg flex items-center justify-center relative shadow-sm border border-white/20 transition-transform group-hover:scale-110 duration-300" 
+              className="w-[28px] h-[28px] rounded-lg flex items-center justify-center relative shadow-xs border border-white/20 transition-transform group-hover:scale-105 duration-300" 
               style={{ background: iconBg }}
             >
-              {Icon && <Icon size={16} style={{ color: iconColor }} strokeWidth={2.5} />}
+              {Icon && <Icon size={14} style={{ color: iconColor }} strokeWidth={2.5} />}
             </div>
           </div>
         </div>
 
         {(subText || badge) && (
-          <div className="flex justify-between items-center text-[11px] text-slate-400 font-medium z-10 pt-1">
+          <div className="flex justify-between items-center text-[10px] text-slate-400 font-medium z-10 pt-0.5">
             <span className="truncate">{subText}</span>
             {badge && (
-              <span className="text-[9.5px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 shrink-0 ml-1">
+              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 shrink-0 ml-1">
                 {badge}
               </span>
             )}
@@ -71,20 +71,20 @@ export const KpiCard = ({
       </div>
 
       {/* Full Width Bottom Graph */}
-      <div className="absolute bottom-0 left-0 right-0 h-[45%] z-0 opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+      <div className="absolute bottom-0 left-0 right-0 h-[40%] z-0 opacity-80 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id={`g-${safeId}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={stroke} stopOpacity={0.45} />
-                <stop offset="100%" stopColor={stroke} stopOpacity={0} />
+                <stop offset="0%" stopColor={stroke} stopOpacity="0.4" />
+                <stop offset="100%" stopColor={stroke} stopOpacity="0" />
               </linearGradient>
             </defs>
             <Area
               type="monotone"
               dataKey="v"
               stroke={stroke}
-              strokeWidth={2.5}
+              strokeWidth={2}
               fill={`url(#g-${safeId})`}
               dot={false}
               isAnimationActive={false}

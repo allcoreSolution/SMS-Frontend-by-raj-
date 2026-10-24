@@ -11,12 +11,12 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 w-full bg-[#fdfdfd] border-b-2 border-gray-900 z-50">
       <div className="w-full px-4 sm:px-6 lg:px-12 mx-auto">
         <div className="flex justify-between items-center h-[80px]">
-          
+
           {/* Logo Section (Left) */}
           <Link to="/" className="flex items-center gap-3 cursor-pointer group flex-1">
             <div className="flex-shrink-0 relative transition-transform duration-300 group-hover:-translate-y-1 group-hover:-translate-x-1">
               <div className="absolute inset-0 bg-gray-900 translate-y-1.5 translate-x-1.5 transition-all duration-300 group-hover:translate-y-2.5 group-hover:translate-x-2.5" />
-              
+
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="relative z-10 bg-white border-2 border-gray-900" xmlns="http://www.w3.org/2000/svg">
                 <rect x="4" y="4" width="8" height="8" fill="#F59E0B" />
                 <rect x="12" y="12" width="8" height="8" fill="#0F172A" />
@@ -35,31 +35,31 @@ export default function Navbar() {
 
           {/* Desktop Navigation Links (Center) */}
           <div className="hidden lg:flex items-center gap-8 xl:gap-10">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               className="relative text-[13px] xl:text-[14px] font-black uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors duration-200 group py-2"
             >
               Home
               <span className="absolute bottom-0 left-0 w-full h-[3px] bg-amber-500 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out" />
             </Link>
 
-            <Link 
-              to="/modules" 
+            <Link
+              to="/modules"
               className="relative text-[13px] xl:text-[14px] font-black uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors duration-200 group py-2"
             >
               Modules (38)
               <span className="absolute bottom-0 left-0 w-full h-[3px] bg-amber-500 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out" />
             </Link>
 
-            <Link 
-              to="/pricing" 
+            <Link
+              to="/pricing"
               className="relative text-[13px] xl:text-[14px] font-black uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors duration-200 group py-2"
             >
               Pricing
               <span className="absolute bottom-0 left-0 w-full h-[3px] bg-amber-500 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out" />
             </Link>
 
-            <button 
+            <button
               onClick={() => openModal('portals')}
               className="relative text-[13px] xl:text-[14px] font-black uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors duration-200 group py-2 cursor-pointer"
             >
@@ -67,7 +67,7 @@ export default function Navbar() {
               <span className="absolute bottom-0 left-0 w-full h-[3px] bg-amber-500 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out" />
             </button>
 
-            <button 
+            <button
               onClick={() => openModal('doc')}
               className="relative text-[13px] xl:text-[14px] font-black uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors duration-200 group py-2 cursor-pointer"
             >
@@ -75,16 +75,16 @@ export default function Navbar() {
               <span className="absolute bottom-0 left-0 w-full h-[3px] bg-amber-500 transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-300 ease-in-out" />
             </button>
           </div>
-            
+
           {/* Square Neo-Brutalist CTA Button (Right) */}
           <div className="flex flex-1 justify-end items-center gap-2 sm:gap-3">
-            <button 
+            <button
               onClick={() => openModal('purchase')}
               className="relative group focus:outline-none cursor-pointer"
             >
               <div className="absolute inset-0 bg-gray-900 translate-x-[3px] sm:translate-x-[4px] translate-y-[3px] sm:translate-y-[4px] transition-transform duration-200 group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-active:translate-x-0 group-active:translate-y-0" />
-              
-              <div 
+
+              <div
                 className="relative flex items-center bg-amber-400 border-2 border-gray-900 px-3.5 sm:px-5 py-2.5 transition-transform duration-200 group-hover:-translate-x-[2px] group-hover:-translate-y-[2px] group-active:translate-x-0 group-active:translate-y-0 liquid-btn"
                 style={{ '--liquid-bg': '#0F172A', '--liquid-text': '#ffffff' }}
               >
@@ -93,7 +93,7 @@ export default function Navbar() {
                     <span>Start Engine</span>
                     <span className="w-1.5 h-1.5 bg-gray-900 animate-ping" />
                   </span>
-                  
+
                   <div className="ml-2 sm:ml-3 pl-2 sm:pl-3 border-l-2 border-gray-900 flex items-center gap-1">
                     <span className="text-gray-900 font-bold text-[10px] line-through decoration-2 opacity-60 hidden sm:inline">₹15K</span>
                     <span className="text-gray-900 font-black text-[12px] sm:text-[13px] transition-colors duration-300">₹10K</span>
@@ -103,7 +103,7 @@ export default function Navbar() {
             </button>
 
             {/* Mobile Menu Toggle Button */}
-            <button 
+            <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden p-2 text-gray-900 border-2 border-gray-900 bg-white ml-1 focus:outline-none cursor-pointer"
             >
@@ -118,28 +118,28 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b-2 border-gray-900 px-4 py-4 space-y-3 shadow-lg">
           <div className="grid grid-cols-2 gap-2 text-xs font-black uppercase">
-            <Link 
-              to="/" 
+            <Link
+              to="/"
               onClick={() => setMobileMenuOpen(false)}
               className="p-2 border border-gray-900 bg-gray-50 text-center"
             >
               Home
             </Link>
-            <Link 
-              to="/modules" 
+            <Link
+              to="/modules"
               onClick={() => setMobileMenuOpen(false)}
               className="p-2 border border-gray-900 bg-gray-50 text-center"
             >
               Modules (38)
             </Link>
-            <Link 
-              to="/pricing" 
+            <Link
+              to="/pricing"
               onClick={() => setMobileMenuOpen(false)}
               className="p-2 border border-gray-900 bg-gray-50 text-center"
             >
               Pricing (₹10K)
             </Link>
-            <button 
+            <button
               onClick={() => { setMobileMenuOpen(false); openModal('doc'); }}
               className="p-2 border border-gray-900 bg-gray-50 text-center cursor-pointer"
             >

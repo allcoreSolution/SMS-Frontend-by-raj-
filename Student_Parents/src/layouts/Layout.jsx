@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parentService } from '../api/parentService';
-import { LANGUAGES, TRANSLATIONS, getT } from '../utils/translations';
+import { useLanguage } from '../context/LanguageContext';
+import { LANGUAGES, TRANSLATIONS, getT, triggerGoogleTranslate } from '../utils/translations';
 import {
   LayoutDashboard, Users, UserCog, Calendar, LayoutGrid, ClipboardCheck,
   GraduationCap, Handshake, Monitor, PenLine, BookMarked,
@@ -226,18 +227,14 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     }
   }, [isSearchModalOpen]);
 
-  // Language State
-  const [currentLang, setCurrentLang] = useState(() => {
-    try {
-      return localStorage.getItem('portal_language') || localStorage.getItem('app_language') || 'en';
-    } catch (e) {
-      return 'en';
-    }
-  });
+  // Language State from Central Provider (English and Hindi only)
+  const { currentLang, setLanguage, t, currentLanguageObj, languages } = useLanguage();
 
   const [childrenList, setChildrenList] = useState(defaultChildren);
   const [parentProfile, setParentProfile] = useState(null);
   const langDropdownRef = useRef(null);
+  const avatarDropdownRef = useRef(null);
+  const topChildDropdownRef = useRef(null);
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -245,25 +242,20 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       if (langDropdownRef.current && !langDropdownRef.current.contains(e.target)) {
         setLangOpen(false);
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // Listen to external language changes
-  useEffect(() => {
-    const handleLangChange = (e) => {
-      if (e.detail && e.detail !== currentLang) {
-        setCurrentLang(e.detail);
+      if (avatarDropdownRef.current && !avatarDropdownRef.current.contains(e.target)) {
+        setAvatarOpen(false);
+      }
+      if (topChildDropdownRef.current && !topChildDropdownRef.current.contains(e.target)) {
+        setTopChildOpen(false);
       }
     };
-    window.addEventListener('portal_language_changed', handleLangChange);
-    window.addEventListener('app_language_changed', handleLangChange);
+    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
     return () => {
-      window.removeEventListener('portal_language_changed', handleLangChange);
-      window.removeEventListener('app_language_changed', handleLangChange);
+      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
     };
-  }, [currentLang]);
+  }, []);
 
   // Load children
   useEffect(() => {
@@ -301,18 +293,12 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   }, []);
 
   const handleSelectLanguage = (langCode) => {
-    setCurrentLang(langCode);
-    try {
-      localStorage.setItem('portal_language', langCode);
-      localStorage.setItem('app_language', langCode);
-    } catch (e) {}
-    window.dispatchEvent(new CustomEvent('portal_language_changed', { detail: langCode }));
-    window.dispatchEvent(new CustomEvent('app_language_changed', { detail: langCode }));
+    setLanguage(langCode);
     setLangOpen(false);
   };
 
   const current = childrenList.find(c => (c.id === activeChild || c._id === activeChild)) || childrenList[0] || defaultChildren[0];
-  const activeLanguageObj = LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
+  const activeLanguageObj = currentLanguageObj || LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
 
   return (
     <div className="flex h-screen bg-gray-100 font-sans overflow-hidden">
@@ -524,6 +510,29 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           <p className="px-4 pt-4 pb-1.5 text-[9.5px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.28)' }}>
             {getT('account', currentLang)}
           </p>
+
+          {/* Quick Language Switcher in Sidebar: Toggles between English & Hindi */}
+          <button
+            type="button"
+            onClick={() => {
+              handleSelectLanguage(currentLang === 'hi' ? 'en' : 'hi');
+            }}
+            className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5 cursor-pointer"
+            style={{ width: 'calc(100% - 8px)' }}
+            title="Switch Language / भाषा बदलें"
+          >
+            <div className="w-7 h-7 bg-indigo-600 rounded-none flex items-center justify-center flex-shrink-0 shadow-sm">
+              <Globe className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
+            </div>
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-[12.5px] font-medium text-gray-300 group-hover:text-white truncate">
+                {currentLang === 'hi' ? 'Switch to English' : 'हिन्दी में बदलें'}
+              </span>
+              <span className="text-[10px] text-indigo-300 font-bold truncate">
+                {activeLanguageObj.flag} {activeLanguageObj.native}
+              </span>
+            </div>
+          </button>
           <button
             onClick={() => navigate('/logout')}
             className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5"
@@ -556,13 +565,13 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="bg-white border-b border-gray-200 px-4 py-2.5 flex items-center justify-between flex-shrink-0">
+        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-30 select-none" style={{ paddingRight: 'max(0.65rem, env(safe-area-inset-right))', paddingLeft: 'max(0.65rem, env(safe-area-inset-left))' }}>
           
           {/* Left Actions: Menu Toggle & Quick Dashboard Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             <button 
               onClick={() => setSideOpen(!sideOpen)} 
-              className="p-1.5 rounded-none hover:bg-gray-100 text-gray-600 transition-colors"
+              className="p-1.5 rounded-none hover:bg-gray-100 text-gray-600 transition-colors flex-shrink-0"
               title="Toggle Sidebar Menu"
             >
               <Menu className="w-4 h-4" />
@@ -571,7 +580,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             {/* Working Dashboard Button in Topbar */}
             <button
               onClick={() => navigate('/dashboard')}
-              className={`px-2.5 py-1.5 rounded-none transition-colors flex items-center gap-1.5 text-xs font-bold ${
+              className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-none transition-colors flex items-center gap-1.5 text-xs font-bold flex-shrink-0 ${
                 location.pathname === '/dashboard'
                   ? 'bg-yellow-50 text-yellow-800 border border-yellow-300'
                   : 'hover:bg-gray-100 text-gray-700 border border-gray-200 bg-gray-50'
@@ -583,12 +592,13 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </button>
           </div>
 
-          {/* Center Search Box Trigger */}
-          <div className="flex-1 max-w-xs md:max-w-md mx-3">
+          {/* Center Search Trigger: Compact on mobile, expanded on md+ */}
+          <div className="flex-1 max-w-xs md:max-w-md mx-1.5 sm:mx-3 min-w-0">
+            {/* Full search bar for tablet/desktop */}
             <button
               type="button"
               onClick={() => setIsSearchModalOpen(true)}
-              className="w-full flex items-center justify-between gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-none text-xs text-gray-500 font-medium transition-colors shadow-2xs group cursor-pointer"
+              className="hidden md:flex w-full items-center justify-between gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-none text-xs text-gray-500 font-medium transition-colors shadow-2xs group cursor-pointer"
               title="Search modules, fees, homework... (Ctrl+K)"
             >
               <div className="flex items-center gap-2 min-w-0">
@@ -597,18 +607,31 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   {getT('searchPortal', currentLang) || 'Search portal (fees, homework, exams...)'}
                 </span>
               </div>
-              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold text-gray-400 bg-white border border-gray-200 rounded-none shadow-2xs">
+              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold text-gray-400 bg-white border border-gray-200 rounded-none shadow-2xs">
                 Ctrl+K
               </kbd>
             </button>
+
+            {/* Mobile compact search pill */}
+            <button
+              type="button"
+              onClick={() => setIsSearchModalOpen(true)}
+              className="md:hidden flex items-center gap-1.5 px-2 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-none text-xs text-gray-500 font-medium transition-colors cursor-pointer w-full max-w-[140px]"
+              title="Search portal"
+            >
+              <Search className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+              <span className="truncate text-[11px] text-gray-400">Search...</span>
+            </button>
           </div>
           
-          <div className="flex items-center gap-3">
+          {/* Right Action Icons: Language, Apps, Avatar */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0 pr-1 sm:pr-0">
             
-            {/* Active Student Pill Dropdown */}
-            <div className="relative hidden sm:block">
-              <div 
-                onClick={() => { setTopChildOpen(!topChildOpen); setLangOpen(false); setAvatarOpen(false); }}
+            {/* Active Student Pill Dropdown - Hidden on small screens to save space */}
+            <div className="relative hidden lg:block" ref={topChildDropdownRef}>
+              <button 
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setTopChildOpen(!topChildOpen); setLangOpen(false); setAvatarOpen(false); }}
                 className="flex items-center gap-2 px-3 py-1 bg-purple-50 border border-purple-200 rounded-none shadow-sm cursor-pointer hover:bg-purple-100 transition-colors"
               >
                 {current.photo ? (
@@ -625,7 +648,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 <span className="text-[11px] uppercase tracking-wider font-extrabold text-purple-700">{current.name}</span>
                 <span className="text-[10px] uppercase font-bold text-purple-400 opacity-70 border-l border-purple-300 pl-1.5 ml-1">• {current.class}</span>
                 <ChevronDown className={`w-3.5 h-3.5 text-purple-600 transition-transform ml-1 ${topChildOpen ? 'rotate-180' : ''}`} />
-              </div>
+              </button>
               
               {topChildOpen && (
                 <div className="absolute top-full mt-2 w-64 right-0 bg-white border border-gray-200 shadow-xl rounded-none z-50 flex flex-col divide-y divide-gray-100">
@@ -661,43 +684,75 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
               )}
             </div>
             
-            {/* Working Multi-Language Selector Dropdown with 14 Languages */}
-            <div className="relative" ref={langDropdownRef}>
-              <div 
-                onClick={() => { setLangOpen(!langOpen); setTopChildOpen(false); setAvatarOpen(false); }}
-                className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gray-700 border border-gray-200 bg-white rounded-none px-2.5 py-1.5 cursor-pointer hover:bg-gray-50 shadow-xs transition-colors select-none"
-                title="Change Portal Language"
+            {/* Dedicated Language Selector: English & Hindi Only */}
+            <div className="relative flex-shrink-0" ref={langDropdownRef}>
+              <button 
+                type="button"
+                id="language-switch-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLangOpen(!langOpen);
+                  setTopChildOpen(false);
+                  setAvatarOpen(false);
+                }}
+                className={`flex items-center gap-1.5 sm:gap-2 text-[11px] font-extrabold uppercase tracking-wider border rounded-none px-2 sm:px-2.5 py-1.5 cursor-pointer transition-all shadow-2xs ${
+                  langOpen 
+                    ? 'bg-indigo-50 border-indigo-400 text-indigo-700 ring-2 ring-indigo-200' 
+                    : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-700'
+                }`}
+                title="Change Language / भाषा बदलें"
+                aria-label="Change Language"
               >
-                <span className="text-sm leading-none">{activeLanguageObj.flag}</span>
-                <span>{activeLanguageObj.native || activeLanguageObj.name}</span>
-                <ChevronDown className={`w-3 h-3 text-gray-400 opacity-80 transition-transform ${langOpen ? 'rotate-180' : ''}`} />
-              </div>
+                <Globe className="w-4 h-4 text-indigo-600 flex-shrink-0" />
+                <span className="font-black text-indigo-950 text-xs">{activeLanguageObj.code.toUpperCase()}</span>
+                <span className="hidden md:inline font-bold normal-case text-gray-700">
+                  {activeLanguageObj.native}
+                </span>
+                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0 ${langOpen ? 'rotate-180' : ''}`} />
+              </button>
 
               {langOpen && (
-                <div className="absolute top-full mt-2 right-0 w-48 bg-white border border-gray-200 shadow-xl rounded-none z-50 flex flex-col py-1 animate-in fade-in slide-in-from-top-2 duration-150">
-                   <div className="px-3 py-1.5 bg-gray-50 border-b border-gray-100 mb-1">
-                      <p className="text-[10px] font-extrabold uppercase text-gray-400 tracking-wider">
-                        {getT('selectLanguage', currentLang)}
-                      </p>
+                <div 
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute top-full mt-2 right-0 w-48 sm:w-52 max-w-[calc(100vw-20px)] bg-white border border-gray-200 shadow-2xl rounded-none z-[100] flex flex-col py-1 animate-in fade-in slide-in-from-top-2 duration-150"
+                >
+                   <div className="px-3 py-2 bg-indigo-50/80 border-b border-indigo-100 flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <Globe className="w-3.5 h-3.5 text-indigo-600" />
+                        <p className="text-[11px] font-black uppercase text-indigo-950 tracking-wider">
+                          Language / भाषा
+                        </p>
+                      </div>
+                      <span className="text-[10px] font-bold text-indigo-700 bg-white border border-indigo-200 px-1.5 py-0.5">
+                        {activeLanguageObj.code.toUpperCase()}
+                      </span>
                    </div>
-                   <div className="max-h-64 overflow-y-auto custom-scrollbar divide-y divide-gray-50">
-                     {LANGUAGES.map((lang) => {
+                   
+                   <div className="divide-y divide-gray-100">
+                     {languages.map((lang) => {
                        const isSelected = currentLang === lang.code;
                        return (
                          <button
+                           type="button"
                            key={lang.code}
-                           onClick={() => handleSelectLanguage(lang.code)}
-                           className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             handleSelectLanguage(lang.code);
+                           }}
+                           className={`w-full px-3.5 py-2.5 text-left text-xs flex items-center justify-between transition-colors cursor-pointer ${
                              isSelected 
-                               ? 'bg-indigo-50 text-indigo-700 font-bold border-l-[3px] border-indigo-600' 
+                               ? 'bg-indigo-50 text-indigo-700 font-black border-l-[3px] border-indigo-600' 
                                : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-transparent font-medium'
                            }`}
                          >
-                           <div className="flex items-center gap-2">
-                             <span className="text-sm leading-none">{lang.flag}</span>
-                             <span>{lang.native} ({lang.name})</span>
+                           <div className="flex items-center gap-2.5 min-w-0">
+                             <span className="text-base leading-none flex-shrink-0">{lang.flag}</span>
+                             <div className="flex flex-col min-w-0">
+                               <span className="font-extrabold text-gray-900 leading-tight truncate">{lang.native}</span>
+                               <span className="text-[10px] text-gray-500 font-medium">{lang.name}</span>
+                             </div>
                            </div>
-                           {isSelected && <Check className="w-3.5 h-3.5 text-indigo-600 stroke-[3]" />}
+                           {isSelected && <Check className="w-4 h-4 text-indigo-600 stroke-[3] flex-shrink-0" />}
                          </button>
                        );
                      })}
@@ -709,7 +764,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             {/* Grid Apps Button -> Also Navigates to Dashboard */}
             <button 
               onClick={() => navigate('/dashboard')}
-              className="p-1.5 rounded-none border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer group relative"
+              className="hidden sm:flex p-1.5 rounded-none border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer group relative flex-shrink-0"
               title="Quick Dashboard"
             >
               <Grid3X3 className="w-4 h-4 text-gray-600" />
@@ -719,29 +774,49 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </button>
             
             {/* Profile Avatar Click Menu */}
-            <div className="relative inline-block z-40">
-              <div
-                className={`w-8 h-8 rounded-none border border-orange-300 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-black text-[13px] shadow-sm transition-transform cursor-pointer hover:scale-105 ${avatarOpen ? 'ring-2 ring-orange-300' : ''}`}
-                onClick={() => { setAvatarOpen(!avatarOpen); setLangOpen(false); setTopChildOpen(false); }}
+            <div className="relative inline-block z-40 flex-shrink-0 mr-1 sm:mr-0" ref={avatarDropdownRef}>
+              <button
+                type="button"
+                id="profile-avatar-btn"
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setAvatarOpen(prev => !prev); 
+                  setLangOpen(false); 
+                  setTopChildOpen(false); 
+                }}
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-none border border-orange-300 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-black text-xs sm:text-[13px] shadow-sm transition-transform cursor-pointer hover:scale-105 flex-shrink-0 ${avatarOpen ? 'ring-2 ring-orange-400' : ''}`}
+                title={parentProfile?.name || 'Parent Profile'}
+                aria-label="Parent Profile Menu"
               >
                 {parentProfile?.name ? parentProfile.name.charAt(0).toUpperCase() : 'P'}
-              </div>
+              </button>
               
               {avatarOpen && (
-                <div className="absolute top-full right-0 mt-2 w-52 bg-white border border-gray-200 shadow-xl rounded-none z-50 flex flex-col">
-                   <div className="p-3 border-b border-gray-100 bg-orange-50/50">
+                <div 
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute top-full right-0 mt-2 w-52 max-w-[calc(100vw-20px)] bg-white border border-gray-200 shadow-2xl rounded-none z-[100] flex flex-col py-1 animate-in fade-in slide-in-from-top-2 duration-150"
+                >
+                   <div className="p-3 border-b border-gray-100 bg-orange-50/60">
                       <p className="text-[12px] font-black text-gray-800 leading-tight uppercase tracking-wide truncate">
                         {parentProfile?.name || 'Parent / Guardian'}
                       </p>
-                      <p className="text-[10px] font-bold text-gray-500 truncate mt-1">
+                      <p className="text-[10px] font-bold text-gray-500 truncate mt-0.5">
                         {parentProfile?.email || parentProfile?.phone || 'parent@portal.edu'}
                       </p>
                    </div>
-                   <button onClick={() => { setAvatarOpen(false); navigate('/my-profile'); }} className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 border-l-[3px] border-transparent hover:border-orange-400 transition-all">
-                     <UserCog className="w-3.5 h-3.5" /> {getT('myProfile', currentLang)}
+                   <button 
+                     type="button"
+                     onClick={() => { setAvatarOpen(false); navigate('/my-profile'); }} 
+                     className="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-gray-700 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 border-l-[3px] border-transparent hover:border-orange-400 transition-all cursor-pointer"
+                   >
+                     <UserCog className="w-4 h-4 text-orange-500" /> {t('myProfile', 'My Profile')}
                    </button>
-                   <button onClick={() => { setAvatarOpen(false); navigate('/logout'); }} className="px-3 py-2 text-left text-[10px] font-bold uppercase tracking-widest text-red-600 hover:bg-red-50 flex items-center gap-2 border-l-[3px] border-transparent hover:border-red-400 transition-all">
-                     <LogOut className="w-3.5 h-3.5" /> {getT('logout', currentLang)}
+                   <button 
+                     type="button"
+                     onClick={() => { setAvatarOpen(false); navigate('/logout'); }} 
+                     className="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-red-600 hover:bg-red-50 flex items-center gap-2 border-l-[3px] border-transparent hover:border-red-400 transition-all cursor-pointer"
+                   >
+                     <LogOut className="w-4 h-4 text-red-500" /> {t('logout', 'Logout')}
                    </button>
                 </div>
               )}

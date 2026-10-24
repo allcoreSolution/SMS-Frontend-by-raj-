@@ -40,7 +40,8 @@ const getPhotoUrl = (photo) => {
   if (photo.startsWith('data:') || photo.startsWith('http://') || photo.startsWith('https://')) {
     return photo;
   }
-  return `http://localhost:5050${photo.startsWith('/') ? '' : '/'}${photo}`;
+  const host = (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : 'localhost';
+  return `http://${host}:5050${photo.startsWith('/') ? '' : '/'}${photo}`;
 };
 
 export default function Profile({ activeChild }) {

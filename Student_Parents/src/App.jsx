@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
+import { LanguageProvider } from './context/LanguageContext';
 import Layout        from './layouts/Layout';
 import Dashboard     from './pages/Dashboard';
 import Profile       from './pages/Profile';
@@ -97,22 +98,25 @@ export default function App() {
   };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/login" element={<Login />} />
-        {pages.map(({ path, El }) => (
-          <Route
-            key={path}
-            path={path}
-            element={
-              <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
-                <El activeChild={activeChild} setActiveChild={setActiveChild} />
-              </Layout>
-            }
-          />
-        ))}
-      </Routes>
-    </BrowserRouter>
+    <LanguageProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/index.html" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/login" element={<Login />} />
+          {pages.map(({ path, El }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
+                  <El activeChild={activeChild} setActiveChild={setActiveChild} />
+                </Layout>
+              }
+            />
+          ))}
+        </Routes>
+      </BrowserRouter>
+    </LanguageProvider>
   );
 }

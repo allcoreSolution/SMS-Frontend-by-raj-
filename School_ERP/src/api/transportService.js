@@ -79,5 +79,39 @@ export const transportService = {
   updateVehicleGPS: async (data) => {
     const response = await axiosInstance.post('/transport/gps-ping', data);
     return response.data;
+  },
+
+  // Driver App & Admin Operations
+  getDriverAssignedData: async (driverId) => {
+    const response = await axiosInstance.get(`/transport/driver/assigned${driverId ? `?driverId=${driverId}` : ''}`);
+    return response.data;
+  },
+  startTrip: async (data) => {
+    const response = await axiosInstance.post('/transport/driver/trip/start', data);
+    return response.data;
+  },
+  endTrip: async (data) => {
+    const response = await axiosInstance.post('/transport/driver/trip/end', data);
+    return response.data;
+  },
+  reportIncident: async (data) => {
+    const response = await axiosInstance.post('/transport/driver/incident', data);
+    return response.data;
+  },
+  submitInspection: async (data) => {
+    const response = await axiosInstance.post('/transport/driver/inspection', data);
+    return response.data;
+  },
+  getIncidents: async () => {
+    const response = await axiosInstance.get('/transport/incidents');
+    return response.data;
+  },
+  getInspections: async () => {
+    const response = await axiosInstance.get('/transport/inspections');
+    return response.data;
+  },
+  getTripHistory: async () => {
+    const response = await axiosInstance.get('/transport/trips/history');
+    return response.data;
   }
 };

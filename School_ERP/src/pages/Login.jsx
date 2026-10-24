@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../api/axios';
 import { LogIn, Lock, User, ShieldCheck, GraduationCap, CheckCircle, PieChart, Sparkles, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import Swal from 'sweetalert2';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ identifier: 'admin123@gmail.com', password: 'admin@123' });
+  const [formData, setFormData] = useState({ identifier: 'ryadavy498@gmail.com', password: 'admin@123' });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +20,7 @@ const Login = () => {
   const performBypassLogin = () => {
     const dummyUser = {
       username: 'Raj Yadav (Super Admin)',
-      email: 'admin123@gmail.com',
+      email: 'ryadavy498@gmail.com',
       role: 'admin',
       token: 'demo-school-erp-token-authenticated',
       tenant: {
@@ -196,7 +196,7 @@ const Login = () => {
                   type="text" 
                   value={formData.identifier}
                   onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
-                  placeholder="e.g. admin123@gmail.com"
+                  placeholder="e.g. ryadavy498@gmail.com"
                   required
                   className="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-medium transition-all"
                 />
@@ -233,9 +233,9 @@ const Login = () => {
                 <input type="checkbox" defaultChecked className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" />
                 <span>Remember session</span>
               </label>
-              <span className="text-indigo-600 font-semibold hover:underline cursor-pointer">
+              <Link to="/forgot-password" className="text-indigo-600 font-semibold hover:underline cursor-pointer">
                 Forgot Password?
-              </span>
+              </Link>
             </div>
 
             <button 
@@ -261,7 +261,7 @@ const Login = () => {
               </span>
             </div>
             <div className="flex items-center justify-between text-xs text-indigo-800 font-mono font-medium bg-white px-3 py-2 rounded-xl border border-indigo-100">
-              <span>admin123@gmail.com</span>
+              <span>ryadavy498@gmail.com</span>
               <span>admin@123</span>
             </div>
             

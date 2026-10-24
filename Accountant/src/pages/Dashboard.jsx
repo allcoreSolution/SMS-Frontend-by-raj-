@@ -67,55 +67,55 @@ const ClassicStatCard = ({
   return (
     <div 
       style={{ animation: `riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` }}
-      className="bg-white rounded-xl p-3 sm:p-3.5 shadow-xs border border-slate-100 hover:shadow-lg hover:border-slate-200 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
+      className="bg-white rounded-lg p-2 sm:px-2.5 sm:py-2 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
     >
       {/* Live Indicator */}
-      <div className="absolute top-2 right-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-1 right-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-        <span className="text-[8px] font-bold text-emerald-600 uppercase tracking-tighter">Live</span>
+        <span className="text-[7px] font-bold text-emerald-600 uppercase tracking-tighter">Live</span>
       </div>
 
       {/* Top Row: Icon Badge & Trend Pill */}
-      <div className="flex items-center justify-between mb-2 z-10">
-        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
-          <Icon className="w-4 h-4" />
+      <div className="flex items-center justify-between mb-1 z-10">
+        <div className={`w-6 h-6 rounded-md flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
+          {Icon ? <Icon className="w-3 h-3" /> : null}
         </div>
         {trend && (
-          <span className={`text-[9.5px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs ${
+          <span className={`text-[8px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
             trendType === 'positive' 
               ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'
               : trendType === 'alert'
               ? 'text-rose-700 bg-rose-50 border border-rose-200/60'
               : 'text-sky-700 bg-sky-50 border border-sky-200/60'
           }`}>
-            <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
+            <span className="inline-block text-[7.5px] transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
             {trend}
           </span>
         )}
       </div>
 
       {/* Middle: Big Value + Title + Subtitle on Left, Sparkline on Right */}
-      <div className="flex items-end justify-between z-10 gap-1.5 mb-2.5">
+      <div className="flex items-end justify-between z-10 gap-1 mb-1">
         <div className="min-w-0 pr-0.5">
-          <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight leading-none mb-1">
+          <h3 className="text-base sm:text-lg font-black text-gray-900 tracking-tight leading-none mb-0.5">
             <AnimatedCurrencyCounter value={numericValue} />
           </h3>
-          <p className="text-xs font-bold text-gray-800 leading-tight truncate">
+          <p className="text-[10.5px] font-bold text-gray-800 leading-tight truncate">
             {title}
           </p>
           {subTitle && (
-            <p className="text-[9.5px] font-medium text-gray-400 mt-0.5 leading-tight truncate">
+            <p className="text-[8.5px] font-medium text-gray-400 mt-0.5 leading-none truncate">
               {subTitle}
             </p>
           )}
         </div>
 
         {/* Trend Area Chart (Sparkline) */}
-        <div className="w-20 sm:w-24 h-9 relative flex-shrink-0 -mb-0.5">
+        <div className="w-14 sm:w-16 h-5 sm:h-6 relative flex-shrink-0 -mb-0.5">
           <svg viewBox="0 0 100 45" className="w-full h-full overflow-visible" preserveAspectRatio="none">
             <defs>
               <linearGradient id={`spark-acc-${id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor={strokeColor} stopOpacity="0.35" />
+                <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />
                 <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
               </linearGradient>
             </defs>
@@ -124,10 +124,10 @@ const ClassicStatCard = ({
               d={linePath} 
               fill="none" 
               stroke={strokeColor} 
-              strokeWidth="2.2" 
+              strokeWidth="2" 
               strokeLinecap="round" 
               strokeLinejoin="round" 
-              className="transition-all duration-300 group-hover:stroke-[2.8]"
+              className="transition-all duration-300 group-hover:stroke-[2.5]"
             />
           </svg>
         </div>
@@ -136,10 +136,10 @@ const ClassicStatCard = ({
       {/* Bottom Action Link */}
       <Link 
         to={linkTo} 
-        className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
+        className="pt-1 border-t border-slate-100 flex items-center justify-between text-[9.5px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
       >
         <span>{actionText || 'More info'}</span>
-        <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
+        <ArrowRight className="w-2.5 h-2.5 transform group-hover:translate-x-0.5 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
       </Link>
     </div>
   );
@@ -177,9 +177,45 @@ const CustomOverviewTooltip = ({ active, payload, label }) => {
   return null;
 };
 
+// Universal Quick Action Cards definition with category tabs mapping
+const QUICK_ACTION_CARDS = [
+  // General
+  { id: 'gen-loans', title: 'My Loans', to: '/loans', icon: HandCoins, bg: 'bg-[#605ca8] hover:bg-[#504c90]', text: 'text-white', tabs: ['General'] },
+  { id: 'gen-leave', title: 'Apply Leave', to: '/leave', icon: Send, bg: 'bg-[#17a2b8] hover:bg-[#138496]', text: 'text-white', tabs: ['General'] },
+  { id: 'gen-students', title: 'Student List', to: '/students', icon: Users, bg: 'bg-[#007bff] hover:bg-[#0069d9]', text: 'text-white', tabs: ['General'] },
+  { id: 'gen-profile', title: 'My Profile', to: '/profile', icon: UserCircle2, bg: 'bg-[#dd4b39] hover:bg-[#c23321]', text: 'text-white', tabs: ['General'] },
+
+  // Fees
+  { id: 'fees-collect', title: 'Collect Fees', to: '/fees/collect', icon: HandCoins, bg: 'bg-[#28a745] hover:bg-[#218838]', text: 'text-white', tabs: ['Fees'] },
+  { id: 'fees-due', title: 'Search Due', to: '/fees/due', icon: FileSearch, bg: 'bg-[#ffc107] hover:bg-[#e0a800]', text: 'text-[#333]', tabs: ['Fees'] },
+  { id: 'fees-assign', title: 'Assign Fees', to: '/fees/assign', icon: UserPlus, bg: 'bg-[#17a2b8] hover:bg-[#138496]', text: 'text-white', tabs: ['Fees'] },
+  { id: 'fees-groups', title: 'Fee Groups', to: '/fees/groups', icon: Layers, bg: 'bg-[#6f42c1] hover:bg-[#5a32a3]', text: 'text-white', tabs: ['Fees'] },
+  { id: 'fees-types', title: 'Fee Types', to: '/fees/types', icon: Tags, bg: 'bg-[#6c757d] hover:bg-[#5a6268]', text: 'text-white', tabs: ['Fees'] },
+
+  // Accounts Management
+  { id: 'acc-income', title: 'Income List', to: '/accounts/income', icon: ArrowDown, bg: 'bg-[#00a65a] hover:bg-[#008d4c]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-add-income', title: 'Add Income', to: '/accounts/income/add', icon: Plus, bg: 'bg-[#3c8dbc] hover:bg-[#367fa9]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-expense', title: 'Expense List', to: '/accounts/expense', icon: ArrowUp, bg: 'bg-[#dd4b39] hover:bg-[#c23321]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-add-expense', title: 'Add Expense', to: '/accounts/expense/add', icon: Plus, bg: 'bg-[#e08e0b] hover:bg-[#c67605]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-day-book', title: 'Day Book', to: '/accounts/day-book', icon: FileText, bg: 'bg-[#605ca8] hover:bg-[#504c90]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-income-heads', title: 'Income Heads', to: '/accounts/income-heads', icon: Tag, bg: 'bg-[#00c0ef] hover:bg-[#00a7d0]', text: 'text-white', tabs: ['Accounts Management'] },
+  { id: 'acc-expense-heads', title: 'Expense Heads', to: '/accounts/expense-heads', icon: Tag, bg: 'bg-[#d81b60] hover:bg-[#b5144f]', text: 'text-white', tabs: ['Accounts Management'] },
+
+  // HR & Staff
+  { id: 'hr-loans', title: 'My Loans', to: '/loans', icon: HandCoins, bg: 'bg-[#605ca8] hover:bg-[#504c90]', text: 'text-white', tabs: ['HR & Staff'] },
+  { id: 'hr-apply-loan', title: 'Apply Loan', to: '/loans/add', icon: Plus, bg: 'bg-[#5a52d7] hover:bg-[#4a42c0]', text: 'text-white', tabs: ['HR & Staff'] },
+  { id: 'hr-leave', title: 'Apply Leave', to: '/leave', icon: Send, bg: 'bg-[#17a2b8] hover:bg-[#138496]', text: 'text-white', tabs: ['HR & Staff'] },
+  { id: 'hr-profile', title: 'Staff Profile', to: '/profile', icon: User, bg: 'bg-[#dd4b39] hover:bg-[#c23321]', text: 'text-white', tabs: ['HR & Staff'] },
+
+  // Lead Management
+  { id: 'lead-dashboard', title: 'Lead Dashboard', to: '/leads/dashboard', icon: Gauge, bg: 'bg-[#007bff] hover:bg-[#0069d9]', text: 'text-white', tabs: ['Lead Management'] },
+  { id: 'lead-pipeline', title: 'Pipeline Board', to: '/leads/pipeline', icon: LayoutDashboard, bg: 'bg-[#28a745] hover:bg-[#218838]', text: 'text-white', tabs: ['Lead Management'] },
+  { id: 'lead-sources', title: 'Lead Sources', to: '/leads/sources', icon: SlidersHorizontal, bg: 'bg-[#ffc107] hover:bg-[#e0a800]', text: 'text-[#333]', tabs: ['Lead Management'] },
+];
+
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('General');
+  const [activeTab, setActiveTab] = useState('All');
   const [loading, setLoading] = useState(false);
   const [voucherFilter, setVoucherFilter] = useState('All'); // All | Income | Expense
   const [voucherSearch, setVoucherSearch] = useState('');
@@ -262,12 +298,12 @@ const Dashboard = () => {
   ]);
 
   const selectedStudent = useMemo(() => {
-    return studentsList.find(s => (s.id || s._id) === selectedStudentId) || null;
+    return Array.isArray(studentsList) ? studentsList.find(s => s && ((s.id || s._id) === selectedStudentId)) || null : null;
   }, [studentsList, selectedStudentId]);
 
   const handleToggleDeadline = (id) => {
     setDeadlines(prev => prev.map(d => {
-      if (d.id === id) {
+      if (d && d.id === id) {
         const nextStatus = d.status === 'Completed' ? 'Pending' : 'Completed';
         return { ...d, status: nextStatus };
       }
@@ -276,12 +312,23 @@ const Dashboard = () => {
   };
 
   const loadStudents = () => {
-    const list = localDb.getAll('students');
-    setStudentsList(list || []);
-    if (list && list.length > 0 && !selectedStudentId) {
-      const withDue = list.find(s => Number(s.due || 0) > 0) || list[0];
-      setSelectedStudentId(withDue.id || withDue._id);
-      setQuickAmount(withDue.due ? String(withDue.due) : '5000');
+    try {
+      const list = localDb.getAll('students');
+      if (Array.isArray(list) && list.length > 0) {
+        setStudentsList(list);
+        if (!selectedStudentId) {
+          const withDue = list.find(s => s && Number(s.due || 0) > 0) || list[0];
+          if (withDue) {
+            setSelectedStudentId(withDue.id || withDue._id || '');
+            setQuickAmount(withDue.due ? String(withDue.due) : '5000');
+          }
+        }
+      } else {
+        setStudentsList([]);
+      }
+    } catch (e) {
+      console.error('Error loading students:', e);
+      setStudentsList([]);
     }
   };
 
@@ -397,24 +444,26 @@ const Dashboard = () => {
   };
 
   // Filter vouchers
-  const filteredVouchers = (stats.recentVouchers || []).filter(v => {
+  const filteredVouchers = (Array.isArray(stats?.recentVouchers) ? stats.recentVouchers : []).filter(v => {
+    if (!v) return false;
     const matchesKind = voucherFilter === 'All' || v.type === voucherFilter;
-    const q = voucherSearch.toLowerCase().trim();
+    const q = (voucherSearch || '').toLowerCase().trim();
     const matchesSearch = !q || 
-      (v.head && v.head.toLowerCase().includes(q)) ||
-      (v.type && v.type.toLowerCase().includes(q)) ||
-      String(v.amount).includes(q);
+      (v.head && String(v.head).toLowerCase().includes(q)) ||
+      (v.type && String(v.type).toLowerCase().includes(q)) ||
+      String(v.amount || '').includes(q);
     return matchesKind && matchesSearch;
   });
 
   // Calculate 6-month chart statistics
   const chartTotals = useMemo(() => {
-    const totalInc = (stats.chartData || []).reduce((s, d) => s + (d.Income || 0), 0);
-    const totalExp = (stats.chartData || []).reduce((s, d) => s + (d.Expense || 0), 0);
+    const data = Array.isArray(stats?.chartData) ? stats.chartData : [];
+    const totalInc = data.reduce((s, d) => s + (Number(d?.Income) || 0), 0);
+    const totalExp = data.reduce((s, d) => s + (Number(d?.Expense) || 0), 0);
     const netSavings = totalInc - totalExp;
     const margin = totalInc > 0 ? Math.round((netSavings / totalInc) * 100) : 0;
     return { totalInc, totalExp, netSavings, margin };
-  }, [stats.chartData]);
+  }, [stats?.chartData]);
 
   // Post Notice
   const handleAddNotice = (e) => {
@@ -452,7 +501,19 @@ const Dashboard = () => {
     }
   };
 
-  const activeNotice = notices[currentNoticeIdx] || notices[0];
+  const visibleCards = useMemo(() => {
+    if (activeTab === 'All') {
+      const seen = new Set();
+      return QUICK_ACTION_CARDS.filter(card => {
+        if (!card || !card.to || seen.has(card.to)) return false;
+        seen.add(card.to);
+        return true;
+      });
+    }
+    return QUICK_ACTION_CARDS.filter(card => card && card.tabs && card.tabs.includes(activeTab));
+  }, [activeTab]);
+
+  const activeNotice = (notices && notices.length > 0 && notices[currentNoticeIdx]) ? notices[currentNoticeIdx] : (notices?.[0] || {});
 
   return (
     <div className="min-h-screen bg-[#ecf0f5] text-[#333] p-4 sm:p-6 font-sans pb-16">
@@ -498,8 +559,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Modern Financial Trend Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5 mb-6">
+      {/* Modern Financial Trend Stat Cards (Compact Standard Size) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-4 sm:mb-5">
         <ClassicStatCard 
           id="collected"
           title="Collected Today" 
@@ -569,12 +630,12 @@ const Dashboard = () => {
       {/* Dynamic Navigation Tabs & Quick Action Blocks */}
       <div className="bg-white rounded-[3px] border-t-[3px] border-t-[#f39c12] shadow-sm mb-6">
         <div className="border-b border-[#f4f4f4] px-4 bg-[#fafafa]">
-          <ul className="flex flex-wrap text-[14px] font-semibold m-0 p-0 list-none">
-            {['General', 'Fees', 'Accounts Management', 'HR & Staff', 'Lead Management'].map((tab) => (
+          <ul className="flex flex-wrap text-[13px] sm:text-[14px] font-semibold m-0 p-0 list-none">
+            {['All', 'General', 'Fees', 'Accounts Management', 'HR & Staff', 'Lead Management'].map((tab) => (
               <li key={tab}>
                 <button 
                   onClick={() => setActiveTab(tab)}
-                  className={`inline-block px-5 py-3 transition-colors focus:outline-none ${
+                  className={`inline-block px-4 py-2.5 transition-colors focus:outline-none ${
                     activeTab === tab 
                       ? 'text-[#f39c12] bg-white border-t-2 border-t-[#f39c12] -mt-[2px] border-l border-r border-[#eee]' 
                       : 'text-gray-600 hover:text-[#f39c12] hover:bg-gray-100/50'
@@ -587,139 +648,25 @@ const Dashboard = () => {
           </ul>
         </div>
         
-        <div className="p-6">
-          {/* Quick Action Tiles */}
-          <div className="flex flex-wrap gap-4 border-b border-[#f4f4f4] pb-6 mb-6">
-            
-            {activeTab === 'General' && (
-              <>
+        <div className="p-4 sm:p-5">
+          {/* Quick Action Tiles - Compact Small Size */}
+          <div className="flex flex-wrap gap-2 sm:gap-2.5 border-b border-[#f4f4f4] pb-4 mb-5">
+            {visibleCards.map((item) => {
+              const Icon = item.icon;
+              return (
                 <Link
-                  to="/loans"
-                  className="bg-[#605ca8] hover:bg-[#504c90] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs"
+                  key={item.id}
+                  to={item.to}
+                  className={`${item.bg} ${item.text || 'text-white'} flex flex-col items-center justify-center p-2 rounded-[4px] transition-all duration-200 h-[68px] w-[96px] sm:w-[102px] shrink-0 shadow-2xs hover:shadow-md hover:-translate-y-0.5 group`}
+                  title={item.title}
                 >
-                  <HandCoins className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">My Loans</span>
+                  {Icon ? <Icon className="w-5 h-5 mb-1 group-hover:scale-110 transition-transform duration-200" /> : null}
+                  <span className="text-[11px] font-semibold text-center leading-tight tracking-tight px-0.5">
+                    {item.title}
+                  </span>
                 </Link>
-                <Link
-                  to="/leave"
-                  className="bg-[#17a2b8] hover:bg-[#138496] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs"
-                >
-                  <Send className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Apply Leave</span>
-                </Link>
-                <Link
-                  to="/students"
-                  className="bg-[#007bff] hover:bg-[#0069d9] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs"
-                >
-                  <Users className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Student List</span>
-                </Link>
-                <Link
-                  to="/profile"
-                  className="bg-[#dd4b39] hover:bg-[#c23321] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs"
-                >
-                  <UserCircle2 className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">My Profile</span>
-                </Link>
-              </>
-            )}
-
-            {activeTab === 'Fees' && (
-              <>
-                <Link to="/fees/collect" className="bg-[#28a745] hover:bg-[#218838] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <HandCoins className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Collect Fees</span>
-                </Link>
-                <Link to="/fees/due" className="bg-[#ffc107] hover:bg-[#e0a800] text-[#333] flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <FileSearch className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Search Due</span>
-                </Link>
-                <Link to="/fees/assign" className="bg-[#17a2b8] hover:bg-[#138496] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <UserPlus className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Assign Fees</span>
-                </Link>
-                <Link to="/fees/groups" className="bg-[#6f42c1] hover:bg-[#5a32a3] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Layers className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Fee Groups</span>
-                </Link>
-                <Link to="/fees/types" className="bg-[#6c757d] hover:bg-[#5a6268] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Tags className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Fee Types</span>
-                </Link>
-              </>
-            )}
-
-            {activeTab === 'Accounts Management' && (
-              <>
-                <Link to="/accounts/income" className="bg-[#00a65a] hover:bg-[#008d4c] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <ArrowDown className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Income List</span>
-                </Link>
-                <Link to="/accounts/income/add" className="bg-[#3c8dbc] hover:bg-[#367fa9] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Plus className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Add Income</span>
-                </Link>
-                <Link to="/accounts/expense" className="bg-[#dd4b39] hover:bg-[#c23321] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <ArrowUp className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Expense List</span>
-                </Link>
-                <Link to="/accounts/expense/add" className="bg-[#e08e0b] hover:bg-[#c67605] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Plus className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Add Expense</span>
-                </Link>
-                <Link to="/accounts/day-book" className="bg-[#605ca8] hover:bg-[#504c90] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <FileText className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Day Book</span>
-                </Link>
-                <Link to="/accounts/income-heads" className="bg-[#00c0ef] hover:bg-[#00a7d0] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Tag className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Income Heads</span>
-                </Link>
-                <Link to="/accounts/expense-heads" className="bg-[#d81b60] hover:bg-[#b5144f] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[120px] shadow-xs">
-                  <Tag className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Expense Heads</span>
-                </Link>
-              </>
-            )}
-
-            {activeTab === 'HR & Staff' && (
-              <>
-                <Link to="/loans" className="bg-[#605ca8] hover:bg-[#504c90] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs">
-                  <HandCoins className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">My Loans</span>
-                </Link>
-                <Link to="/loans/add" className="bg-[#5a52d7] hover:bg-[#4a42c0] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs">
-                  <Plus className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Apply Loan</span>
-                </Link>
-                <Link to="/leave" className="bg-[#17a2b8] hover:bg-[#138496] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs">
-                  <Send className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Apply Leave</span>
-                </Link>
-                <Link to="/profile" className="bg-[#dd4b39] hover:bg-[#c23321] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[130px] shadow-xs">
-                  <User className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Staff Profile</span>
-                </Link>
-              </>
-            )}
-
-            {activeTab === 'Lead Management' && (
-              <>
-                <Link to="/leads/dashboard" className="bg-[#007bff] hover:bg-[#0069d9] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[140px] shadow-xs">
-                  <Gauge className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Lead Dashboard</span>
-                </Link>
-                <Link to="/leads/pipeline" className="bg-[#28a745] hover:bg-[#218838] text-white flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[140px] shadow-xs">
-                  <LayoutDashboard className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Pipeline Board</span>
-                </Link>
-                <Link to="/leads/sources" className="bg-[#ffc107] hover:bg-[#e0a800] text-[#333] flex flex-col items-center justify-center p-4 rounded-[3px] transition-colors h-[90px] w-[140px] shadow-xs">
-                  <SlidersHorizontal className="w-7 h-7 mb-1.5" />
-                  <span className="text-[13px] font-semibold text-center leading-tight">Lead Sources</span>
-                </Link>
-              </>
-            )}
-            
+              );
+            })}
           </div>
 
           {/* ── UPGRADED INCOME & EXPENSE OVERVIEW ────────── */}
@@ -956,9 +903,9 @@ const Dashboard = () => {
                     required
                   >
                     <option value="">-- Choose Student --</option>
-                    {studentsList.map((stu) => (
-                      <option key={stu.id || stu._id} value={stu.id || stu._id}>
-                        {stu.name} ({stu.class} {stu.section ? `- ${stu.section}` : ''}) • Roll: {stu.rollNo || stu.admissionNo || '-'} {Number(stu.due || 0) > 0 ? `[Due ₹${stu.due}]` : '[Clear]'}
+                    {(studentsList || []).filter(Boolean).map((stu) => (
+                      <option key={stu.id || stu._id || Math.random()} value={stu.id || stu._id || ''}>
+                        {stu.name || 'Student'} ({stu.class || ''} {stu.section ? `- ${stu.section}` : ''}) • Roll: {stu.rollNo || stu.admissionNo || '-'} {Number(stu.due || 0) > 0 ? `[Due ₹${stu.due}]` : '[Clear]'}
                       </option>
                     ))}
                   </select>
@@ -1491,16 +1438,6 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-
-      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-      <footer className="mt-8 pt-4 pb-4 border-t border-gray-200/80 text-center">
-        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
-          &copy; 2026 School ERP
-        </p>
-        <p className="text-[11px] font-medium text-gray-500">
-          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-        </p>
-      </footer>
     </div>
   );
 };

@@ -41,6 +41,97 @@ const Login = ({ onLogin }) => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const { value: resetEmail } = await Swal.fire({
+      title: 'Reset Password',
+      text: 'Enter your registered email address to receive a 6-digit OTP:',
+      input: 'email',
+      inputValue: email || 'ryadavy498@gmail.com',
+      showCancelButton: true,
+      confirmButtonText: 'Send Reset OTP',
+      confirmButtonColor: '#ff5c0a'
+    });
+
+    if (resetEmail) {
+      try {
+        Swal.fire({
+          title: 'Sending OTP...',
+          text: 'Contacting mail server to dispatch your verification code',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const res = await fetch('http://localhost:5050/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: resetEmail })
+        }).then(r => r.json());
+
+        if (res.success) {
+          const { value: formValues } = await Swal.fire({
+            title: 'Enter OTP & New Password',
+            html: `
+              <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;">OTP has been sent to <b>${resetEmail}</b>. Please check your Gmail inbox.</p>
+              <input id="swal-otp" class="swal2-input" placeholder="6-digit OTP" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 4px; font-weight: bold;">
+              <input id="swal-password" type="password" class="swal2-input" placeholder="Enter New Password (min 6 chars)">
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Set New Password',
+            confirmButtonColor: '#ff5c0a',
+            preConfirm: () => {
+              const otpVal = document.getElementById('swal-otp').value;
+              const newPassVal = document.getElementById('swal-password').value;
+              if (!otpVal || !newPassVal) {
+                Swal.showValidationMessage('Please fill both OTP and New Password');
+                return false;
+              }
+              if (newPassVal.length < 6) {
+                Swal.showValidationMessage('Password must be at least 6 characters');
+                return false;
+              }
+              return { otp: otpVal, newPassword: newPassVal };
+            }
+          });
+
+          if (formValues) {
+            Swal.fire({
+              title: 'Updating Password...',
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading()
+            });
+
+            const resetRes = await fetch('http://localhost:5050/api/auth/reset-password', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                email: resetEmail, 
+                otp: formValues.otp, 
+                newPassword: formValues.newPassword 
+              })
+            }).then(r => r.json());
+
+            if (resetRes.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Password Reset Successful!',
+                text: 'Your password has been updated. Please sign in now.',
+                confirmButtonColor: '#ff5c0a'
+              });
+              setPassword(formValues.newPassword);
+            } else {
+              Swal.fire('Reset Failed', resetRes.message || 'Invalid or expired OTP', 'error');
+            }
+          }
+        } else {
+          Swal.fire('User Not Found', res.message || 'No account found with this email', 'error');
+        }
+      } catch (err) {
+        Swal.fire('Connection Error', 'Could not reach server to reset password', 'error');
+      }
+    }
+  };
+
   const handleQuickDemoLogin = () => {
     setEmail('admin@branch.com');
     setPassword('admin@123');
@@ -174,9 +265,13 @@ const Login = ({ onLogin }) => {
                 <label className="block text-[12px] font-bold text-slate-700 uppercase tracking-wider">
                   Password
                 </label>
-                <span className="text-[11.5px] font-semibold text-orange-600 hover:underline cursor-pointer">
+                <button
+                  type="button"
+                  onClick={handleForgotPassword}
+                  className="text-[11.5px] font-semibold text-orange-600 hover:underline cursor-pointer"
+                >
                   Forgot Password?
-                </span>
+                </button>
               </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">

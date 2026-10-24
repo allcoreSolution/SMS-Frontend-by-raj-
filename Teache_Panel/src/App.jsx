@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
@@ -35,20 +35,47 @@ import HolisticProgress from './pages/HolisticProgress';
 import Settings from './pages/Settings';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { LanguageProvider } from './context/LanguageContext';
-import { SidebarProvider } from './context/SidebarContext';
+import { SidebarProvider, useSidebar } from './context/SidebarContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 
 const Layout = ({ children }) => {
   const { currentTheme } = useTheme();
+  const { isSidebarOpen, closeSidebar } = useSidebar();
+  const location = useLocation();
+
+  // Auto-close sidebar on mobile route change
+  React.useEffect(() => {
+    if (window.innerWidth < 1024) {
+      closeSidebar();
+    }
+  }, [location.pathname]);
   
   return (
-    <div className={`flex w-screen h-screen overflow-hidden ${currentTheme}`}>
+    <div className={`flex w-screen h-screen overflow-hidden relative ${currentTheme}`}>
+      {/* Mobile Backdrop Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-xs transition-opacity duration-300"
+          onClick={closeSidebar}
+        />
+      )}
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0 w-full">
         <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg">
-          {children}
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg flex flex-col justify-between">
+          <div className="flex-1">
+            {children}
+          </div>
+          {/* Main Portal Bottom Footer */}
+          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
+            <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
+              &copy; 2026 School ERP
+            </p>
+            <p className="text-[11px] font-medium text-gray-500">
+              Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+            </p>
+          </footer>
         </main>
       </div>
     </div>

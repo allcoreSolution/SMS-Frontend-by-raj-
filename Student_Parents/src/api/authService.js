@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+const defaultHost = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'app.schoolerp' && window.location.hostname !== 'localhost') ? window.location.hostname : '192.168.1.11';
+const API_BASE = (typeof window !== 'undefined' && window.__API_BASE_URL__) || (typeof window !== 'undefined' && window.localStorage && localStorage.getItem('api_base_url')) || import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050/api' : `http://${defaultHost}:5050/api`);
 
 export const authService = {
   login: async (credentials) => {

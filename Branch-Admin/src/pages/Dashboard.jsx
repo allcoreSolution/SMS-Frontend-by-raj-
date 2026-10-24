@@ -193,8 +193,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Top 5 Primary KPI Cards - Standardized h-[110px] */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8 pt-1">
+      {/* Top 5 Primary KPI Cards - Compact Standard Size */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-5 pt-1">
         <KpiCard 
           title="Managed Branches" 
           value={String(stats.branchesCount || branches.length)} 
@@ -564,16 +564,6 @@ const Dashboard = () => {
           </Link>
         </div>
       </div>
-
-      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
-        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
-          &copy; 2026 School ERP • Multi-Branch Operations
-        </p>
-        <p className="text-[11px] font-medium text-gray-500">
-          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-        </p>
-      </footer>
 
     </div>
   );

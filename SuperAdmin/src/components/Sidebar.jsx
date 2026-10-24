@@ -416,19 +416,19 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
             );
           })
         )}
-
-        {/* Developer Branding & Attribution Footer (Scrollable with menu, exactly like Teacher Panel) */}
-        <div className="mt-6 mb-2 pt-3 border-t border-white/10 px-1 text-center">
-          <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-white/10 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
-            <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-0.5">
-              &copy; 2026 School ERP
-            </p>
-            <p className="text-[10px] font-medium text-slate-400 leading-tight">
-              Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-            </p>
-          </div>
-        </div>
       </nav>
+
+      {/* Developer Branding & Attribution Footer - Fixed Permanently at Bottom */}
+      <div className="shrink-0 p-3 border-t border-white/10 bg-[#0f172a] text-center z-10">
+        <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-white/10 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+          <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-0.5">
+            &copy; 2026 School ERP
+          </p>
+          <p className="text-[10px] font-medium text-slate-400 leading-tight">
+            Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+          </p>
+        </div>
+      </div>
 
       {/* Bottom glow */}
       <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(255,92,10,0.4), transparent)' }} />

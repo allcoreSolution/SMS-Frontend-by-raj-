@@ -13,18 +13,18 @@ async function run() {
         roleName: 'Teacher'
       })
     });
-    
+
     const data = await res.json();
     console.log("Registration Response:", data);
 
     if (data.success || data.message.includes('already exists')) {
-       console.log("\n==================================");
-       console.log("SUCCESS! TEACHER ACCOUNT CREATED.");
-       console.log("Email: rajesh.sharma@school.edu");
-       console.log("Password: teacher123");
-       console.log("==================================\n");
+      console.log("\n==================================");
+      console.log("SUCCESS! TEACHER ACCOUNT CREATED.");
+      console.log("Email: rajesh.sharma@school.edu");
+      console.log("Password: teacher123");
+      console.log("==================================\n");
     }
-  } catch(e) {
+  } catch (e) {
     console.error("API Error:", e);
   }
 }

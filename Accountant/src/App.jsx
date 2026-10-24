@@ -45,6 +45,10 @@ function App() {
         {/* Dashboard Routes (With Header/Sidebar) */}
         <Route element={<MainLayout />}>
           <Route path="/accounts/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/accounts" element={<Navigate to="/accounts/dashboard" replace />} />
+          <Route path="/accountant" element={<Navigate to="/accounts/dashboard" replace />} />
+          <Route path="/accountant/dashboard" element={<Dashboard />} />
           
           {/* Placeholder routes matching the dashboard links to prevent 404 */}
           <Route path="/profile" element={<Profile />} />

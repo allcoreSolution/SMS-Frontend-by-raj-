@@ -8,16 +8,18 @@ import {
   LayoutGrid, PenLine, Monitor
 } from 'lucide-react';
 import { parentService } from '../api/parentService';
+import { useLanguage } from '../context/LanguageContext';
+import { getT } from '../utils/translations';
 
 const quickActions = [
-  { label: 'Pay Fees',      icon: Wallet,         bg: 'bg-emerald-500', route: '/fee-payments' },
-  { label: 'Attendance',    icon: ClipboardCheck, bg: 'bg-blue-500',    route: '/attendance'   },
-  { label: 'Exam Report',   icon: FileText,       bg: 'bg-amber-500',   route: '/exams'        },
-  { label: 'Timetable',     icon: LayoutGrid,     bg: 'bg-pink-500',    route: '/timetable'    },
-  { label: 'Homework',      icon: PenLine,        bg: 'bg-orange-500',  route: '/homework'     },
-  { label: 'Documents',     icon: BookOpen,       bg: 'bg-teal-500',    route: '/documents'    },
-  { label: 'Study Center',  icon: BookMarked,     bg: 'bg-rose-500',    route: '/study-center' },
-  { label: 'Notice Board',  icon: Megaphone,      bg: 'bg-purple-500',  route: '/notice-board' },
+  { key: 'feePayments',  label: 'Pay Fees',      icon: Wallet,         bg: 'bg-emerald-500', route: '/fee-payments' },
+  { key: 'attendance',   label: 'Attendance',    icon: ClipboardCheck, bg: 'bg-blue-500',    route: '/attendance'   },
+  { key: 'exams',        label: 'Exam Report',   icon: FileText,       bg: 'bg-amber-500',   route: '/exams'        },
+  { key: 'timetable',    label: 'Timetable',     icon: LayoutGrid,     bg: 'bg-pink-500',    route: '/timetable'    },
+  { key: 'homework',     label: 'Homework',      icon: PenLine,        bg: 'bg-orange-500',  route: '/homework'     },
+  { key: 'documents',    label: 'Documents',     icon: BookOpen,       bg: 'bg-teal-500',    route: '/documents'    },
+  { key: 'studyCenter',  label: 'Study Center',  icon: BookMarked,     bg: 'bg-rose-500',    route: '/study-center' },
+  { key: 'noticeBoard',  label: 'Notice Board',  icon: Megaphone,      bg: 'bg-purple-500',  route: '/notice-board' },
 ];
 
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -28,6 +30,8 @@ const getFirstDay    = (y, m) => new Date(y, m, 1).getDay();
 
 export default function Dashboard({ activeChild, setActiveChild }) {
   const navigate = useNavigate();
+
+  const { currentLang, t } = useLanguage();
 
   // Current calendar viewing month/year
   const todayDate = new Date();
@@ -180,11 +184,11 @@ export default function Dashboard({ activeChild, setActiveChild }) {
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
-              Parent & Student Portal
+              {t('portalTitle', 'Parent & Student Portal')}
             </h1>
           </div>
           <p className="text-xs text-gray-500 font-semibold mt-0.5">
-            Real-time synchronization with Central School ERP Node
+            {t('portalSub', 'Real-time synchronization with Central School ERP Node')}
           </p>
         </div>
 
@@ -197,7 +201,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             title="Reload live database metrics"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? 'Refreshing...' : 'Sync Live'}</span>
+            <span>{refreshing ? t('refreshing', 'Refreshing...') : t('syncLive', 'Sync Live')}</span>
           </button>
 
           {/* Active Student Pill */}
@@ -246,7 +250,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                   {student.class}
                 </span>
                 <span className="text-[12px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5">
-                  Roll: {student.roll}
+                  {t('roll', 'Roll')}: {student.roll}
                 </span>
               </div>
             </div>
@@ -254,11 +258,11 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             {/* Detailed Info Rows */}
             <div className="divide-y divide-gray-100 text-[12.5px] mb-5">
               {[
-                { label: 'Admission No.', val: student.admn, icon: GraduationCap },
-                { label: 'Date of Birth', val: student.dob, icon: Calendar },
-                { label: 'House', val: student.house || 'Red Phoenix', icon: Shield },
-                { label: 'Blood Group', val: student.bloodGroup || 'O+', icon: Sparkles },
-                { label: 'Guardian / Father', val: student.fatherName || 'Parent', icon: User },
+                { label: t('admissionNo', 'Admission No.'), val: student.admn, icon: GraduationCap },
+                { label: t('dob', 'Date of Birth'), val: student.dob, icon: Calendar },
+                { label: t('house', 'House'), val: student.house || 'Red Phoenix', icon: Shield },
+                { label: t('bloodGroup', 'Blood Group'), val: student.bloodGroup || 'O+', icon: Sparkles },
+                { label: t('guardian', 'Guardian / Father'), val: student.fatherName || 'Parent', icon: User },
               ].map(({ label, val, icon: Icon }) => (
                 <div key={label} className="flex items-center justify-between py-2.5">
                   <span className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[11px] tracking-wider">
@@ -277,7 +281,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               onClick={() => navigate('/my-profile')}
               className="w-full py-2 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-600 text-gray-600 text-xs font-black uppercase tracking-wider border border-gray-200 transition-colors flex items-center justify-center gap-1.5"
             >
-              <span>View Complete Student Dossier</span>
+              <span>{t('viewDossier', 'View Complete Student Dossier')}</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -289,13 +293,13 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 <div className="w-6 h-6 bg-amber-50 border border-amber-200 flex items-center justify-center">
                   <Megaphone className="w-3.5 h-3.5 text-amber-600" />
                 </div>
-                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Notice Board</h3>
+                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">{t('noticeBoard', 'Notice Board')}</h3>
               </div>
               <button
                 onClick={() => navigate('/notice-board')}
                 className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline"
               >
-                View All
+                {t('viewAll', 'View All')}
               </button>
             </div>
 
@@ -314,7 +318,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                           : 'bg-blue-100 text-blue-700 border border-blue-200'
                       }`}
                     >
-                      {n.type === 'alert' ? 'High Priority' : 'Official Notice'}
+                      {n.type === 'alert' ? t('highPriority', 'High Priority') : t('officialNotice', 'Official Notice')}
                     </span>
                     <span className="text-[10px] text-gray-400 font-semibold">{n.date}</span>
                   </div>
@@ -343,18 +347,18 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               className="bg-gradient-to-br from-red-600 to-rose-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-red-100 uppercase tracking-wider">Fee Balance</span>
+                <span className="text-xs font-bold text-red-100 uppercase tracking-wider">{t('feeBalance', 'Fee Balance')}</span>
                 <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
                   <Wallet className="w-4 h-4 text-white" />
                 </div>
               </div>
               <div>
                 <p className={`text-2xl font-black tracking-tight ${fees.feesBalance === 'All Clear' ? 'text-emerald-300' : 'text-white'}`}>
-                  {fees.feesBalance}
+                  {fees.feesBalance === 'All Clear' ? t('allClear', 'All Clear') : fees.feesBalance}
                 </p>
                 <div className="flex items-center justify-between text-[11px] text-red-100 mt-1 font-semibold">
-                  <span>Paid: {fees.feesPaid}</span>
-                  <span className="underline group-hover:text-white">Pay Online »</span>
+                  <span>{t('paid', 'Paid')}: {fees.feesPaid}</span>
+                  <span className="underline group-hover:text-white">{t('payOnline', 'Pay Online')} »</span>
                 </div>
               </div>
             </button>
@@ -365,7 +369,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               className="bg-gradient-to-br from-teal-600 to-emerald-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-teal-100 uppercase tracking-wider">Today's Attendance</span>
+                <span className="text-xs font-bold text-teal-100 uppercase tracking-wider">{t('todaysAttendance', "Today's Attendance")}</span>
                 <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
                   <ClipboardCheck className="w-4 h-4 text-white" />
                 </div>
@@ -373,15 +377,15 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-xl font-black tracking-tight text-white">
-                    {attendance.today}
+                    {attendance.today === 'Present' ? t('present', 'Present') : (attendance.today === 'Absent' ? t('absent', 'Absent') : attendance.today)}
                   </p>
                   {attendance.today === 'Present' && (
                     <CheckCircle2 className="w-5 h-5 text-emerald-300 flex-shrink-0" />
                   )}
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-teal-100 mt-1 font-semibold">
-                  <span>Rate: {attendance.rate}</span>
-                  <span className="underline group-hover:text-white">Full Register »</span>
+                  <span>{t('rate', 'Rate')}: {attendance.rate}</span>
+                  <span className="underline group-hover:text-white">{t('fullRegister', 'Full Register')} »</span>
                 </div>
               </div>
             </button>
@@ -392,18 +396,18 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-indigo-100 uppercase tracking-wider">Academics & Term</span>
+                <span className="text-xs font-bold text-indigo-100 uppercase tracking-wider">{t('academicsTerm', 'Academics & Term')}</span>
                 <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
                   <Award className="w-4 h-4 text-white" />
                 </div>
               </div>
               <div>
                 <p className="text-xl font-black tracking-tight text-white">
-                  Term 1 Active
+                  {t('termActive', 'Term 1 Active')}
                 </p>
                 <div className="flex items-center justify-between text-[11px] text-indigo-100 mt-1 font-semibold">
-                  <span>House: {student.house || 'Red Phoenix'}</span>
-                  <span className="underline group-hover:text-white">Exam Report »</span>
+                  <span>{t('house', 'House')}: {student.house || 'Red Phoenix'}</span>
+                  <span className="underline group-hover:text-white">{t('examReport', 'Exam Report')} »</span>
                 </div>
               </div>
             </button>
@@ -414,12 +418,12 @@ export default function Dashboard({ activeChild, setActiveChild }) {
           <div className="bg-white border border-gray-200 p-4 shadow-xs">
             <div className="flex items-center gap-2 mb-3.5">
               <Zap className="w-4 h-4 text-amber-500" />
-              <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">Quick Actions & Shortcuts</h3>
+              <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">{t('quickActions', 'Quick Actions & Shortcuts')}</h3>
             </div>
             <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
-              {quickActions.map(({ label, icon: Icon, bg, route }) => (
+              {quickActions.map(({ key, label, icon: Icon, bg, route }) => (
                 <button
-                  key={label}
+                  key={key || label}
                   onClick={() => navigate(route)}
                   className="flex flex-col items-center gap-1.5 p-2 hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all group"
                 >
@@ -427,7 +431,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     <Icon className="w-5 h-5" strokeWidth={2.2} />
                   </div>
                   <span className="text-[11px] font-bold text-gray-600 group-hover:text-gray-900 text-center leading-tight truncate w-full">
-                    {label}
+                    {t(key, label)}
                   </span>
                 </button>
               ))}
@@ -442,7 +446,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-blue-600" />
                 <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">
-                  Attendance & Events Activity Calendar
+                  {t('activityCalendar', 'Attendance & Events Activity Calendar')}
                 </h3>
               </div>
 
@@ -455,7 +459,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                       view === 'month' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-600 hover:text-black'
                     }`}
                   >
-                    Month View
+                    {t('monthView', 'Month View')}
                   </button>
                   <button
                     onClick={() => setView('list')}
@@ -463,7 +467,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                       view === 'list' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-600 hover:text-black'
                     }`}
                   >
-                    List Schedule
+                    {t('listSchedule', 'List Schedule')}
                   </button>
                 </div>
 
@@ -480,7 +484,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     onClick={() => setCurDate(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1))}
                     className="px-2.5 h-7 bg-gray-100 hover:bg-gray-200 border border-gray-200 text-[10px] font-bold uppercase text-gray-700 transition-colors"
                   >
-                    Today
+                    {t('today', 'Today')}
                   </button>
                   <button
                     onClick={() => setCurDate(new Date(y, m + 1, 1))}
@@ -496,22 +500,22 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             {/* Calendar Legend */}
             <div className="flex flex-wrap items-center gap-4 mb-3 text-[11px] font-bold text-gray-500">
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-emerald-500"></span> Present
+                <span className="w-2.5 h-2.5 bg-emerald-500"></span> {t('present', 'Present')}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-red-500"></span> Absent
+                <span className="w-2.5 h-2.5 bg-red-500"></span> {t('absent', 'Absent')}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-amber-400"></span> Late
+                <span className="w-2.5 h-2.5 bg-amber-400"></span> {t('late', 'Late')}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-pink-500"></span> School Holiday / Fest
+                <span className="w-2.5 h-2.5 bg-pink-500"></span> {t('holiday', 'School Holiday / Fest')}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-indigo-500"></span> PTM / Meeting
+                <span className="w-2.5 h-2.5 bg-indigo-500"></span> {t('ptmMeeting', 'PTM / Meeting')}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-blue-500"></span> Academic Event
+                <span className="w-2.5 h-2.5 bg-blue-500"></span> {t('academicEvent', 'Academic Event')}
               </span>
               <span className="ml-auto text-xs font-black text-gray-800">
                 {MONTHS[m]} {y}

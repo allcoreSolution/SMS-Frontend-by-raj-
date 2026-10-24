@@ -1,68 +1,89 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
-import { Landmark, Users, FileText, Banknote, ReceiptText, Activity } from 'lucide-react';
+import { Landmark, Users, FileText, ReceiptText, Activity, ArrowUp } from 'lucide-react';
 import { tenantService } from '../../api/tenantService';
 
-const KpiCard = ({ title, value, isLive, icon: Icon, glowColor, stroke, iconBg, iconColor, spark }) => (
-  <div className="bg-white rounded-xl shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] border border-slate-200/60 relative overflow-hidden group hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.12)] hover:-translate-y-1 transition-all duration-400 ease-out h-[110px] flex flex-col justify-between">
-    
-    {/* Subtle Glow Effect on Hover */}
-    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out z-0" 
-         style={{ background: `radial-gradient(circle at top right, ${glowColor}15, transparent 70%)` }}></div>
-    
-    <div className="p-4 relative z-10 flex flex-col h-full">
-      <div className="flex justify-between items-start mb-auto">
-        <div className="flex flex-col gap-1 min-w-0 flex-1 pr-2">
-          <div className="text-[11px] font-bold text-slate-500 tracking-wide uppercase truncate" title={title}>
-            {title}
-          </div>
-          <div className="text-[22px] font-black text-slate-800 leading-none tracking-tight flex items-center gap-2 mt-0.5">
-            <span>{value}</span>
-            {isLive && (
-              <span className="inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 uppercase tracking-widest shadow-xs border border-emerald-100">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                Live
-              </span>
-            )}
-          </div>
+const KpiCard = ({
+  title,
+  value,
+  isLive,
+  trend,
+  trendColor,
+  icon: Icon,
+  glowColor = '#3b82f6',
+  stroke = '#3b82f6',
+  iconBg = '#3b82f6',
+  iconColor = '#ffffff',
+  spark
+}) => {
+  const safeId = (title || 'kpi').replace(/[^a-zA-Z0-9]/g, '');
+
+  return (
+    <div className="bg-white rounded-xl shadow-xs border border-gray-100 p-2.5 sm:px-3 sm:py-2.5 flex flex-col justify-between h-[105px] relative overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all">
+      {/* Subtle Glow Effect on Hover */}
+      <div
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out z-0 pointer-events-none"
+        style={{ background: `radial-gradient(circle at top right, ${glowColor}15, transparent 70%)` }}
+      />
+
+      {/* Top Row: Icon Badge on Left, Trend/Live Badge on Right (Identical to School ERP) */}
+      <div className="flex justify-between items-start z-10">
+        <div
+          className="w-7 h-7 rounded-lg flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-105"
+          style={{ background: iconBg }}
+        >
+          {Icon && <Icon className="w-3.5 h-3.5" style={{ color: iconColor }} strokeWidth={2.2} />}
         </div>
-        
-        <div className="relative flex-shrink-0">
-          <div className="absolute inset-0 rounded-lg blur-md opacity-40 transition-transform group-hover:scale-110" style={{ background: iconBg }}></div>
-          <div className="w-[34px] h-[34px] rounded-lg flex items-center justify-center relative shadow-sm border border-white/20 transition-transform group-hover:scale-110 duration-300" 
-               style={{ background: iconBg }}>
-            <Icon size={16} style={{ color: iconColor }} strokeWidth={2.5} />
-          </div>
-        </div>
+
+        {isLive ? (
+          <span className="text-[8.5px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Live
+          </span>
+        ) : trend ? (
+          <span className={`text-[8.5px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${trendColor || 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'}`}>
+            <ArrowUp className="w-2.5 h-2.5 stroke-[2.5]" />
+            {trend}
+          </span>
+        ) : null}
+      </div>
+
+      {/* Bottom Section: Big Value on Top, Title underneath (Identical to School ERP) */}
+      <div className="mt-1.5 z-10">
+        <h3 className="text-lg sm:text-xl font-black text-gray-800 tracking-tight leading-none">
+          {value}
+        </h3>
+        <p className="text-[10.5px] text-gray-500 font-semibold mt-0.5 truncate">
+          {title}
+        </p>
+      </div>
+
+      {/* Background Sparkline Chart on Bottom-Right */}
+      <div className="absolute bottom-0 right-0 left-1/3 h-10 opacity-70 pointer-events-none z-0">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={spark} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+            <defs>
+              <linearGradient id={`g-${safeId}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={stroke} stopOpacity="0.35" />
+                <stop offset="100%" stopColor={stroke} stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+            <Area
+              type="monotone"
+              dataKey="v"
+              stroke={stroke}
+              strokeWidth={2}
+              fill={`url(#g-${safeId})`}
+              dot={false}
+              isAnimationActive={true}
+              animationDuration={1200}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
       </div>
     </div>
-
-    {/* Full Width Bottom Graph */}
-    <div className="absolute bottom-0 left-0 right-0 h-[45%] z-0 opacity-85 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={spark} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id={`g-${title.replace(/\s/g,'')}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={stroke} stopOpacity={0.45} />
-              <stop offset="100%" stopColor={stroke} stopOpacity={0} />
-            </linearGradient>
-          </defs>
-          <Area
-            type="monotone"
-            dataKey="v"
-            stroke={stroke}
-            strokeWidth={3}
-            fill={`url(#g-${title.replace(/\s/g,'')})`}
-            dot={false}
-            isAnimationActive={true}
-            animationDuration={1500}
-            animationEasing="ease-out"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-    </div>
-  </div>
-);
+  );
+};
 
 const KpiCards = () => {
   const [stats, setStats] = useState({
@@ -75,7 +96,7 @@ const KpiCards = () => {
 
   useEffect(() => {
     tenantService.getDashboardStats().then(res => {
-      if(res?.data) {
+      if (res?.data) {
         setStats({
           activeSchools: res.data.activeSchools || 0,
           totalSchools: res.data.totalSchools || 0,
@@ -91,9 +112,9 @@ const KpiCards = () => {
   const genSpark = (base, volatility) => {
     let arr = [];
     let current = base;
-    for(let i=0; i<8; i++) {
-        current += (Math.random() - 0.2) * volatility; 
-        arr.push({v: Math.max(1, current)});
+    for (let i = 0; i < 8; i++) {
+      current += (Math.random() - 0.2) * volatility;
+      arr.push({ v: Math.max(1, current) });
     }
     return arr;
   };
@@ -103,10 +124,11 @@ const KpiCards = () => {
       title: 'Platform Schools',
       value: stats.totalSchools.toLocaleString(),
       icon: Landmark,
-      stroke: '#3b82f6',
-      iconBg: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+      stroke: '#0284c7',
+      iconBg: '#0284c7',
       iconColor: '#ffffff',
-      glowColor: '#3b82f6',
+      glowColor: '#0284c7',
+      trend: '100% Active',
       spark: genSpark(10, 5),
     },
     {
@@ -114,29 +136,32 @@ const KpiCards = () => {
       value: stats.activeSchools.toLocaleString(),
       icon: Users,
       stroke: '#10b981',
-      iconBg: 'linear-gradient(135deg, #34d399, #10b981)',
+      iconBg: '#10b981',
       iconColor: '#ffffff',
       glowColor: '#10b981',
+      isLive: true,
       spark: genSpark(20, 8),
     },
     {
       title: 'Current Revenue',
-      value: stats.totalRevenue > 0 ? '₹' + stats.totalRevenue.toLocaleString() : '₹0',
+      value: stats.totalRevenue > 0 ? '₹' + Number(stats.totalRevenue).toLocaleString('en-IN') : '₹0',
       icon: ReceiptText,
       stroke: '#f59e0b',
-      iconBg: 'linear-gradient(135deg, #fbbf24, #f59e0b)',
+      iconBg: '#f59e0b',
       iconColor: '#ffffff',
       glowColor: '#f59e0b',
+      trend: '1133% MTD',
       spark: genSpark(100, 30),
     },
     {
       title: 'Total Students',
-      value: stats.totalStudents > 0 ? stats.totalStudents.toLocaleString() : '0',
+      value: stats.totalStudents > 0 ? Number(stats.totalStudents).toLocaleString('en-IN') : '0',
       icon: FileText,
-      stroke: '#ec4899',
-      iconBg: 'linear-gradient(135deg, #f472b6, #ec4899)',
+      stroke: '#8b5cf6',
+      iconBg: '#8b5cf6',
       iconColor: '#ffffff',
-      glowColor: '#ec4899',
+      glowColor: '#8b5cf6',
+      trend: 'Enrolled',
       spark: genSpark(50, 15),
     },
     {
@@ -144,16 +169,16 @@ const KpiCards = () => {
       value: stats.activeSessions ? String(stats.activeSessions) : '1',
       isLive: true,
       icon: Activity,
-      stroke: '#8b5cf6',
-      iconBg: 'linear-gradient(135deg, #a78bfa, #8b5cf6)',
+      stroke: '#f43f5e',
+      iconBg: '#f43f5e',
       iconColor: '#ffffff',
-      glowColor: '#8b5cf6',
+      glowColor: '#f43f5e',
       spark: genSpark(8, 3),
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-5 mb-8 pt-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-5 pt-1">
       {liveCards.map(c => <KpiCard key={c.title} {...c} />)}
     </div>
   );

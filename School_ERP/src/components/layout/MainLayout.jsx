@@ -25,6 +25,10 @@ const MainLayout = () => {
     }
   }, [location.pathname]);
 
+  const [isMobileScreen, setIsMobileScreen] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+  });
+
   const handleToggleSidebar = () => {
     if (window.innerWidth < 768) {
       setIsMobileOpen(!isMobileOpen);
@@ -35,13 +39,12 @@ const MainLayout = () => {
 
   // Determine if the sidebar is in a collapsed state for the UI
   // On mobile, if it's open, it's always full width (never collapsed)
-  const isCollapsed = window.innerWidth >= 768 ? isDesktopCollapsed : false;
+  const isCollapsed = !isMobileScreen ? isDesktopCollapsed : false;
 
   // Re-evaluate window width on resize so state aligns correctly
   useEffect(() => {
     const handleResize = () => {
-      // Force a re-render to update the isCollapsed derived value
-      setIsMobileOpen((prev) => prev);
+      setIsMobileScreen(window.innerWidth < 768);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -59,7 +62,7 @@ const MainLayout = () => {
 
       {/* Sidebar Navigation */}
       <div 
-        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 flex-shrink-0 ${
           isMobileOpen ? "translate-x-0" : "-translate-x-full"
         } print:hidden h-full`}
       >
@@ -67,8 +70,8 @@ const MainLayout = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-slate-50 print:bg-white w-full">
-        <div className="print:hidden relative z-20">
+      <div className="flex-1 flex flex-col min-w-0 bg-slate-50 print:bg-white h-screen overflow-hidden">
+        <div className="print:hidden relative z-20 flex-shrink-0 w-full">
           <Header toggleSidebar={handleToggleSidebar} />
         </div>
         
@@ -95,8 +98,20 @@ const MainLayout = () => {
         )}
         
         {/* Dynamic Page Content */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto w-full relative">
-          <Outlet />
+        <main ref={mainRef} className="flex-1 overflow-y-auto w-full relative flex flex-col justify-between">
+          <div className="flex-1">
+            <Outlet />
+          </div>
+
+          {/* Main Portal Bottom Footer */}
+          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
+            <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
+              &copy; 2026 School ERP
+            </p>
+            <p className="text-[11px] font-medium text-gray-500">
+              Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+            </p>
+          </footer>
           
           {/* Floating AI Chatbot Button */}
           <div className="fixed bottom-6 right-6 z-50">

@@ -298,7 +298,11 @@ const Sidebar = () => {
   };
   
   return (
-    <aside className={`h-screen bg-[#131927] text-slate-300 flex flex-col overflow-hidden border-r border-[#1e2638] flex-shrink-0 transition-all duration-300 ease-in-out ${isSidebarOpen ? 'w-[240px] opacity-100' : 'w-0 opacity-0 pointer-events-none border-r-0'}`}>
+    <aside className={`h-screen bg-[#131927] text-slate-300 flex flex-col overflow-hidden border-r border-[#1e2638] flex-shrink-0 z-50 transition-all duration-300 ease-in-out fixed lg:relative ${
+      isSidebarOpen 
+        ? 'w-[240px] translate-x-0 opacity-100 shadow-2xl lg:shadow-none' 
+        : 'w-0 -translate-x-full opacity-0 pointer-events-none lg:w-0 border-r-0'
+    }`}>
       
       {/* Logo Area */}
       <div className="h-16 px-4 flex items-center flex-shrink-0 border-b border-[#1e2638] bg-[#131927]">
@@ -452,19 +456,19 @@ const Sidebar = () => {
             </ul>
           </div>
         </div>
-
-        {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-        <div className="mt-6 mb-3 pt-3 border-t border-slate-800/80 px-1 text-center">
-          <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-3 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
-            <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-              &copy; 2026 School ERP
-            </p>
-            <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
-              Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-            </p>
-          </div>
-        </div>
       </nav>
+
+      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER - FIXED PERMANENTLY AT BOTTOM */}
+      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-[#131927] text-center">
+        <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+          <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
+            &copy; 2026 School ERP
+          </p>
+          <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
+            Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+          </p>
+        </div>
+      </div>
     </aside>
   );
 };

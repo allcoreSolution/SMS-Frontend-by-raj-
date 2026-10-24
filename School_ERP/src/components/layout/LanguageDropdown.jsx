@@ -38,10 +38,24 @@ export const triggerGoogleTranslate = (langCode) => {
     document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
 
     const applyToCombo = () => {
-      const combo = document.querySelector('.goog-te-combo');
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
       if (combo) {
-        combo.value = langCode;
-        combo.dispatchEvent(new Event('change'));
+        const desiredVal = (!langCode || langCode === 'en') ? '' : langCode.toLowerCase();
+        if (combo.options && combo.options.length > 0) {
+          for (let i = 0; i < combo.options.length; i++) {
+            const optVal = (combo.options[i].value || '').toLowerCase();
+            if (optVal === desiredVal || (desiredVal === '' && (optVal === 'en' || optVal === ''))) {
+              combo.selectedIndex = i;
+              combo.options[i].selected = true;
+              break;
+            }
+          }
+        }
+        combo.value = desiredVal;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        try {
+          combo.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (_) {}
         return true;
       }
       return false;
@@ -124,10 +138,10 @@ const LanguageDropdown = () => {
   }, [selectedLang]);
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative shrink-0" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer ${
+        className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer shrink-0 ${
           isOpen 
             ? 'bg-orange-50 text-[#ff5c0a] border-orange-200 ring-2 ring-orange-500/20' 
             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-orange-50 hover:text-[#ff5c0a]'

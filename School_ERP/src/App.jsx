@@ -255,6 +255,7 @@ import ImageGallery from "./pages/ImageGallery";
 import LibraryDashboard from "./pages/LibraryDashboard";
 import Logout from "./pages/Logout";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 import PortalHub from "./pages/PortalHub";
 import PortalViewer from "./pages/PortalViewer";
@@ -267,6 +268,7 @@ function App() {
       
       <Route path="/logout" element={<Logout />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<MainLayout />}>

@@ -38,12 +38,17 @@ axiosInstance.interceptors.response.use(
     console.error('API Call Error: ', error.response || error.message);
     
     if (error.response && error.response.status === 401) {
-      // Token expired or unauthorized
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      localStorage.removeItem('schoolId');
-      // Redirect to login
-      window.location.href = '/login';
+      const isLoginRequest = error.config?.url?.includes('/auth/login');
+      const isAlreadyOnLogin = window.location.pathname === '/login';
+      const token = localStorage.getItem('token');
+      const isDemoSession = token && token.startsWith('demo-');
+
+      if (!isLoginRequest && !isAlreadyOnLogin && !isDemoSession) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('schoolId');
+        window.location.href = '/login';
+      }
     }
     
     return Promise.reject(error);

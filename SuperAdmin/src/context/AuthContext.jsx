@@ -44,11 +44,11 @@ export const AuthProvider = ({ children }) => {
       return false;
     } catch (err) {
       console.warn('SuperAdmin Login API failed, checking demo fallback:', err?.message);
-      if (email === 'admin123@gmail.com' && password === 'admin@123') {
+      if ((email === 'ryadavy498@gmail.com' || email === 'admin123@gmail.com') && password === 'admin@123') {
         const demoUser = {
           id: 'demo_superadmin',
           name: 'Super Admin Master',
-          email: 'admin123@gmail.com',
+          email: email,
           role: 'superadmin',
         };
         localStorage.setItem('sa_user', JSON.stringify(demoUser));

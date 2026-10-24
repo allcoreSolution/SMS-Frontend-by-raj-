@@ -4,7 +4,7 @@ import {
   X, ExternalLink, Shield, School, User, Bot, 
   CreditCard, CheckCircle2, Cpu, Navigation, FileText, 
   Phone, Mail, Building, Send, Radio, Terminal, Award, HelpCircle,
-  Briefcase, DollarSign, BookOpen, GraduationCap, LayoutDashboard
+  Briefcase, DollarSign, BookOpen, GraduationCap, LayoutDashboard, Download
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -540,6 +540,14 @@ export default function PortalModal() {
                     >
                       <span>Launch Student Portal :5175</span>
                       <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                    <a 
+                      href="/apk/Student_Parents.apk" 
+                      download="Student_Parents.apk"
+                      className="w-full bg-indigo-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                    >
+                      <Download className="w-3.5 h-3.5 text-white" />
+                      <span>Download Student APK (Android)</span>
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
                       <a href="http://localhost:5175/ai-assistant" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">

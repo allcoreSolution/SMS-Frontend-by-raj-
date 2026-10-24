@@ -725,7 +725,7 @@ const Sidebar = ({ isCollapsed }) => {
   const filteredMainNav = filterItems(mainNav);
 
   return (
-    <aside className={`${isCollapsed ? 'w-20' : 'w-[245px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-y-auto flex-shrink-0 shadow-xl [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-700/60 hover:[&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full`}>
+    <aside className={`${isCollapsed ? 'w-20' : 'w-[245px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
       {/* Brand & Logo Area */}
       <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-5'} py-4 sticky top-0 bg-[#131927]/95 backdrop-blur-md z-20 border-b border-[#1e2638] min-h-[64px]`}>
         <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/20">
@@ -768,7 +768,7 @@ const Sidebar = ({ isCollapsed }) => {
       )}
 
       {/* Navigation Sections */}
-      <div className="flex-1 px-1.5 py-2 space-y-1">
+      <div className="flex-1 overflow-y-auto px-1.5 py-2 space-y-1 custom-scrollbar [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-700/60 hover:[&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full">
         {/* Main Navigation */}
         {filteredMainNav.length > 0 && (
           <div className={`mb-2 ${isCollapsed ? 'mt-2' : ''}`}>
@@ -822,20 +822,21 @@ const Sidebar = ({ isCollapsed }) => {
         {renderNavSection("COMMUNICATION", communicationNav)}
         {renderNavSection("ACCOUNT", accountNav)}
 
-        {/* Developer Branding & Attribution Footer (Scrollable with menu, exactly like Teacher Panel) */}
+      </div>
+
+      {/* Developer Branding & Attribution Footer - Fixed Permanently at Bottom */}
+      <div className="shrink-0 p-2.5 border-t border-slate-800/80 bg-[#131927] text-center z-10">
         {!isCollapsed ? (
-          <div className="mt-6 mb-2 px-1 pt-3 border-t border-slate-800/80 text-center">
-            <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
-              <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-                &copy; 2026 School ERP
-              </p>
-              <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
-                Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-              </p>
-            </div>
+          <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+            <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-0.5">
+              &copy; 2026 School ERP
+            </p>
+            <p className="text-[10px] font-medium text-slate-400 leading-tight">
+              Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+            </p>
           </div>
         ) : (
-          <div className="mt-4 mb-2 py-2 border-t border-slate-800/80 flex items-center justify-center" title="© 2026 School ERP - Developed by RAJ YADAV @ALLCORE SOLUTION">
+          <div className="py-1 flex items-center justify-center" title="© 2026 School ERP - Developed by RAJ YADAV @ALLCORE SOLUTION">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
           </div>
         )}
