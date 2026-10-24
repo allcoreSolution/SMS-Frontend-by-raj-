@@ -1,5 +1,5 @@
 import React from 'react';
-import { ExternalLink, CheckCircle, Sparkles } from 'lucide-react';
+import { ExternalLink, CheckCircle, Sparkles, Download } from 'lucide-react';
 
 export default function Showcase() {
   const panels = [
@@ -30,28 +30,32 @@ export default function Showcase() {
       theme: 'border-emerald-400'
     },
     {
-      title: 'Accountant & Fee Collection Counter',
-      port: ':5178',
+      title: 'Accountant App (Android APK)',
+      port: 'APK',
       badge: 'Accountant',
-      badgeColor: 'bg-blue-400 text-gray-900',
-      url: 'http://localhost:5178',
-      desc: 'Specialized finance workstation: Instant Fee Invoicing, Defaulter reminders, Income & Expense vouchers, and Cash Ledgers.',
+      badgeColor: 'bg-teal-400 text-gray-900',
+      url: '/apk/Accountant.apk',
+      isDownload: true,
+      downloadName: 'Accountant.apk',
+      desc: 'Specialized finance Android APK: Instant Fee Invoicing, Defaulter reminders, Income & Expense vouchers, and Cash Ledgers.',
       stats: [
-        { label: 'Fee Counter', val: 'Online & Cash Invoicing' },
-        { label: 'Daybook', val: 'Audited Expense Logs' }
+        { label: 'Platform', val: 'Android APK' },
+        { label: 'Fee Counter', val: 'Online & Cash Invoicing' }
       ],
-      theme: 'border-blue-400'
+      theme: 'border-teal-400'
     },
     {
-      title: 'Student & Parent AI Portal',
-      port: ':5175',
+      title: 'Student & Parent App (Android APK)',
+      port: 'APK',
       badge: 'Student / Parent',
       badgeColor: 'bg-purple-400 text-gray-900',
-      url: 'http://localhost:5175',
-      desc: '14 Indian & Global languages, Intelligent AI Assistant, CBT Online Exams with timer, Digital Fee Challan, and Leave Applications.',
+      url: '/apk/Student_Parents.apk',
+      isDownload: true,
+      downloadName: 'Student_Parents.apk',
+      desc: 'Android mobile app with Hindi and English switch, Intelligent AI Assistant, CBT Online Exams with timer, Digital Fee Challan, and Attendance.',
       stats: [
-        { label: 'Languages', val: '14 Indic & Global' },
-        { label: 'AI Desk', val: 'Deep School Intelligence' }
+        { label: 'Platform', val: 'Android APK' },
+        { label: 'Languages', val: 'Hindi & English' }
       ],
       theme: 'border-purple-400'
     }
@@ -79,10 +83,9 @@ export default function Showcase() {
           <a
             key={idx}
             href={p.url}
-            target="_blank"
-            rel="noreferrer"
+            {...(p.isDownload ? { download: p.downloadName } : { target: "_blank", rel: "noreferrer" })}
             className="relative group w-full cursor-pointer block"
-            title={`Click to launch ${p.title} on ${p.port}`}
+            title={p.isDownload ? `Click to download ${p.title}` : `Click to launch ${p.title} on ${p.port}`}
           >
             <div className="absolute inset-0 bg-gray-900 translate-x-2.5 translate-y-2.5 transition-transform duration-300 group-hover:translate-x-4 group-hover:translate-y-4" />
             <div className="relative w-full bg-white border-[2.5px] border-gray-900 flex flex-col transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1">
@@ -123,8 +126,8 @@ export default function Showcase() {
                 </div>
 
                 <div className="w-full bg-gray-900 group-hover:bg-amber-400 text-white group-hover:text-gray-900 border-2 border-gray-900 py-2.5 px-4 flex items-center justify-center gap-2 font-black text-xs uppercase tracking-widest transition-colors shadow-[2px_2px_0_0_#111827]">
-                  <span>Launch {p.badge} ({p.port})</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>{p.isDownload ? `Download ${p.badge} APK ⬇` : `Launch ${p.badge} (${p.port})`}</span>
+                  {p.isDownload ? <Download className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
                 </div>
               </div>
 

@@ -129,13 +129,12 @@ export default function Hero() {
               </div>
            </a>
            
-           {/* Clickable Mobile App Preview */}
+           {/* Clickable Mobile App Preview - Direct APK Download */}
            <a 
-              href="http://localhost:5175" 
-              target="_blank" 
-              rel="noreferrer"
+              href="/apk/Student_Parents.apk" 
+              download="Student_Parents.apk"
               className="absolute -bottom-6 -left-6 w-[140px] h-[270px] bg-white border-2 border-gray-900 shadow-[6px_6px_0px_0px_#111827] z-20 flex flex-col p-1.5 transform -rotate-2 hover:rotate-0 hover:scale-105 transition-all cursor-pointer"
-              title="Click to launch Student & Parent Portal on http://localhost:5175"
+              title="Download Student & Parent Android APK"
            >
               <div className="w-full h-3 border-b-[1.5px] border-gray-900 mb-1.5 flex justify-center">
                  <div className="w-6 h-[3px] bg-gray-900 rounded-full" />
@@ -143,9 +142,9 @@ export default function Hero() {
               <div className="w-full flex-1 border-[1.5px] border-gray-900 bg-emerald-50 flex flex-col items-center justify-center p-2 text-center">
                  <span className="text-xl mb-1">📱</span>
                  <span className="font-black text-[10px] uppercase text-emerald-900 leading-tight">
-                   Student<br/>Portal<br/>:5175 ↗
+                   Student<br/>Android<br/>APK ⬇
                  </span>
-                 <span className="text-[8px] text-gray-500 mt-1 font-bold">Click to Test</span>
+                 <span className="text-[8px] text-emerald-800 mt-1 font-black bg-emerald-200/70 px-1 py-0.5 border border-emerald-900">Direct APK</span>
               </div>
            </a>
 
@@ -164,18 +163,17 @@ export default function Hero() {
               </div>
            </a>
 
-           {/* Floating Badge for Accountant Panel :5178 */}
+           {/* Floating Badge for Accountant APK Download */}
            <a
-              href="http://localhost:5178"
-              target="_blank"
-              rel="noreferrer"
+              href="/apk/Accountant.apk"
+              download="Accountant.apk"
               className="absolute -bottom-4 right-4 sm:right-6 bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] z-20 px-3 py-1.5 flex items-center gap-2 hover:bg-emerald-100 transition-all hover:scale-105 cursor-pointer"
-              title="Click to launch Accountant & Fee Desk on http://localhost:5178"
+              title="Download Accountant Android APK"
            >
               <span className="text-base">💼</span>
               <div className="text-left">
-                <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Fee & Accounts</div>
-                <div className="text-[10px] font-black text-emerald-800 leading-none">Accountant & Fee Desk :5178 ↗</div>
+                <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Finance & Accounts</div>
+                <div className="text-[10px] font-black text-emerald-800 leading-none">Download Accountant APK ⬇</div>
               </div>
            </a>
         </div>

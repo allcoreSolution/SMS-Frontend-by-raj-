@@ -27,18 +27,20 @@ export default function Deliverables() {
       target: 'http://localhost:5177'
     },
     { 
-      title: 'Accountant & Fee Desk', 
-      sub: 'REACT 18 • PORT 5178', 
-      desc: 'Specialized financial portal for fee collections, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
+      title: 'Accountant App (Android APK)', 
+      sub: 'ANDROID • APK DOWNLOAD', 
+      desc: 'Specialized financial mobile app for fee collections, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
       icon: '💰',
-      target: 'http://localhost:5178'
+      target: '/apk/Accountant.apk',
+      isDownload: true
     },
     { 
-      title: 'Student & Parent App', 
-      sub: 'FLUTTER • PORT 5175', 
-      desc: 'Native mobile web application for parents & students. Allows instant fee payments, live CBT exam results, and biometric attendance sync in 14 languages.', 
+      title: 'Student & Parent App (Android APK)', 
+      sub: 'ANDROID • APK DOWNLOAD', 
+      desc: 'Native Android mobile application for parents & students. Allows instant fee payments, live CBT exam results, and biometric attendance records in Hindi and English.', 
       icon: '📱',
-      target: 'http://localhost:5175'
+      target: '/apk/Student_Parents.apk',
+      isDownload: true
     },
     { 
       title: 'Dedicated Driver GPS App', 
@@ -65,7 +67,14 @@ export default function Deliverables() {
   ];
 
   const handleCardClick = (item) => {
-    if (item.target) {
+    if (item.isDownload) {
+      const link = document.createElement('a');
+      link.href = item.target;
+      link.download = item.target.split('/').pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (item.target) {
       window.open(item.target, '_blank', 'noreferrer');
     } else if (item.modal) {
       openModal(item.modal, item.docTab ? { docTab: item.docTab } : null);
@@ -118,7 +127,7 @@ export default function Deliverables() {
                    <p className="font-black tracking-widest uppercase text-amber-500 text-[8px] sm:text-[9px] mb-0.5 sm:mb-1">
                      {item.sub}
                    </p>
-                   <span className="text-[10px] text-gray-400 group-hover:text-amber-600 font-bold">Launch ➜</span>
+                   <span className="text-[10px] text-gray-400 group-hover:text-amber-600 font-bold">{item.isDownload ? 'Download APK ⬇' : 'Launch ➜'}</span>
                  </div>
                  <h3 className="font-black text-gray-900 leading-tight mb-1 sm:mb-1.5 text-[14px] sm:text-[16px] group-hover:text-amber-600 transition-colors">
                    {item.title}

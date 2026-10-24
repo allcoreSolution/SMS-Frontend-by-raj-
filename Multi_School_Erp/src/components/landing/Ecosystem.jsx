@@ -28,13 +28,13 @@ export default function Ecosystem() {
     },
     { 
       title: 'Parent & Student App', 
-      sub: 'FLUTTER NATIVE • 14 LANGUAGES', 
+      sub: 'ANDROID • APK DOWNLOAD', 
       desc: 'A seamless mobile bridge. Enables instant PG fee payments, live CBT exam results, realtime GPS bus tracking, and direct push interactions.', 
       icon: '👨‍👩‍👦', 
-      tag: 'Port 5175 • Student Portal', 
-      actionType: 'url',
-      actionTarget: 'http://localhost:5175',
-      btnText: 'Open Student App :5175 ↗'
+      tag: 'Android APK • v1.0.1', 
+      actionType: 'download',
+      actionTarget: '/apk/Student_Parents.apk',
+      btnText: 'Download Student APK ⬇'
     },
     { 
       title: 'Teacher & Staff App', 
@@ -47,14 +47,14 @@ export default function Ecosystem() {
       btnText: 'Open Teacher Panel :5177 ↗'
     },
     { 
-      title: 'Accountant & Finance Portal', 
-      sub: 'FEE COLLECTION & LEDGERS', 
-      desc: 'Specialized accounting desk for collecting fees, searching due dues, managing fee groups, income/expense vouchers, and daily day-book balance.', 
+      title: 'Accountant App', 
+      sub: 'ANDROID • APK DOWNLOAD', 
+      desc: 'Specialized accounting mobile app for collecting fees, searching due dues, managing fee groups, income/expense vouchers, and daily day-book balance.', 
       icon: '💰', 
-      tag: 'Port 5178 • Accountant', 
-      actionType: 'url',
-      actionTarget: 'http://localhost:5178',
-      btnText: 'Open Accountant :5178 ↗'
+      tag: 'Android APK • v1.0.0', 
+      actionType: 'download',
+      actionTarget: '/apk/Accountant.apk',
+      btnText: 'Download Accountant APK ⬇'
     },
     { 
       title: 'Windows Biometric API', 
@@ -69,7 +69,14 @@ export default function Ecosystem() {
   ];
 
   const handleCardClick = (app) => {
-    if (app.actionType === 'url') {
+    if (app.actionType === 'download') {
+      const link = document.createElement('a');
+      link.href = app.actionTarget;
+      link.download = app.actionTarget.split('/').pop();
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (app.actionType === 'url') {
       window.open(app.actionTarget, '_blank', 'noreferrer');
     } else if (app.actionType === 'modal') {
       openModal(app.actionTarget);
@@ -147,7 +154,7 @@ export default function Ecosystem() {
                💡
              </div>
              <p className="text-xs sm:text-sm font-bold text-gray-700 leading-snug">
-               <span className="text-gray-900 font-black">All Dedicated Ports Running:</span> SuperAdmin is on <strong>5179</strong>, School ERP on <strong>5176</strong>, Teacher Panel on <strong>5177</strong>, Accountant on <strong>5178</strong>, Student on <strong>5175</strong>, and Branch Admin on <strong>5174</strong>.
+               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin on <strong>5179</strong>, School ERP on <strong>5176</strong>, Teacher Panel on <strong>5177</strong>, Branch Admin on <strong>5174</strong>, plus dedicated <strong>Android APKs</strong> for Accountant and Student/Parent.
              </p>
            </div>
            

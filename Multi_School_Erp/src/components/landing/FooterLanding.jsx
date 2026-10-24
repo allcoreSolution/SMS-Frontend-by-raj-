@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useModal } from '../../context/ModalContext';
-import { ExternalLink, Phone, Mail, Shield, Sparkles } from 'lucide-react';
+import { ExternalLink, Phone, Mail, Shield, Sparkles, Download } from 'lucide-react';
 
 export default function FooterLanding() {
   const { openModal } = useModal();
@@ -97,17 +97,17 @@ export default function FooterLanding() {
                  <span>Teacher & Staff Panel (:5177)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="http://localhost:5178" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Accountant & Fee Desk (:5178)</span>
-                 <ExternalLink className="w-3 h-3 text-emerald-400" />
+               <a href="/apk/Accountant.apk" download="Accountant.apk" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Download Accountant APK (Android)</span>
+                 <Download className="w-3 h-3 text-emerald-400" />
                </a>
                <a href="http://localhost:5176" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>School Admin ERP (:5176)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="http://localhost:5175" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Student & Parent Portal (:5175)</span>
-                 <ExternalLink className="w-3 h-3 text-emerald-400" />
+               <a href="/apk/Student_Parents.apk" download="Student_Parents.apk" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Download Student & Parent APK (Android)</span>
+                 <Download className="w-3 h-3 text-emerald-400" />
                </a>
                <a href="http://localhost:5179" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>SuperAdmin SaaS (:5179)</span>

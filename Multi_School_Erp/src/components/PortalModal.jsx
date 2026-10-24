@@ -330,7 +330,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 2. Accountant & Fee Collection Panel (Accountant :5178) */}
+                {/* 2. Accountant & Fee Collection App (Accountant APK) */}
                 <div className="bg-white border-[2.5px] border-teal-900 p-4 shadow-[4px_4px_0_0_#134e4a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -338,40 +338,28 @@ export default function PortalModal() {
                         💰
                       </div>
                       <span className="text-[10px] font-black bg-teal-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5178 • Accountant Panel
+                        Android APK • Accountant App
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Accountant & Fee Desk</h4>
                     <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
-                      Specialized finance portal for fee collection, due fee search, fee groups/types, income/expense vouchers, day book ledgers, and accounts auditing.
+                      Specialized finance Android APK for fee collection, due fee search, fee groups/types, income/expense vouchers, day book ledgers, and accounts auditing.
                     </p>
                     <div className="text-[11px] bg-teal-50/70 border border-teal-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Project: <span className="font-bold text-teal-900">Accountant</span></div>
+                      <div>Package: <span className="font-bold text-teal-900">com.schoolerp.accountant</span></div>
+                      <div>App Version: <span className="font-bold text-gray-900">v1.0.0 (Android APK)</span></div>
                       <div>Default User: <span className="font-bold text-gray-900">accountant@yug.edu</span></div>
-                      <div>Password: <span className="font-bold text-gray-900">admin@123</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5178" 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="w-full bg-teal-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      href="/apk/Accountant.apk" 
+                      download="Accountant.apk"
+                      className="w-full bg-teal-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch Accountant Panel :5178</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <Download className="w-4 h-4 text-white" />
+                      <span>Download Accountant APK (Android)</span>
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5178/fees/collect" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Collect Fees ↗
-                      </a>
-                      <a href="http://localhost:5178/fees/due" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Due Fees ↗
-                      </a>
-                      <a href="http://localhost:5178/accounts/income" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Ledgers ↗
-                      </a>
-                    </div>
                   </div>
                 </div>
 
@@ -510,7 +498,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 6. Student & Parent Mobile Web App (Student_Parents :5175) */}
+                {/* 6. Student & Parent Mobile App (Student_Parents APK) */}
                 <div className="bg-white border-[2.5px] border-emerald-900 p-4 shadow-[4px_4px_0_0_#064e3b] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -518,48 +506,28 @@ export default function PortalModal() {
                         👨‍👩‍👦
                       </div>
                       <span className="text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5175 • Student_Parents
+                        Android APK • Student & Parent App
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Student & Parent Portal</h4>
                     <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
-                      Mobile-first portal for students & parents. Features 14 languages, fee challan payments, AI desk, timetable, homework, and attendance logs.
+                      Native Android APK for students & parents. Features bilingual Hindi & English switch, fee challan payments, AI desk, timetable, homework, and attendance logs.
                     </p>
                     <div className="text-[11px] bg-emerald-50/70 border border-emerald-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Project: <span className="font-bold text-emerald-900">Student_Parents</span></div>
+                      <div>Package: <span className="font-bold text-emerald-900">com.schoolerp.studentparents</span></div>
+                      <div>App Version: <span className="font-bold text-gray-900">v1.0.1 (Android APK)</span></div>
                       <div>Demo Student: <span className="font-bold text-gray-900">Aarav Sharma (9-A)</span></div>
-                      <div>Languages: <span className="text-emerald-700 font-bold">14 Languages Live</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5175/dashboard" 
-                      target="_blank" 
-                      rel="noreferrer"
-                      className="w-full bg-emerald-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
-                    >
-                      <span>Launch Student Portal :5175</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                    <a 
                       href="/apk/Student_Parents.apk" 
                       download="Student_Parents.apk"
-                      className="w-full bg-indigo-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-emerald-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <Download className="w-3.5 h-3.5 text-white" />
-                      <span>Download Student APK (Android)</span>
+                      <Download className="w-4 h-4 text-white" />
+                      <span>Download Student & Parent APK (Android)</span>
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5175/ai-assistant" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        AI Desk ↗
-                      </a>
-                      <a href="http://localhost:5175/fee-payments" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Fees ↗
-                      </a>
-                      <a href="http://localhost:5175/online-exams" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        CBT Exam ↗
-                      </a>
-                    </div>
                   </div>
                 </div>
 
