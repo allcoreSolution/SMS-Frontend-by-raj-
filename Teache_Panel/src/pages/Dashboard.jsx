@@ -65,87 +65,90 @@ const StatCard = ({
   linePath,
   areaPath,
   delay = 0 
-}) => (
-  <div 
-    style={{ animation: `riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` }}
-    className="bg-white rounded-xl p-2.5 sm:px-3 sm:py-2.5 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group theme-card cursor-pointer"
-  >
-    {/* Live Pulse Dot in Top Right */}
-    <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-      <span className="text-[7.5px] font-bold text-emerald-600 uppercase tracking-tighter">Live</span>
-    </div>
-
-    {/* Top Row: Icon Badge & Trend Pill */}
-    <div className="flex items-center justify-between mb-1.5 z-10">
-      <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
-        <Icon className="w-3.5 h-3.5" />
+}) => {
+  const { t } = useLanguage();
+  return (
+    <div 
+      style={{ animation: `riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` }}
+      className="bg-white rounded-xl p-2.5 sm:px-3 sm:py-2.5 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group theme-card cursor-pointer"
+    >
+      {/* Live Pulse Dot in Top Right */}
+      <div className="absolute top-1.5 right-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+        <span className="text-[7.5px] font-bold text-emerald-600 uppercase tracking-tighter">{t('Live', 'Live')}</span>
       </div>
-      {trend && (
-        <span className={`text-[8.5px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
-          trendType === 'positive' 
-            ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'
-            : trendType === 'alert'
-            ? 'text-rose-700 bg-rose-50 border border-rose-200/60'
-            : 'text-indigo-700 bg-indigo-50 border border-indigo-200/60'
-        }`}>
-          <span className="inline-block text-[8px] transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
-          {trend}
-        </span>
-      )}
-    </div>
 
-    {/* Middle Row: Big Number + Full Name on Left, Sparkline Trend Area on Right */}
-    <div className="flex items-end justify-between z-10 gap-1.5 mb-1.5">
-      <div className="min-w-0 pr-0.5">
-        <h3 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight leading-none mb-0.5 theme-text flex items-center">
-          <AnimatedCounter targetValue={value} />
-        </h3>
-        <p className="text-[11px] font-bold text-gray-800 leading-tight truncate">
-          {title}
-        </p>
-        {fullName && (
-          <p className="text-[9px] font-medium text-gray-400 mt-0.5 leading-none truncate">
-            {fullName}
-          </p>
+      {/* Top Row: Icon Badge & Trend Pill */}
+      <div className="flex items-center justify-between mb-1.5 z-10">
+        <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-white shadow-xs transition-transform duration-300 group-hover:scale-105 ${iconBg}`}>
+          <Icon className="w-3.5 h-3.5" />
+        </div>
+        {trend && (
+          <span className={`text-[8.5px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${
+            trendType === 'positive' 
+              ? 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'
+              : trendType === 'alert'
+              ? 'text-rose-700 bg-rose-50 border border-rose-200/60'
+              : 'text-indigo-700 bg-indigo-50 border border-indigo-200/60'
+          }`}>
+            <span className="inline-block text-[8px] transition-transform duration-300 group-hover:-translate-y-0.5" style={{ animation: 'pulseUp 1.5s infinite ease-in-out' }}>↑</span>
+            {t(trend, trend)}
+          </span>
         )}
       </div>
 
-      {/* Trend Area Chart (Sparkline) */}
-      <div className="w-16 sm:w-20 h-6 sm:h-7 relative flex-shrink-0 -mb-0.5">
-        <svg viewBox="0 0 100 45" className="w-full h-full overflow-visible" preserveAspectRatio="none">
-          <defs>
-            <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />
-              <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
-            </linearGradient>
-          </defs>
-          <path d={areaPath} fill={`url(#spark-${id})`} />
-          <path 
-            d={linePath} 
-            fill="none" 
-            stroke={strokeColor} 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            className="transition-all duration-300 group-hover:stroke-[2.5]"
-          />
-        </svg>
-      </div>
-    </div>
+      {/* Middle Row: Big Number + Full Name on Left, Sparkline Trend Area on Right */}
+      <div className="flex items-end justify-between z-10 gap-1.5 mb-1.5">
+        <div className="min-w-0 pr-0.5">
+          <h3 className="text-lg sm:text-xl font-black text-gray-900 tracking-tight leading-none mb-0.5 theme-text flex items-center">
+            <AnimatedCounter targetValue={value} />
+          </h3>
+          <p className="text-[11px] font-bold text-gray-800 leading-tight truncate">
+            {t(title, title)}
+          </p>
+          {fullName && (
+            <p className="text-[9px] font-medium text-gray-400 mt-0.5 leading-none truncate">
+              {t(fullName, fullName)}
+            </p>
+          )}
+        </div>
 
-    {/* Bottom Action Link */}
-    {linkTo && (
-      <Link 
-        to={linkTo} 
-        className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
-      >
-        <span>{actionText || 'More info'}</span>
-        <ArrowRight className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
-      </Link>
-    )}
-  </div>
-);
+        {/* Trend Area Chart (Sparkline) */}
+        <div className="w-16 sm:w-20 h-6 sm:h-7 relative flex-shrink-0 -mb-0.5">
+          <svg viewBox="0 0 100 45" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id={`spark-${id}`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor={strokeColor} stopOpacity="0.3" />
+                <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+            <path d={areaPath} fill={`url(#spark-${id})`} />
+            <path 
+              d={linePath} 
+              fill="none" 
+              stroke={strokeColor} 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              className="transition-all duration-300 group-hover:stroke-[2.5]"
+            />
+          </svg>
+        </div>
+      </div>
+
+      {/* Bottom Action Link */}
+      {linkTo && (
+        <Link 
+          to={linkTo} 
+          className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[10px] font-semibold text-gray-500 hover:text-[#ff5c0a] transition-colors z-10"
+        >
+          <span>{t(actionText || 'More info', actionText || 'More info')}</span>
+          <ArrowRight className="w-3 h-3 transform group-hover:translate-x-0.5 transition-transform text-gray-400 group-hover:text-[#ff5c0a]" />
+        </Link>
+      )}
+    </div>
+  );
+};
 
 const AppIcon = ({ title, icon: Icon, colorName, onClick }) => (
   <div onClick={onClick} className="flex flex-col items-center justify-center gap-2 p-3 bg-white border border-gray-100 rounded-none shadow-sm hover:border-gray-300 hover:shadow-md cursor-pointer transition-all">
@@ -208,7 +211,7 @@ const ecosystemModules = [
 const Dashboard = () => {
   const navigate = useNavigate();
   const { currentTheme, currentLayout } = useTheme();
-  const { t } = useLanguage();
+  const { t, currentLang } = useLanguage();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hubSearch, setHubSearch] = useState('');
   const [hubTab, setHubTab] = useState('All');
@@ -364,7 +367,7 @@ const Dashboard = () => {
           {/* Alert Banner */}
           <div className="bg-[#0ea5e9] text-white px-6 py-2.5 text-xs text-center font-medium flex items-center justify-center gap-2">
             <span className="font-bold bg-white/20 px-1.5 py-0.5 rounded-none text-[10px] uppercase">New</span>
-            academic-session scoping. Lists and dashboard numbers now show the selected academic session only.
+            {t("academic-session scoping. Lists and dashboard numbers now show the selected academic session only.", "academic-session scoping. Lists and dashboard numbers now show the selected academic session only.")}
           </div>
 
           <div className="p-6 max-w-7xl mx-auto space-y-6">
@@ -372,7 +375,7 @@ const Dashboard = () => {
             {/* Header */}
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{getTimeGreeting()}, {teacherName} 👋</h1>
-              <p className="text-sm text-gray-500 mt-1">Here's what's happening at ALL CORE SOLUTION today — {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              <p className="text-sm text-gray-500 mt-1">{t("Here's what's happening at ALL CORE SOLUTION today — ", "Here's what's happening at ALL CORE SOLUTION today — ")} {new Date().toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
             
             {/* Layout Pattern 1: Analytics / Reversed Hub displays Hub at top */}
@@ -386,15 +389,15 @@ const Dashboard = () => {
                         <Grid className="w-4 h-4" />
                       </div>
                       <div>
-                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">Ecosystem Hub</h2>
-                        <p className="text-[11px] font-semibold text-gray-400">46 modules — everything your school runs on</p>
+                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">{t("Ecosystem Hub", "Ecosystem Hub")}</h2>
+                        <p className="text-[11px] font-semibold text-gray-400">{t("46 modules — everything your school runs on", "46 modules — everything your school runs on")}</p>
                       </div>
                     </div>
                     
                     <div className="flex flex-wrap items-center gap-2 mb-6">
                       <div className="relative">
                         <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input type="text" placeholder="Search modules..." value={hubSearch} onChange={(e) => setHubSearch(e.target.value)} className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-none text-xs w-48 focus:outline-none focus:ring-1 focus:ring-blue-500 theme-nav-item" />
+                        <input type="text" placeholder={t("Search modules...", "Search modules...")} value={hubSearch} onChange={(e) => setHubSearch(e.target.value)} className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-none text-xs w-48 focus:outline-none focus:ring-1 focus:ring-blue-500 theme-nav-item" />
                       </div>
                       {['All', 'Finance', 'Academics', 'Students', 'Operations'].map(tab => (
                         <button 
@@ -521,8 +524,8 @@ const Dashboard = () => {
                         <Grid className="w-4 h-4" />
                       </div>
                       <div>
-                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">Ecosystem Hub</h2>
-                        <p className="text-[11px] font-semibold text-gray-400">46 modules — everything your school runs on</p>
+                        <h2 className="text-base font-bold text-gray-800 theme-text leading-tight">{t("Ecosystem Hub", "Ecosystem Hub")}</h2>
+                        <p className="text-[11px] font-semibold text-gray-400">{t("46 modules — everything your school runs on", "46 modules — everything your school runs on")}</p>
                       </div>
                     </div>
                     
@@ -530,7 +533,7 @@ const Dashboard = () => {
                     <div className="flex flex-wrap items-center gap-2 mb-6">
                       <div className="relative">
                         <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input type="text" placeholder="Search modules..." value={hubSearch} onChange={(e) => setHubSearch(e.target.value)} className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-none text-xs w-48 focus:outline-none focus:ring-1 focus:ring-blue-500 theme-nav-item" />
+                        <input type="text" placeholder={t("Search modules...", "Search modules...")} value={hubSearch} onChange={(e) => setHubSearch(e.target.value)} className="pl-8 pr-3 py-1.5 border border-gray-200 rounded-none text-xs w-48 focus:outline-none focus:ring-1 focus:ring-blue-500 theme-nav-item" />
                       </div>
                       {['All', 'Finance', 'Academics', 'Students', 'Operations'].map(tab => (
                         <button 
@@ -624,18 +627,18 @@ const Dashboard = () => {
               
               {/* Today's Attendance */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[300px]">
-                <h3 className="font-bold text-gray-800 theme-text text-sm">Today's Attendance</h3>
-                <p className="text-xs text-gray-400 mb-6">Students — {attendanceWidget.dateLabel}</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm">{t("Today's Attendance", "Today's Attendance")}</h3>
+                <p className="text-xs text-gray-400 mb-6">{t("Students", "Students")} — {attendanceWidget.dateLabel === 'Today' ? t('Today', 'Today') : attendanceWidget.dateLabel}</p>
                 <div className="flex items-center justify-center mb-6 relative">
                   {/* Circular Chart Placeholder */}
                   <div className="w-32 h-32 rounded-none border-[8px] border-emerald-500 flex items-center justify-center bg-emerald-50/20">
                      <div className="text-center">
                         <span className="text-2xl font-black text-gray-800">{attendanceWidget.overallPercentage}</span>
-                        <p className="text-[10px] text-gray-400 font-bold uppercase">Present</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase">{t("Present", "Present")}</p>
                      </div>
                   </div>
                 </div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Class-Wise Breakdown</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">{t("Class-Wise Breakdown", "Class-Wise Breakdown")}</p>
                 <div className="space-y-3 max-h-40 overflow-y-auto pr-1">
                   {attendanceWidget.classBreakdown.length > 0 ? (
                     attendanceWidget.classBreakdown.map((cls, idx) => (
@@ -648,15 +651,15 @@ const Dashboard = () => {
                       </div>
                     ))
                   ) : (
-                    <div className="text-xs text-gray-400 py-2">No attendance marked today.</div>
+                    <div className="text-xs text-gray-400 py-2">{t("No attendance marked today.", "No attendance marked today.")}</div>
                   )}
                 </div>
               </div>
 
               {/* Today's Timetable */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[300px] flex flex-col">
-                <h3 className="font-bold text-gray-800 theme-text text-sm">Today's Timetable</h3>
-                <p className="text-xs text-gray-400 mb-4">My schedule — {currentDay || 'Today'}</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm">{t("Today's Timetable", "Today's Timetable")}</h3>
+                <p className="text-xs text-gray-400 mb-4">{t("My schedule", "My schedule")} — {currentDay || t("Today", "Today")}</p>
                 {timetableToday.length > 0 ? (
                   <div className="flex-1 space-y-2 overflow-y-auto max-h-[220px] pr-1">
                     {timetableToday.map((period, idx) => (
@@ -664,7 +667,7 @@ const Dashboard = () => {
                         <div className="flex items-center gap-2">
                           <span className="text-[10px] font-black bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-none">{period.periodName || `P${period.periodNumber}`}</span>
                           <div>
-                            <h4 className="text-xs font-bold text-gray-800 leading-tight">{period.subjectName}</h4>
+                            <h4 className="text-xs font-bold text-gray-800 leading-tight">{t(period.subjectName, period.subjectName)}</h4>
                             <p className="text-[10px] text-gray-500">{period.className} ({period.sectionName}) • {period.roomNumber}</p>
                           </div>
                         </div>
@@ -674,86 +677,86 @@ const Dashboard = () => {
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-gray-400 font-medium">No periods scheduled today.</p>
+                    <p className="text-sm text-gray-400 font-medium">{t("No periods scheduled today.", "No periods scheduled today.")}</p>
                   </div>
                 )}
               </div>
 
               {/* Upcoming Events */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[300px] flex flex-col">
-                <h3 className="font-bold text-gray-800 theme-text text-sm">Upcoming Events</h3>
-                <p className="text-xs text-gray-400 mb-4">This week</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm">{t("Upcoming Events", "Upcoming Events")}</h3>
+                <p className="text-xs text-gray-400 mb-4">{t("This week", "This week")}</p>
                 {upcomingEvents.length > 0 ? (
                   <div className="flex-1 space-y-2 overflow-y-auto max-h-[220px] pr-1">
                     {upcomingEvents.map((evt, idx) => (
                       <div key={idx} className="p-2 border border-gray-100 rounded-none bg-gray-50/50 hover:bg-gray-50 transition-colors">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-none">{evt.eventType}</span>
-                          <span className="text-[10px] text-gray-400">{evt.formattedStartDate || new Date(evt.startDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</span>
+                          <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-none">{t(evt.eventType, evt.eventType)}</span>
+                          <span className="text-[10px] text-gray-400">{evt.formattedStartDate || new Date(evt.startDate).toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { day: 'numeric', month: 'short' })}</span>
                         </div>
-                        <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{evt.title}</h4>
+                        <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{t(evt.title, evt.title)}</h4>
                         <p className="text-[10px] text-gray-500 line-clamp-1 mt-0.5">{evt.location} • {evt.description}</p>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-gray-400 font-medium">No upcoming events.</p>
+                    <p className="text-sm text-gray-400 font-medium">{t("No upcoming events.", "No upcoming events.")}</p>
                   </div>
                 )}
               </div>
 
               {/* Announcements */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[200px] flex flex-col">
-                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><Volume2 className="w-4 h-4 text-blue-500" /> Announcements</h3>
-                <p className="text-xs text-gray-400 mb-3">Latest notices</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><Volume2 className="w-4 h-4 text-blue-500" /> {t("Announcements", "Announcements")}</h3>
+                <p className="text-xs text-gray-400 mb-3">{t("Latest notices", "Latest notices")}</p>
                 {announcements.length > 0 ? (
                   <div className="flex-1 space-y-2 overflow-y-auto max-h-[160px] pr-1">
                     {announcements.map((not, idx) => (
                       <div key={idx} className="p-2 border border-gray-100 rounded-none bg-gray-50/50 hover:bg-gray-50 transition-colors">
                         <div className="flex items-center justify-between mb-0.5">
-                          <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{not.title}</h4>
-                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-none uppercase ${not.priority === 'Urgent' ? 'bg-red-50 text-red-600' : not.priority === 'High' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'}`}>{not.priority}</span>
+                          <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{t(not.title, not.title)}</h4>
+                          <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-none uppercase ${not.priority === 'Urgent' ? 'bg-red-50 text-red-600' : not.priority === 'High' ? 'bg-amber-50 text-amber-600' : 'bg-blue-50 text-blue-600'}`}>{t(not.priority, not.priority)}</span>
                         </div>
-                        <p className="text-[10px] text-gray-500 line-clamp-1">{not.content}</p>
+                        <p className="text-[10px] text-gray-500 line-clamp-1">{t(not.content, not.content)}</p>
                         <span className="text-[9px] text-gray-400 block mt-1">{not.timeAgo || not.formattedDate}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-gray-400 font-medium">No announcements yet.</p>
+                    <p className="text-sm text-gray-400 font-medium">{t("No announcements yet.", "No announcements yet.")}</p>
                   </div>
                 )}
               </div>
 
               {/* Upcoming Exams */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[200px] flex flex-col">
-                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><FileText className="w-4 h-4 text-purple-500" /> Upcoming Exams</h3>
-                <p className="text-xs text-gray-400 mb-3">Next scheduled papers</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><FileText className="w-4 h-4 text-purple-500" /> {t("Upcoming Exams", "Upcoming Exams")}</h3>
+                <p className="text-xs text-gray-400 mb-3">{t("Next scheduled papers", "Next scheduled papers")}</p>
                 {upcomingExams.length > 0 ? (
                   <div className="flex-1 space-y-2 overflow-y-auto max-h-[160px] pr-1">
                     {upcomingExams.map((ex, idx) => (
                       <div key={idx} className="p-2 border border-gray-100 rounded-none bg-gray-50/50 hover:bg-gray-50 transition-colors flex items-center justify-between">
                         <div>
-                          <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{ex.examName}</h4>
+                          <h4 className="text-xs font-bold text-gray-800 line-clamp-1">{t(ex.examName, ex.examName)}</h4>
                           <p className="text-[10px] text-gray-500">{ex.className} • {ex.formattedDate}</p>
                         </div>
-                        <span className="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded-none uppercase">{ex.status}</span>
+                        <span className="text-[9px] font-bold bg-purple-50 text-purple-600 px-1.5 py-0.5 rounded-none uppercase">{t(ex.status, ex.status)}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-gray-400 font-medium">No upcoming exams.</p>
+                    <p className="text-sm text-gray-400 font-medium">{t("No upcoming exams.", "No upcoming exams.")}</p>
                   </div>
                 )}
               </div>
 
               {/* Today's Birthdays */}
               <div className="bg-white rounded-none shadow-sm border border-gray-100 p-5 min-h-[200px] flex flex-col">
-                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><Gift className="w-4 h-4 text-purple-600" /> Today's Birthdays</h3>
-                <p className="text-xs text-gray-400 mb-3">Students & Staff</p>
+                <h3 className="font-bold text-gray-800 theme-text text-sm flex gap-2"><Gift className="w-4 h-4 text-purple-600" /> {t("Today's Birthdays", "Today's Birthdays")}</h3>
+                <p className="text-xs text-gray-400 mb-3">{t("Students & Staff", "Students & Staff")}</p>
                 {birthdays.length > 0 ? (
                   <div className="flex-1 space-y-2 overflow-y-auto max-h-[160px] pr-1">
                     {birthdays.map((bday, idx) => (
@@ -762,16 +765,16 @@ const Dashboard = () => {
                           <span className="text-base">{bday.isToday ? '🎂' : '🎈'}</span>
                           <div>
                             <h4 className="text-xs font-bold text-gray-800 leading-tight">{bday.name}</h4>
-                            <p className="text-[10px] text-gray-500">{bday.classOrDept} • {bday.role}</p>
+                            <p className="text-[10px] text-gray-500">{bday.classOrDept} • {t(bday.role, bday.role)}</p>
                           </div>
                         </div>
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-none ${bday.isToday ? 'bg-purple-100 text-purple-700 animate-pulse' : 'bg-gray-100 text-gray-600'}`}>{bday.isToday ? 'Today 🎉' : bday.formattedDate}</span>
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-none ${bday.isToday ? 'bg-purple-100 text-purple-700 animate-pulse' : 'bg-gray-100 text-gray-600'}`}>{bday.isToday ? `${t('Today', 'Today')} 🎉` : bday.formattedDate}</span>
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="flex-1 flex items-center justify-center">
-                    <p className="text-sm text-gray-400 font-medium">No birthdays this week.</p>
+                    <p className="text-sm text-gray-400 font-medium">{t("No birthdays this week.", "No birthdays this week.")}</p>
                   </div>
                 )}
               </div>
@@ -791,8 +794,8 @@ const Dashboard = () => {
                       <Layers className="w-5 h-5" />
                     </div>
                     <div>
-                      <h2 className="text-xl font-bold text-gray-800 leading-tight">All Ecosystem Modules</h2>
-                      <p className="text-xs text-gray-500 mt-0.5">Explore the full comprehensive suite of 46 premium modules.</p>
+                      <h2 className="text-xl font-bold text-gray-800 leading-tight">{t("All Ecosystem Modules", "All Ecosystem Modules")}</h2>
+                      <p className="text-xs text-gray-500 mt-0.5">{t("Explore the full comprehensive suite of 46 premium modules.", "Explore the full comprehensive suite of 46 premium modules.")}</p>
                     </div>
                   </div>
                   <button onClick={() => setIsModalOpen(false)} className="w-8 h-8 rounded-none border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors">
@@ -804,7 +807,7 @@ const Dashboard = () => {
                 <div className="p-4 border-b border-gray-100 flex-shrink-0 bg-gray-50">
                    <div className="relative">
                       <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <input type="text" placeholder="Search all modules..." value={modalSearch} onChange={(e) => setModalSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-white border border-indigo-200 rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
+                      <input type="text" placeholder={t("Search all modules...", "Search all modules...")} value={modalSearch} onChange={(e) => setModalSearch(e.target.value)} className="w-full pl-9 pr-4 py-2 bg-white border border-indigo-200 rounded-none text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20" />
                    </div>
                 </div>
 
@@ -817,7 +820,7 @@ const Dashboard = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400 text-sm py-10">No modules found. Try another search.</div>
+                    <div className="flex items-center justify-center h-full text-gray-400 text-sm py-10">{t("No modules found. Try another search.", "No modules found. Try another search.")}</div>
                   )}
                 </div>
               </div>

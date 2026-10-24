@@ -277,7 +277,79 @@ export const HINDI_MAP = {
   "WhatsApp Push Notifications": "व्हाट्सएप सूचनाएं",
   "Daily Attendance & Activity Digest": "दैनिक उपस्थिति डाइजेस्ट",
   "Complaints & Grievance Notifications": "शिकायत अलर्ट",
-  "Exam Date Sheets & Paper Submission": "परीक्षा डेट शीट एवं पेपर रिमाइंडर"
+  "Exam Date Sheets & Paper Submission": "परीक्षा डेट शीट एवं पेपर रिमाइंडर",
+
+  // Classic Layout & Widgets
+  "Students Assigned": "आवंटित विद्यार्थी",
+  "Pending Homework": "लंबित गृहकार्य",
+  "Subjects Assigned": "आवंटित विषय",
+  "Pending Leave Requests": "लंबित अवकाश आवेदन",
+  "School Calendar": "विद्यालय कैलेंडर",
+  "Staff Panel": "स्टाफ पैनल",
+  "Latest Salary": "नवीनतम वेतन",
+  "Net Salary": "कुल शुद्ध वेतन",
+  "View Payslip": "वेतन पर्ची देखें",
+  "Notice Board": "सूचना पट्ट",
+  "Diwali Break": "दीपावली अवकाश",
+  "Science Olympiad": "विज्ञान ओलंपियाड",
+  "Birthday 🎉": "जन्मदिन 🎉",
+  "Today 🎉": "आज 🎉",
+  "School Holidays": "विद्यालय अवकाश",
+  "Staff Leaves": "कर्मचारी अवकाश",
+  "Exam Schedules": "परीक्षा कार्यक्रम",
+  "Events": "कार्यक्रम",
+  "Sun": "रवि",
+  "Mon": "सोम",
+  "Tue": "मंगल",
+  "Wed": "बुध",
+  "Thu": "गुरु",
+  "Fri": "शुक्र",
+  "Sat": "शनि",
+  "Sunday": "रविवार",
+  "Monday": "सोमवार",
+  "Tuesday": "मंगलवार",
+  "Wednesday": "बुधवार",
+  "Thursday": "गुरुवार",
+  "Friday": "शुक्रवार",
+  "Saturday": "शनिवार",
+  "January": "जनवरी",
+  "February": "फ़रवरी",
+  "March": "मार्च",
+  "April": "अप्रैल",
+  "May": "मई",
+  "June": "जून",
+  "July": "जुलाई",
+  "August": "अगस्त",
+  "September": "सितंबर",
+  "October": "अक्टूबर",
+  "November": "नवंबर",
+  "December": "दिसंबर",
+  "today": "आज",
+  "month": "माह",
+  "list": "सूची",
+  "Planner Dashboard": "पाठ योजनाकार डैशबोर्ड",
+  "All Ecosystem Modules": "सभी इकोसिस्टम मॉड्यूल",
+  "Explore the full comprehensive suite of 46 premium modules.": "46 प्रीमियम मॉड्यूल की सम्पूर्ण विस्तृत श्रृंखला देखें।",
+  "Search all modules...": "सभी मॉड्यूल खोजें...",
+  "No modules found. Try another search.": "कोई मॉड्यूल नहीं मिला। अन्य शब्द खोजें।",
+  "academic-session scoping. Lists and dashboard numbers now show the selected academic session only.": "शैक्षणिक सत्र फ़िल्टरिंग सक्रिय है। सूचियाँ एवं डैशबोर्ड आँकड़े केवल चयनित शैक्षणिक सत्र के दिख रहे हैं।",
+  "Here's what's happening at ALL CORE SOLUTION today — ": "ऑल कोर सॉल्यूशन में आज की ताज़ा जानकारी — ",
+  "Students — Today": "विद्यार्थी — आज",
+  "My schedule — Today": "मेरा शेड्यूल — आज",
+  "New": "नया",
+  "Mark Attendance": "उपस्थिति दर्ज करें",
+  "View Timetable": "समय-सारणी देखें",
+  "View Result": "परिणाम देखें",
+  "Download Marksheet": "अंकसूची डाउनलोड करें",
+  "Paid": "भुगतान पूर्ण",
+  "Unpaid": "अदत्त",
+  "Due": "बकाया",
+  "Late": "देरी से",
+  "Half Day": "आधा दिन",
+  "Leave": "अवकाश / छुट्टी",
+  "Urgent": "अति आवश्यक",
+  "High": "उच्च प्राथमिकता",
+  "Normal": "सामान्य"
 };
 
 // Create fast lowercase map for fuzzy case-insensitive lookup
@@ -286,21 +358,53 @@ Object.keys(HINDI_MAP).forEach(key => {
   HINDI_MAP_LOWER[key.toLowerCase()] = HINDI_MAP[key];
 });
 
-// Clean and translate a single string
+// Clean and translate a single string (exact, lowercase, compound delimiters, and tokens)
 export const translateString = (str) => {
   if (!str || typeof str !== 'string') return str;
   const trimmed = str.trim();
   if (!trimmed || trimmed.length < 2) return str;
 
-  // Direct exact match
+  // 1. Direct exact match
   if (HINDI_MAP[trimmed]) {
     return str.replace(trimmed, HINDI_MAP[trimmed]);
   }
 
-  // Lowercase match
+  // 2. Lowercase match
   const lower = trimmed.toLowerCase();
   if (HINDI_MAP_LOWER[lower]) {
     return str.replace(trimmed, HINDI_MAP_LOWER[lower]);
+  }
+
+  // 3. Handle compound phrases with common delimiters like " — ", " • ", " - "
+  if (trimmed.includes(' — ')) {
+    const parts = trimmed.split(' — ');
+    const translatedParts = parts.map(p => translateString(p.trim()));
+    return str.replace(trimmed, translatedParts.join(' — '));
+  }
+  if (trimmed.includes(' • ')) {
+    const parts = trimmed.split(' • ');
+    const translatedParts = parts.map(p => translateString(p.trim()));
+    return str.replace(trimmed, translatedParts.join(' • '));
+  }
+
+  // 4. Handle number prefixes e.g. "4 Scheduled", "4 Live Bulletins", "100% Present"
+  const numMatch = trimmed.match(/^(\d+(?:%|\+)?)\s+(.+)$/);
+  if (numMatch) {
+    const numPart = numMatch[1];
+    const wordPart = numMatch[2].trim();
+    const wordLower = wordPart.toLowerCase();
+    if (HINDI_MAP[wordPart]) {
+      return str.replace(trimmed, `${numPart} ${HINDI_MAP[wordPart]}`);
+    }
+    if (HINDI_MAP_LOWER[wordLower]) {
+      return str.replace(trimmed, `${numPart} ${HINDI_MAP_LOWER[wordLower]}`);
+    }
+  }
+
+  // 5. Check if string starts with "Today" or contains date formatting
+  if (trimmed.startsWith('Today ') && trimmed.length < 15) {
+    const rest = trimmed.slice(6);
+    return str.replace(trimmed, `आज ${rest}`);
   }
 
   return str;

@@ -9,9 +9,11 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { teacherService } from '../../api/teacherService';
+import { useLanguage } from '../../context/LanguageContext';
 
 const ClassicTeacherLayout = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('Live Classes');
   const [loading, setLoading] = useState(true);
 
@@ -196,7 +198,7 @@ const ClassicTeacherLayout = () => {
       
       {/* Page Title */}
       <div className="bg-white px-4 py-3 border-b border-gray-200">
-         <h1 className="text-xl font-bold text-gray-800">Dashboard</h1>
+         <h1 className="text-xl font-bold text-gray-800">{t('Dashboard', 'Dashboard')}</h1>
       </div>
 
       <div className="p-4 space-y-4">
@@ -206,7 +208,7 @@ const ClassicTeacherLayout = () => {
           {/* Blue Block */}
           <div className="bg-[#007bff] text-white p-4 relative overflow-hidden flex flex-col justify-between h-24">
             <span className="text-2xl font-bold z-10 relative">{stats.students}</span>
-            <span className="text-sm z-10 relative">Students Assigned</span>
+            <span className="text-sm z-10 relative">{t('Students Assigned', 'Students Assigned')}</span>
             <User className="absolute right-4 top-1/2 -translate-y-1/2 w-16 h-16 opacity-20" />
           </div>
 
@@ -214,18 +216,18 @@ const ClassicTeacherLayout = () => {
           <div className="flex bg-[#20c997] text-white h-24">
              <div className="flex-1 p-4 flex flex-col justify-between relative border-r border-white/20">
                <span className="text-2xl font-bold z-10">{stats.pendingHomework}</span>
-               <span className="text-sm z-10">Pending Homework</span>
+               <span className="text-sm z-10">{t('Pending Homework', 'Pending Homework')}</span>
              </div>
              <div className="flex-1 p-4 flex flex-col justify-between relative">
                <span className="text-2xl font-bold z-10">{stats.subjectsAssigned}</span>
-               <span className="text-sm z-10">Subjects Assigned</span>
+               <span className="text-sm z-10">{t('Subjects Assigned', 'Subjects Assigned')}</span>
              </div>
           </div>
 
           {/* Yellow Block */}
           <div className="bg-[#ffc107] text-[#856404] p-4 relative overflow-hidden flex flex-col justify-between h-24">
             <span className="text-2xl font-bold z-10 relative">{stats.pendingLeaves}</span>
-            <span className="text-sm z-10 relative">Pending Leave Requests</span>
+            <span className="text-sm z-10 relative">{t('Pending Leave Requests', 'Pending Leave Requests')}</span>
           </div>
 
         </div>
@@ -240,7 +242,7 @@ const ClassicTeacherLayout = () => {
                    onClick={() => setActiveTab(tab)}
                    className={`whitespace-nowrap px-3 py-2 text-xs font-semibold border-b-2 transition-colors ${activeTab === tab ? 'text-orange-500 border-orange-500' : 'text-orange-400/80 border-transparent hover:text-orange-500'} `}
                  >
-                   {tab}
+                   {t(tab, tab)}
                  </button>
               ))}
            </div>

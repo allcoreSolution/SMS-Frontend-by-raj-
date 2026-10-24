@@ -343,7 +343,7 @@ const Header = () => {
         <div className="relative">
           <button 
             onClick={(e) => toggle(e, 'lang')} 
-            className="hidden sm:flex items-center gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 px-2.5 py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors"
+            className="flex items-center gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 px-2 sm:px-2.5 py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors"
             title="Change Language"
           >
             <Globe className="w-4 h-4 text-sky-500" />

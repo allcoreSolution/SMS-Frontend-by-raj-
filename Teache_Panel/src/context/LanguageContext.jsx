@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import axiosInstance from '../api/axios';
 import Swal from 'sweetalert2';
 import { HINDI_MAP, HINDI_MAP_LOWER, translateString } from '../utils/translations';
@@ -30,21 +30,16 @@ export const LanguageProvider = ({ children }) => {
     }
   });
 
-  const isTranslatingRef = useRef(false);
+  const isTranslatingRef = React.useRef(false);
 
-  // Clean any old Google Translate cookies or elements
-  const cleanGoogleCookies = () => {
+  // Clean any legacy Google Translate artifacts
+  useEffect(() => {
     try {
       document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
       const el = document.getElementById('google_translate_element');
       if (el) el.remove();
     } catch (e) {}
-  };
-
-  // Initialize from storage or backend on mount
-  useEffect(() => {
-    cleanGoogleCookies();
 
     const initLang = async () => {
       let selectedLang = localStorage.getItem('erp_language') || localStorage.getItem('portal_language') || 'English';
@@ -73,111 +68,125 @@ export const LanguageProvider = ({ children }) => {
     initLang();
   }, []);
 
-  // Global Full-Page Real-Time Translation Walker
-  // Translates ALL DATA, tables, lists, cards, widgets, and dynamic content on screen
+  // Safe non-destructive DOM translation for all data, tables, cards and widgets
   useEffect(() => {
     if (typeof document === 'undefined') return;
 
-    if (currentLang !== 'Hindi') {
-      // Restore original English text across all modified DOM nodes
-      isTranslatingRef.current = true;
-      try {
-        const textNodesWithOrig = document.querySelectorAll('[data-erp-orig-text]');
-        textNodesWithOrig.forEach(el => {
-          el.textContent = el.getAttribute('data-erp-orig-text');
-          el.removeAttribute('data-erp-orig-text');
-        });
-
-        const inputsWithOrig = document.querySelectorAll('[data-erp-orig-placeholder]');
-        inputsWithOrig.forEach(input => {
-          input.placeholder = input.getAttribute('data-erp-orig-placeholder');
-          input.removeAttribute('data-erp-orig-placeholder');
-        });
-      } finally {
-        isTranslatingRef.current = false;
-      }
-      return;
-    }
-
-    // Translate DOM nodes recursively
-    const translateNode = (node) => {
+    const translateTextNode = (node) => {
       if (!node || isTranslatingRef.current) return;
-
-      const tag = node.nodeName ? node.nodeName.toUpperCase() : '';
+      const tag = node.parentElement ? node.parentElement.tagName.toUpperCase() : '';
       if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'CODE', 'PRE', 'NOSCRIPT'].includes(tag)) return;
 
-      // Translate Input Placeholders
-      if (node.nodeType === Node.ELEMENT_NODE) {
-        if (node.placeholder && typeof node.placeholder === 'string' && !node.getAttribute('data-erp-orig-placeholder')) {
-          const original = node.placeholder.trim();
-          const translated = translateString(original);
-          if (translated !== original) {
-            node.setAttribute('data-erp-orig-placeholder', node.placeholder);
-            node.placeholder = translated;
-          }
-        }
-      }
-
-      // Translate Text Nodes
       if (node.nodeType === Node.TEXT_NODE) {
-        const val = node.nodeValue;
-        if (val && typeof val === 'string') {
-          const trimmed = val.trim();
-          if (trimmed.length >= 2) {
-            const parent = node.parentElement;
-            if (parent && !parent.getAttribute('data-erp-orig-text')) {
-              const translated = translateString(trimmed);
-              if (translated !== trimmed) {
-                parent.setAttribute('data-erp-orig-text', val);
-                node.nodeValue = val.replace(trimmed, translated);
-              }
-            }
+        const currentVal = node.nodeValue;
+        if (!currentVal || typeof currentVal !== 'string') return;
+        const trimmed = currentVal.trim();
+        if (trimmed.length < 2) return;
+
+        if (currentLang === 'Hindi') {
+          if (node.__erpOrig === undefined) {
+            node.__erpOrig = currentVal;
+          }
+          const baseToTranslate = node.__erpOrig.trim();
+          const translated = translateString(baseToTranslate);
+          if (translated !== baseToTranslate) {
+            node.nodeValue = node.__erpOrig.replace(baseToTranslate, translated);
+          }
+        } else {
+          if (node.__erpOrig !== undefined) {
+            node.nodeValue = node.__erpOrig;
+            delete node.__erpOrig;
           }
         }
-        return;
-      }
-
-      // Recurse child nodes
-      let child = node.firstChild;
-      while (child) {
-        translateNode(child);
-        child = child.nextSibling;
       }
     };
 
-    // Perform initial page-wide pass
+    const translateInputs = (el) => {
+      if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        if (el.placeholder) {
+          if (currentLang === 'Hindi') {
+            if (el.__erpOrigPlaceholder === undefined) {
+              el.__erpOrigPlaceholder = el.placeholder;
+            }
+            const translated = translateString(el.__erpOrigPlaceholder);
+            if (translated !== el.__erpOrigPlaceholder) {
+              el.placeholder = translated;
+            }
+          } else {
+            if (el.__erpOrigPlaceholder !== undefined) {
+              el.placeholder = el.__erpOrigPlaceholder;
+              delete el.__erpOrigPlaceholder;
+            }
+          }
+        }
+      }
+    };
+
+    const walk = (root) => {
+      if (!root) return;
+      const walker = document.createTreeWalker(
+        root,
+        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
+        {
+          acceptNode: (n) => {
+            if (n.nodeType === Node.ELEMENT_NODE) {
+              const tag = n.tagName.toUpperCase();
+              if (['SCRIPT', 'STYLE', 'SVG', 'PATH', 'CODE', 'PRE', 'NOSCRIPT'].includes(tag)) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              return NodeFilter.FILTER_ACCEPT;
+            }
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+
+      let curr = walker.nextNode();
+      while (curr) {
+        if (curr.nodeType === Node.TEXT_NODE) {
+          translateTextNode(curr);
+        } else if (curr.nodeType === Node.ELEMENT_NODE) {
+          translateInputs(curr);
+        }
+        curr = walker.nextNode();
+      }
+    };
+
     isTranslatingRef.current = true;
     try {
-      translateNode(document.body);
+      walk(document.body);
     } finally {
       isTranslatingRef.current = false;
     }
 
-    // Observe dynamic changes (route transitions, modals, API fetches, pagination)
-    let timeoutId;
+    let debounceTimer;
     const observer = new MutationObserver((mutations) => {
       if (isTranslatingRef.current) return;
-
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
         isTranslatingRef.current = true;
         try {
-          mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((added) => {
-              translateNode(added);
+          mutations.forEach((mut) => {
+            mut.addedNodes.forEach((node) => {
+              if (node.nodeType === Node.TEXT_NODE) {
+                translateTextNode(node);
+              } else if (node.nodeType === Node.ELEMENT_NODE) {
+                walk(node);
+              }
             });
           });
         } finally {
           isTranslatingRef.current = false;
         }
-      }, 50);
+      }, 60);
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
       observer.disconnect();
-      clearTimeout(timeoutId);
+      clearTimeout(debounceTimer);
     };
   }, [currentLang]);
 
@@ -194,8 +203,6 @@ export const LanguageProvider = ({ children }) => {
       localStorage.setItem('erp_lang_code', targetCode);
       localStorage.setItem('portal_language', targetCode);
     } catch (e) {}
-
-    cleanGoogleCookies();
 
     // Custom events so any component or window listener can sync
     window.dispatchEvent(new CustomEvent('erp_language_changed', { detail: { name: targetName, code: targetCode } }));
@@ -231,12 +238,16 @@ export const LanguageProvider = ({ children }) => {
     if (!key) return fallback || '';
 
     if (currentLang === 'Hindi') {
-      const match = HINDI_MAP[key] || HINDI_MAP_LOWER[key.toLowerCase()];
-      if (match) return match;
+      if (HINDI_MAP[key]) return HINDI_MAP[key];
+      const lowerKey = typeof key === 'string' ? key.toLowerCase().trim() : '';
+      if (HINDI_MAP_LOWER[lowerKey]) return HINDI_MAP_LOWER[lowerKey];
+
       if (fallback) {
-        const fallbackMatch = HINDI_MAP[fallback] || HINDI_MAP_LOWER[fallback.toLowerCase()];
-        if (fallbackMatch) return fallbackMatch;
+        if (HINDI_MAP[fallback]) return HINDI_MAP[fallback];
+        const lowerFb = typeof fallback === 'string' ? fallback.toLowerCase().trim() : '';
+        if (HINDI_MAP_LOWER[lowerFb]) return HINDI_MAP_LOWER[lowerFb];
       }
+
       return translateString(fallback || key);
     }
 
