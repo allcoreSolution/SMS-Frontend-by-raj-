@@ -22,20 +22,26 @@ export const supportedLanguages = [
 
 export const triggerGoogleTranslate = (langCode) => {
   try {
-    if (!langCode || langCode === 'en') {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`;
-      const combo = document.querySelector('.goog-te-combo');
+    const host = window.location.hostname;
+    if (!langCode || langCode === 'en' || (typeof langCode === 'string' && langCode.toLowerCase() === 'english')) {
+      const domains = ['', host, '.' + host];
+      const paths = ['/', window.location.pathname];
+      domains.forEach(d => {
+        paths.forEach(p => {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
+        });
+      });
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
       if (combo) {
         combo.value = '';
-        combo.dispatchEvent(new Event('change'));
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
       }
       return;
     }
 
     const val = `/en/${langCode}`;
     document.cookie = `googtrans=${val}; path=/;`;
-    document.cookie = `googtrans=${val}; path=/; domain=${window.location.hostname};`;
+    document.cookie = `googtrans=${val}; path=/; domain=${host};`;
 
     const applyToCombo = () => {
       const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
@@ -76,18 +82,26 @@ const LanguageDropdown = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedLang, setSelectedLang] = useState(() => {
     try {
-      return localStorage.getItem('app_language') || 'English';
+      const saved = localStorage.getItem('app_language');
+      if (saved && saved.toLowerCase() === 'hindi') {
+        localStorage.setItem('app_language', 'English');
+        localStorage.setItem('app_language_code', 'en');
+        return 'English';
+      }
+      return saved || 'English';
     } catch (e) {
       return 'English';
     }
   });
   const dropdownRef = useRef(null);
 
-  // Initialize language translation on mount
+  // Initialize language translation on mount - strictly enforce English as default
   useEffect(() => {
-    const savedCode = localStorage.getItem('app_language_code');
-    if (savedCode && savedCode !== 'en') {
-      setTimeout(() => triggerGoogleTranslate(savedCode), 600);
+    const saved = localStorage.getItem('app_language');
+    if (!saved || saved.toLowerCase() === 'hindi') {
+      localStorage.setItem('app_language', 'English');
+      localStorage.setItem('app_language_code', 'en');
+      triggerGoogleTranslate('en');
     }
   }, []);
 

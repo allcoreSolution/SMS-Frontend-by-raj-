@@ -14,6 +14,7 @@
     "dev:branch": "npm --prefix Branch-Admin run dev",
     "dev:teacher": "npm --prefix Teache_Panel run dev",
     "dev:student": "npm --prefix Student_Parents run dev",
+    "dev:driver": "npm --prefix Driver_Panel run dev",
     "build": "npm --prefix Multi_School_Erp run build"
   }
 }

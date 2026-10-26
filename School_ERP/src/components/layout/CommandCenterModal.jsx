@@ -6,6 +6,8 @@ import {
   CheckCircle2, ShieldCheck, ArrowRight, Layers, Globe
 } from 'lucide-react';
 
+import { triggerGoogleTranslate } from './LanguageDropdown';
+
 const CommandCenterModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
@@ -27,10 +29,13 @@ const CommandCenterModal = ({ isOpen, onClose }) => {
   };
 
   const handleLanguageSwitch = (lang) => {
+    const code = lang === 'Hindi' ? 'hi' : 'en';
     try {
       localStorage.setItem('app_language', lang);
+      localStorage.setItem('app_language_code', code);
     } catch (e) {}
-    window.dispatchEvent(new CustomEvent('app_language_changed', { detail: lang }));
+    triggerGoogleTranslate(code);
+    window.dispatchEvent(new CustomEvent('app_language_changed', { detail: lang, code }));
     onClose();
   };
 

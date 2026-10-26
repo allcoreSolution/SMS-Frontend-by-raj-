@@ -644,9 +644,9 @@ const App = () => {
               </div>
 
               {/* Main Portal Bottom Footer */}
-              <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
+              <footer className="mt-auto shrink-0 py-3.5 px-4 border-t border-gray-200/80 bg-white/90 backdrop-blur-xs text-center">
                 <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
-                  &copy; 2026 School ERP
+                  &copy; 2026 School ERP • Multi-Branch Operations
                 </p>
                 <p className="text-[11px] font-medium text-gray-500">
                   Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>

@@ -26,17 +26,21 @@ import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import MainLayout from './layout/MainLayout';
-
-import { 
-  HandHeart, FileSearch, UserPlus, Layers, Tags, 
-  ArrowDown, ArrowUp, Tag, Filter
-} from 'lucide-react';
+// Smart AuthGate: redirect to dashboard if authenticated, or login if not
+const AuthGate = () => {
+  const isAuth = typeof window !== 'undefined' && !!(localStorage.getItem('accountant_token') || localStorage.getItem('token'));
+  return isAuth ? <Navigate to="/accounts/dashboard" replace /> : <Navigate to="/login" replace />;
+};
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/accounts/dashboard" replace />} />
+        {/* Root & Android WebView launch paths */}
+        <Route path="/" element={<AuthGate />} />
+        <Route path="/index.html" element={<AuthGate />} />
+        <Route path="/accounts/index.html" element={<Navigate to="/accounts/dashboard" replace />} />
+        <Route path="/accountant/index.html" element={<Navigate to="/accounts/dashboard" replace />} />
         
         {/* Auth Routes (No Sidebar/Header) */}
         <Route path="/login" element={<Login />} />
@@ -50,14 +54,14 @@ function App() {
           <Route path="/accountant" element={<Navigate to="/accounts/dashboard" replace />} />
           <Route path="/accountant/dashboard" element={<Dashboard />} />
           
-          {/* Placeholder routes matching the dashboard links to prevent 404 */}
+          {/* Placeholder routes matching the dashboard links */}
           <Route path="/profile" element={<Profile />} />
           <Route path="/loans" element={<Loans />} />
           <Route path="/loans/add" element={<AddLoan />} />
           <Route path="/leave" element={<Leave />} />
           <Route path="/students" element={<StudentList />} />
 
-          {/* Generic/Placeholder Routes for missing modules */}
+          {/* Accounts & Vouchers */}
           <Route path="/accounts/income" element={<Income />} />
           <Route path="/accounts/expense" element={<Expense />} />
           <Route path="/accounts/income-heads" element={<IncomeHeads />} />
@@ -66,6 +70,8 @@ function App() {
           <Route path="/accounts/income/add" element={<AddIncome />} />
           <Route path="/accounts/expense/add" element={<AddExpense />} />
 
+          {/* Fees Management */}
+          <Route path="/fees" element={<Navigate to="/fees/collect" replace />} />
           <Route path="/fees/collect" element={<CollectFees />} />
           <Route path="/student-fee-collection" element={<Navigate to="/fees/collect" replace />} />
           <Route path="/fees/due" element={<SearchDueFees />} />
@@ -73,15 +79,18 @@ function App() {
           <Route path="/fees/groups" element={<FeeGroups />} />
           <Route path="/fees/types" element={<FeeTypes />} />
           
+          {/* Lead Management */}
+          <Route path="/leads" element={<Navigate to="/leads/dashboard" replace />} />
           <Route path="/leads/dashboard" element={<LeadDashboard />} />
           <Route path="/leads/pipeline" element={<LeadPipeline />} />
           <Route path="/leads/sources" element={<LeadSources />} />
 
           <Route path="/settings" element={<Settings />} />
           <Route path="/notifications" element={<Notifications />} />
-          
-          <Route path="*" element={<div className="p-10 font-bold text-center text-gray-500">404 - Accountant Route Not Found</div>} />
         </Route>
+
+        {/* Global Catch-all to eliminate any 404 Route Not Found */}
+        <Route path="*" element={<Navigate to="/accounts/dashboard" replace />} />
       </Routes>
     </Router>
   );

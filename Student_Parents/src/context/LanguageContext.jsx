@@ -10,10 +10,13 @@ export const triggerGoogleTranslate = (langCode) => {
     const host = window.location.hostname;
 
     if (isEn) {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
-      document.cookie = 'googtrans=/en/en; path=/;';
-      document.cookie = `googtrans=/en/en; path=/; domain=${host};`;
+      const domains = ['', host, '.' + host];
+      const paths = ['/', window.location.pathname];
+      domains.forEach((d) => {
+        paths.forEach((p) => {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
+        });
+      });
     } else {
       const val = `/en/${targetCode}`;
       document.cookie = `googtrans=${val}; path=/;`;

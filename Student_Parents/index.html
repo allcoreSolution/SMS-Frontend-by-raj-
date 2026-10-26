@@ -20,11 +20,14 @@
             document.cookie = 'googtrans=/en/hi; path=/;';
             document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
           } else {
-            // Default on open is strictly English!
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
-            document.cookie = 'googtrans=/en/en; path=/;';
-            document.cookie = 'googtrans=/en/en; path=/; domain=' + host + ';';
+            // Default on open is strictly English - purge cookies
+            var domains = ['', host, '.' + host];
+            var paths = ['/', window.location.pathname];
+            domains.forEach(function(d) {
+              paths.forEach(function(p) {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+              });
+            });
           }
         } catch (e) {}
       })();

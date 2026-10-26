@@ -19,10 +19,13 @@ export const triggerGoogleTranslate = (langCode) => {
     const host = window.location.hostname;
 
     if (isEn) {
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${host};`;
-      document.cookie = 'googtrans=/en/en; path=/;';
-      document.cookie = `googtrans=/en/en; path=/; domain=${host};`;
+      const domains = ['', host, '.' + host];
+      const paths = ['/', window.location.pathname];
+      domains.forEach((d) => {
+        paths.forEach((p) => {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
+        });
+      });
     } else {
       const val = `/en/${targetCode}`;
       document.cookie = `googtrans=${val}; path=/;`;
@@ -80,43 +83,22 @@ export const triggerGoogleTranslate = (langCode) => {
 };
 
 export const LanguageProvider = ({ children }) => {
-  // Always default to English on open
-  const [currentLang, setCurrentLang] = useState(() => {
-    try {
-      const session = sessionStorage.getItem('erp_language');
-      return (session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi')) ? 'Hindi' : 'English';
-    } catch (e) {
-      return 'English';
-    }
-  });
+  // Always default strictly to English on open
+  const [currentLang, setCurrentLang] = useState('English');
+  const [currentLangCode, setCurrentLangCode] = useState('en');
 
-  const [currentLangCode, setCurrentLangCode] = useState(() => {
-    try {
-      const session = sessionStorage.getItem('erp_language');
-      return (session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi')) ? 'hi' : 'en';
-    } catch (e) {
-      return 'en';
-    }
-  });
-
-  // Initialize on mount: default on open is strictly English
+  // Initialize on mount: ensure default is English and clear any translation cookies
   useEffect(() => {
-    const initLang = () => {
-      const session = sessionStorage.getItem('erp_language');
-      const isHindi = session && (session.toLowerCase() === 'hindi' || session.toLowerCase() === 'hi');
-
-      if (isHindi) {
-        setCurrentLang('Hindi');
-        setCurrentLangCode('hi');
-        triggerGoogleTranslate('hi');
-      } else {
-        setCurrentLang('English');
-        setCurrentLangCode('en');
-        triggerGoogleTranslate('en');
+    try {
+      sessionStorage.setItem('erp_language', 'English');
+      sessionStorage.setItem('erp_lang_code', 'en');
+      var localLang = localStorage.getItem('erp_language');
+      if (localLang && localLang.toLowerCase() === 'hindi') {
+        localStorage.setItem('erp_language', 'English');
+        localStorage.setItem('erp_lang_code', 'en');
       }
-    };
-
-    initLang();
+    } catch (_) {}
+    triggerGoogleTranslate('en');
   }, []);
 
   const changeLanguage = async (langNameOrCode) => {

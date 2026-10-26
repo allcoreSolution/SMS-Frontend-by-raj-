@@ -202,7 +202,7 @@ export default function PortalModal() {
               }`}
             >
               <School className="w-3.5 h-3.5" />
-              <span>All 7 Dedicated Panels (Live)</span>
+              <span>All 8 Dedicated Panels &amp; Apps (Live)</span>
             </button>
 
             <button
@@ -527,6 +527,84 @@ export default function PortalModal() {
                     >
                       <Download className="w-4 h-4 text-white" />
                       <span>Download Student & Parent APK (Android)</span>
+                    </a>
+                  </div>
+                </div>
+
+                {/* 7. Driver Telematics Panel (Driver_Panel :5180) */}
+                <div className="bg-white border-[2.5px] border-amber-900 p-4 shadow-[4px_4px_0_0_#78350f] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-10 h-10 bg-amber-100 border-[1.5px] border-amber-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#78350f]">
+                        🚌
+                      </div>
+                      <span className="text-[10px] font-black bg-amber-500 text-gray-950 px-2 py-0.5 uppercase tracking-wide">
+                        Port 5180 • Driver Panel
+                      </span>
+                    </div>
+                    <h4 className="font-black text-gray-900 text-base mb-1">Driver Telematics Panel</h4>
+                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                      Production Driver portal with live GPS telemetry, trip management (Start/End), student pickup/drop-off roster, pre-trip vehicle checklist, and SOS incidents.
+                    </p>
+                    <div className="text-[11px] bg-amber-50/70 border border-amber-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                      <div>Project: <span className="font-bold text-amber-900">Driver_Panel</span></div>
+                      <div>Default Driver: <span className="font-bold text-gray-900">DRV-101 (Ramesh Kumar)</span></div>
+                      <div>Secret PIN: <span className="font-bold text-gray-900">1011</span></div>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <a 
+                      href="http://localhost:5180" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="w-full bg-amber-500 text-gray-950 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                    >
+                      <span>Launch Driver Panel :5180</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                    <div className="flex gap-1.5 text-[10.5px] font-bold">
+                      <a href="http://localhost:5180/trips" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Trips ↗
+                      </a>
+                      <a href="http://localhost:5180/live-tracking" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Live GPS ↗
+                      </a>
+                      <a href="http://localhost:5180/boarding" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Boarding ↗
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 8. Driver Android Mobile App (Driver.apk) */}
+                <div className="bg-white border-[2.5px] border-slate-900 p-4 shadow-[4px_4px_0_0_#0f172a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="w-10 h-10 bg-slate-100 border-[1.5px] border-slate-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#0f172a]">
+                        📱
+                      </div>
+                      <span className="text-[10px] font-black bg-slate-800 text-white px-2 py-0.5 uppercase tracking-wide">
+                        Android APK • Driver App
+                      </span>
+                    </div>
+                    <h4 className="font-black text-gray-900 text-base mb-1">Driver Android App</h4>
+                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                      Native Android APK wrapper with hardware GPS geolocation, offline sync fallback, one-touch SOS incident alert, and camera scanner support.
+                    </p>
+                    <div className="text-[11px] bg-slate-50 border border-slate-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                      <div>Package: <span className="font-bold text-slate-900">com.schoolerp.driver</span></div>
+                      <div>App Version: <span className="font-bold text-gray-900">v1.0.0 (Native Android APK)</span></div>
+                      <div>Binary: <span className="font-bold text-emerald-700">Driver.apk (Signed)</span></div>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <a 
+                      href="/apk/Driver.apk" 
+                      download="Driver.apk"
+                      className="w-full bg-slate-900 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                    >
+                      <Download className="w-4 h-4 text-amber-400" />
+                      <span>Download Driver APK (Android)</span>
                     </a>
                   </div>
                 </div>

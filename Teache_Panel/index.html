@@ -10,18 +10,21 @@
     <script type="text/javascript">
       (function() {
         try {
-          var sessionLang = sessionStorage.getItem('erp_language');
-          var isHindi = sessionLang && (sessionLang.toLowerCase() === 'hindi' || sessionLang.toLowerCase() === 'hi');
           var host = window.location.hostname;
-          if (isHindi) {
-            document.cookie = 'googtrans=/en/hi; path=/;';
-            document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
-          } else {
-            // Default on open is strictly English!
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
-            document.cookie = 'googtrans=/en/en; path=/;';
-            document.cookie = 'googtrans=/en/en; path=/; domain=' + host + ';';
+          // Purge any Google Translate cookies so panel is strictly in English on open
+          var domains = ['', host, '.' + host];
+          var paths = ['/', window.location.pathname];
+          domains.forEach(function(d) {
+            paths.forEach(function(p) {
+              document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+            });
+          });
+          sessionStorage.setItem('erp_language', 'English');
+          sessionStorage.setItem('erp_lang_code', 'en');
+          var localLang = localStorage.getItem('erp_language');
+          if (localLang && localLang.toLowerCase() === 'hindi') {
+            localStorage.setItem('erp_language', 'English');
+            localStorage.setItem('erp_lang_code', 'en');
           }
         } catch (e) {}
       })();

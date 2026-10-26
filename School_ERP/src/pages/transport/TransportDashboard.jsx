@@ -134,6 +134,8 @@ export default function TransportDashboard() {
          capacity: v.capacity, 
          driver: v.driverName || (v.driverId ? `${v.driverId.firstName || v.driverId.name || ''} ${v.driverId.lastName || ''}`.trim() : "No Driver"), 
          phone: v.driverPhone || v.driverId?.contactNumber || v.driverId?.mobile || "--", 
+         driverPassword: v.driverPassword || v.driverId?.pin || "1011",
+         driverId: v.driverId?.driverId || `DRV-${v.vehicleNumber ? v.vehicleNumber.slice(-3) : '101'}`,
          tracking: v.liveTrackingEnabled !== false && v.status !== "Maintenance" ? "Enabled" : "Disabled",
          status: v.status || "Active",
          speed: v.speed || 38,
@@ -338,27 +340,31 @@ export default function TransportDashboard() {
     if (vehicleNo.trim() === "") return;
 
     try {
+      const vNum = vehicleNo.toUpperCase().trim();
+      const pWord = driverPassword || "1011";
       await transportService.addVehicle({
-        vehicleNumber: vehicleNo.toUpperCase(),
-        vehicleModel: vehicleModel || "Van",
+        vehicleNumber: vNum,
+        vehicleModel: vehicleModel || "Standard Bus",
         capacity: parseInt(seatingCapacity) || 40,
-        status: liveTrackingEnabled ? "Active" : "Inactive"
+        driverName: driverName.trim(),
+        driverPhone: driverPhone.trim(),
+        driverPassword: pWord,
+        imei: imei.trim(),
+        apiToken: apiToken.trim(),
+        status: liveTrackingEnabled ? "Active" : "Inactive",
+        liveTrackingEnabled: Boolean(liveTrackingEnabled),
+        note: note.trim()
       });
 
-      const res = await transportService.getVehicles();
-      setVehicles((res.data || []).map(v => ({
-         id: v._id, vehicleNo: v.vehicleNumber, model: v.vehicleModel, capacity: v.capacity, 
-         driver: v.driverId ? `${v.driverId.firstName} ${v.driverId.lastName}` : "No Driver", 
-         phone: v.driverId?.contactNumber || "--", tracking: v.status === "Active" ? "Enabled" : "Disabled" 
-      })));
+      await loadTransportData();
 
       setViewMode("dashboard");
       setVehicleNo(""); setVehicleModel(""); setSeatingCapacity("");
       setDriverName(""); setDriverPhone(""); setDriverPassword("");
       setImei(""); setApiToken(""); setLiveTrackingEnabled(false); setNote("");
 
-      setToastMsg(`Vehicle ${vehicleNo.toUpperCase()} added successfully!`);
-      setShowToast(true); setTimeout(() => setShowToast(false), 3000);
+      setToastMsg(`Vehicle ${vNum} registered! Login ID: ${vNum} | Password: ${pWord}`);
+      setShowToast(true); setTimeout(() => setShowToast(false), 5000);
     } catch (err) {
       alert("Error adding vehicle: " + (err.response?.data?.message || err.message));
     }
@@ -976,10 +982,10 @@ export default function TransportDashboard() {
                     <thead>
                       <tr className="bg-slate-50 border-b border-slate-200 text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">
                         <th className="py-3 px-4 border-r w-12 text-center">#</th>
-                        <th className="py-3 px-4 border-r">Vehicle Number</th>
+                        <th className="py-3 px-4 border-r">Vehicle No (Login ID)</th>
                         <th className="py-3 px-4 border-r">Model</th>
                         <th className="py-3 px-4 border-r text-center">Capacity</th>
-                        <th className="py-3 px-4 border-r">Driver</th>
+                        <th className="py-3 px-4 border-r">Driver &amp; App Password</th>
                         <th className="py-3 px-4 border-r">Tracking</th>
                         <th className="py-3 px-4 text-center">Actions</th>
                       </tr>
@@ -988,12 +994,23 @@ export default function TransportDashboard() {
                       {vehicles.map((v, idx) => (
                         <tr key={v.id} className="hover:bg-slate-50/10">
                           <td className="py-3 px-4 text-center border-r font-mono">{idx + 1}</td>
-                          <td className="py-3 px-4 border-r font-bold text-slate-800">{v.vehicleNo}</td>
+                          <td className="py-3 px-4 border-r font-bold text-slate-800 font-mono">
+                            <div>{v.vehicleNo}</div>
+                            <div className="text-[10px] text-indigo-600 font-bold font-sans">App Login ID</div>
+                          </td>
                           <td className="py-3 px-4 border-r text-slate-500">{v.model || "—"}</td>
                           <td className="py-3 px-4 border-r text-center font-bold text-slate-700">{v.capacity}</td>
                           <td className="py-3 px-4 border-r font-bold text-slate-700">
-                            <div>{v.driver || v.driverName}</div>
+                            <div>{v.driver || v.driverName || "No Driver"}</div>
                             <div className="text-[10px] text-slate-400 font-semibold">{v.phone || "—"}</div>
+                            <div className="mt-1 flex flex-wrap gap-1 text-[10px]">
+                              <span className="bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-mono font-bold" title="Driver Login Username">
+                                ID: {v.vehicleNo}
+                              </span>
+                              <span className="bg-amber-50 text-amber-800 px-1.5 py-0.5 rounded font-mono font-bold" title="Driver App Password">
+                                Pass: {v.driverPassword || "1011"}
+                              </span>
+                            </div>
                           </td>
                           <td className="py-3 px-4 border-r font-bold">
                             <span className={`inline-block px-2.5 py-0.5 rounded-none text-[10px] font-extrabold border ${
@@ -1435,10 +1452,11 @@ export default function TransportDashboard() {
                       <tr className="bg-indigo-50 border-b border-slate-200 text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">
                         <th className="py-3 px-5 border-r w-10 text-center">#</th>
                         <th className="py-3 px-5 border-r">Driver</th>
-                        <th className="py-3 px-5 border-r">Driver ID</th>
+                        <th className="py-3 px-5 border-r">Driver ID (Login)</th>
+                        <th className="py-3 px-5 border-r">App PIN / Password</th>
+                        <th className="py-3 px-5 border-r">Assigned Bus</th>
                         <th className="py-3 px-5 border-r">Mobile Number</th>
                         <th className="py-3 px-5 border-r">Licence</th>
-                        <th className="py-3 px-5 border-r">Devices</th>
                         <th className="py-3 px-5 border-r">Status</th>
                         <th className="py-3 px-5 text-center">Actions</th>
                       </tr>
@@ -1455,8 +1473,16 @@ export default function TransportDashboard() {
                             {d.lastSeen && <div className="text-[10px] text-slate-400 font-semibold mt-0.5">Last signed in {d.lastSeen}</div>}
                           </td>
                           <td className="py-3.5 px-5 border-r">
-                            <div className="font-bold text-slate-800 font-mono">{d.driverId}</div>
-                            <div className="text-[10px] text-indigo-500 font-semibold mt-0.5">Setup pending</div>
+                            <div className="font-bold text-slate-800 font-mono text-xs">{d.driverId}</div>
+                            <div className="text-[10px] text-indigo-600 font-bold mt-0.5">App Login ID</div>
+                          </td>
+                          <td className="py-3.5 px-5 border-r">
+                            <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-mono font-bold text-xs">
+                              {d.pin || "1011"}
+                            </span>
+                          </td>
+                          <td className="py-3.5 px-5 border-r font-mono font-bold text-indigo-600">
+                            {d.assignedBus || "Unassigned"}
                           </td>
                           <td className="py-3.5 px-5 border-r font-bold text-slate-700 font-mono">{d.mobile}</td>
                           <td className="py-3.5 px-5 border-r">
@@ -1468,7 +1494,6 @@ export default function TransportDashboard() {
                               : <span className="text-slate-400">—</span>
                             }
                           </td>
-                          <td className="py-3.5 px-5 border-r font-bold text-slate-700">{d.devices ?? "—"}</td>
                           <td className="py-3.5 px-5 border-r">
                             <span className="bg-emerald-50 text-emerald-600 border border-emerald-100 text-[10px] font-extrabold px-2.5 py-0.5 rounded-none">{d.status}</span>
                           </td>

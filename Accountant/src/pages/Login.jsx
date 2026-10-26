@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LogIn, Lock, User, CheckCircle, GraduationCap, ShieldCheck, PieChart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -9,6 +9,13 @@ const Login = () => {
   const [identifier, setIdentifier] = useState('accountant@allcoresolution.com');
   const [password, setPassword] = useState('admin@123');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('accountant_token') || localStorage.getItem('token');
+    if (token) {
+      navigate('/accounts/dashboard', { replace: true });
+    }
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -25,7 +32,7 @@ const Login = () => {
            background: '#ffffff',
            confirmButtonColor: '#3c8dbc'
          }).then(() => {
-           navigate('/accounts/dashboard');
+           navigate('/accounts/dashboard', { replace: true });
          });
       } else {
          Swal.fire('Error', res.message || 'Login failed', 'error');

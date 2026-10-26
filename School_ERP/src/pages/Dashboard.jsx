@@ -23,7 +23,8 @@ export default function Dashboard() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentLang, setCurrentLang] = useState(() => {
     try {
-      return localStorage.getItem('app_language') || 'English';
+      const saved = localStorage.getItem('app_language');
+      return (saved && saved.toLowerCase() === 'hindi') ? 'English' : (saved || 'English');
     } catch (e) {
       return 'English';
     }

@@ -11,10 +11,11 @@ const panels = [
   { name: 'Teacher & Staff Panel', dir: 'Teache_Panel', port: 5177, color: '\x1b[36m' },
   { name: 'Accountant & Fee Desk', dir: 'Accountant', port: 5178, color: '\x1b[35m' },
   { name: 'SuperAdmin SaaS Platform', dir: 'SuperAdmin', port: 5179, color: '\x1b[35m' },
+  { name: 'Driver & Transport Portal', dir: 'Driver_Panel', port: 5180, color: '\x1b[33m' },
 ];
 
 console.log('\x1b[1m\x1b[33m%s\x1b[0m', '=======================================================');
-console.log('\x1b[1m\x1b[32m%s\x1b[0m', '   STARTING MULTISCHOOL ERP ECOSYSTEM (API + 7 PANELS)');
+console.log('\x1b[1m\x1b[32m%s\x1b[0m', '   STARTING MULTISCHOOL ERP ECOSYSTEM (API + 8 PANELS)');
 console.log('\x1b[1m\x1b[33m%s\x1b[0m', '=======================================================');
 console.log('Main Landing Website: \x1b[1m\x1b[32mhttp://localhost:5173/\x1b[0m');
 console.log('Starting all sub-panels & backend in background...\n');

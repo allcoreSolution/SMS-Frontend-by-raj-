@@ -13,6 +13,25 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   </head>
   <body>
+    <script type="text/javascript">
+      (function() {
+        try {
+          var host = window.location.hostname;
+          var domains = ['', host, '.' + host];
+          var paths = ['/', window.location.pathname];
+          domains.forEach(function(d) {
+            paths.forEach(function(p) {
+              document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+            });
+          });
+          var saved = localStorage.getItem('app_language');
+          if (saved && saved.toLowerCase() === 'hindi') {
+            localStorage.setItem('app_language', 'English');
+            localStorage.setItem('app_language_code', 'en');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <div id="google_translate_element" style="display:none;position:absolute;top:-9999px;"></div>
     <script type="text/javascript">

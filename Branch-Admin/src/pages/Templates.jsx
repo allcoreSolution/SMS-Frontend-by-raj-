@@ -651,17 +651,6 @@ const Templates = () => {
           </div>
         </div>
       )}
-
-      {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-      <footer className="mt-12 pt-6 pb-6 border-t border-slate-200/80 text-center">
-        <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-1">
-          &copy; 2026 School ERP • Multi-Branch Operations
-        </p>
-        <p className="text-[11px] font-medium text-gray-500">
-          Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
-        </p>
-      </footer>
-
     </div>
   );
 };
