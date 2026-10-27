@@ -44,6 +44,10 @@ export const driverService = {
     const res = await axiosInstance.post('/driver/photo', { photo: photoData });
     return res.data;
   },
+  getActiveDrivers: async () => {
+    const res = await axiosInstance.get('/auth/drivers');
+    return res.data;
+  },
 
   // Dashboard
   getDashboard: async () => {
@@ -98,6 +102,11 @@ export const driverService = {
   },
   scanQR: async (tripId, qrPayload) => {
     const res = await axiosInstance.post(`/driver/trips/${tripId}/scan-qr`, { qrPayload });
+    return res.data;
+  },
+  verifyQR: async (params) => {
+    const payload = typeof params === 'string' ? { qrPayload: params } : (params?.qrPayload ? params : { qrPayload: JSON.stringify(params) });
+    const res = await axiosInstance.post('/driver/verify-qr', payload);
     return res.data;
   },
 

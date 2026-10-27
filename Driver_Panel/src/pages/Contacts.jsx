@@ -13,15 +13,16 @@ import {
   Bus
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { getDriverPhoto } from '../utils/photoHelper';
 import Swal from 'sweetalert2';
 
 export default function Contacts() {
   const { driver, vehicle } = useAuth();
-  const driverPhoto = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
+  const driverPhoto = getDriverPhoto(driver);
   const driverName = driver?.name || 'Ramesh Kumar';
   const driverMobile = driver?.mobile || '+91 98112 23399';
   const emergencyContact = driver?.emergency || '+91 98765 00000';
-  const busNo = vehicle?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234';
+  const busNo = vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMessageModal, setActiveMessageModal] = useState(null);

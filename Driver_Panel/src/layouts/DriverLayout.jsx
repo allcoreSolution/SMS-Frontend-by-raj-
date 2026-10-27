@@ -30,6 +30,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { useTheme } from '../context/ThemeContext';
+import { getDriverPhoto } from '../utils/photoHelper';
 import { driverService } from '../api/driverService';
 
 export default function DriverLayout() {
@@ -91,8 +92,8 @@ export default function DriverLayout() {
   ];
 
   const driverName = driver?.name || 'Ramesh Kumar';
-  const driverPhoto = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
-  const busNumber = vehicle?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234';
+  const driverPhoto = getDriverPhoto(driver);
+  const busNumber = vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
   const formattedBusNo = busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
 
   return (

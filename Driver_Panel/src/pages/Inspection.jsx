@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { ClipboardCheck, CheckCircle2, XCircle, AlertCircle, Wrench, Shield, Check, History, Save } from 'lucide-react';
 import { driverService } from '../api/driverService';
 import { useAuth } from '../context/AuthContext';
+import { getDriverPhoto } from '../utils/photoHelper';
 import Swal from 'sweetalert2';
 
 export default function Inspection() {
   const { driver, vehicle } = useAuth();
-  const driverPhoto = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
+  const driverPhoto = getDriverPhoto(driver);
   const driverName = driver?.name || 'Ramesh Kumar';
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -34,6 +34,8 @@ import {
 import { driverService } from '../api/driverService';
 import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
+import { getDriverPhoto } from '../utils/photoHelper';
+import QRCodeImage from '../components/QRCodeImage';
 import Swal from 'sweetalert2';
 
 export default function Dashboard() {
@@ -207,8 +209,8 @@ export default function Dashboard() {
   const stats = data?.studentStats || { total: 24, boarded: 18, dropped: 0, absent: 2, pending: 4 };
 
   const driverName = driver?.name || data?.driver?.name || 'Ramesh Kumar';
-  const driverPhoto = driver?.photo || driver?.avatar || data?.driver?.photo || data?.driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
-  const busNumber = v?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234';
+  const driverPhoto = getDriverPhoto(driver) || getDriverPhoto(data?.driver);
+  const busNumber = v?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
   const formattedBusNo = busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
   const routeName = active?.routeName || data?.route?.routeName || 'Route 12';
 
@@ -894,6 +896,25 @@ export default function Dashboard() {
                 </div>
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               </div>
+
+              {/* Bank NEFT Scannable QR Code */}
+              <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <QRCodeImage 
+                  value={JSON.stringify({
+                    type: 'SALARY_PAYSLIP',
+                    driverId: driver?.driverId || 'DRV-101',
+                    amount: '₹ 28,500',
+                    period: 'July 2026',
+                    mode: 'NEFT Bank Transfer'
+                  })}
+                  size={68}
+                />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-bold text-slate-500 block">Bank NEFT Verification</span>
+                  <span className="text-[11px] font-mono font-bold text-emerald-600 block truncate">REF: NEFT-SBIN-20260731</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">Central Accounts Disbursed ✓</span>
+                </div>
+              </div>
             </div>
 
             <div className="mt-4 flex gap-2">
@@ -993,6 +1014,29 @@ export default function Dashboard() {
                   <span className="text-slate-400 block text-[10px]">Emergency Phone:</span>
                   <span className="font-mono text-white">{driver?.mobile || '+91 98112 23399'}</span>
                 </div>
+              </div>
+
+              {/* Scannable Verified QR Code Strip */}
+              <div className="flex items-center justify-between pt-2.5 border-t border-white/10">
+                <div>
+                  <span className="text-[10px] text-slate-400 block">Digital Verification:</span>
+                  <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Central Fleet Verified</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-slate-300 block mt-0.5">AUTH: DRV-{driver?.driverId || '101'}</span>
+                </div>
+                <QRCodeImage 
+                  value={JSON.stringify({
+                    type: 'DRIVER_OFFICIAL_CREDENTIAL',
+                    driverId: driver?.driverId || 'DRV-101',
+                    name: driverName,
+                    license: driver?.licence || 'UP-32-2015009871',
+                    assignedBus: formattedBusNo
+                  })}
+                  size={76}
+                  className="bg-white p-1 rounded-xl"
+                />
               </div>
             </div>
 

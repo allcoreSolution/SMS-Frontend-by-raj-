@@ -13,11 +13,12 @@ import {
 } from 'lucide-react';
 import { driverService } from '../api/driverService';
 import { useAuth } from '../context/AuthContext';
+import { getDriverPhoto } from '../utils/photoHelper';
 import Swal from 'sweetalert2';
 
 export default function Incidents() {
   const { driver, vehicle, activeTrip } = useAuth();
-  const driverPhoto = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
+  const driverPhoto = getDriverPhoto(driver);
   const driverName = driver?.name || 'Ramesh Kumar';
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);

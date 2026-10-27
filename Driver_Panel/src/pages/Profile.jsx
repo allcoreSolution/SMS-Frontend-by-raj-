@@ -24,10 +24,15 @@ import {
   Camera,
   Upload,
   Trash2,
-  Image as ImageIcon
+  Image as ImageIcon,
+  QrCode,
+  Sparkles,
+  RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { driverService } from '../api/driverService';
+import { getDriverPhoto, saveDriverPhoto, clearDriverPhoto } from '../utils/photoHelper';
+import QRCodeImage from '../components/QRCodeImage';
 import Swal from 'sweetalert2';
 
 export default function Profile() {
@@ -42,18 +47,44 @@ export default function Profile() {
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [photoModalOpen, setPhotoModalOpen] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [universalScannerOpen, setUniversalScannerOpen] = useState(false);
+  const [scanInput, setScanInput] = useState('');
+  const [verifyingUniversal, setVerifyingUniversal] = useState(false);
+  const [verifiedDataModal, setVerifiedDataModal] = useState(null);
+
+  const handleUniversalVerify = async (payloadOrString) => {
+    setVerifyingUniversal(true);
+    try {
+      const res = await driverService.verifyQR(payloadOrString);
+      if (res.success && res.data) {
+        setVerifiedDataModal(res.data);
+        setUniversalScannerOpen(false);
+      } else {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Verification Incomplete',
+          text: res.message || 'QR code verification did not return valid data.'
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Verification Error',
+        text: err.response?.data?.message || 'Could not reach server to verify QR.'
+      });
+    } finally {
+      setVerifyingUniversal(false);
+    }
+  };
 
   // Driver Photo state & refs
-  const [driverPhoto, setDriverPhoto] = useState(() => {
-    return driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
-  });
+  const [driverPhoto, setDriverPhoto] = useState(() => getDriverPhoto(driver));
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
   // Sync photo if driver state in AuthContext updates
   useEffect(() => {
-    const current = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
-    if (current) setDriverPhoto(current);
+    setDriverPhoto(getDriverPhoto(driver));
   }, [driver]);
 
   const AVATAR_PRESETS = [
@@ -83,21 +114,19 @@ export default function Profile() {
       try {
         const res = await driverService.uploadPhoto(base64);
         setUploadingPhoto(false);
-        if (res.success) {
-          localStorage.setItem('driver_custom_photo', base64);
-          if (updateDriverState) updateDriverState({ photo: base64, avatar: base64 });
-          Swal.fire({
-            icon: 'success',
-            title: 'Photo Uploaded!',
-            text: 'Driver profile photo updated successfully.',
-            timer: 2000,
-            showConfirmButton: false
-          });
-          setPhotoModalOpen(false);
-        }
+        saveDriverPhoto(driver, base64);
+        if (updateDriverState) updateDriverState({ photo: base64, avatar: base64 });
+        Swal.fire({
+          icon: 'success',
+          title: 'Photo Uploaded!',
+          text: 'Driver profile photo updated successfully.',
+          timer: 2000,
+          showConfirmButton: false
+        });
+        setPhotoModalOpen(false);
       } catch (err) {
         setUploadingPhoto(false);
-        localStorage.setItem('driver_custom_photo', base64);
+        saveDriverPhoto(driver, base64);
         if (updateDriverState) updateDriverState({ photo: base64, avatar: base64 });
         Swal.fire({
           icon: 'success',
@@ -114,7 +143,7 @@ export default function Profile() {
 
   const handleApplyPreset = async (url) => {
     setDriverPhoto(url);
-    localStorage.setItem('driver_custom_photo', url);
+    saveDriverPhoto(driver, url);
     if (updateDriverState) updateDriverState({ photo: url, avatar: url });
     try {
       await driverService.uploadPhoto(url);
@@ -122,6 +151,7 @@ export default function Profile() {
     Swal.fire({
       icon: 'success',
       title: 'Avatar Applied!',
+      text: 'Profile photo updated everywhere.',
       timer: 1500,
       showConfirmButton: false
     });
@@ -130,7 +160,7 @@ export default function Profile() {
 
   const handleRemovePhoto = async () => {
     setDriverPhoto('');
-    localStorage.removeItem('driver_custom_photo');
+    clearDriverPhoto(driver);
     if (updateDriverState) updateDriverState({ photo: '', avatar: '' });
     try {
       await driverService.uploadPhoto('');
@@ -203,7 +233,7 @@ export default function Profile() {
           avatar: driverPhoto
         });
       }
-      localStorage.setItem('driver_custom_photo', driverPhoto);
+      saveDriverPhoto(driver, driverPhoto);
       Swal.fire({
         icon: 'success',
         title: 'Profile Updated',
@@ -222,7 +252,7 @@ export default function Profile() {
           avatar: driverPhoto
         });
       }
-      localStorage.setItem('driver_custom_photo', driverPhoto);
+      saveDriverPhoto(driver, driverPhoto);
       Swal.fire({
         icon: 'success',
         title: 'Profile Updated',
@@ -366,18 +396,24 @@ export default function Profile() {
             {profileData.designation} • EMP ID: {profileData.empId}
           </p>
 
-          <div className="flex items-center gap-3 mt-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-3">
+            <button
+              onClick={() => setBadgeModalOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 shadow-md shadow-orange-600/30 cursor-pointer active:scale-95 transition-all"
+            >
+              <QrCode className="w-3.5 h-3.5" />
+              <span>Official QR Pass</span>
+            </button>
             <button
               onClick={() => setPhotoModalOpen(true)}
-              className="text-xs font-bold text-[#ea580c] hover:underline flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-[#ea580c] hover:bg-orange-50 flex items-center gap-1 cursor-pointer transition-colors"
             >
               <Camera className="w-3.5 h-3.5" />
-              <span>{driverPhoto ? 'Change Photo' : 'Upload Driver Photo'}</span>
+              <span>{driverPhoto ? 'Change Photo' : 'Upload Photo'}</span>
             </button>
-            <span className="text-slate-300 dark:text-slate-700">•</span>
             <button
               onClick={() => setEditModalOpen(true)}
-              className="text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-orange-600 flex items-center gap-1 cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-orange-600 flex items-center gap-1 cursor-pointer transition-colors"
             >
               <Pencil className="w-3 h-3" />
               <span>Edit Details</span>
@@ -512,7 +548,28 @@ export default function Profile() {
           <ChevronRight className="w-5 h-5 text-slate-400" />
         </div>
 
-        {/* Card 5: App Settings & Security */}
+        {/* Card 5: Universal QR Verifier & Document Scanner */}
+        <div
+          onClick={() => setUniversalScannerOpen(true)}
+          className="rounded-3xl border border-orange-200 dark:border-orange-800/80 bg-orange-50/50 dark:bg-orange-950/20 p-4 shadow-sm hover:shadow-md hover:border-orange-400 transition-all cursor-pointer flex items-center justify-between active:scale-95"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-orange-100 dark:bg-orange-900/60 text-orange-600 flex items-center justify-center shrink-0">
+              <QrCode className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <span className="font-serif font-black text-xs sm:text-sm text-slate-900 dark:text-white block">
+                Universal QR Verifier & Scanner
+              </span>
+              <span className="text-[11px] text-orange-700 dark:text-orange-400 font-semibold">
+                Scan & verify any Student, Driver ID, Vehicle RC or Payslip live
+              </span>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-orange-500" />
+        </div>
+
+        {/* Card 6: App Settings & Security */}
         <div
           onClick={() => navigate('/settings')}
           className="rounded-3xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition-all cursor-pointer flex items-center justify-between active:scale-95"
@@ -571,41 +628,81 @@ export default function Profile() {
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-1">
-                <div className="flex justify-between font-bold">
-                  <span>Vehicle Registration:</span>
-                  <span className="font-mono text-orange-600">{profileData.vehicleNumber}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Chassis No:</span>
-                  <span className="font-mono">MAT-99228833441</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>RC Validity:</span>
-                  <span className="text-emerald-600 font-bold">Valid till Nov 2028</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Insurance Policy:</span>
-                  <span className="text-emerald-600 font-bold">Active (ICICI Lombard)</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Pollution (PUC):</span>
-                  <span className="text-emerald-600 font-bold">Passed (Valid 2027)</span>
+              {/* Vehicle RC Card with Scannable QR */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-2 border border-slate-200/60 dark:border-slate-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 pr-2 space-y-1">
+                    <div className="flex justify-between font-bold">
+                      <span>Vehicle Registration:</span>
+                      <span className="font-mono text-orange-600">{profileData.vehicleNumber}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Chassis No:</span>
+                      <span className="font-mono">MAT-99228833441</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>RC Validity:</span>
+                      <span className="text-emerald-600 font-bold">Valid till Nov 2028</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Insurance Policy:</span>
+                      <span className="text-emerald-600 font-bold">Active (ICICI Lombard)</span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-center">
+                    <QRCodeImage 
+                      value={JSON.stringify({
+                        type: 'VEHICLE_RC',
+                        vehicleNumber: profileData.vehicleNumber,
+                        model: profileData.vehicleModel,
+                        fitness: 'Valid till Nov 2028'
+                      })}
+                      size={70}
+                    />
+                    <button
+                      onClick={() => handleUniversalVerify({ type: 'VEHICLE_RC', vehicleNumber: profileData.vehicleNumber })}
+                      className="mt-1 px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-orange-100 text-orange-700 hover:bg-orange-200 cursor-pointer"
+                    >
+                      Verify RC
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-1">
-                <div className="flex justify-between font-bold">
-                  <span>Heavy Commercial License:</span>
-                  <span className="font-mono text-orange-600">{profileData.licenseNumber}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Driver Blood Group:</span>
-                  <span className="font-bold">{profileData.bloodGroup}</span>
-                </div>
-                <div className="flex justify-between text-slate-500">
-                  <span>Authorized Category:</span>
-                  <span>Transport Bus (HMV)</span>
+              {/* Driver License Card with Scannable QR */}
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl space-y-2 border border-slate-200/60 dark:border-slate-700">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1 pr-2 space-y-1">
+                    <div className="flex justify-between font-bold">
+                      <span>Commercial License:</span>
+                      <span className="font-mono text-orange-600">{profileData.licenseNumber}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Driver Blood Group:</span>
+                      <span className="font-bold">{profileData.bloodGroup}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-500">
+                      <span>Authorized Category:</span>
+                      <span>Transport Bus (HMV)</span>
+                    </div>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-center">
+                    <QRCodeImage 
+                      value={JSON.stringify({
+                        type: 'DRIVER_OFFICIAL_CREDENTIAL',
+                        driverId: profileData.empId,
+                        license: profileData.licenseNumber,
+                        category: 'Transport Bus HMV'
+                      })}
+                      size={70}
+                    />
+                    <button
+                      onClick={() => handleUniversalVerify({ type: 'DRIVER_OFFICIAL_CREDENTIAL', driverId: profileData.empId })}
+                      className="mt-1 px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-blue-100 text-blue-700 hover:bg-blue-200 cursor-pointer"
+                    >
+                      Verify License
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -702,6 +799,34 @@ export default function Profile() {
                   <span className="font-mono text-white">{profileData.emergencyContact}</span>
                 </div>
               </div>
+
+              {/* Scannable Verified QR Code Strip */}
+              <div className="flex items-center justify-between pt-2.5 border-t border-white/10">
+                <div>
+                  <span className="text-[10px] text-slate-400 block">Digital Verification:</span>
+                  <span className="text-[11px] font-bold text-emerald-400 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Central Fleet Verified</span>
+                  </span>
+                  <button
+                    onClick={() => handleUniversalVerify({ type: 'DRIVER_OFFICIAL_CREDENTIAL', driverId: profileData.empId })}
+                    className="mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/20 text-orange-300 hover:bg-orange-500/30 border border-orange-500/30 cursor-pointer"
+                  >
+                    Verify Live Data
+                  </button>
+                </div>
+                <QRCodeImage 
+                  value={JSON.stringify({
+                    type: 'DRIVER_OFFICIAL_CREDENTIAL',
+                    driverId: profileData.empId,
+                    name: profileData.name,
+                    license: profileData.licenseNumber,
+                    assignedBus: profileData.vehicleNumber
+                  })}
+                  size={76}
+                  className="bg-white p-1 rounded-xl"
+                />
+              </div>
             </div>
 
             <button
@@ -788,6 +913,31 @@ export default function Profile() {
                   <div className="text-[10px] text-emerald-600">Credited on 31 Jul 2026 • Direct Bank Transfer</div>
                 </div>
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              </div>
+
+              {/* Bank NEFT Scannable QR Code */}
+              <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <QRCodeImage 
+                  value={JSON.stringify({
+                    type: 'SALARY_PAYSLIP',
+                    driverId: profileData.empId,
+                    amount: '₹ 28,500',
+                    period: 'July 2026',
+                    mode: 'NEFT Bank Transfer'
+                  })}
+                  size={68}
+                />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[10px] font-bold text-slate-500 block">Bank NEFT Verification</span>
+                  <span className="text-[11px] font-mono font-bold text-emerald-600 block truncate">REF: NEFT-SBIN-20260731</span>
+                  <button
+                    onClick={() => handleUniversalVerify({ type: 'SALARY_PAYSLIP', driverId: profileData.empId })}
+                    className="mt-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 cursor-pointer flex items-center gap-1"
+                  >
+                    <ShieldCheck className="w-3 h-3" />
+                    <span>Verify Bank Transfer Live</span>
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -1118,6 +1268,183 @@ export default function Profile() {
               </div>
             )}
 
+          </div>
+        </div>
+      )}
+
+      {/* ===================== UNIVERSAL QR SCANNER & VERIFIER MODAL ===================== */}
+      {universalScannerOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-950 text-orange-600 flex items-center justify-center">
+                  <QrCode className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-sm uppercase text-slate-900 dark:text-white">
+                    Universal QR Verifier
+                  </h3>
+                  <p className="text-[10px] text-slate-400">Scan & verify live ERP records</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setUniversalScannerOpen(false)} 
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Viewfinder Graphic with Laser */}
+            <div className="relative bg-slate-950 rounded-2xl h-48 flex flex-col items-center justify-center overflow-hidden border-2 border-dashed border-orange-500 shadow-inner">
+              <div className="w-32 h-32 border-2 border-orange-500 rounded-2xl relative flex items-center justify-center bg-black/40">
+                <span className="w-full h-1 bg-gradient-to-r from-transparent via-orange-400 to-transparent absolute top-1/2 -translate-y-1/2 animate-pulse shadow-lg shadow-orange-500" />
+                <QrCode className="w-14 h-14 text-white/30" />
+              </div>
+              <p className="text-[11px] text-orange-300 font-bold mt-2">
+                Point at any Student, Driver, RC or Payslip QR
+              </p>
+            </div>
+
+            {/* Quick 1-Tap Sample Payloads */}
+            <div>
+              <label className="block text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1.5 uppercase tracking-wider">
+                Instant Test Real Database Records:
+              </label>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <button
+                  type="button"
+                  onClick={() => handleUniversalVerify({ type: 'STUDENT_BOARDING_PASS', admissionNo: 'YIS-2024-101' })}
+                  className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-950/60 text-left font-bold text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700 cursor-pointer"
+                >
+                  <span className="text-[9px] text-orange-600 uppercase block font-black">Student Pass</span>
+                  <span className="truncate block">Aarav (YIS-2024-101)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleUniversalVerify({ type: 'DRIVER_OFFICIAL_CREDENTIAL', driverId: profileData.empId })}
+                  className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-950/60 text-left font-bold text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700 cursor-pointer"
+                >
+                  <span className="text-[9px] text-blue-600 uppercase block font-black">Driver Credential</span>
+                  <span className="truncate block">{profileData.name} ({profileData.empId})</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleUniversalVerify({ type: 'VEHICLE_RC', vehicleNumber: profileData.vehicleNumber })}
+                  className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-950/60 text-left font-bold text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700 cursor-pointer"
+                >
+                  <span className="text-[9px] text-emerald-600 uppercase block font-black">Vehicle RC</span>
+                  <span className="truncate block">{profileData.vehicleNumber}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleUniversalVerify({ type: 'SALARY_PAYSLIP', driverId: profileData.empId })}
+                  className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-100 dark:hover:bg-orange-950/60 text-left font-bold text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-slate-700 cursor-pointer"
+                >
+                  <span className="text-[9px] text-purple-600 uppercase block font-black">Salary Payslip</span>
+                  <span className="truncate block">July 2026 (₹ 28,500)</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Manual input */}
+            <div>
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Enter QR String, Token or Admission No:
+              </label>
+              <input
+                type="text"
+                value={scanInput}
+                onChange={(e) => setScanInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && scanInput && handleUniversalVerify(scanInput)}
+                placeholder="e.g. YIS-2024-101 or DRV-101 or DL-01-AB-4501"
+                className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={() => setUniversalScannerOpen(false)}
+                className="flex-1 py-2.5 rounded-2xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => handleUniversalVerify(scanInput)}
+                disabled={verifyingUniversal || !scanInput}
+                className="flex-1 py-2.5 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black text-xs uppercase tracking-wider shadow-md shadow-orange-600/30 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                {verifyingUniversal ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                <span>{verifyingUniversal ? 'Verifying...' : 'Verify Now'}</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {/* ===================== LIVE VERIFIED DATABASE RECORD MODAL ===================== */}
+      {verifiedDataModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-sm w-full p-6 shadow-2xl relative space-y-4">
+            
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider">
+                    Official ERP Verification
+                  </h3>
+                  <p className="text-[10px] text-emerald-600 font-bold">Authenticated with Central Database ✓</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setVerifiedDataModal(null)} 
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="p-4 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 rounded-2xl space-y-2 text-xs">
+              <div className="flex justify-between items-center pb-2 border-b border-emerald-200/60 dark:border-emerald-800/60">
+                <span className="text-slate-500 font-bold">Category:</span>
+                <span className="font-mono text-emerald-700 dark:text-emerald-300 font-black text-[11px] uppercase">
+                  {verifiedDataModal.category}
+                </span>
+              </div>
+
+              {Object.entries(verifiedDataModal).map(([key, val]) => {
+                if (['category', 'verified', 'verificationTimestamp', 'photo'].includes(key)) return null;
+                const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                return (
+                  <div key={key} className="flex justify-between items-center">
+                    <span className="text-slate-500">{formattedKey}:</span>
+                    <span className="font-bold text-slate-900 dark:text-white text-right max-w-[190px] truncate">
+                      {String(val)}
+                    </span>
+                  </div>
+                );
+              })}
+
+              <div className="pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60 text-[10px] text-slate-400 flex justify-between">
+                <span>Verified Timestamp:</span>
+                <span className="font-mono">{new Date(verifiedDataModal.verificationTimestamp || Date.now()).toLocaleTimeString()}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setVerifiedDataModal(null)}
+              className="w-full py-2.5 rounded-2xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider cursor-pointer"
+            >
+              Done / Close
+            </button>
           </div>
         </div>
       )}

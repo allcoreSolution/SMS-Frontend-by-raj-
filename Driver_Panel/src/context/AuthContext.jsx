@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { driverService } from '../api/driverService';
+import { getDriverPhoto, saveDriverPhoto, clearDriverPhoto, getDriverPhotoKey } from '../utils/photoHelper';
 
 const AuthContext = createContext();
 
@@ -8,7 +9,7 @@ const DEFAULT_DRIVER = {
   driverId: 'DRV-101',
   name: 'Ramesh Kumar',
   mobile: '+91 98112 23399',
-  assignedBus: 'UP 32 AB 1234',
+  assignedBus: 'DL-01-AB-4501',
   licence: 'UP-32-2015009871',
   bloodGroup: 'B+',
   status: 'Active'
@@ -29,6 +30,13 @@ export const AuthProvider = ({ children }) => {
   const [activeTrip, setActiveTrip] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Clean up legacy global photo leak on mount
+  useEffect(() => {
+    try {
+      localStorage.removeItem('driver_custom_photo');
+    } catch {}
+  }, []);
+
   // Load driver profile from /api/driver/me on init if token exists
   useEffect(() => {
     let mounted = true;
@@ -36,11 +44,13 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await driverService.getMe();
         if (res.success && mounted && res.data) {
-          setDriver(res.data);
-          if (res.data.vehicle) setVehicle(res.data.vehicle);
-          if (res.data.route) setRoute(res.data.route);
-          if (res.data.activeTrip) setActiveTrip(res.data.activeTrip);
-          localStorage.setItem('driver_profile', JSON.stringify(res.data));
+          const d = res.data;
+          setDriver(d);
+          if (d.vehicle) setVehicle(d.vehicle);
+          if (d.route) setRoute(d.route);
+          if (d.activeTrip) setActiveTrip(d.activeTrip);
+          if (d.photo) saveDriverPhoto(d, d.photo);
+          localStorage.setItem('driver_profile', JSON.stringify(d));
         }
       } catch (err) {
         console.warn('Backend telematics sync on mount:', err.message);
@@ -61,12 +71,13 @@ export const AuthProvider = ({ children }) => {
 
       if (res.success && res.data) {
         const d = res.data;
-        const tok = d.token || res.token;
+        const tok = d.token || res.token || `demo-driver-token-${d.driverId || 'drv-101'}`;
         setToken(tok);
         setDriver(d);
         setVehicle(d.vehicle || null);
         setRoute(d.route || null);
         setActiveTrip(d.activeTrip || null);
+        if (d.photo) saveDriverPhoto(d, d.photo);
         localStorage.setItem('driver_token', tok);
         localStorage.setItem('token', tok);
         localStorage.setItem('driver_profile', JSON.stringify(d));
@@ -90,13 +101,17 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('driver_token');
     localStorage.removeItem('token');
     localStorage.removeItem('driver_profile');
+    try {
+      localStorage.removeItem('driver_custom_photo');
+    } catch {}
   };
 
   const refreshProfile = async () => {
     try {
       const res = await driverService.getMe();
-      if (res.success) {
+      if (res.success && res.data) {
         setDriver(res.data);
+        if (res.data.photo) saveDriverPhoto(res.data, res.data.photo);
         setVehicle(res.data.vehicle);
         setRoute(res.data.route);
         setActiveTrip(res.data.activeTrip);
@@ -120,10 +135,6 @@ export const AuthProvider = ({ children }) => {
           setDriver(JSON.parse(e.newValue));
         } catch {}
       }
-      if (e.key === 'driver_custom_photo') {
-        const val = e.newValue || '';
-        setDriver(prev => ({ ...prev, photo: val, avatar: val }));
-      }
     };
 
     window.addEventListener('driver_profile_updated', handleProfileUpdate);
@@ -139,13 +150,9 @@ export const AuthProvider = ({ children }) => {
       const merged = { ...prev, ...updates };
       try {
         localStorage.setItem('driver_profile', JSON.stringify(merged));
-        if (updates.photo !== undefined || updates.avatar !== undefined) {
-          const p = updates.photo || updates.avatar;
-          if (p) {
-            localStorage.setItem('driver_custom_photo', p);
-          } else {
-            localStorage.removeItem('driver_custom_photo');
-          }
+        const photoVal = updates.photo !== undefined ? updates.photo : updates.avatar;
+        if (photoVal !== undefined) {
+          saveDriverPhoto(merged, photoVal);
         }
       } catch (e) {
         // quota safety

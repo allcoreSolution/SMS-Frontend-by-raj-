@@ -23,12 +23,13 @@ import {
 } from 'lucide-react';
 import { driverService } from '../api/driverService';
 import { useAuth } from '../context/AuthContext';
+import { getDriverPhoto } from '../utils/photoHelper';
 import Swal from 'sweetalert2';
 
 export default function AttendanceLeave() {
   const navigate = useNavigate();
   const { driver, vehicle } = useAuth();
-  const driverPhoto = driver?.photo || driver?.avatar || localStorage.getItem('driver_custom_photo') || '';
+  const driverPhoto = getDriverPhoto(driver);
 
   const [activeTab, setActiveTab] = useState('biometric'); // 'biometric' | 'history'
   const [selectedMonth, setSelectedMonth] = useState('August 2026');
