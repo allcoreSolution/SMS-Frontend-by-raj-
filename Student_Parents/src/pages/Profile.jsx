@@ -1058,17 +1058,17 @@ export default function Profile({ activeChild }) {
           role="switch"
           aria-checked={isDarkMode}
           title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-          className={`relative inline-flex h-8 w-15 shrink-0 items-center rounded-full transition-all duration-300 cursor-pointer p-0.5 shadow-inner focus:outline-none ${
+          className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-all duration-300 cursor-pointer p-1 shadow-inner focus:outline-none ${
             isDarkMode 
               ? 'bg-gradient-to-r from-blue-600 to-indigo-600 ring-2 ring-indigo-400/30' 
               : 'bg-slate-200 hover:bg-slate-300 border border-slate-300/80'
           }`}
         >
           <span
-            className={`flex items-center justify-center h-7 w-7 transform rounded-full shadow-md transition-all duration-300 ${
+            className={`flex items-center justify-center h-6 w-6 transform rounded-full shadow-md transition-all duration-300 pointer-events-none ${
               isDarkMode 
-                ? 'translate-x-7 bg-white text-indigo-600 ring-2 ring-indigo-500/30' 
-                : 'translate-x-0.5 bg-white text-amber-500'
+                ? 'translate-x-6 bg-white text-indigo-600 ring-1 ring-indigo-500/20' 
+                : 'translate-x-0 bg-white text-amber-500'
             }`}
           >
             {isDarkMode ? (
