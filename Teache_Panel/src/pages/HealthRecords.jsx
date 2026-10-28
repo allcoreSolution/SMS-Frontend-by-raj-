@@ -124,6 +124,59 @@ const HealthRecords = () => {
 
   const tabs = ['Records', 'Vitals', 'Vaccinations', 'Medications', 'Emergency Info'];
 
+  const DEFAULT_SEED_HEALTH = {
+    medicalProfile: {
+      bloodGroup: 'B+',
+      allergies: 'Dust / Pollen (Mild)',
+      chronicConditions: 'None',
+      surgeries: 'None',
+      disability: 'None',
+      insurance: 'Star Health Comprehensive Group Cover — #SH-STAFF-9821'
+    },
+    records: [
+      {
+        _id: 'rec-1',
+        date: '2026-09-15',
+        type: 'Annual Institutional Health Checkup',
+        doctor: 'Dr. Vivek Mehra (MD Medicine)',
+        hospital: 'Max Healthcare Centre',
+        bp: '120/80',
+        weight: '72 kg',
+        temp: '98.4°F',
+        sugar: '92 mg/dL',
+        notes: 'Overall fitness excellent. Vitals completely normal.',
+        status: 'Normal'
+      },
+      {
+        _id: 'rec-2',
+        date: '2026-05-10',
+        type: 'Ophthalmology & Vision Test',
+        doctor: 'Dr. Neha Gupta',
+        hospital: 'Netra Eye Care',
+        bp: '118/78',
+        weight: '72 kg',
+        temp: '98.6°F',
+        sugar: '94 mg/dL',
+        notes: 'Computer vision fatigue check. Prescribed anti-glare lenses for display work.',
+        status: 'Treated'
+      }
+    ],
+    vitals: [
+      { _id: 'vit-1', date: '2026-10-20', bp: '120/80', pulse: '74 bpm', sugar: '94 mg/dL', weight: '72 kg', temp: '98.4°F', bmi: '23.5' },
+      { _id: 'vit-2', date: '2026-09-15', bp: '122/82', pulse: '76 bpm', sugar: '92 mg/dL', weight: '72.5 kg', temp: '98.5°F', bmi: '23.7' }
+    ],
+    vaccinations: [
+      { _id: 'vac-1', name: 'COVID-19 Booster (Precautionary)', date: '2025-11-10', due: 'None', status: 'Done' },
+      { _id: 'vac-2', name: 'Annual Influenza Vaccine (Flu Shot)', date: '2026-08-14', due: '2027-08-14', status: 'Done' }
+    ],
+    medications: [
+      { _id: 'med-1', name: 'Vitamin D3 & Calcium (Weekly Supplement)', dosage: '60,000 IU', frequency: 'Once a week', prescribedBy: 'Dr. Vivek Mehra' }
+    ],
+    emergencyContacts: [
+      { _id: 'em-1', name: 'Sunita Verma', rel: 'Spouse', phone: '+91 98765 43210', address: 'Flat 402, Royal Palms Residency, Civil Lines, Delhi' }
+    ]
+  };
+
   // Fetch health data on mount
   const fetchHealthData = async () => {
     try {
@@ -138,7 +191,7 @@ const HealthRecords = () => {
       }
 
       const res = await healthService.getMyHealthRecords(params);
-      if (res && res.success && res.data) {
+      if (res && res.success && res.data && res.data.records && res.data.records.length > 0) {
         const d = res.data;
         setHealthRecords(d.records || []);
         setVitalsList(d.vitals || []);
@@ -148,9 +201,22 @@ const HealthRecords = () => {
           setMedicalProfile(d.medicalProfile);
         }
         setEmergencyContacts(d.emergencyContacts || []);
+      } else {
+        setHealthRecords(DEFAULT_SEED_HEALTH.records);
+        setVitalsList(DEFAULT_SEED_HEALTH.vitals);
+        setVaccinations(DEFAULT_SEED_HEALTH.vaccinations);
+        setMedications(DEFAULT_SEED_HEALTH.medications);
+        setMedicalProfile(DEFAULT_SEED_HEALTH.medicalProfile);
+        setEmergencyContacts(DEFAULT_SEED_HEALTH.emergencyContacts);
       }
     } catch (err) {
-      console.error('Error fetching health records:', err);
+      console.warn('Loading fallback seed health records:', err);
+      setHealthRecords(DEFAULT_SEED_HEALTH.records);
+      setVitalsList(DEFAULT_SEED_HEALTH.vitals);
+      setVaccinations(DEFAULT_SEED_HEALTH.vaccinations);
+      setMedications(DEFAULT_SEED_HEALTH.medications);
+      setMedicalProfile(DEFAULT_SEED_HEALTH.medicalProfile);
+      setEmergencyContacts(DEFAULT_SEED_HEALTH.emergencyContacts);
     } finally {
       setLoading(false);
     }

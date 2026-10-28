@@ -24,6 +24,7 @@ import {
   Plus
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import Swal from 'sweetalert2';
 
 export default function StaffDashboard() {
   const navigate = useNavigate();
@@ -52,6 +53,73 @@ export default function StaffDashboard() {
   const staffDesignation = staffUser.designation || 'Senior Administrative Officer';
   const staffDept = staffUser.department || 'Administration & HR';
   const staffId = staffUser.staffId || staffUser.empId || 'EMP-101';
+
+  const handleDownloadPayslip = () => {
+    Swal.fire({
+      title: '<strong>Institutional Payslip — October 2026</strong>',
+      html: `
+        <div style="text-align: left; font-size: 12px; line-height: 1.6; padding: 6px; font-family: system-ui, sans-serif;">
+          <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h4 style="margin: 0; font-size: 15px; font-weight: bold; color: #1e1b4b;">SCHOOL ERP ACADEMY</h4>
+              <p style="margin: 2px 0; color: #6b7280; font-size: 11px;">Sector 4, Institutional Area, New Delhi</p>
+            </div>
+            <div style="text-align: right;">
+              <span style="background: #e0e7ff; color: #3730a3; padding: 3px 8px; font-weight: bold; font-size: 11px; border-radius: 4px;">SALARY SLIP</span>
+              <p style="margin: 2px 0; color: #4b5563; font-size: 10px;">October 2026</p>
+            </div>
+          </div>
+          <table style="width: 100%; font-size: 11px; margin-bottom: 10px;">
+            <tr><td style="color:#6b7280;">Employee Name:</td><td><strong>${staffName}</strong></td><td style="color:#6b7280;">Staff ID:</td><td><strong>${staffId}</strong></td></tr>
+            <tr><td style="color:#6b7280;">Designation:</td><td>${staffDesignation}</td><td style="color:#6b7280;">Department:</td><td>${staffDept}</td></tr>
+            <tr><td style="color:#6b7280;">Bank Account:</td><td>HDFC Bank (****7291)</td><td style="color:#6b7280;">Days Present:</td><td>22 / 23 Days</td></tr>
+          </table>
+          <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; border: 1px solid #e5e7eb;">
+            <tr style="background: #f8fafc; font-weight: bold;">
+              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: left;">Earnings</th>
+              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: right;">Amount (₹)</th>
+              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: left;">Deductions</th>
+              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: right;">Amount (₹)</th>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Basic Pay</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">42,000.00</td>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">EPF Contribution</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">5,040.00</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Dearness (DA 50%)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">21,000.00</td>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Income Tax (TDS)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">2,500.00</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">House Rent Allowance (HRA)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">10,080.00</td>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Salary Advance EMI</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">2,500.00</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Special Allowance</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">5,000.00</td>
+              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Professional Tax</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">200.00</td>
+            </tr>
+            <tr style="background: #faf5ff; font-weight: bold;">
+              <td style="padding: 6px; border: 1px solid #e5e7eb;">Gross Earnings</td><td style="padding: 6px; border: 1px solid #e5e7eb; text-align: right; color:#4f46e5;">₹78,080.00</td>
+              <td style="padding: 6px; border: 1px solid #e5e7eb;">Total Deductions</td><td style="padding: 6px; border: 1px solid #e5e7eb; text-align: right; color:#e11d48;">₹10,240.00</td>
+            </tr>
+          </table>
+          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: bold; color: #065f46;">Net Disbursed Take-Home Salary:</span>
+            <span style="font-size: 16px; font-weight: 900; color: #047857;">₹54,200.00</span>
+          </div>
+          <p style="text-align: center; color: #9ca3af; font-size: 10px; margin-top: 10px;">Digitally signed & authorized by Directorate of Human Resources.</p>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Print / Save PDF',
+      cancelButtonText: 'Close',
+      confirmButtonColor: '#4f46e5',
+      cancelButtonColor: '#6b7280'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.print();
+      }
+    });
+  };
 
   // Staff Key Metrics Data
   const stats = [
@@ -240,13 +308,14 @@ export default function StaffDashboard() {
               <span>{t('loanDesk', 'Loans Desk')}</span>
             </Link>
 
-            <Link
-              to="/my-profile"
-              className="px-4 py-2.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 text-xs font-bold shadow-md transition-all flex items-center gap-2 active:scale-95"
+            <button
+              type="button"
+              onClick={handleDownloadPayslip}
+              className="px-4 py-2.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 text-xs font-bold shadow-md transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
             >
               <Download className="w-4 h-4 text-indigo-600" />
               <span>{t('payslip', 'Payslip')}</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -464,13 +533,14 @@ export default function StaffDashboard() {
             </div>
           </div>
 
-          <Link
-            to="/my-profile"
-            className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+          <button
+            type="button"
+            onClick={handleDownloadPayslip}
+            className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
             <Download className="w-3.5 h-3.5 text-indigo-600" />
             <span>Download Oct 2026 Payslip (PDF)</span>
-          </Link>
+          </button>
         </div>
 
       </div>

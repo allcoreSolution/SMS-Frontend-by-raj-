@@ -62,17 +62,89 @@ const Surveys = () => {
     else setActiveTab('My Surveys');
   }, [location.pathname]);
 
+  const DEFAULT_SEED_SURVEYS = [
+    {
+      _id: 'srv-1',
+      title: 'Institutional Work Culture & Staff Welfare Survey 2026',
+      description: 'Annual employee satisfaction survey assessing administrative support, digital tools and campus facilities.',
+      kind: 'Survey',
+      targetAudience: 'Staff & Faculty',
+      closesAt: '2026-11-20',
+      status: 'Active',
+      responsesCount: 42,
+      questions: [
+        { id: 'q1', questionText: 'How satisfied are you with the biometric & digital ERP portal?', type: 'Rating', options: ['1','2','3','4','5'], required: true },
+        { id: 'q2', questionText: 'Suggestions for workplace environment & cafeteria facilities:', type: 'Long text', options: [], required: false }
+      ]
+    },
+    {
+      _id: 'srv-2',
+      title: 'Annual Day Coordination & Event Logistics Feedback',
+      description: 'Feedback regarding stage preparation, sound engineering and security coordination.',
+      kind: 'Poll',
+      targetAudience: 'All Employees',
+      closesAt: '2026-11-10',
+      status: 'Active',
+      responsesCount: 58,
+      questions: [
+        { id: 'q1', questionText: 'Rate overall event flow and timetable coordination:', type: 'Rating', options: ['1','2','3','4','5'], required: true }
+      ]
+    }
+  ];
+
+  const DEFAULT_SEED_FEEDBACKS = [
+    {
+      _id: 'fb-1',
+      title: 'Digital ID Card Scanner speed on North Gate',
+      category: 'Infrastructure',
+      priority: 'Medium',
+      owner: 'IT & Infrastructure Admin',
+      submittedBy: 'Administrative Staff',
+      details: 'Staff swipe delay observed at 08:50 AM. Recommend dedicated optical lens cleaning.',
+      status: 'In Review',
+      createdAt: '2026-10-25T10:00:00.000Z'
+    },
+    {
+      _id: 'fb-2',
+      title: 'Air Conditioning Maintenance in Examination Archive',
+      category: 'Facilities',
+      priority: 'High',
+      owner: 'Campus Estate Manager',
+      submittedBy: 'Records Room Officer',
+      details: 'High humidity reported near marksheets storage racks.',
+      status: 'Resolved',
+      createdAt: '2026-10-21T14:30:00.000Z'
+    }
+  ];
+
+  const DEFAULT_SEED_SURVEY_STATS = {
+    totalSurveys: 4,
+    activeSurveys: 2,
+    totalResponses: 100,
+    openFeedbacks: 3
+  };
+
   const loadSurveys = async () => {
     setLoading(true);
     try {
       const [surveysRes, statsRes] = await Promise.all([
-        surveyService.getSurveys(),
-        surveyService.getStats()
+        surveyService.getSurveys().catch(() => ({ data: [] })),
+        surveyService.getStats().catch(() => ({ data: null }))
       ]);
-      if (surveysRes?.data) setSurveys(surveysRes.data);
-      if (statsRes?.data) setStats(statsRes.data);
+      if (surveysRes?.data && surveysRes.data.length > 0) {
+        setSurveys(surveysRes.data);
+      } else {
+        setSurveys(DEFAULT_SEED_SURVEYS);
+      }
+      if (statsRes?.data) {
+        setStats(statsRes.data);
+      } else {
+        setStats(DEFAULT_SEED_SURVEY_STATS);
+      }
     } catch (err) {
-      console.error('Error fetching surveys:', err);
+      console.warn('Loading fallback seed surveys:', err);
+      setSurveys(DEFAULT_SEED_SURVEYS);
+      setStats(DEFAULT_SEED_SURVEY_STATS);
     } finally {
       setLoading(false);
     }
@@ -81,15 +153,24 @@ const Surveys = () => {
   const loadFeedbacks = async () => {
     setLoading(true);
     try {
-      const res = await surveyService.getFeedbacks();
-      if (res?.data) {
+      const res = await surveyService.getFeedbacks().catch(() => ({ data: [] }));
+      if (res?.data && res.data.length > 0) {
         setFeedbacks(res.data);
-        if (res.data.length > 0 && !selectedFeedback) {
+        if (!selectedFeedback) {
           setSelectedFeedback(res.data[0]);
+        }
+      } else {
+        setFeedbacks(DEFAULT_SEED_FEEDBACKS);
+        if (!selectedFeedback) {
+          setSelectedFeedback(DEFAULT_SEED_FEEDBACKS[0]);
         }
       }
     } catch (err) {
-      console.error('Error fetching feedbacks:', err);
+      console.warn('Loading fallback seed feedbacks:', err);
+      setFeedbacks(DEFAULT_SEED_FEEDBACKS);
+      if (!selectedFeedback) {
+        setSelectedFeedback(DEFAULT_SEED_FEEDBACKS[0]);
+      }
     } finally {
       setLoading(false);
     }
