@@ -172,9 +172,33 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         to="/accounts/dashboard"
         className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 hover:brightness-110 transition-all group"
       >
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-          <div className="w-full h-full bg-[#131927] rounded-[10px] flex items-center justify-center">
-            <span className="font-black text-[11px] tracking-wider text-[#ff5c0a]">ERP</span>
+        <div 
+          className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 group-hover:scale-105 transition-transform shrink-0 overflow-hidden"
+          translate="no"
+        >
+          <div className="w-full h-full bg-[#131927] rounded-[9px] flex items-center justify-center overflow-hidden">
+            <svg 
+              viewBox="0 0 36 36" 
+              className="w-full h-full notranslate select-none pointer-events-none" 
+              translate="no" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="36" height="36" rx="9" fill="#131927"/>
+              <text 
+                x="18" 
+                y="18.5" 
+                dominantBaseline="central" 
+                textAnchor="middle" 
+                fill="#ff5c0a" 
+                fontSize="11" 
+                fontWeight="900" 
+                fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+                letterSpacing="0.5px"
+              >
+                ERP
+              </text>
+            </svg>
           </div>
         </div>
         <div className="flex flex-col">
