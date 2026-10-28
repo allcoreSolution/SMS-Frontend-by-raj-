@@ -10,59 +10,65 @@ export const authService = {
         timeout: 8000,
       });
       if (response.data?.success && response.data?.data?.token) {
-        localStorage.setItem('parent_token', response.data.data.token);
-        localStorage.setItem('parent_user', JSON.stringify(response.data.data));
-        const activeId = response.data.data.studentId 
-          || (response.data.data.children && response.data.data.children[0]) 
-          || response.data.data._id;
-        if (activeId) {
-          const cleanId = typeof activeId === 'object' ? (activeId._id || activeId.id || String(activeId)) : String(activeId);
-          localStorage.setItem('active_child', cleanId);
+        const udata = {
+          ...response.data.data,
+          role: response.data.data.role || (credentials.role === 'student' ? 'Student' : 'Parent'),
+        };
+        localStorage.setItem('parent_token', udata.token);
+        localStorage.setItem('parent_user', JSON.stringify(udata));
+        
+        if (udata.role === 'Student') {
+          const sId = udata.studentId || udata._id;
+          if (sId) localStorage.setItem('active_child', String(sId));
+        } else {
+          const firstChild = udata.children && udata.children[0];
+          const cId = typeof firstChild === 'object' ? (firstChild._id || firstChild.id) : firstChild;
+          if (cId) localStorage.setItem('active_child', String(cId));
         }
       }
       return response.data;
     } catch (err) {
       console.warn('Backend login connection issue, evaluating fallback:', err?.message);
       const id = (credentials.userId || credentials.loginId || credentials.email || '').trim().toUpperCase();
-      if (id.includes('STU') || id.includes('STUDENT') || id === 'KABIR-101' || id === '101') {
+      const role = String(credentials.role || '').toLowerCase();
+      
+      // Student Fallback (Aarav Sharma)
+      if (role === 'student' || id.includes('YIS') || id.includes('STU') || id.includes('101') || id.includes('STUDENT')) {
         const studentData = {
-          _id: '1',
-          username: 'STU-2024-101',
-          name: 'Kabir Singh',
-          email: 'kabir.singh@student.allcoresolution.com',
-          phone: '9876543210',
+          _id: '6acdc7d06660441df4764319',
+          username: id || 'YIS-2024-101',
+          name: 'Aarav Sharma',
+          email: 'aarav.sharma@yis.edu',
+          phone: '9876543218',
           role: 'Student',
-          studentId: '1',
-          class: 'Class 10th (A)',
+          studentId: '6acdc7d06660441df4764319',
+          class: 'Class I (A)',
           token: 'demo_student_jwt_token',
         };
         localStorage.setItem('parent_token', studentData.token);
         localStorage.setItem('parent_user', JSON.stringify(studentData));
-        localStorage.setItem('active_child', '1');
+        localStorage.setItem('active_child', '6acdc7d06660441df4764319');
         return { success: true, data: studentData, message: 'Logged in as Student successfully' };
       }
       
-      // Default to Parent demo fallback
+      // Parent Fallback (Vikram Chauhan - Parent of Ishaan Joshi & Aarav Sharma)
       const demoData = {
-        _id: 'parent_kabir_singh_id',
-        username: id || 'P-1920-KABIR',
-        name: 'Vikram Singh (Father of Kabir Singh)',
-        email: 'parent@allcoresolution.com',
-        phone: '9876543210',
+        _id: '6acdd7c2384d1059f4690a20',
+        username: id || 'P9876510108',
+        name: 'Vikram Chauhan',
+        email: 'vikram.chauhan@gmail.com',
+        phone: '9876510108',
         role: 'Parent',
-        parentId: 'parent_kabir_singh_id',
+        parentId: '6acdd7c2384d1059f4690a20',
         children: [
-          { id: '1', name: 'Kabir Singh', class: 'Class 10th (A)', avatar: 'K' },
-          { id: '2', name: 'Shlok Verma', class: 'Class III (B)', avatar: 'S' },
-          { id: '3', name: 'Rajesh Singh', class: 'Class II (A)', avatar: 'R' }
+          { id: '6acdc7d06660441df476431d', _id: '6acdc7d06660441df476431d', name: 'Ishaan Joshi', class: 'Class I (A)', avatar: 'I' },
+          { id: '6acdc7d06660441df4764319', _id: '6acdc7d06660441df4764319', name: 'Aarav Sharma', class: 'Class I (A)', avatar: 'A' },
         ],
         token: 'demo_parent_jwt_token',
       };
       localStorage.setItem('parent_token', demoData.token);
       localStorage.setItem('parent_user', JSON.stringify(demoData));
-      if (!localStorage.getItem('active_child')) {
-        localStorage.setItem('active_child', '1');
-      }
+      localStorage.setItem('active_child', '6acdc7d06660441df476431d');
       return { success: true, data: demoData, message: 'Logged in as Parent successfully' };
     }
   },
