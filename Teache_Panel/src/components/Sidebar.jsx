@@ -212,14 +212,25 @@ const Sidebar = () => {
   const [openSection, setOpenSection] = useState('MAIN NAVIGATION');
   const [openSubmenu, setOpenSubmenu] = useState(null);
 
-  const userRole = (() => {
+  const [userRole, setUserRole] = useState(() => {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}');
       return u?.role || 'Teacher';
     } catch (_) {
       return 'Teacher';
     }
-  })();
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
+        setUserRole(u?.role || 'Teacher');
+      } catch (_) {}
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
 
   useEffect(() => {
     const p = location.pathname;
@@ -374,73 +385,87 @@ const Sidebar = () => {
               <li><NavLink to="/" className={navLinkClass}><LayoutDashboard className="w-[18px] h-[18px]" /> {t('dashboard', 'Dashboard')}</NavLink></li>
               <li><NavLink to="/my-profile" className={navLinkClass}><User className="w-[18px] h-[18px] text-red-400" /> {t('myProfile', 'My Profile')}</NavLink></li>
               <li><NavLink to="/loans" className={navLinkClass}><DollarSign className="w-[18px] h-[18px] text-purple-400" /> {t('loans', 'My Loans & Advances')}</NavLink></li>
-              <li><LiveClassesMenu t={t} isOpen={openSubmenu === 'Live Classes' || !!search.trim()} onToggle={() => toggleSubmenu('Live Classes')} /></li>
+              {userRole !== 'Staff' && (
+                <li><LiveClassesMenu t={t} isOpen={openSubmenu === 'Live Classes' || !!search.trim()} onToggle={() => toggleSubmenu('Live Classes')} /></li>
+              )}
               <li><NavLink to="/complaints" className={navLinkClass}><AlertCircle className="w-[18px] h-[18px] text-orange-400" /> {t('complaints', 'Complaints')}</NavLink></li>
               <li><NavLink to="/leave" className={navLinkClass}><FileText className="w-[18px] h-[18px] text-pink-500" /> {t('leave', 'Apply Leave')}</NavLink></li>
               <li><NavLink to="/health" className={navLinkClass}><Heart className="w-[18px] h-[18px] text-green-400" /> {t('health', 'Health Records')}</NavLink></li>
-              <li><NavLink to="/timetable" className={navLinkClass}><CalendarDays className="w-[18px] h-[18px] text-purple-500" /> {t('timetable', 'My Timetable')}</NavLink></li>
+              <li><NavLink to="/timetable" className={navLinkClass}><CalendarDays className="w-[18px] h-[18px] text-purple-500" /> {userRole === 'Staff' ? t('dutyTimetable', 'My Duty Timetable') : t('timetable', 'My Timetable')}</NavLink></li>
             </ul>
           </div>
         </div>
         
-        {/* STUDENTS */}
-        <div className="mb-2">
-          {renderSectionHeader('STUDENTS', t('students', 'Students'))}
-          <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDENTS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
-            <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> {t('studentList', 'Student List')}</NavLink></li>
-              <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> {t('studentAttendance', 'Student Attendance')}</NavLink></li>
-            </ul>
+        {/* STUDENTS - TEACHER ONLY */}
+        {userRole !== 'Staff' && (
+          <div className="mb-2">
+            {renderSectionHeader('STUDENTS', t('students', 'Students'))}
+            <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDENTS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+              <ul className="overflow-hidden space-y-1 pt-0.5">
+                <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> {t('studentList', 'Student List')}</NavLink></li>
+                <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> {t('studentAttendance', 'Student Attendance')}</NavLink></li>
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* ONLINE EXAMS */}
-        <div className="mb-2">
-          {renderSectionHeader('ONLINE EXAMS', t('onlineExams', 'Online Exams'))}
-          <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'ONLINE EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
-            <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/online-exams" className={navLinkClass}><PenTool className="w-[18px] h-[18px] text-purple-400" /> {t('manageOnlineExams', 'Manage Online Exams')}</NavLink></li>
-              <li><NavLink to="/question-bank" className={navLinkClass}><List className="w-[18px] h-[18px] text-cyan-400" /> {t('questionBank', 'Question Bank')}</NavLink></li>
-            </ul>
+        {/* ONLINE EXAMS - TEACHER ONLY */}
+        {userRole !== 'Staff' && (
+          <div className="mb-2">
+            {renderSectionHeader('ONLINE EXAMS', t('onlineExams', 'Online Exams'))}
+            <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'ONLINE EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+              <ul className="overflow-hidden space-y-1 pt-0.5">
+                <li><NavLink to="/online-exams" className={navLinkClass}><PenTool className="w-[18px] h-[18px] text-purple-400" /> {t('manageOnlineExams', 'Manage Online Exams')}</NavLink></li>
+                <li><NavLink to="/question-bank" className={navLinkClass}><List className="w-[18px] h-[18px] text-cyan-400" /> {t('questionBank', 'Question Bank')}</NavLink></li>
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* EXAMS */}
-        <div className="mb-2">
-          {renderSectionHeader('EXAMS', t('exams', 'Exams'))}
-          <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
-            <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/offline-exams" className={navLinkClass}><List className="w-[18px] h-[18px] text-pink-400" /> {t('manageOfflineExams', 'Manage Offline Exams')}</NavLink></li>
-              <li><NavLink to="/admit-cards" className={navLinkClass}><CreditCard className="w-[18px] h-[18px] text-amber-400" /> {t('admitCards', 'Admit Cards')}</NavLink></li>
-              <li><NavLink to="/enter-marks" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-green-400" /> {t('enterMarks', 'Enter Marks')}</NavLink></li>
-              <li><NavLink to="/upload-marksheet" className={navLinkClass}><UploadCloud className="w-[18px] h-[18px] text-purple-400" /> {t('uploadMarksheet', 'Upload Marksheet')}</NavLink></li>
-              <li><NavLink to="/generate-marksheet" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-blue-400" /> {t('generateMarksheet', 'Generate Marksheet')}</NavLink></li>
-            </ul>
+        {/* EXAMS - TEACHER ONLY */}
+        {userRole !== 'Staff' && (
+          <div className="mb-2">
+            {renderSectionHeader('EXAMS', t('exams', 'Exams'))}
+            <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'EXAMS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+              <ul className="overflow-hidden space-y-1 pt-0.5">
+                <li><NavLink to="/offline-exams" className={navLinkClass}><List className="w-[18px] h-[18px] text-pink-400" /> {t('manageOfflineExams', 'Manage Offline Exams')}</NavLink></li>
+                <li><NavLink to="/admit-cards" className={navLinkClass}><CreditCard className="w-[18px] h-[18px] text-amber-400" /> {t('admitCards', 'Admit Cards')}</NavLink></li>
+                <li><NavLink to="/enter-marks" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-green-400" /> {t('enterMarks', 'Enter Marks')}</NavLink></li>
+                <li><NavLink to="/upload-marksheet" className={navLinkClass}><UploadCloud className="w-[18px] h-[18px] text-purple-400" /> {t('uploadMarksheet', 'Upload Marksheet')}</NavLink></li>
+                <li><NavLink to="/generate-marksheet" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-blue-400" /> {t('generateMarksheet', 'Generate Marksheet')}</NavLink></li>
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* STUDY MANAGEMENT */}
-        <div className="mb-2">
-          {renderSectionHeader('STUDY MANAGEMENT', t('studyManagement', 'Study Management'))}
-          <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDY MANAGEMENT' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
-            <ul className="overflow-hidden space-y-1 pt-0.5">
-              <li><NavLink to="/classwork" className={navLinkClass}><Book className="w-[18px] h-[18px] text-yellow-500" /> {t('classwork', 'Classwork & Logbook')}</NavLink></li>
-              <li><NavLink to="/assignments" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-red-400" /> {t('assignments', 'Homework & Assignments')}</NavLink></li>
-            </ul>
+        {/* STUDY MANAGEMENT - TEACHER ONLY */}
+        {userRole !== 'Staff' && (
+          <div className="mb-2">
+            {renderSectionHeader('STUDY MANAGEMENT', t('studyManagement', 'Study Management'))}
+            <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'STUDY MANAGEMENT' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
+              <ul className="overflow-hidden space-y-1 pt-0.5">
+                <li><NavLink to="/classwork" className={navLinkClass}><Book className="w-[18px] h-[18px] text-yellow-500" /> {t('classwork', 'Classwork & Logbook')}</NavLink></li>
+                <li><NavLink to="/assignments" className={navLinkClass}><Edit className="w-[18px] h-[18px] text-red-400" /> {t('assignments', 'Homework & Assignments')}</NavLink></li>
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
 
-        {/* DOCUMENTS */}
+        {/* DOCUMENTS & SERVICES */}
         <div className="mb-2">
-          {renderSectionHeader('DOCUMENTS', t('documents', 'Documents'))}
+          {renderSectionHeader('DOCUMENTS', userRole === 'Staff' ? t('officeServices', 'Office & Services') : t('documents', 'Documents'))}
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'DOCUMENTS' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
               <li><NavLink to="/certificates" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-cyan-500" /> {t('certificates', 'Certificates & Documents')}</NavLink></li>
               <li><NavLink to="/apps-center" className={navLinkClass}><Grid className="w-[18px] h-[18px] text-orange-400" /> {t('appsCenter', 'Apps Center')}</NavLink></li>
-              <PTMMenu t={t} isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
-              <LessonPlannerMenu t={t} isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
-              <OSMMenu t={t} isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
-              <AssessmentMenu t={t} isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
+              {userRole !== 'Staff' && (
+                <>
+                  <PTMMenu t={t} isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
+                  <LessonPlannerMenu t={t} isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
+                  <OSMMenu t={t} isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
+                  <AssessmentMenu t={t} isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
+                </>
+              )}
               <LeadManagementMenu t={t} isOpen={openSubmenu === 'Lead Management' || !!search.trim()} onToggle={() => toggleSubmenu('Lead Management')} />
               <SurveysMenu t={t} isOpen={openSubmenu === 'Surveys & Feedback' || !!search.trim()} onToggle={() => toggleSubmenu('Surveys & Feedback')} />
             </ul>
@@ -453,7 +478,9 @@ const Sidebar = () => {
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'COMMUNICATION' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
               <li><NavLink to="/messages" className={navLinkClass}><MessageCircle className="w-[18px] h-[18px] text-purple-400" /> {t('messages', 'Messages')}</NavLink></li>
-              <HolisticProgressMenu t={t} isOpen={openSubmenu === 'Holistic Progress Card' || !!search.trim()} onToggle={() => toggleSubmenu('Holistic Progress Card')} />
+              {userRole !== 'Staff' && (
+                <HolisticProgressMenu t={t} isOpen={openSubmenu === 'Holistic Progress Card' || !!search.trim()} onToggle={() => toggleSubmenu('Holistic Progress Card')} />
+              )}
             </ul>
           </div>
         </div>

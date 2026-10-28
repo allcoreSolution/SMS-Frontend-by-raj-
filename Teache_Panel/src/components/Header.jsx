@@ -24,12 +24,34 @@ const Header = () => {
   const { currentLang, changeLanguage, languages, supportedLanguages, t } = useLanguage();
   const { toggleSidebar } = useSidebar();
 
-  // Teacher Profile State
-  const [profile, setProfile] = useState({
-    name: 'Amit Sharma',
-    role: 'Teacher',
-    designation: 'Senior PGT Mathematics',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+  // Profile State (Teacher or Staff)
+  const [profile, setProfile] = useState(() => {
+    try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (u.role === 'Staff') {
+          return {
+            name: u.fullName || u.name || 'Rajesh Verma',
+            role: 'Staff',
+            designation: u.designation || 'Senior Administrative Officer',
+            avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
+          };
+        }
+        return {
+          name: u.fullName || u.name || 'Amit Sharma',
+          role: u.role || 'Teacher',
+          designation: u.designation || 'Senior PGT Mathematics',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+        };
+      }
+    } catch (_) {}
+    return {
+      name: 'Amit Sharma',
+      role: 'Teacher',
+      designation: 'Senior PGT Mathematics',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+    };
   });
 
   // Notifications State
@@ -87,6 +109,21 @@ const Header = () => {
   // Load Profile from Backend API
   const loadProfile = async () => {
     try {
+      const stored = localStorage.getItem('user');
+      if (stored) {
+        try {
+          const u = JSON.parse(stored);
+          if (u.role === 'Staff') {
+            setProfile({
+              name: u.fullName || u.name || 'Rajesh Verma',
+              role: 'Staff',
+              designation: u.designation || 'Senior Administrative Officer',
+              avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
+            });
+            return;
+          }
+        } catch (_) {}
+      }
       const res = await teacherService.getProfile();
       if (res?.data?.personalInfo) {
         const info = res.data.personalInfo;

@@ -13,6 +13,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
 import ClassicTeacherLayout from './layouts/ClassicTeacherLayout';
 import { teacherService } from '../api/teacherService';
+import StaffDashboard from './StaffDashboard';
 
 // Animated count-up component with real-time numeric transition
 const AnimatedCounter = ({ targetValue, duration = 1200 }) => {
@@ -208,7 +209,7 @@ const ecosystemModules = [
   { title: "Progress Cards", icon: CreditCard, colorName: "orange", category: "Academics", route: "/progress-cards" }
 ];
 
-const Dashboard = () => {
+const TeacherDashboardView = () => {
   const navigate = useNavigate();
   const { currentTheme, currentLayout } = useTheme();
   const { t, currentLang } = useLanguage();
@@ -830,6 +831,34 @@ const Dashboard = () => {
       )}
     </>
   );
+};
+
+const Dashboard = () => {
+  const [role, setRole] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      return u?.role || 'Teacher';
+    } catch (_) {
+      return 'Teacher';
+    }
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
+        setRole(u?.role || 'Teacher');
+      } catch (_) {}
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  if (role === 'Staff') {
+    return <StaffDashboard />;
+  }
+
+  return <TeacherDashboardView />;
 };
 
 export default Dashboard;

@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   CalendarCheck, 
   PenTool, 
   MessageSquare, 
-  Grid 
+  Grid,
+  FileText,
+  DollarSign
 } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -15,7 +17,51 @@ export default function MobileBottomNav() {
   const { t } = useLanguage();
   const location = useLocation();
 
-  const navItems = [
+  const [userRole, setUserRole] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      return u?.role || 'Teacher';
+    } catch (_) {
+      return 'Teacher';
+    }
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
+        setUserRole(u?.role || 'Teacher');
+      } catch (_) {}
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const staffNavItems = [
+    {
+      name: t('dashboard', 'Home'),
+      path: '/',
+      icon: LayoutDashboard,
+      exact: true
+    },
+    {
+      name: t('leave', 'Leave'),
+      path: '/leave',
+      icon: FileText
+    },
+    {
+      name: t('loans', 'Loans'),
+      path: '/loans',
+      icon: DollarSign
+    },
+    {
+      name: t('messages', 'Messages'),
+      path: '/messages',
+      icon: MessageSquare
+    }
+  ];
+
+  const teacherNavItems = [
     {
       name: t('dashboard', 'Home'),
       path: '/',
@@ -38,6 +84,8 @@ export default function MobileBottomNav() {
       icon: MessageSquare
     }
   ];
+
+  const navItems = userRole === 'Staff' ? staffNavItems : teacherNavItems;
 
   return (
     <nav 
