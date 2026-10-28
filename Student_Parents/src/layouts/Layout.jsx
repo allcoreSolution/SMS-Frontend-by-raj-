@@ -395,15 +395,9 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       >
 
         {/* Logo: ACS-SCHOOL */}
-        <div 
-          onClick={() => {
-            navigate('/dashboard');
-            if (typeof window !== 'undefined' && window.innerWidth < 1024) setSideOpen(false);
-          }} 
-          className="flex items-center justify-between px-4 py-3.5 flex-shrink-0 border-b border-[#1e222b] cursor-pointer hover:bg-white/5 transition-colors"
-          title="ACS-SCHOOL - Go to Dashboard"
-        >
-          <div className="flex items-center gap-2.5">
+        {/* Brand Header (Static Display Emblem & Name) */}
+        <div className="flex items-center justify-between px-4 py-3.5 flex-shrink-0 border-b border-[#1e222b] select-none">
+          <div className="flex items-center gap-2.5 pointer-events-none">
             {/* ACS Official School Logo Emblem */}
             <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/30 border border-blue-400/30 overflow-hidden">
               <GraduationCap className="w-5 h-5 text-white drop-shadow-sm" strokeWidth={2.4} />
@@ -692,10 +686,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
               <Menu className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
             </button>
             
-            <div 
-              onClick={() => navigate('/dashboard')}
-              className="flex items-center gap-1 sm:gap-2 cursor-pointer select-none group min-w-0"
-            >
+            <div className="flex items-center gap-1 sm:gap-2 select-none min-w-0">
               <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-blue-600/10 text-[#2563EB] flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-blue-600/20 transition-colors">
                 <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
               </div>
