@@ -21,7 +21,13 @@ import {
   CreditCard, 
   CalendarDays, 
   FileSpreadsheet,
-  Plus
+  Plus,
+  Printer,
+  Award,
+  Filter,
+  BarChart,
+  Grid,
+  Sparkles
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import Swal from 'sweetalert2';
@@ -408,6 +414,149 @@ export default function StaffDashboard() {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* ── 3.5. OFFICE ADMINISTRATION & CERTIFICATION SERVICES HUB ── */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-7 border border-indigo-800/40 shadow-xl text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-[11px] font-bold mb-2">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{t('officeServicesHub', 'Office Services & Administration Hub')}</span>
+                <span>•</span>
+                <span className="text-white font-extrabold">{t('officialDesk', 'Official Certification Desk')}</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
+                {t('officeServicesTitle', 'Institutional Office Services & Certification')}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+                {t('officeServicesDesc', 'Direct generation and issuance of Transfer Certificates (TC), Bonafide & Character Certificates, Admission Leads & Surveys.')}
+              </p>
+            </div>
+            
+            <Link
+              to="/certificates"
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all self-start sm:self-auto active:scale-95"
+            >
+              <Printer className="w-4 h-4" />
+              <span>{t('issueNewCert', 'Generate Certificate')}</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+            {/* Tile 1: Certificates & Documents */}
+            <div
+              onClick={() => navigate('/certificates')}
+              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Award className="w-5 h-5 text-cyan-400" />
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
+                    TC / Bonafide
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  {t('certificatesTitle', 'Certificates & Documents')}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                  {t('certificatesDesc', 'Issue TC, Character, Bonafide, Merit & Sports certificates with QR verification.')}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-cyan-400">
+                <span>{t('generateNow', 'Issue Document')}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+
+            {/* Tile 2: Admission Leads */}
+            <div
+              onClick={() => navigate('/lead-dashboard')}
+              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-teal-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/30 text-teal-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Filter className="w-5 h-5 text-teal-400" />
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-400/20 text-teal-300 border border-teal-400/30">
+                    5 Active Leads
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-white group-hover:text-teal-300 transition-colors">
+                  {t('leadsTitle', 'Admissions & Inquiry Desk')}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                  {t('leadsDesc', 'Manage incoming student admission inquiries, parent follow-ups and pipeline.')}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-teal-400">
+                <span>{t('viewPipeline', 'Open Pipeline')}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+
+            {/* Tile 3: Surveys & Feedback */}
+            <div
+              onClick={() => navigate('/my-surveys')}
+              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <BarChart className="w-5 h-5 text-amber-400" />
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    2 Active Polls
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                  {t('surveysTitle', 'Institutional Surveys & Feedback')}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                  {t('surveysDesc', 'Staff welfare feedback, workplace improvement polls and department audits.')}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-400">
+                <span>{t('participatePoll', 'Open Surveys')}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+
+            {/* Tile 4: Apps Center */}
+            <div
+              onClick={() => navigate('/apps-center')}
+              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-400/30 text-orange-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Grid className="w-5 h-5 text-orange-400" />
+                  </div>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-400/20 text-orange-300 border border-orange-400/30">
+                    ERP Utilities
+                  </span>
+                </div>
+                <h3 className="text-sm font-bold text-white group-hover:text-orange-300 transition-colors">
+                  {t('appsCenterTitle', 'School ERP Apps Center')}
+                </h3>
+                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                  {t('appsCenterDesc', 'Digital calculator, document scanner, institutional calendar & quick office tools.')}
+                </p>
+              </div>
+              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-orange-400">
+                <span>{t('launchApps', 'Explore Apps')}</span>
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
