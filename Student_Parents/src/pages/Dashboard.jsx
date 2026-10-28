@@ -163,7 +163,7 @@ const getQuickModules = (lang, isStudent = false) => {
     },
     { 
       key: 'meetings', 
-      label: lang === 'hi' ? 'अभिभावक बैठक' : 'PTM / Meet', 
+      label: lang === 'hi' ? 'पीटीएम बैठक' : 'PTM Meets', 
       icon: Users, 
       color: '#06B6D4', 
       bg: 'bg-cyan-50 hover:bg-cyan-100/80', 
@@ -393,10 +393,16 @@ export default function Dashboard({ activeChild, setActiveChild }) {
       <div className="hidden lg:flex items-center justify-between">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-serif">
-            {currentLang === 'hi' ? 'विद्यार्थी पोर्टल डैशबोर्ड' : 'Student Portal Dashboard'}
+            {isStudent 
+              ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल डैशबोर्ड' : 'Student Portal Dashboard')
+              : (currentLang === 'hi' ? 'अभिभावक पोर्टल डैशबोर्ड' : 'Parent Portal Dashboard')
+            }
           </h1>
           <p className="text-xs text-slate-500 font-medium">
-            {currentLang === 'hi' ? 'एसीएस स्मार्ट कैंपस में आपका स्वागत है • रियल-टाइम एकेडमिक हब' : 'Welcome to ACS Smart Campus • Real-time Academic & Attendance Hub'}
+            {isStudent
+              ? (currentLang === 'hi' ? 'एसीएस स्मार्ट कैंपस में आपका स्वागत है • रियल-टाइम एकेडमिक हब' : 'Welcome to ACS Smart Campus • Real-time Academic & Attendance Hub')
+              : (currentLang === 'hi' ? 'एसीएस अभिभावक पोर्टल में आपका स्वागत है • रियल-टाइम वार्ड एकेडमिक व मॉनिटरिंग डेस्क' : 'Welcome to ACS Parent Portal • Real-time Student Academic & Monitoring Desk')
+            }
           </p>
         </div>
         <button
@@ -451,7 +457,10 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     onClick={() => setShowIdCardModal(true)}
                     className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-slate-900 px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
                   >
-                    {currentLang === 'hi' ? 'पहचान पत्र देखें →' : 'View ID Card →'}
+                    {isStudent 
+                      ? (currentLang === 'hi' ? 'पहचान पत्र देखें →' : 'View ID Card →')
+                      : (currentLang === 'hi' ? 'विद्यार्थी आईडी →' : 'Student ID →')
+                    }
                   </button>
                 </div>
                 <h2 className="text-base sm:text-xl font-black text-white font-serif tracking-tight truncate leading-tight mt-0.5">
@@ -517,8 +526,8 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               </button>
             </div>
 
-            {/* 3 COLUMNS ON MOBILE (grid-cols-3) */}
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-1.5 sm:gap-2">
+            {/* 3 COLUMNS BALANCED GRID (3x3 for 9 modules, clean & untruncated) */}
+            <div className="grid grid-cols-3 gap-2 sm:gap-2.5">
               {quickModules.map((action) => {
                 const Icon = action.icon;
                 return (
@@ -526,12 +535,12 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     key={action.key}
                     type="button"
                     onClick={() => navigate(action.route)}
-                    className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl bg-slate-50 hover:bg-slate-100/90 border border-slate-200/70 transition-all active:scale-95 cursor-pointer text-center group"
+                    className="flex flex-col items-center justify-center py-2.5 sm:py-3 px-1.5 sm:px-2 rounded-xl sm:rounded-2xl bg-slate-50 hover:bg-white hover:shadow-xs border border-slate-200/80 hover:border-blue-300 transition-all active:scale-95 cursor-pointer text-center group"
                   >
-                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${action.iconBg}`}>
-                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2.3} />
+                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${action.iconBg}`}>
+                      <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.2} />
                     </div>
-                    <span className="mt-1 text-[9.5px] sm:text-[10.5px] font-black text-slate-800 leading-tight truncate w-full group-hover:text-blue-600 transition-colors">
+                    <span className="mt-1.5 text-[10.5px] sm:text-[11.5px] font-extrabold text-slate-800 leading-tight group-hover:text-blue-600 transition-colors whitespace-nowrap">
                       {action.label}
                     </span>
                   </button>

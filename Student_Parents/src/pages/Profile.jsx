@@ -210,6 +210,32 @@ export default function Profile({ activeChild }) {
     { id: 'Security', label: 'Security & Access', icon: Shield },
   ];
 
+  // Role detection: Student vs Parent
+  const isStudent = (() => {
+    try {
+      const stored = localStorage.getItem('parent_user');
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (u.role === 'student' || u.isStudent === true) return true;
+        if (u.role === 'parent' || u.role === 'guardian') return false;
+        const uname = String(u.username || u.userId || '').toUpperCase();
+        if (uname.startsWith('STU') || uname.startsWith('YIS') || uname === '101') return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  })();
+
+  const parentUserName = parentData?.name || (() => {
+    try {
+      const stored = localStorage.getItem('parent_user');
+      return stored ? JSON.parse(stored).name : 'Vikram Chauhan';
+    } catch (e) {
+      return 'Vikram Chauhan';
+    }
+  })();
+
   // Dynamic profile loader based on activeChild
   const loadProfile = async () => {
     setLoading(true);
@@ -791,15 +817,19 @@ export default function Profile({ activeChild }) {
         onChange={handlePhotoSelect}
       />
 
-      {/* ── TITLE (MATCHING SCREENSHOT 1 "My Profile") ── */}
+      {/* ── TITLE ── */}
       <div className="w-full flex items-center justify-center pt-1 pb-1">
         <h1 className="text-2xl sm:text-3xl font-black font-serif tracking-tight text-center">
-          My Profile
+          {isStudent ? 'Student Profile' : 'Parent & Ward Profile'}
         </h1>
       </div>
 
-      {/* ── EXPANSIVE TOP HERO CARD (AVATAR & STUDENT STATUS) ── */}
-      <div className="w-full bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] rounded-3xl p-5 sm:p-7 text-white shadow-lg border border-white/20 relative overflow-hidden">
+      {/* ── EXPANSIVE TOP HERO CARD (ROLE-AWARE FOR STUDENT VS PARENT) ── */}
+      <div className={`w-full bg-gradient-to-r ${
+        isStudent 
+          ? 'from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8]' 
+          : 'from-[#065F46] via-[#059669] to-[#047857]'
+      } rounded-3xl p-5 sm:p-7 text-white shadow-lg border border-white/20 relative overflow-hidden`}>
         <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
 
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 text-center sm:text-left">
@@ -840,15 +870,15 @@ export default function Profile({ activeChild }) {
             <div>
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <h2 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight">
-                  {student.name}
+                  {isStudent ? student.name : parentUserName}
                 </h2>
                 <span className="bg-[#10B981] text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs">
-                  Active Student ✅
+                  {isStudent ? 'Active Student ✅' : 'Parent Account ✅'}
                 </span>
               </div>
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1.5">
                 <span className="bg-white/20 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-white/20">
-                  {student.class}
+                  {isStudent ? student.class : `Ward: ${student.name} (${student.class})`}
                 </span>
                 <span className="bg-amber-400/25 text-amber-200 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-amber-300/30">
                   Roll #{student.roll}
@@ -876,10 +906,39 @@ export default function Profile({ activeChild }) {
       }`}>
         <div className="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs sm:text-sm">
           
+          {!isStudent && (
+            <>
+              <div className="py-3 flex items-center justify-between first:pt-0">
+                <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Guardian / Parent
+                </span>
+                <span className="font-serif font-black tracking-tight text-right text-emerald-600">
+                  {parentUserName} (Parent)
+                </span>
+              </div>
+              <div className="py-3 flex items-center justify-between">
+                <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Enrolled Ward
+                </span>
+                <span className="font-serif font-black tracking-tight text-right text-blue-600">
+                  {student.name} ({student.class})
+                </span>
+              </div>
+              <div className="py-3 flex items-center justify-between">
+                <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                  Ward Admission No.
+                </span>
+                <span className="font-serif font-black tracking-tight text-right">
+                  {student.admn}
+                </span>
+              </div>
+            </>
+          )}
+
           {/* Row 1: Mobile / Adm. No */}
-          <div className="py-3 flex items-center justify-between first:pt-0">
+          <div className="py-3 flex items-center justify-between">
             <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              Mobile / Adm. No
+              {isStudent ? 'Mobile / Adm. No' : 'Contact Phone'}
             </span>
             <span className="font-serif font-black tracking-tight text-right">
               {student.phone}
@@ -958,10 +1017,10 @@ export default function Profile({ activeChild }) {
             </div>
             <div>
               <h3 className="text-sm sm:text-base font-black font-serif tracking-tight">
-                Digital Student ID Card
+                {isStudent ? 'Digital Student ID Card' : 'Ward Digital Student ID Card'}
               </h3>
               <p className={`text-[11px] sm:text-xs mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-400'}`}>
-                View &amp; Download Official Digital ID Card
+                {isStudent ? 'View & Download Official Digital ID Card' : 'View & Download Enrolled Student Official ID Card'}
               </p>
             </div>
           </div>
