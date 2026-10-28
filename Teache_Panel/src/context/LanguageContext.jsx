@@ -11,6 +11,26 @@ export const supportedLanguages = [
   { code: 'hi', name: 'Hindi', native: 'हिन्दी', region: 'India', flag: '🇮🇳' }
 ];
 
+// Helper to purge all Google Translate cookies across all paths and domains
+export const purgeGoogleCookies = () => {
+  try {
+    const host = window.location.hostname;
+    const domains = ['', host, '.' + host];
+    const parts = host.split('.');
+    if (parts.length > 2) {
+      domains.push('.' + parts.slice(-2).join('.'));
+    }
+    const paths = ['/', window.location.pathname, ''];
+    domains.forEach((d) => {
+      paths.forEach((p) => {
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=${p}${d ? '; domain=' + d : ''};`;
+      });
+    });
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/;';
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0;';
+  } catch (_) {}
+};
+
 // Trigger Google Translate engine programmatically
 export const triggerGoogleTranslate = (langCode) => {
   try {
@@ -19,13 +39,11 @@ export const triggerGoogleTranslate = (langCode) => {
     const host = window.location.hostname;
 
     if (isEn) {
-      const domains = ['', host, '.' + host];
-      const paths = ['/', window.location.pathname];
-      domains.forEach((d) => {
-        paths.forEach((p) => {
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
-        });
-      });
+      purgeGoogleCookies();
+      if (document.documentElement) {
+        document.documentElement.lang = 'en';
+        document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
+      }
     } else {
       const val = `/en/${targetCode}`;
       document.cookie = `googtrans=${val}; path=/;`;
@@ -73,7 +91,7 @@ export const triggerGoogleTranslate = (langCode) => {
     };
 
     if (!applyToCombo()) {
-      [50, 150, 350, 700, 1200, 2000, 3500].forEach((delay) => {
+      [50, 150, 350, 700, 1200, 2000].forEach((delay) => {
         setTimeout(applyToCombo, delay);
       });
     }
@@ -87,18 +105,23 @@ export const LanguageProvider = ({ children }) => {
   const [currentLang, setCurrentLang] = useState('English');
   const [currentLangCode, setCurrentLangCode] = useState('en');
 
-  // Initialize on mount: ensure default is English and clear any translation cookies
+  // Initialize on mount: ensure default is strictly English and clear any translation cookies
   useEffect(() => {
     try {
+      purgeGoogleCookies();
       sessionStorage.setItem('erp_language', 'English');
       sessionStorage.setItem('erp_lang_code', 'en');
-      var localLang = localStorage.getItem('erp_language');
-      if (localLang && localLang.toLowerCase() === 'hindi') {
-        localStorage.setItem('erp_language', 'English');
-        localStorage.setItem('erp_lang_code', 'en');
+      localStorage.setItem('erp_language', 'English');
+      localStorage.setItem('erp_lang_code', 'en');
+      if (document.documentElement) {
+        document.documentElement.lang = 'en';
+        document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
+      }
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo && combo.value !== '') {
+        combo.value = '';
       }
     } catch (_) {}
-    triggerGoogleTranslate('en');
   }, []);
 
   const changeLanguage = async (langNameOrCode) => {
@@ -146,13 +169,17 @@ export const LanguageProvider = ({ children }) => {
       timer: 2000
     });
 
-    // If switching back to English from Hindi, reload if needed to restore DOM completely
+    // If switching back to English from Hindi, restore combo and cleanup DOM
     if (!isHindi) {
       setTimeout(() => {
+        purgeGoogleCookies();
         const combo = document.querySelector('.goog-te-combo');
         if (combo && combo.value !== '') {
           combo.value = '';
           combo.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        if (document.documentElement) {
+          document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
         }
       }, 300);
     }

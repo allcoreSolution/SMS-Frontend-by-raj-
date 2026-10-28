@@ -132,19 +132,66 @@ body {
 
 
 
-/* Clean Google Translate styles */
-.goog-te-banner-frame, .goog-te-banner-frame.skiptranslate, iframe.goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, .goog-te-balloon, .goog-tooltip, .goog-tooltip:hover { display: none !important; visibility: hidden !important; }
-body { top: 0px !important; position: static !important; }
-.skiptranslate > iframe { display: none !important; }
+/* ========================================================
+   GOOGLE TRANSLATE STRICT SUPPRESSION - HIDE ALL ICONS & BADGES
+   ======================================================== */
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.VIpgJd-yAW6fm-L9AdLc,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMy,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMy-ti6hGc,
+.VIpgJd-ZVi9od-aZ2wjd-Ond6De,
+.VIpgJd-yAWNEb-L7lbkb,
+.VIpgJd-yAWNEb-hvh4ld,
+.VIpgJd-ZVi9od-ORHb,
+.VIpgJd-ZVi9od-SmMuJa,
+.VIpgJd-ZVi9od-xl07Ob-OEVmcd,
+.VIpgJd-yAWNEb-r4nke,
+[class*="VIpgJd"],
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-te-balloon,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-te-gadget-icon,
+.goog-te-gadget-simple,
+.goog-logo-link,
+.skiptranslate,
+body > .skiptranslate,
+div.skiptranslate,
+iframe.skiptranslate,
+[id*="goog-gt-"],
+div[id^="goog-gt-"],
+.goog-te-spinner-pos,
+iframe[id*=":1.container"],
+iframe[id*=":2.container"],
+iframe[id^=":"],
 #google_translate_element,
 .goog-te-gadget {
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
+  display: none !important;
+  visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  clip: rect(0, 0, 0, 0) !important;
+  overflow: hidden !important;
+  z-index: -9999 !important;
 }
-font { background-color: transparent !important; box-shadow: none !important; }
+
+body {
+  top: 0px !important;
+  position: static !important;
+}
+
+font {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+

@@ -5,30 +5,137 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teacher Portal - Multi-School ERP</title>
-  </head>
-  <body>
+
+    <!-- Strict Reset: Ensure English is active on open & Google Translate cookies are wiped immediately -->
     <script type="text/javascript">
       (function() {
         try {
           var host = window.location.hostname;
-          // Purge any Google Translate cookies so panel is strictly in English on open
           var domains = ['', host, '.' + host];
-          var paths = ['/', window.location.pathname];
+          var parts = host.split('.');
+          if (parts.length > 2) {
+            domains.push('.' + parts.slice(-2).join('.'));
+          }
+          var paths = ['/', window.location.pathname, ''];
           domains.forEach(function(d) {
             paths.forEach(function(p) {
-              document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+              document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=' + p + (d ? '; domain=' + d : '') + ';';
             });
           });
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0; path=/;';
+          document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; max-age=0;';
+
           sessionStorage.setItem('erp_language', 'English');
           sessionStorage.setItem('erp_lang_code', 'en');
-          var localLang = localStorage.getItem('erp_language');
-          if (localLang && localLang.toLowerCase() === 'hindi') {
-            localStorage.setItem('erp_language', 'English');
-            localStorage.setItem('erp_lang_code', 'en');
+          localStorage.setItem('erp_language', 'English');
+          localStorage.setItem('erp_lang_code', 'en');
+
+          if (document.documentElement) {
+            document.documentElement.lang = 'en';
+            document.documentElement.classList.remove('translated-ltr', 'translated-rtl');
           }
         } catch (e) {}
       })();
     </script>
+
+    <!-- Google Translate Complete Visual Suppression -->
+    <style>
+      .VIpgJd-ZVi9od-ORHb-OEVmcd,
+      .VIpgJd-yAW6fm-L9AdLc,
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMy,
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMy-ti6hGc,
+      .VIpgJd-ZVi9od-aZ2wjd-Ond6De,
+      .VIpgJd-yAWNEb-L7lbkb,
+      .VIpgJd-yAWNEb-hvh4ld,
+      .VIpgJd-ZVi9od-ORHb,
+      .VIpgJd-ZVi9od-SmMuJa,
+      .VIpgJd-ZVi9od-xl07Ob-OEVmcd,
+      .VIpgJd-yAWNEb-r4nke,
+      [class*="VIpgJd"],
+      .goog-te-banner-frame,
+      .goog-te-banner-frame.skiptranslate,
+      iframe.goog-te-banner-frame,
+      .goog-te-balloon-frame,
+      #goog-gt-tt,
+      .goog-te-balloon,
+      .goog-tooltip,
+      .goog-tooltip:hover,
+      .goog-te-gadget-icon,
+      .goog-te-gadget-simple,
+      .goog-logo-link,
+      .skiptranslate,
+      body > .skiptranslate,
+      div.skiptranslate,
+      iframe.skiptranslate,
+      [id*="goog-gt-"],
+      div[id^="goog-gt-"],
+      .goog-te-spinner-pos,
+      iframe[id*=":1.container"],
+      iframe[id*=":2.container"],
+      iframe[id^=":"],
+      #google_translate_element,
+      .goog-te-gadget {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        clip: rect(0, 0, 0, 0) !important;
+        overflow: hidden !important;
+        z-index: -9999 !important;
+      }
+
+      body {
+        top: 0px !important;
+        position: static !important;
+      }
+
+      font {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        color: inherit !important;
+      }
+    </style>
+
+    <!-- Dynamic MutationObserver to catch and suppress any late-injected Google Translate UI -->
+    <script type="text/javascript">
+      (function() {
+        function suppressGoogleUI() {
+          try {
+            var elements = document.querySelectorAll(
+              '[class*="VIpgJd"], .goog-te-banner-frame, #goog-gt-tt, .goog-te-balloon-frame, .goog-te-gadget-icon, .goog-logo-link, div[id^="goog-gt-"], iframe.skiptranslate, body > .skiptranslate:not(#google_translate_element)'
+            );
+            for (var i = 0; i < elements.length; i++) {
+              var el = elements[i];
+              el.style.setProperty('display', 'none', 'important');
+              el.style.setProperty('visibility', 'hidden', 'important');
+              el.style.setProperty('opacity', '0', 'important');
+              el.style.setProperty('pointer-events', 'none', 'important');
+              el.style.setProperty('width', '0', 'important');
+              el.style.setProperty('height', '0', 'important');
+            }
+            if (document.body && document.body.style.top && document.body.style.top !== '0px') {
+              document.body.style.setProperty('top', '0px', 'important');
+            }
+          } catch (e) {}
+        }
+
+        if (window.MutationObserver) {
+          var observer = new MutationObserver(function() {
+            suppressGoogleUI();
+          });
+          observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+        window.addEventListener('DOMContentLoaded', suppressGoogleUI);
+        window.addEventListener('load', suppressGoogleUI);
+      })();
+    </script>
+  </head>
+  <body>
     <div id="root"></div>
     <div id="google_translate_element" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
     <script type="text/javascript">
