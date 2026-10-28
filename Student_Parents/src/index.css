@@ -35,30 +35,34 @@ iframe.goog-te-banner-frame,
 #goog-gt-tt,
 .goog-te-balloon,
 .goog-tooltip,
-.goog-tooltip:hover {
-  display: none !important;
-  visibility: hidden !important;
-}
-
-body {
-  top: 0px !important;
-  position: static !important;
-}
-
-.skiptranslate > iframe {
-  display: none !important;
-}
-
+.goog-tooltip:hover,
+.goog-te-gadget-icon,
+.goog-te-gadget-simple,
+.goog-logo-link,
+.skiptranslate,
+.VIpgJd-ZVi9od-aZ2wjd-Ond6De,
+.VIpgJd-yAWNEb-L7lbkb,
+.VIpgJd-yAWNEb-hvh4ld,
+.VIpgJd-ZVi9od-ORHb,
+.VIpgJd-ZVi9od-SmMuJa,
+.VIpgJd-ZVi9od-xl07Ob-OEVmcd,
+.VIpgJd-yAWNEb-r4nke,
+[class*="VIpgJd"],
+[id*="goog-gt-"],
+iframe[id*=":1.container"],
+iframe[id*=":2.container"],
 #google_translate_element,
 .goog-te-gadget {
-  position: absolute !important;
-  left: -9999px !important;
-  top: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  overflow: hidden !important;
+  display: none !important;
+  visibility: hidden !important;
   opacity: 0 !important;
   pointer-events: none !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 0 !important;
+  height: 0 !important;
+  z-index: -9999 !important;
 }
 
 font {

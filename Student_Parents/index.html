@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>ACS Student Portal</title>
+    <title>ACS Student & Parent Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,50 +19,7 @@
     </script>
   </head>
   <body>
-    <script type="text/javascript">
-      (function() {
-        try {
-          var host = window.location.hostname;
-          var saved = localStorage.getItem('portal_language') || sessionStorage.getItem('portal_language');
-          var isHindi = saved === 'hi';
-          if (isHindi) {
-            document.cookie = 'googtrans=/en/hi; path=/;';
-            document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
-            document.cookie = 'googtrans=/auto/hi; path=/;';
-          } else {
-            // Default on open is STRICTLY English ('en') - purge cookies
-            localStorage.setItem('portal_language', 'en');
-            sessionStorage.setItem('portal_language', 'en');
-            var domains = ['', host, '.' + host, 'localhost'];
-            var paths = ['/', window.location.pathname];
-            domains.forEach(function(d) {
-              paths.forEach(function(p) {
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
-              });
-            });
-            document.cookie = 'googtrans=/en/en; path=/;';
-          }
-        } catch (e) {}
-      })();
-    </script>
     <div id="root"></div>
-    <div id="google_translate_element" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;"></div>
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        if (window.google && window.google.translate && window.google.translate.TranslateElement) {
-          try {
-            new window.google.translate.TranslateElement({
-              pageLanguage: 'en',
-              autoDisplay: false,
-              includedLanguages: 'en,hi'
-            }, 'google_translate_element');
-          } catch (e) {
-            console.warn('Google translate init error:', e);
-          }
-        }
-      }
-    </script>
-    <script async defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
