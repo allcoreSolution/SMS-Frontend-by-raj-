@@ -8,6 +8,7 @@ import Profile       from './pages/Profile';
 import ComingSoon    from './pages/ComingSoon';
 import Logout        from './pages/Logout';
 import Login         from './pages/Login';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Academics
 import CalendarPage  from './pages/academics/CalendarPage';
@@ -113,7 +114,9 @@ export default function App() {
               path={path}
               element={
                 <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
-                  <El activeChild={activeChild} setActiveChild={setActiveChild} />
+                  <ErrorBoundary>
+                    <El activeChild={activeChild} setActiveChild={setActiveChild} />
+                  </ErrorBoundary>
                 </Layout>
               }
             />
