@@ -38,6 +38,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import { SidebarProvider, useSidebar } from './context/SidebarContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
+import MobileBottomNav from './components/MobileBottomNav';
 
 const Layout = ({ children }) => {
   const { currentTheme } = useTheme();
@@ -61,14 +62,14 @@ const Layout = ({ children }) => {
         />
       )}
       <Sidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0 w-full">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0 w-full relative">
         <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg flex flex-col justify-between">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg flex flex-col justify-between pb-16 lg:pb-0">
           <div className="flex-1">
             {children}
           </div>
           {/* Main Portal Bottom Footer */}
-          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
+          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center mb-16 lg:mb-0">
             <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
               &copy; 2026 School ERP
             </p>
@@ -77,6 +78,9 @@ const Layout = ({ children }) => {
             </p>
           </footer>
         </main>
+
+        {/* Native Mobile Bottom Navigation Bar (Hidden on Desktop, Active on Mobile/APK) */}
+        <MobileBottomNav />
       </div>
     </div>
   );
