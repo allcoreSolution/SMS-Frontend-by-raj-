@@ -289,6 +289,25 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     };
   }, []);
 
+  // Global Dark Theme Sync
+  useEffect(() => {
+    const syncTheme = () => {
+      const isDark = localStorage.getItem('portal_theme') === 'dark';
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    };
+    syncTheme();
+    window.addEventListener('theme_changed', syncTheme);
+    window.addEventListener('storage', syncTheme);
+    return () => {
+      window.removeEventListener('theme_changed', syncTheme);
+      window.removeEventListener('storage', syncTheme);
+    };
+  }, []);
+
   // Load children from real backend API
   useEffect(() => {
     async function loadPortalChildren() {

@@ -65,3 +65,116 @@ font {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+/* ========================================================
+   FULL-APP DARK THEME SYSTEM
+   Transforms layout, cards, navigation, text, inputs & panels
+   ======================================================== */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0B0F19 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark #root {
+  background-color: #0B0F19 !important;
+}
+
+/* Header, Navigation & Sidebar */
+html.dark header {
+  background-color: #111827 !important;
+  border-color: #1F2937 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark nav {
+  background-color: #111827 !important;
+  border-color: #1F2937 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark aside {
+  background-color: #0F172A !important;
+  border-color: #1F2937 !important;
+}
+
+/* Base Cards & Containers */
+html.dark .bg-white {
+  background-color: #131B2E !important;
+  color: #F8FAFC;
+}
+
+html.dark .bg-gray-50,
+html.dark .bg-slate-50,
+html.dark .bg-\[\#F8FAFF\],
+html.dark .bg-slate-50\/50,
+html.dark .bg-slate-50\/70,
+html.dark .bg-slate-50\/90 {
+  background-color: #0B0F19 !important;
+}
+
+html.dark .bg-slate-100,
+html.dark .bg-gray-100 {
+  background-color: #1E293B !important;
+}
+
+html.dark .bg-blue-50,
+html.dark .bg-blue-50\/70,
+html.dark .bg-blue-50\/80,
+html.dark .bg-blue-50\/90 {
+  background-color: #1E293B !important;
+}
+
+/* Borders */
+html.dark .border-gray-200,
+html.dark .border-slate-200,
+html.dark .border-slate-100,
+html.dark .border-slate-200\/90,
+html.dark .border-slate-200\/80,
+html.dark .border-slate-300 {
+  border-color: #1F2937 !important;
+}
+
+/* Primary text & titles */
+html.dark .text-slate-900,
+html.dark .text-gray-900,
+html.dark .text-slate-800,
+html.dark .text-gray-800 {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-gray-700,
+html.dark .text-slate-600,
+html.dark .text-gray-600 {
+  color: #CBD5E1 !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-gray-500 {
+  color: #94A3B8 !important;
+}
+
+html.dark .text-slate-400,
+html.dark .text-gray-400 {
+  color: #64748B !important;
+}
+
+/* Form Inputs, Dropdowns, Selects */
+html.dark input,
+html.dark select,
+html.dark textarea {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: #334155 !important;
+}
+
+/* Dividers */
+html.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-gray-100 > :not([hidden]) ~ :not([hidden]),
+html.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #1E293B !important;
+}

@@ -35,9 +35,20 @@ export default function Profile({ activeChild }) {
         document.documentElement.classList.remove('dark');
         localStorage.setItem('portal_theme', 'light');
       }
+      window.dispatchEvent(new Event('theme_changed'));
       return next;
     });
   };
+
+  useEffect(() => {
+    const isDark = localStorage.getItem('portal_theme') === 'dark';
+    setIsDarkMode(isDark);
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState(null);
@@ -1001,36 +1012,71 @@ export default function Profile({ activeChild }) {
 
       </div>
 
-      {/* ── 3. DARK THEME TOGGLE CARD (MATCHING SCREENSHOT 1) ── */}
-      <div className={`rounded-3xl p-4 sm:p-5 border shadow-xs flex items-center justify-between transition-colors ${
-        isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/90'
+      {/* ── 3. DARK THEME TOGGLE CARD ── */}
+      <div className={`rounded-3xl p-4 sm:p-5 border shadow-xs flex items-center justify-between transition-all duration-300 ${
+        isDarkMode ? 'bg-slate-900/90 border-slate-700/80 shadow-slate-950/40' : 'bg-white border-slate-200/90'
       }`}>
-        <div className="flex items-center gap-3.5">
-          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs ${
-            isDarkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-50 text-blue-600'
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-sm transition-all duration-300 ${
+            isDarkMode 
+              ? 'bg-indigo-600 text-amber-300 shadow-indigo-500/20' 
+              : 'bg-gradient-to-br from-blue-50 to-indigo-50 text-blue-600 border border-blue-100'
           }`}>
-            <Sun className="w-5 h-5 stroke-[2.2]" />
+            {isDarkMode ? (
+              <Moon className="w-5 h-5 stroke-[2.4]" />
+            ) : (
+              <Sun className="w-5 h-5 stroke-[2.4]" />
+            )}
           </div>
-          <span className="text-sm sm:text-base font-black font-serif tracking-tight">
-            Dark Theme
-          </span>
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-2">
+              <span className={`text-sm sm:text-base font-black font-serif tracking-tight leading-tight ${
+                isDarkMode ? 'text-white' : 'text-slate-900'
+              }`}>
+                {isDarkMode ? 'Dark Theme' : 'Light Theme'}
+              </span>
+              <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                isDarkMode 
+                  ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-400/30' 
+                  : 'bg-blue-50 text-blue-700 border border-blue-200'
+              }`}>
+                {isDarkMode ? 'Dark Mode' : 'Default'}
+              </span>
+            </div>
+            <span className={`text-[11px] font-medium mt-0.5 truncate ${
+              isDarkMode ? 'text-slate-400' : 'text-slate-500'
+            }`}>
+              {isDarkMode ? 'Full app dark mode enabled' : 'Full app light mode enabled'}
+            </span>
+          </div>
         </div>
 
-        {/* Sleek Toggle Switch */}
+        {/* Premium Animated Toggle Switch */}
         <button
           type="button"
           onClick={toggleDarkTheme}
           role="switch"
           aria-checked={isDarkMode}
-          className={`relative inline-flex h-7 w-13 items-center rounded-full transition-colors cursor-pointer border-2 ${
-            isDarkMode ? 'bg-slate-950 border-white/30' : 'bg-slate-200 border-slate-300'
+          title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+          className={`relative inline-flex h-8 w-15 shrink-0 items-center rounded-full transition-all duration-300 cursor-pointer p-0.5 shadow-inner focus:outline-none ${
+            isDarkMode 
+              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 ring-2 ring-indigo-400/30' 
+              : 'bg-slate-200 hover:bg-slate-300 border border-slate-300/80'
           }`}
         >
           <span
-            className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
-              isDarkMode ? 'translate-x-6 bg-blue-500' : 'translate-x-1 bg-white'
+            className={`flex items-center justify-center h-7 w-7 transform rounded-full shadow-md transition-all duration-300 ${
+              isDarkMode 
+                ? 'translate-x-7 bg-white text-indigo-600 ring-2 ring-indigo-500/30' 
+                : 'translate-x-0.5 bg-white text-amber-500'
             }`}
-          />
+          >
+            {isDarkMode ? (
+              <Moon className="w-3.5 h-3.5 fill-indigo-600 stroke-indigo-600" />
+            ) : (
+              <Sun className="w-3.5 h-3.5 fill-amber-500 stroke-amber-500" />
+            )}
+          </span>
         </button>
       </div>
 
