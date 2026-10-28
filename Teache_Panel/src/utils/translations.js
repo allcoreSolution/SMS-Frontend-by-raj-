@@ -4,6 +4,8 @@ export const HINDI_MAP = {
   // Brand & Header
   "ALL CORE SOLUTION": "ऑल कोर सॉल्यूशन",
   "Teacher Portal": "शिक्षक पोर्टल",
+  "Staff Portal": "स्टाफ पोर्टल",
+  "Teacher & Staff Portal": "शिक्षक एवं स्टाफ पोर्टल",
   "Multi-School ERP": "मल्टी-स्कूल ईआरपी",
   "Command Center": "कमांड सेंटर",
   "Preview": "पूर्वावलोकन",

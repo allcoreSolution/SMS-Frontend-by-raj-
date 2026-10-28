@@ -212,6 +212,15 @@ const Sidebar = () => {
   const [openSection, setOpenSection] = useState('MAIN NAVIGATION');
   const [openSubmenu, setOpenSubmenu] = useState(null);
 
+  const userRole = (() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      return u?.role || 'Teacher';
+    } catch (_) {
+      return 'Teacher';
+    }
+  })();
+
   useEffect(() => {
     const p = location.pathname;
     if (p.startsWith('/live')) {
@@ -330,7 +339,9 @@ const Sidebar = () => {
             </div>
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[14px] font-bold text-white tracking-tight leading-tight truncate">{t('teacherPortal', 'Teacher Portal')}</span>
+            <span className="text-[14px] font-bold text-white tracking-tight leading-tight truncate">
+              {userRole === 'Staff' ? t('Staff Portal', 'Staff Portal') : t('Teacher Portal', 'Teacher Portal')}
+            </span>
             <span className="text-[10px] text-slate-400 font-medium truncate">Multi-School ERP v3.7</span>
           </div>
         </div>
