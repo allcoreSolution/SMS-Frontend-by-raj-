@@ -6,7 +6,8 @@ import {
   Laptop, Grid3X3, GraduationCap, ChevronRight, User, RefreshCw,
   Clock, CheckCircle2, AlertCircle, Megaphone, Info, Dumbbell,
   BadgeCheck, HelpCircle, X, ChevronLeft, CalendarDays, Star,
-  BookOpen, Sparkles, Award, Shield, FileText, Phone, School, QrCode
+  BookOpen, Sparkles, Award, Shield, FileText, Phone, School, QrCode,
+  Bus, Users, Handshake
 } from 'lucide-react';
 import { parentService } from '../api/parentService';
 
@@ -21,98 +22,197 @@ const getMediaUrl = (photoPath) => {
 };
 
 // 9 Quick Action Modules (3 Columns on Mobile Phones) with English & Hindi support
-const getQuickModules = (lang) => [
-  { 
-    key: 'timetable', 
-    label: lang === 'hi' ? 'समय सारणी' : 'Timetable', 
-    icon: Calendar, 
-    color: '#8B5CF6', 
-    bg: 'bg-purple-50 hover:bg-purple-100/80', 
-    iconBg: 'bg-purple-100 text-purple-600',
-    border: 'border-purple-200/80', 
-    route: '/timetable' 
-  },
-  { 
-    key: 'homework', 
-    label: lang === 'hi' ? 'गृहकार्य' : 'Homework', 
-    icon: ClipboardList, 
-    color: '#F97316', 
-    bg: 'bg-orange-50 hover:bg-orange-100/80', 
-    iconBg: 'bg-orange-100 text-orange-600',
-    border: 'border-orange-200/80', 
-    route: '/homework' 
-  },
-  { 
-    key: 'attendance', 
-    label: lang === 'hi' ? 'उपस्थिति' : 'Attendance', 
-    icon: CheckSquare, 
-    color: '#2563EB', 
-    bg: 'bg-blue-50 hover:bg-blue-100/80', 
-    iconBg: 'bg-blue-100 text-blue-600',
-    border: 'border-blue-200/80', 
-    route: '/attendance' 
-  },
-  { 
-    key: 'fees', 
-    label: lang === 'hi' ? 'फीस देय' : 'Fee Dues', 
-    icon: Wallet, 
-    color: '#10B981', 
-    bg: 'bg-emerald-50 hover:bg-emerald-100/80', 
-    iconBg: 'bg-emerald-100 text-emerald-600',
-    border: 'border-emerald-200/80', 
-    route: '/fee-payments' 
-  },
-  { 
-    key: 'onlineExams', 
-    label: lang === 'hi' ? 'ऑनलाइन परीक्षा' : 'CBT Exams', 
-    icon: Laptop, 
-    color: '#EC4899', 
-    bg: 'bg-pink-50 hover:bg-pink-100/80', 
-    iconBg: 'bg-pink-100 text-pink-600',
-    border: 'border-pink-200/80', 
-    route: '/online-exams' 
-  },
-  { 
-    key: 'onlineClasses', 
-    label: lang === 'hi' ? 'लाइव क्लास' : 'Live Class', 
-    icon: Video, 
-    color: '#EF4444', 
-    bg: 'bg-rose-50 hover:bg-rose-100/80', 
-    iconBg: 'bg-rose-100 text-rose-600',
-    border: 'border-rose-200/80', 
-    route: '/live-classes' 
-  },
-  { 
-    key: 'studyCenter', 
-    label: lang === 'hi' ? 'स्टडी नोट्स' : 'Study Notes', 
-    icon: BookOpen, 
-    color: '#06B6D4', 
-    bg: 'bg-cyan-50 hover:bg-cyan-100/80', 
-    iconBg: 'bg-cyan-100 text-cyan-600',
-    border: 'border-cyan-200/80', 
-    route: '/study-center' 
-  },
-  { 
-    key: 'noticeBoard', 
-    label: lang === 'hi' ? 'सूचनाएं' : 'Notices', 
-    icon: Megaphone, 
-    color: '#D97706', 
-    bg: 'bg-amber-50 hover:bg-amber-100/80', 
-    iconBg: 'bg-amber-100 text-amber-700',
-    border: 'border-amber-200/80', 
-    route: '/notice-board' 
-  },
-  { 
-    key: 'viewAll', 
-    label: lang === 'hi' ? 'सभी मॉड्यूल' : 'All Modules', 
-    icon: Grid3X3, 
-    color: '#2563EB', 
-    bg: 'bg-indigo-50 hover:bg-indigo-100/80', 
-    iconBg: 'bg-indigo-100 text-indigo-600',
-    border: 'border-indigo-200/80', 
-    route: '/all-modules' 
-  },
-];
+// 9 Quick Action Modules with English & Hindi support, tailored for Student vs Parent
+const getQuickModules = (lang, isStudent = false) => {
+  if (isStudent) {
+    return [
+      { 
+        key: 'timetable', 
+        label: lang === 'hi' ? 'समय सारणी' : 'Timetable', 
+        icon: Calendar, 
+        color: '#8B5CF6', 
+        bg: 'bg-purple-50 hover:bg-purple-100/80', 
+        iconBg: 'bg-purple-100 text-purple-600',
+        border: 'border-purple-200/80', 
+        route: '/timetable' 
+      },
+      { 
+        key: 'homework', 
+        label: lang === 'hi' ? 'गृहकार्य' : 'Homework', 
+        icon: ClipboardList, 
+        color: '#F97316', 
+        bg: 'bg-orange-50 hover:bg-orange-100/80', 
+        iconBg: 'bg-orange-100 text-orange-600',
+        border: 'border-orange-200/80', 
+        route: '/homework' 
+      },
+      { 
+        key: 'onlineExams', 
+        label: lang === 'hi' ? 'ऑनलाइन परीक्षा' : 'CBT Exams', 
+        icon: Laptop, 
+        color: '#EC4899', 
+        bg: 'bg-pink-50 hover:bg-pink-100/80', 
+        iconBg: 'bg-pink-100 text-pink-600',
+        border: 'border-pink-200/80', 
+        route: '/online-exams' 
+      },
+      { 
+        key: 'onlineClasses', 
+        label: lang === 'hi' ? 'लाइव क्लास' : 'Live Class', 
+        icon: Video, 
+        color: '#EF4444', 
+        bg: 'bg-rose-50 hover:bg-rose-100/80', 
+        iconBg: 'bg-rose-100 text-rose-600',
+        border: 'border-rose-200/80', 
+        route: '/live-classes' 
+      },
+      { 
+        key: 'studyCenter', 
+        label: lang === 'hi' ? 'स्टडी नोट्स' : 'Study Notes', 
+        icon: BookOpen, 
+        color: '#06B6D4', 
+        bg: 'bg-cyan-50 hover:bg-cyan-100/80', 
+        iconBg: 'bg-cyan-100 text-cyan-600',
+        border: 'border-cyan-200/80', 
+        route: '/study-center' 
+      },
+      { 
+        key: 'attendance', 
+        label: lang === 'hi' ? 'मेरी उपस्थिति' : 'My Attendance', 
+        icon: CheckSquare, 
+        color: '#2563EB', 
+        bg: 'bg-blue-50 hover:bg-blue-100/80', 
+        iconBg: 'bg-blue-100 text-blue-600',
+        border: 'border-blue-200/80', 
+        route: '/attendance' 
+      },
+      { 
+        key: 'library', 
+        label: lang === 'hi' ? 'लाइब्रेरी' : 'Library', 
+        icon: BookOpen, 
+        color: '#9333EA', 
+        bg: 'bg-purple-50 hover:bg-purple-100/80', 
+        iconBg: 'bg-purple-100 text-purple-600',
+        border: 'border-purple-200/80', 
+        route: '/library' 
+      },
+      { 
+        key: 'noticeBoard', 
+        label: lang === 'hi' ? 'सूचनाएं' : 'Notices', 
+        icon: Megaphone, 
+        color: '#D97706', 
+        bg: 'bg-amber-50 hover:bg-amber-100/80', 
+        iconBg: 'bg-amber-100 text-amber-700',
+        border: 'border-amber-200/80', 
+        route: '/notice-board' 
+      },
+      { 
+        key: 'viewAll', 
+        label: lang === 'hi' ? 'सभी मॉड्यूल' : 'All Modules', 
+        icon: Grid3X3, 
+        color: '#2563EB', 
+        bg: 'bg-indigo-50 hover:bg-indigo-100/80', 
+        iconBg: 'bg-indigo-100 text-indigo-600',
+        border: 'border-indigo-200/80', 
+        route: '/all-modules' 
+      },
+    ];
+  }
+
+  // Parent Quick Modules
+  return [
+    { 
+      key: 'fees', 
+      label: lang === 'hi' ? 'शुल्क भुगतान' : 'Pay Fees', 
+      icon: Wallet, 
+      color: '#10B981', 
+      bg: 'bg-emerald-50 hover:bg-emerald-100/80', 
+      iconBg: 'bg-emerald-100 text-emerald-600',
+      border: 'border-emerald-200/80', 
+      route: '/fee-payments' 
+    },
+    { 
+      key: 'attendance', 
+      label: lang === 'hi' ? 'उपस्थिति' : 'Attendance', 
+      icon: CheckSquare, 
+      color: '#2563EB', 
+      bg: 'bg-blue-50 hover:bg-blue-100/80', 
+      iconBg: 'bg-blue-100 text-blue-600',
+      border: 'border-blue-200/80', 
+      route: '/attendance' 
+    },
+    { 
+      key: 'timetable', 
+      label: lang === 'hi' ? 'समय सारणी' : 'Timetable', 
+      icon: Calendar, 
+      color: '#8B5CF6', 
+      bg: 'bg-purple-50 hover:bg-purple-100/80', 
+      iconBg: 'bg-purple-100 text-purple-600',
+      border: 'border-purple-200/80', 
+      route: '/timetable' 
+    },
+    { 
+      key: 'homework', 
+      label: lang === 'hi' ? 'गृहकार्य' : 'Homework', 
+      icon: ClipboardList, 
+      color: '#F97316', 
+      bg: 'bg-orange-50 hover:bg-orange-100/80', 
+      iconBg: 'bg-orange-100 text-orange-600',
+      border: 'border-orange-200/80', 
+      route: '/homework' 
+    },
+    { 
+      key: 'meetings', 
+      label: lang === 'hi' ? 'अभिभावक बैठक' : 'PTM / Meet', 
+      icon: Users, 
+      color: '#06B6D4', 
+      bg: 'bg-cyan-50 hover:bg-cyan-100/80', 
+      iconBg: 'bg-cyan-100 text-cyan-600',
+      border: 'border-cyan-200/80', 
+      route: '/meetings' 
+    },
+    { 
+      key: 'schoolVisit', 
+      label: lang === 'hi' ? 'विजिट पास' : 'Visit Pass', 
+      icon: QrCode, 
+      color: '#EC4899', 
+      bg: 'bg-pink-50 hover:bg-pink-100/80', 
+      iconBg: 'bg-pink-100 text-pink-600',
+      border: 'border-pink-200/80', 
+      route: '/school-visit' 
+    },
+    { 
+      key: 'transport', 
+      label: lang === 'hi' ? 'स्कूल बस' : 'Transport', 
+      icon: Bus, 
+      color: '#EF4444', 
+      bg: 'bg-rose-50 hover:bg-rose-100/80', 
+      iconBg: 'bg-rose-100 text-rose-600',
+      border: 'border-rose-200/80', 
+      route: '/transport' 
+    },
+    { 
+      key: 'noticeBoard', 
+      label: lang === 'hi' ? 'सूचनाएं' : 'Notices', 
+      icon: Megaphone, 
+      color: '#D97706', 
+      bg: 'bg-amber-50 hover:bg-amber-100/80', 
+      iconBg: 'bg-amber-100 text-amber-700',
+      border: 'border-amber-200/80', 
+      route: '/notice-board' 
+    },
+    { 
+      key: 'viewAll', 
+      label: lang === 'hi' ? 'सभी मॉड्यूल' : 'All Modules', 
+      icon: Grid3X3, 
+      color: '#2563EB', 
+      bg: 'bg-indigo-50 hover:bg-indigo-100/80', 
+      iconBg: 'bg-indigo-100 text-indigo-600',
+      border: 'border-indigo-200/80', 
+      route: '/all-modules' 
+    },
+  ];
+};
 
 const DAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const DAYS_HI = ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'];
@@ -192,8 +292,21 @@ export default function Dashboard({ activeChild, setActiveChild }) {
     return () => window.removeEventListener('portal_child_changed', handleChildChanged);
   }, [activeChild, m, y]);
 
+  // Detect role from localStorage
+  const storedUser = localStorage.getItem('parent_user');
+  let userRole = 'Parent';
+  let parentUserName = 'Parent';
+  if (storedUser) {
+    try {
+      const u = JSON.parse(storedUser);
+      userRole = u.role || 'Parent';
+      parentUserName = u.name || 'Parent';
+    } catch (e) {}
+  }
+  const isStudent = String(userRole).toLowerCase() === 'student';
+
   // Multilingual dynamic data
-  const quickModules = getQuickModules(currentLang);
+  const quickModules = getQuickModules(currentLang, isStudent);
   const DAYS = currentLang === 'hi' ? DAYS_HI : DAYS_EN;
   const MONTHS = currentLang === 'hi' ? MONTHS_HI : MONTHS_EN;
 
@@ -301,8 +414,12 @@ export default function Dashboard({ activeChild, setActiveChild }) {
         {/* ── LEFT / PRIMARY COLUMN (COMPACT & MOBILE-FIRST) ── */}
         <div className="col-span-12 lg:col-span-7 xl:col-span-6 flex flex-col gap-3 sm:gap-3.5">
 
-          {/* 1. COMPACT HERO BLUE GRADIENT ID CARD */}
-          <div className="w-full bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-white shadow-[0_6px_18px_-4px_rgba(37,99,235,0.3)] border border-white/20 relative overflow-hidden">
+          {/* 1. COMPACT HERO ID CARD (ADAPTIVE FOR STUDENT VS PARENT) */}
+          <div className={`w-full bg-gradient-to-r ${
+            isStudent 
+              ? 'from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] shadow-[0_6px_18px_-4px_rgba(37,99,235,0.3)]' 
+              : 'from-[#065F46] via-[#059669] to-[#047857] shadow-[0_6px_18px_-4px_rgba(5,150,105,0.3)]'
+          } rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-white border border-white/20 relative overflow-hidden`}>
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
 
             <div className="flex items-center gap-2.5 sm:gap-3.5 relative z-10">
@@ -322,28 +439,32 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 />
               </div>
 
-              {/* Student info */}
+              {/* Identity info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
-                  <p className="text-[10px] font-bold text-blue-200 tracking-wide uppercase">
-                    {currentLang === 'hi' ? 'स्वागत है 👋' : 'Welcome Back 👋'}
+                  <p className="text-[10px] font-bold text-blue-100 tracking-wide uppercase">
+                    {isStudent
+                      ? (currentLang === 'hi' ? '🎓 विद्यार्थी वर्कस्पेस' : '🎓 Student Workspace')
+                      : (currentLang === 'hi' ? '👨‍👩‍👧 अभिभावक डेस्क' : '👨‍👩‍👧 Parent Portal Desk')}
                   </p>
                   <button
                     onClick={() => setShowIdCardModal(true)}
-                    className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-[#1E3A8A] px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
+                    className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-slate-900 px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
                   >
                     {currentLang === 'hi' ? 'पहचान पत्र देखें →' : 'View ID Card →'}
                   </button>
                 </div>
                 <h2 className="text-base sm:text-xl font-black text-white font-serif tracking-tight truncate leading-tight mt-0.5">
-                  {student.name}
+                  {isStudent ? student.name : `${currentLang === 'hi' ? 'नमस्ते' : 'Welcome'}, ${parentUserName}`}
                 </h2>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
                   <span className="bg-white/20 backdrop-blur-xs text-white text-[9.5px] sm:text-[10.5px] font-bold px-2 py-0.2 rounded-full border border-white/20">
-                    {student.class}
+                    {isStudent ? student.class : `${currentLang === 'hi' ? 'वार्ड' : 'Ward'}: ${student.name} (${student.class})`}
                   </span>
-                  <span className="bg-[#10B981] text-white text-[9.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
-                    {currentLang === 'hi' ? 'सक्रिय विद्यार्थी ✅' : 'Active Student ✅'}
+                  <span className="bg-white/25 text-white text-[9.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
+                    {isStudent 
+                      ? (currentLang === 'hi' ? 'सक्रिय विद्यार्थी ✅' : 'Active Student ✅') 
+                      : (currentLang === 'hi' ? 'अभिभावक खाता ✅' : 'Parent Account ✅')}
                   </span>
                 </div>
               </div>

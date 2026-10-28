@@ -256,7 +256,10 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     }
   });
 
-  const parentName = parentProfile?.name || parentProfile?.fullName || 'Parent Account';
+  const isStudent = String(parentProfile?.role || '').toLowerCase() === 'student';
+  const parentName = isStudent 
+    ? (parentProfile?.name || 'Student Account')
+    : (parentProfile?.name || parentProfile?.fullName || 'Parent Account');
   const parentInitials = parentName
     ? parentName
         .split(' ')
@@ -264,7 +267,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         .map(w => w[0].toUpperCase())
         .slice(0, 2)
         .join('')
-    : 'PA';
+    : (isStudent ? 'ST' : 'PA');
 
   const langDropdownRef = useRef(null);
   const avatarDropdownRef = useRef(null);
@@ -528,52 +531,71 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 onSelect={handleNavSelect}
               />
 
-              {/* Viewing: child dropdown */}
-              <div className="flex flex-col w-full">
-                <button
-                  onClick={() => setChildOpen(!childOpen)}
-                  className={`w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 transition-all text-left group
-                    ${childOpen ? 'bg-white/10 border-l-[3px] border-pink-500 pl-2.5' : 'hover:bg-white/5 border-l-[3px] border-transparent pl-2.5'}`}
+              {/* Viewing: child dropdown (Parent) OR Student Account chip (Student) */}
+              {isStudent ? (
+                <div 
+                  className="flex items-center gap-3 pr-3 py-2 rounded-none mx-1 bg-white/5 border-l-[3px] border-blue-500 pl-2.5 mb-1" 
                   style={{ width: 'calc(100% - 8px)' }}
                 >
-                  <div className="w-7 h-7 bg-pink-500 rounded-none flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Users className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
+                  <div className="w-7 h-7 bg-blue-600 rounded-none flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <GraduationCap className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-[12px] font-semibold text-gray-200 block truncate">
-                      {getT('viewingChild', currentLang)}: {current.name.split(' ')[0]}
+                      {currentLang === 'hi' ? 'मेरा खाता' : 'My Account'}: {current.name.split(' ')[0]}
                     </span>
-                    <span className="text-[9.5px] text-pink-300/80 block truncate">
-                      {current.class}
+                    <span className="text-[9.5px] text-blue-300/80 block truncate">
+                      {current.class} &bull; {currentLang === 'hi' ? 'विद्यार्थी' : 'Student'}
                     </span>
                   </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${childOpen ? 'rotate-180' : ''}`} />
-                </button>
+                </div>
+              ) : (
+                <div className="flex flex-col w-full">
+                  <button
+                    onClick={() => setChildOpen(!childOpen)}
+                    className={`w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 transition-all text-left group
+                      ${childOpen ? 'bg-white/10 border-l-[3px] border-pink-500 pl-2.5' : 'hover:bg-white/5 border-l-[3px] border-transparent pl-2.5'}`}
+                    style={{ width: 'calc(100% - 8px)' }}
+                  >
+                    <div className="w-7 h-7 bg-pink-500 rounded-none flex items-center justify-center flex-shrink-0 shadow-sm">
+                      <Users className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[12px] font-semibold text-gray-200 block truncate">
+                        {getT('viewingChild', currentLang)}: {current.name.split(' ')[0]}
+                      </span>
+                      <span className="text-[9.5px] text-pink-300/80 block truncate">
+                        {current.class}
+                      </span>
+                    </div>
+                    <ChevronDown className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${childOpen ? 'rotate-180' : ''}`} />
+                  </button>
 
-                {childOpen && (
-                  <div className="flex flex-col ml-[42px] mt-1 space-y-1 relative mb-2">
-                    <div className="absolute left-[-16px] top-0 bottom-4 w-[1px] bg-white/10" />
-                    {childrenList.map(child => {
-                      const childId = child.id || child._id;
-                      const isSelected = activeChild === childId || activeChild === child.id || activeChild === child._id;
-                      return (
-                        <button
-                          key={childId}
-                          onClick={() => {
-                            if (setActiveChild) setActiveChild(childId);
-                            handleNavSelect();
-                          }}
-                          className={`w-full text-left flex items-center justify-between pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
-                            ${isSelected ? 'bg-white/10 text-white font-bold' : 'text-gray-400 hover:text-white'}`}
-                        >
-                          <span className="truncate">{child.name}</span>
-                          {isSelected && <span className="text-pink-400 text-xs font-bold">✓</span>}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                  {childOpen && (
+                    <div className="flex flex-col ml-[42px] mt-1 space-y-1 relative mb-2">
+                      <div className="absolute left-[-16px] top-0 bottom-4 w-[1px] bg-white/10" />
+                      {childrenList.map(child => {
+                        const childId = child.id || child._id;
+                        const isSelected = activeChild === childId || activeChild === child.id || activeChild === child._id;
+                        return (
+                          <button
+                            key={childId}
+                            onClick={() => {
+                              if (setActiveChild) setActiveChild(childId);
+                              handleNavSelect();
+                            }}
+                            className={`w-full text-left flex items-center justify-between pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
+                              ${isSelected ? 'bg-white/10 text-white font-bold' : 'text-gray-400 hover:text-white'}`}
+                          >
+                            <span className="truncate">{child.name}</span>
+                            {isSelected && <span className="text-pink-400 text-xs font-bold">✓</span>}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* My Profile */}
               <NavItem
@@ -687,15 +709,21 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </button>
             
             <div className="flex items-center gap-1 sm:gap-2 select-none min-w-0">
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-blue-600/10 text-[#2563EB] flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-blue-600/20 transition-colors">
-                <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg ${isStudent ? 'bg-blue-600/10 text-[#2563EB]' : 'bg-emerald-600/10 text-emerald-600'} flex items-center justify-center shrink-0 shadow-2xs group-hover:opacity-90 transition-colors`}>
+                {isStudent ? (
+                  <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+                ) : (
+                  <Users className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+                )}
               </div>
               <div className="flex flex-col min-w-0">
                 <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[65px] xs:max-w-[110px] sm:max-w-none">
-                  {currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal'}
+                  {isStudent 
+                    ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal')
+                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल' : 'Parent Portal')}
                 </span>
-                <span className="text-[8.5px] font-bold text-blue-600 tracking-widest uppercase hidden sm:block">
-                  ACS School
+                <span className={`text-[8.5px] font-bold tracking-widest uppercase hidden sm:block ${isStudent ? 'text-blue-600' : 'text-emerald-600'}`}>
+                  {isStudent ? (currentLang === 'hi' ? 'स्मार्ट कैम्पस' : 'Smart Campus') : (currentLang === 'hi' ? 'पैरेंट डेस्क' : 'Parent Desk')}
                 </span>
               </div>
             </div>
@@ -706,31 +734,52 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           
           {/* Active Ward / Child Switcher (Dual Portal) */}
           <div className="relative shrink-0" ref={topChildDropdownRef}>
-            <button
-              type="button"
-              id="student-switcher-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                setTopChildOpen(!topChildOpen);
-                setLangOpen(false);
-                setAvatarOpen(false);
-              }}
-              className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-xl bg-blue-50/90 hover:bg-blue-100 border border-blue-200/90 text-blue-950 transition-all text-xs font-bold cursor-pointer shadow-2xs shrink-0 active:scale-95"
-              title="Switch Student / Ward"
-            >
-              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center shrink-0 shadow-2xs pointer-events-none">
-                {current?.avatar || current?.name?.[0] || 'A'}
+            {isStudent ? (
+              /* Student Mode: Static Identity Chip (No multi-child dropdown) */
+              <div 
+                className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-xl bg-blue-50/90 border border-blue-200/90 text-blue-950 text-xs font-bold shadow-2xs shrink-0 select-none"
+                title={`Logged in as Student: ${current?.name || 'Student'}`}
+              >
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center shrink-0 shadow-2xs">
+                  {current?.avatar || current?.name?.[0] || 'S'}
+                </div>
+                <div className="flex flex-col text-left min-w-0">
+                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-900 leading-tight truncate max-w-[55px] xs:max-w-[85px] sm:max-w-[150px]">
+                    {current?.name || 'Aarav Sharma'}
+                  </span>
+                  <span className="text-[8px] sm:text-[8.5px] font-bold text-blue-600 truncate leading-tight hidden xs:block">
+                    {current?.class || 'Class I (A)'} &bull; {currentLang === 'hi' ? 'विद्यार्थी' : 'Student'}
+                  </span>
+                </div>
               </div>
-              <div className="flex flex-col text-left min-w-0 pointer-events-none">
-                <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-900 leading-tight truncate max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
-                  {current?.name || 'Aarav Sharma'}
-                </span>
-                <span className="text-[8px] sm:text-[8.5px] font-bold text-blue-600 truncate leading-tight hidden xs:block max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
-                  {current?.class || 'Class I (A)'}
-                </span>
-              </div>
-              <ChevronDown className={`w-3 h-3 text-blue-600 transition-transform shrink-0 pointer-events-none ${topChildOpen ? 'rotate-180' : ''}`} />
-            </button>
+            ) : (
+              /* Parent Mode: Multi-ward Switcher Button with Dropdown */
+              <button
+                type="button"
+                id="student-switcher-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTopChildOpen(!topChildOpen);
+                  setLangOpen(false);
+                  setAvatarOpen(false);
+                }}
+                className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-xl bg-emerald-50/90 hover:bg-emerald-100 border border-emerald-200/90 text-emerald-950 transition-all text-xs font-bold cursor-pointer shadow-2xs shrink-0 active:scale-95"
+                title="Switch Ward / विद्यार्थी चुनें"
+              >
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-emerald-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center shrink-0 shadow-2xs pointer-events-none">
+                  {current?.avatar || current?.name?.[0] || 'A'}
+                </div>
+                <div className="flex flex-col text-left min-w-0 pointer-events-none">
+                  <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-900 leading-tight truncate max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
+                    {current?.name || 'Aarav Sharma'}
+                  </span>
+                  <span className="text-[8px] sm:text-[8.5px] font-bold text-emerald-700 truncate leading-tight hidden xs:block max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
+                    {current?.class || 'Class I (A)'}
+                  </span>
+                </div>
+                <ChevronDown className={`w-3 h-3 text-emerald-700 transition-transform shrink-0 pointer-events-none ${topChildOpen ? 'rotate-180' : ''}`} />
+              </button>
+            )}
 
             {/* Mobile backdrop for student switcher */}
             {topChildOpen && (
@@ -989,23 +1038,27 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   className="fixed sm:absolute sm:top-full mt-1.5 right-2 sm:right-0 max-w-sm w-64 sm:w-72 bg-white border border-slate-200/90 shadow-2xl rounded-2xl z-[100] p-3 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 sm:zoom-in-100 duration-150"
                 >
                   <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-                    <div className="w-11 h-11 rounded-full border border-blue-200 overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
+                    <div className={`w-11 h-11 rounded-full border ${isStudent ? 'border-blue-200 bg-blue-50' : 'border-emerald-200 bg-emerald-50'} overflow-hidden flex items-center justify-center shrink-0`}>
                       <img 
-                        src={getMediaUrl(current?.photo) || '/kabir_singh.png'}
-                        alt={current?.name || 'Student'}
+                        src={getMediaUrl(isStudent ? current?.photo : null) || '/kabir_singh.png'}
+                        alt={isStudent ? current?.name : parentName}
                         className="w-full h-full object-cover"
                         onError={(e) => { e.target.src = '/kabir_singh.png'; }}
                       />
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-extrabold text-slate-900 text-sm leading-tight truncate">
-                        {current?.name || 'Aarav Sharma'}
+                        {isStudent ? (current?.name || 'Aarav Sharma') : parentName}
                       </span>
-                      <span className="text-[11px] text-blue-600 font-bold mt-0.5 truncate">
-                        {current?.class || 'Class I (A)'}
+                      <span className={`text-[11px] font-bold mt-0.5 truncate ${isStudent ? 'text-blue-600' : 'text-emerald-700'}`}>
+                        {isStudent 
+                          ? `${current?.class || 'Class I (A)'}` 
+                          : (currentLang === 'hi' ? '👨‍👩‍👧 अभिभावक (Parent)' : '👨‍👩‍👧 Parent / Guardian')}
                       </span>
-                      <span className="text-[10px] text-slate-400 font-medium">
-                        Admn: {current?.admn || 'YIS-2024-101'}
+                      <span className="text-[10px] text-slate-500 font-medium truncate">
+                        {isStudent 
+                          ? `Admn: ${current?.admn || 'YIS-2024-101'}` 
+                          : `${currentLang === 'hi' ? 'वार्ड' : 'Ward'}: ${current?.name || 'Student'}`}
                       </span>
                     </div>
                   </div>
@@ -1030,8 +1083,16 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                       }}
                       className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-blue-700 hover:bg-blue-50/80 rounded-xl transition-colors cursor-pointer"
                     >
-                      <GraduationCap className="w-4 h-4 text-emerald-600" />
-                      <span>{currentLang === 'hi' ? 'विद्यार्थी डैशबोर्ड' : 'Student Dashboard'}</span>
+                      {isStudent ? (
+                        <GraduationCap className="w-4 h-4 text-blue-600" />
+                      ) : (
+                        <Users className="w-4 h-4 text-emerald-600" />
+                      )}
+                      <span>
+                        {isStudent
+                          ? (currentLang === 'hi' ? 'विद्यार्थी डैशबोर्ड' : 'Student Dashboard')
+                          : (currentLang === 'hi' ? 'अभिभावक डैशबोर्ड' : 'Parent Dashboard')}
+                      </span>
                     </button>
                     <button
                       type="button"

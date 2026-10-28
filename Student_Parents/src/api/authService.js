@@ -16,7 +16,8 @@ export const authService = {
           || (response.data.data.children && response.data.data.children[0]) 
           || response.data.data._id;
         if (activeId) {
-          localStorage.setItem('active_child', activeId);
+          const cleanId = typeof activeId === 'object' ? (activeId._id || activeId.id || String(activeId)) : String(activeId);
+          localStorage.setItem('active_child', cleanId);
         }
       }
       return response.data;

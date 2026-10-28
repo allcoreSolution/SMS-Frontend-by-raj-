@@ -20,6 +20,7 @@ export default function Login() {
   const handleRoleChange = (role) => {
     setRoleTab(role);
     setError('');
+    localStorage.removeItem('active_child');
     if (role === 'student') {
       setUserId('YIS-2024-101');
     } else {
@@ -33,6 +34,9 @@ export default function Login() {
     setLoading(true);
 
     try {
+      localStorage.removeItem('active_child');
+      localStorage.removeItem('parent_user');
+      localStorage.removeItem('parent_token');
       const res = await authService.login({ userId, password, role: roleTab });
       if (res.success) {
         navigate('/dashboard');
@@ -190,7 +194,7 @@ export default function Login() {
           {/* Quick Demo Fill Button */}
           <div className="mb-4 flex items-center justify-between p-2.5 bg-blue-50/70 border border-blue-200/60 rounded-2xl text-xs">
             <div className="text-[11px] text-blue-950 font-medium">
-              Demo ID: <strong className="font-bold text-blue-700">{roleTab === 'student' ? 'STU-2024-101' : 'P-1920-KABIR'}</strong>
+              Demo ID: <strong className="font-bold text-blue-700">{roleTab === 'student' ? 'YIS-2024-101 (Aarav - Student)' : 'P-1920-KABIR (Vikram - Parent)'}</strong>
             </div>
             <button
               type="button"
