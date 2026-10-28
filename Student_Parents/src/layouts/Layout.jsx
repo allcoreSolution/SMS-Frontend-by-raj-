@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { parentService } from '../api/parentService';
 import { useLanguage } from '../context/LanguageContext';
@@ -44,74 +44,134 @@ const parentPortalScreens = [
 ];
 
 // Each item: key, label, icon, iconBg (colored box), route, subItems
-const navSectionsConfig = [
-  { 
-    titleKey: 'portalNav',
-    defaultTitle: 'PORTAL NAVIGATION',
-    items: [
-      { key: 'dashboard',  label: 'Dashboard',     icon: LayoutDashboard, iconBg: 'bg-yellow-500', route: '/dashboard'  },
-      { key: 'myProfile',  label: 'My Profile',    icon: UserCog,         iconBg: 'bg-purple-500', route: '/my-profile' },
-    ]
-  },
-  { 
-    titleKey: 'academics',
-    defaultTitle: 'ACADEMICS',
-    items: [
-      { key: 'calendar',         label: 'Calendar',         icon: Calendar,       iconBg: 'bg-orange-500', route: '/calendar'       },
-      { key: 'timetable',        label: 'Timetable',        icon: LayoutGrid,     iconBg: 'bg-pink-500',   route: '/timetable'      },
-      { key: 'attendance',       label: 'Attendance',       icon: ClipboardCheck, iconBg: 'bg-green-500',  route: '/attendance'     },
-      { key: 'exams',            label: 'Exams & Reports',  icon: GraduationCap,  iconBg: 'bg-purple-500', route: '/exams'          },
-      { key: 'meetings',         label: 'Meetings',         icon: Handshake,      iconBg: 'bg-blue-400',   route: '/meetings'       },
-      { key: 'evaluatedPapers',  label: 'Evaluated Papers', icon: PenLine,        iconBg: 'bg-indigo-500', route: '/exams'          },
-      { key: 'onlineExams',      label: 'Online Exams',     icon: Monitor,        iconBg: 'bg-teal-500',   route: '/online-exams'   },
-      { key: 'homework',         label: 'Homework',         icon: PenLine,        iconBg: 'bg-yellow-500', route: '/homework'       },
-      { key: 'studyCenter',      label: 'Study Center',     icon: BookMarked,     iconBg: 'bg-red-500',    subItems: [
-         { key: 'classwork',   label: 'Classwork & Logbook', route: '/classwork' },
-         { key: 'syllabus',    label: 'Syllabus & Materials', route: '/study-center' },
-         { key: 'liveClasses', label: 'Live Classes', route: '/live-classes' }
-      ]},
-    ]
-  },
-  { 
-    titleKey: 'financials',
-    defaultTitle: 'FINANCIALS',
-    items: [
-      { key: 'feePayments',  label: 'Fee Payments', icon: Wallet,      iconBg: 'bg-cyan-500',   route: '/fee-payments' },
-      { key: 'transactions', label: 'Transactions', icon: RefreshCcw,  iconBg: 'bg-orange-400', route: '/transactions'  },
-    ]
-  },
-  { 
-    titleKey: 'communications',
-    defaultTitle: 'COMMUNICATIONS',
-    items: [
-      { key: 'noticeBoard', label: 'Notice Board', icon: Megaphone,      iconBg: 'bg-green-500',  route: '/notice-board' },
-      { key: 'sms',         label: 'SMS',          icon: MessageCircle,  iconBg: 'bg-purple-500', route: '/sms'          },
-      { key: 'whatsapp',    label: 'WhatsApp',     icon: Phone,          iconBg: 'bg-blue-500',   route: '/whatsapp'     },
-      { key: 'email',       label: 'Email',        icon: Mail,           iconBg: 'bg-green-600',  route: '/email'        },
-    ]
-  },
-  { 
-    titleKey: 'services',
-    defaultTitle: 'SERVICES & RESOURCES',
-    items: [
-      { key: 'transport',     label: 'Transport',       icon: Bus,          iconBg: 'bg-red-500',    route: '/transport'      },
-      { key: 'library',       label: 'Library',         icon: BookOpen,     iconBg: 'bg-purple-600', route: '/library'        },
-      { key: 'hostel',        label: 'Hostel',          icon: Building2,    iconBg: 'bg-teal-500',   route: '/hostel'         },
-      { key: 'healthRecords', label: 'Health Records',  icon: HeartPulse,   iconBg: 'bg-orange-500', route: '/health-records' },
-      { key: 'documents',     label: 'Documents',       icon: FolderOpen,   iconBg: 'bg-pink-500',   route: '/documents'      },
-      { key: 'gallery',       label: 'Gallery',         icon: Image,        iconBg: 'bg-green-500',  route: '/gallery'        },
-      { key: 'schoolVisit',   label: 'School Visit',    icon: CalendarCheck,iconBg: 'bg-purple-400', route: '/school-visit'   },
-      { key: 'leaveApply',    label: 'Leave Apply',     icon: FileWarning,  iconBg: 'bg-yellow-500', route: '/leave-management' },
-    ]
-  },
-  { 
-    titleKey: 'helpSupport',
-    defaultTitle: 'HELP & SUPPORT',
-    items: [
-      { key: 'aiAssistant', label: 'AI Assistant', icon: Bot, iconBg: 'bg-green-500', route: '/ai-assistant' },
-    ]
-  },
-];
+// Role-Tailored Navigation Config: Student vs Parent
+const getNavSectionsConfig = (isStudent = false) => {
+  if (isStudent) {
+    // ── STUDENT NAVIGATION (Academics, Homework, Tests & Learning) ──
+    return [
+      { 
+        titleKey: 'portalNav',
+        defaultTitle: 'STUDENT WORKSPACE',
+        items: [
+          { key: 'dashboard',  label: 'Dashboard',     icon: LayoutDashboard, iconBg: 'bg-yellow-500', route: '/dashboard'  },
+          { key: 'myProfile',  label: 'My Profile',    icon: UserCog,         iconBg: 'bg-purple-500', route: '/my-profile' },
+        ]
+      },
+      { 
+        titleKey: 'academics',
+        defaultTitle: 'ACADEMICS & LEARNING',
+        items: [
+          { key: 'calendar',         label: 'Calendar',         icon: Calendar,       iconBg: 'bg-orange-500', route: '/calendar'       },
+          { key: 'timetable',        label: 'Timetable',        icon: LayoutGrid,     iconBg: 'bg-pink-500',   route: '/timetable'      },
+          { key: 'attendance',       label: 'My Attendance',    icon: ClipboardCheck, iconBg: 'bg-green-500',  route: '/attendance'     },
+          { key: 'homework',         label: 'Homework Submit',  icon: PenLine,        iconBg: 'bg-yellow-500', route: '/homework'       },
+          { key: 'onlineExams',      label: 'Online CBT Exams', icon: Monitor,        iconBg: 'bg-teal-500',   route: '/online-exams'   },
+          { key: 'studyCenter',      label: 'Study Center',     icon: BookMarked,     iconBg: 'bg-red-500',    subItems: [
+             { key: 'classwork',   label: 'Classwork & Logbook', route: '/classwork' },
+             { key: 'syllabus',    label: 'Syllabus & Materials', route: '/study-center' },
+             { key: 'liveClasses', label: 'Live Classes', route: '/live-classes' }
+          ]},
+          { key: 'exams',            label: 'Exams & Results',  icon: GraduationCap,  iconBg: 'bg-purple-500', route: '/exams'          },
+          { key: 'evaluatedPapers',  label: 'Evaluated Papers', icon: PenLine,        iconBg: 'bg-indigo-500', route: '/exams'          },
+        ]
+      },
+      { 
+        titleKey: 'services',
+        defaultTitle: 'STUDENT SERVICES',
+        items: [
+          { key: 'library',       label: 'Library Books',   icon: BookOpen,     iconBg: 'bg-purple-600', route: '/library'        },
+          { key: 'transport',     label: 'School Bus',      icon: Bus,          iconBg: 'bg-red-500',    route: '/transport'      },
+          { key: 'hostel',        label: 'Hostel',          icon: Building2,    iconBg: 'bg-teal-500',   route: '/hostel'         },
+          { key: 'healthRecords', label: 'Health Records',  icon: HeartPulse,   iconBg: 'bg-orange-500', route: '/health-records' },
+          { key: 'documents',     label: 'My Documents',    icon: FolderOpen,   iconBg: 'bg-pink-500',   route: '/documents'      },
+          { key: 'gallery',       label: 'School Gallery',  icon: Image,        iconBg: 'bg-green-500',  route: '/gallery'        },
+          { key: 'leaveApply',    label: 'Leave Apply',     icon: FileWarning,  iconBg: 'bg-yellow-500', route: '/leave-management' },
+        ]
+      },
+      { 
+        titleKey: 'communications',
+        defaultTitle: 'COMMUNICATIONS',
+        items: [
+          { key: 'noticeBoard', label: 'Notice Board', icon: Megaphone,      iconBg: 'bg-green-500',  route: '/notice-board' },
+        ]
+      },
+      { 
+        titleKey: 'helpSupport',
+        defaultTitle: 'HELP & SUPPORT',
+        items: [
+          { key: 'aiAssistant', label: 'AI Study Assistant', icon: Bot, iconBg: 'bg-green-500', route: '/ai-assistant' },
+        ]
+      },
+    ];
+  }
+
+  // ── PARENT NAVIGATION (Monitoring, Fees, Safety & PTM - Strictly Parent Level) ──
+  return [
+    { 
+      titleKey: 'portalNav',
+      defaultTitle: 'PARENT PORTAL',
+      items: [
+        { key: 'dashboard',  label: 'Dashboard',     icon: LayoutDashboard, iconBg: 'bg-yellow-500', route: '/dashboard'  },
+        { key: 'myProfile',  label: 'My Profile',    icon: UserCog,         iconBg: 'bg-purple-500', route: '/my-profile' },
+      ]
+    },
+    { 
+      titleKey: 'academics',
+      defaultTitle: 'ACADEMIC MONITORING',
+      items: [
+        { key: 'calendar',         label: 'Calendar',         icon: Calendar,       iconBg: 'bg-orange-500', route: '/calendar'       },
+        { key: 'timetable',        label: 'Timetable',        icon: LayoutGrid,     iconBg: 'bg-pink-500',   route: '/timetable'      },
+        { key: 'attendance',       label: 'Attendance Monitor', icon: ClipboardCheck, iconBg: 'bg-green-500', route: '/attendance'     },
+        { key: 'exams',            label: 'Exams & Reports',  icon: GraduationCap,  iconBg: 'bg-purple-500', route: '/exams'          },
+        { key: 'meetings',         label: 'PTM Meetings',     icon: Handshake,      iconBg: 'bg-blue-400',   route: '/meetings'       },
+        { key: 'homework',         label: 'Homework Status',  icon: PenLine,        iconBg: 'bg-yellow-500', route: '/homework'       },
+        { key: 'studyCenter',      label: 'Syllabus & Logbook', icon: BookMarked,   iconBg: 'bg-red-500',    subItems: [
+           { key: 'classwork',   label: 'Classwork & Logbook', route: '/classwork' },
+           { key: 'syllabus',    label: 'Syllabus & Materials', route: '/study-center' },
+        ]},
+      ]
+    },
+    { 
+      titleKey: 'financials',
+      defaultTitle: 'FINANCIALS & DUES',
+      items: [
+        { key: 'feePayments',  label: 'Fee Payments', icon: Wallet,      iconBg: 'bg-cyan-500',   route: '/fee-payments' },
+        { key: 'transactions', label: 'Transactions & Receipts', icon: RefreshCcw, iconBg: 'bg-orange-400', route: '/transactions' },
+      ]
+    },
+    { 
+      titleKey: 'services',
+      defaultTitle: 'SERVICES & SAFETY',
+      items: [
+        { key: 'schoolVisit',   label: 'School Visit Pass', icon: CalendarCheck,iconBg: 'bg-purple-400', route: '/school-visit'   },
+        { key: 'transport',     label: 'Bus Tracking',    icon: Bus,          iconBg: 'bg-red-500',    route: '/transport'      },
+        { key: 'leaveApply',    label: 'Leave Apply',     icon: FileWarning,  iconBg: 'bg-yellow-500', route: '/leave-management' },
+        { key: 'healthRecords', label: 'Health Records',  icon: HeartPulse,   iconBg: 'bg-orange-500', route: '/health-records' },
+        { key: 'documents',     label: 'Documents & TC',  icon: FolderOpen,   iconBg: 'bg-pink-500',   route: '/documents'      },
+        { key: 'library',       label: 'Library Status',  icon: BookOpen,     iconBg: 'bg-purple-600', route: '/library'        },
+        { key: 'hostel',        label: 'Hostel Info',     icon: Building2,    iconBg: 'bg-teal-500',   route: '/hostel'         },
+        { key: 'gallery',       label: 'Gallery',         icon: Image,        iconBg: 'bg-green-500',  route: '/gallery'        },
+      ]
+    },
+    { 
+      titleKey: 'communications',
+      defaultTitle: 'COMMUNICATIONS',
+      items: [
+        { key: 'noticeBoard', label: 'Notice Board', icon: Megaphone,      iconBg: 'bg-green-500',  route: '/notice-board' },
+        { key: 'whatsapp',    label: 'WhatsApp Desk', icon: Phone,         iconBg: 'bg-blue-500',   route: '/whatsapp'     },
+        { key: 'email',       label: 'School Email',  icon: Mail,          iconBg: 'bg-green-600',  route: '/email'        },
+        { key: 'sms',         label: 'SMS Alerts',    icon: MessageCircle,  iconBg: 'bg-purple-500', route: '/sms'          },
+      ]
+    },
+    { 
+      titleKey: 'helpSupport',
+      defaultTitle: 'HELP & SUPPORT',
+      items: [
+        { key: 'aiAssistant', label: 'AI Parent Desk', icon: Bot, iconBg: 'bg-green-500', route: '/ai-assistant' },
+      ]
+    },
+  ];
+};
 
 function NavItem({ item, active, navigate, location, lang, onSelect }) {
   const [open, setOpen] = useState(false);
@@ -268,6 +328,8 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         .slice(0, 2)
         .join('')
     : (isStudent ? 'ST' : 'PA');
+
+  const navSectionsConfig = useMemo(() => getNavSectionsConfig(isStudent), [isStudent]);
 
   const langDropdownRef = useRef(null);
   const avatarDropdownRef = useRef(null);
