@@ -7,7 +7,8 @@ import {
   MessageSquare, 
   Grid,
   FileText,
-  DollarSign
+  DollarSign,
+  Award
 } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -45,6 +46,11 @@ export default function MobileBottomNav() {
       exact: true
     },
     {
+      name: t('officeServices', 'Office & TC'),
+      path: '/certificates',
+      icon: Award
+    },
+    {
       name: t('leave', 'Leave'),
       path: '/leave',
       icon: FileText
@@ -53,11 +59,6 @@ export default function MobileBottomNav() {
       name: t('loans', 'Loans'),
       path: '/loans',
       icon: DollarSign
-    },
-    {
-      name: t('messages', 'Messages'),
-      path: '/messages',
-      icon: MessageSquare
     }
   ];
 
