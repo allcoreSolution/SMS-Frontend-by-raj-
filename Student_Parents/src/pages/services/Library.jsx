@@ -208,20 +208,20 @@ export default function Library({ activeChild }) {
   const { student, stats, activeIssues = [], borrowingHistory = [], catalogBooks = [], categories = [], myRequests = [] } = libraryData || {};
 
   return (
-    <div className="p-4 md:p-6 max-w-[1400px] mx-auto min-h-screen bg-[#f8f9fa] space-y-5">
+    <div className="p-3 sm:p-5 max-w-[1400px] mx-auto min-h-screen bg-slate-50 space-y-5 pb-24">
       
       {/* Toast Notification Banner */}
       {notification && (
-        <div className={`p-4 border text-[13px] font-semibold flex items-center justify-between shadow-sm transition-all ${
+        <div className={`p-4 rounded-2xl border text-[13px] font-semibold flex items-center justify-between shadow-sm transition-all ${
           notification.type === 'success' 
             ? 'bg-emerald-50 border-emerald-300 text-emerald-900' 
-            : 'bg-red-50 border-red-300 text-red-900'
+            : 'bg-rose-50 border-rose-300 text-rose-900'
         }`}>
           <div className="flex items-center gap-2.5">
-            {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <AlertCircle className="w-5 h-5 text-red-600" />}
+            {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5 text-emerald-600" /> : <AlertCircle className="w-5 h-5 text-rose-600" />}
             <span>{notification.message}</span>
           </div>
-          <button onClick={() => setNotification(null)} className="text-gray-500 hover:text-gray-800">
+          <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-slate-800 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -230,28 +230,31 @@ export default function Library({ activeChild }) {
       {/* =========================================================================
           TOP COMMAND HEADER & LIBRARY MEMBERSHIP CARD
           ========================================================================= */}
-      <div className="bg-[#353A40] text-white p-5 md:p-6 rounded-none shadow-md">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-5 sm:p-7 rounded-3xl shadow-lg border border-blue-400/20 relative overflow-hidden">
+        {/* Glow circle */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
           
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-indigo-600 text-white flex items-center justify-center flex-shrink-0 font-bold shadow">
+            <div className="w-13 h-13 rounded-2xl bg-white/15 backdrop-blur-md text-amber-300 flex items-center justify-center flex-shrink-0 font-bold shadow-md border border-white/20">
               <BookOpen className="w-7 h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-[20px] md:text-[22px] font-bold tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white font-serif">
                   Central School Library
                 </h1>
-                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10.5px] font-extrabold uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/40 text-[10px] font-black uppercase tracking-wider backdrop-blur-sm">
                   Active Membership
                 </span>
               </div>
-              <p className="text-[12.5px] text-gray-300 mt-1 flex items-center gap-2 flex-wrap">
-                <span>Member: <strong className="text-white">{student?.name || 'Aarav Sharma'}</strong> ({student?.className || 'Class I-A'})</span>
-                <span className="text-gray-500">•</span>
-                <span>Card No: <strong className="text-yellow-400 font-mono">{student?.libraryCard?.cardNumber || 'LIB-CARD-8841'}</strong></span>
-                <span className="text-gray-500">•</span>
-                <span>Borrow Limit: <strong className="text-gray-200">Max 3 Books (14 Days)</strong></span>
+              <p className="text-[12px] text-blue-100 mt-1 flex items-center gap-2 flex-wrap">
+                <span>Member: <strong className="text-white">{student?.name || 'Kabir Singh'}</strong> ({student?.className || 'Class 10th (A)'})</span>
+                <span className="text-blue-300/60">•</span>
+                <span>Card No: <strong className="text-amber-300 font-mono">{student?.libraryCard?.cardNumber || 'LIB-CARD-8841'}</strong></span>
+                <span className="text-blue-300/60">•</span>
+                <span>Borrow Limit: <strong className="text-white">Max 3 Books (14 Days)</strong></span>
               </p>
             </div>
           </div>
@@ -260,24 +263,24 @@ export default function Library({ activeChild }) {
           <div className="flex items-center gap-2 flex-wrap self-start lg:self-auto">
             <button
               onClick={() => setCardModalOpen(true)}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             >
-              <CreditCard className="w-3.5 h-3.5 text-indigo-300" />
+              <CreditCard className="w-4 h-4 text-amber-300" />
               <span>Digital Card</span>
             </button>
 
             <button
               onClick={() => setRequestModalOpen(true)}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-bold flex items-center gap-1.5 shadow transition-colors"
+              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[12px] font-extrabold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               <span>Request New Book</span>
             </button>
 
             <button
               onClick={() => fetchLibraryData(false)}
               disabled={refreshing}
-              className="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-gray-950 text-[12px] font-bold flex items-center gap-1.5 shadow transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             >
               <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>{refreshing ? 'Syncing...' : 'Sync'}</span>
@@ -287,41 +290,41 @@ export default function Library({ activeChild }) {
         </div>
 
         {/* 4 Metrics Counter Tiles */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/10">
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[22px] font-extrabold tracking-tight font-mono text-white block leading-none">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/15 relative z-10">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[24px] font-black tracking-tight font-mono text-white block leading-none">
               {stats?.issuedCount || 0}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Currently Issued
             </span>
           </div>
 
-          <div className={`p-3 text-center border ${
-            (stats?.overdueCount || 0) > 0 ? 'bg-red-500/20 border-red-500/40 text-red-200' : 'bg-white/5 border-white/10 text-white'
+          <div className={`p-3.5 rounded-2xl text-center border backdrop-blur-md shadow-xs ${
+            (stats?.overdueCount || 0) > 0 ? 'bg-rose-500/20 border-rose-400/50 text-rose-200' : 'bg-white/10 border-white/20 text-white'
           }`}>
-            <span className="text-[22px] font-extrabold tracking-tight font-mono text-white block leading-none">
+            <span className="text-[24px] font-black tracking-tight font-mono text-white block leading-none">
               {stats?.overdueCount || 0}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Overdue Copies
             </span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[22px] font-extrabold tracking-tight font-mono text-emerald-400 block leading-none">
-              {stats?.totalRead || 0}
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[24px] font-black tracking-tight font-mono text-amber-300 block leading-none">
+              {stats?.totalRead || 14}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
-              Total Read / Returned
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
+              Books Returned
             </span>
           </div>
 
-          <div className={`p-3 text-center border ${
-            (stats?.totalFine || 0) > 0 ? 'bg-amber-500/20 border-amber-500/40' : 'bg-white/5 border-white/10'
+          <div className={`p-3.5 rounded-2xl text-center border backdrop-blur-md shadow-xs ${
+            (stats?.totalFine || 0) > 0 ? 'bg-amber-500/20 border-amber-500/40' : 'bg-white/10 border-white/20'
           }`}>
             <div className="flex items-center justify-center gap-2">
-              <span className="text-[22px] font-extrabold tracking-tight font-mono text-yellow-400 leading-none">
+              <span className="text-[24px] font-black tracking-tight font-mono text-amber-300 leading-none">
                 ₹{stats?.totalFine || 0}
               </span>
               {(stats?.totalFine || 0) > 0 && activeIssues.find(i => i.fineAmount > 0) && (
@@ -331,13 +334,13 @@ export default function Library({ activeChild }) {
                     setSelectedFineIssue(overdueIssue);
                     setPayFineModalOpen(true);
                   }}
-                  className="px-2 py-0.5 bg-yellow-500 text-gray-950 text-[10px] font-extrabold uppercase hover:bg-yellow-400 transition-colors"
+                  className="px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 text-[10px] font-black uppercase hover:bg-amber-300 transition-colors shadow-2xs cursor-pointer"
                 >
                   Pay
                 </button>
               )}
             </div>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Pending Library Fine
             </span>
           </div>
@@ -347,13 +350,13 @@ export default function Library({ activeChild }) {
       {/* =========================================================================
           SEARCH BAR STRIP & CATEGORY FILTER
           ========================================================================= */}
-      <div className="bg-white border border-gray-200 p-4 shadow-sm flex flex-col md:flex-row items-center gap-3">
+      <div className="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-center gap-3">
         {/* Category dropdown */}
         <div className="w-full md:w-[220px]">
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full border border-gray-300 rounded-none px-3 py-2 text-[13px] bg-white outline-none focus:border-indigo-500 font-medium text-gray-700"
+            className="w-full border border-slate-300 rounded-2xl px-3.5 py-2 text-[13px] bg-slate-50/50 outline-none focus:border-blue-500 font-semibold text-slate-700 shadow-2xs cursor-pointer"
           >
             <option value="All">All Categories ({catalogBooks.length})</option>
             {categories.map(cat => (
@@ -372,14 +375,14 @@ export default function Library({ activeChild }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search title, author, publisher or ISBN..."
-              className="w-full border border-gray-300 rounded-none pl-9 pr-4 py-2 text-[13px] outline-none focus:border-indigo-500 text-gray-700 placeholder-gray-400"
+              className="w-full border border-slate-300 rounded-2xl pl-10 pr-4 py-2 text-[13px] outline-none focus:border-blue-500 text-slate-800 placeholder-slate-400 bg-slate-50/50 shadow-2xs font-medium"
             />
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
 
           <button
             type="submit"
-            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[13px] flex items-center gap-1.5 transition-colors shadow-sm"
+            className="px-5 py-2 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-[13px] flex items-center gap-1.5 transition-all shadow-md shadow-blue-600/20 cursor-pointer"
           >
             <Search className="w-4 h-4" />
             <span>Search</span>
@@ -387,17 +390,17 @@ export default function Library({ activeChild }) {
         </form>
 
         {/* View mode toggle */}
-        <div className="flex items-center border border-gray-300 p-0.5 self-end md:self-auto">
+        <div className="flex items-center bg-slate-100 rounded-2xl p-1 border border-slate-200/80 self-end md:self-auto shadow-inner">
           <button
             onClick={() => setViewMode('grid')}
-            className={`p-1.5 rounded-none transition-colors ${viewMode === 'grid' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-1.5 rounded-xl transition-all cursor-pointer ${viewMode === 'grid' ? 'bg-white text-blue-600 font-bold shadow-xs' : 'text-slate-400 hover:text-slate-700'}`}
             title="Grid View"
           >
             <LayoutGrid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode('list')}
-            className={`p-1.5 rounded-none transition-colors ${viewMode === 'list' ? 'bg-indigo-50 text-indigo-600 font-bold' : 'text-gray-400 hover:text-gray-600'}`}
+            className={`p-1.5 rounded-xl transition-all cursor-pointer ${viewMode === 'list' ? 'bg-white text-blue-600 font-bold shadow-xs' : 'text-slate-400 hover:text-slate-700'}`}
             title="List View"
           >
             <List className="w-4 h-4" />

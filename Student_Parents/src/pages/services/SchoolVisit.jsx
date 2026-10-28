@@ -240,14 +240,14 @@ export default function SchoolVisit({ activeChild }) {
   };
 
   return (
-    <div className="p-4 md:p-6 max-w-[1440px] mx-auto min-h-screen bg-[#f8f9fa] space-y-6">
+    <div className="p-3 sm:p-5 max-w-[1440px] mx-auto min-h-screen bg-slate-50 space-y-5 pb-24">
       
       {/* Toast Alert */}
       {toastMessage && (
-        <div className={`p-4 rounded-none flex items-center justify-between border shadow-sm transition-all animate-in fade-in ${
+        <div className={`p-4 rounded-2xl flex items-center justify-between border shadow-sm transition-all animate-in fade-in ${
           toastMessage.type === 'success' 
             ? 'bg-emerald-50 border-emerald-300 text-emerald-800' 
-            : 'bg-red-50 border-red-300 text-red-800'
+            : 'bg-rose-50 border-rose-300 text-rose-800'
         }`}>
           <div className="flex items-center gap-2.5 text-xs font-semibold">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />
@@ -255,51 +255,54 @@ export default function SchoolVisit({ activeChild }) {
           </div>
           <button 
             onClick={() => setToastMessage(null)}
-            className="text-gray-400 hover:text-gray-700 p-1"
+            className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Header Bar */}
-      <div className="bg-white border border-gray-200 p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+      {/* Royal Blue Hero Header */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-5 sm:p-7 rounded-3xl shadow-lg border border-blue-400/20 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+        {/* Glow circle */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-50 border border-orange-200 flex items-center justify-center text-[#f97316]">
-              <CalendarClock className="w-6 h-6" strokeWidth={2.5} />
+            <div className="w-13 h-13 rounded-2xl bg-white/15 backdrop-blur-md text-amber-300 flex items-center justify-center flex-shrink-0 font-bold shadow-md border border-white/20">
+              <CalendarClock className="w-7 h-7" strokeWidth={2.5} />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-[22px] font-bold text-[#1f2937] tracking-tight">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
                   School Visit & Campus Appointments
                 </h1>
-                <span className="bg-orange-50 text-orange-700 border border-orange-200 text-[11px] font-extrabold px-2 py-0.5 uppercase tracking-wider">
+                <span className="bg-emerald-500/25 text-emerald-200 border border-emerald-400/40 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider backdrop-blur-sm">
                   Visitor Gate Desk
                 </span>
               </div>
-              <p className="text-[12.5px] text-gray-500 font-medium">
-                Manage campus walk-ins, schedule appointments with faculty & principal, and download pre-approved digital security gate passes for <span className="font-bold text-gray-800">{student.name}</span> ({student.className})
+              <p className="text-[12px] text-blue-100 mt-1">
+                Manage campus visits, schedule meetings with faculty & download digital security gate passes for <strong className="text-white">{student.name || 'Kabir Singh'}</strong> ({student.className || 'Class 10th (A)'})
               </p>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 relative z-10">
           <button
             onClick={() => fetchVisitData(true)}
             disabled={refreshing}
-            className="px-3.5 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-300 text-gray-700 text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             title="Refresh Visits"
           >
             <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? 'Refreshing...' : 'Refresh'}</span>
+            <span>Sync</span>
           </button>
 
           <button
             onClick={() => setScheduleModalOpen(true)}
-            className="px-4 py-2 bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm"
+            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Schedule Appointment</span>

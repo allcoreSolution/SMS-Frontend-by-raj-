@@ -165,53 +165,56 @@ export default function Transport({ activeChild }) {
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
   return (
-    <div className="p-4 md:p-6 max-w-[1440px] mx-auto min-h-screen bg-[#f8f9fa] space-y-4">
+    <div className="p-3 sm:p-5 max-w-[1440px] mx-auto min-h-screen bg-slate-50 space-y-4 pb-24">
       
       {/* =========================================================================
-          TOP COMMAND BAR & STUDENT TRANSPORT CONTEXT
+          TOP HERO BLUE GRADIENT BAR & STUDENT TRANSPORT CONTEXT
           ========================================================================= */}
-      <div className="bg-[#353A40] text-white p-4 md:p-5 rounded-none shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-yellow-500 text-gray-900 flex items-center justify-center flex-shrink-0 font-bold shadow">
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-4 sm:p-6 rounded-3xl shadow-lg border border-blue-400/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative overflow-hidden">
+        {/* Background glow decoration */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex items-center gap-3.5 relative z-10">
+          <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md text-amber-300 flex items-center justify-center flex-shrink-0 font-bold shadow-md border border-white/20">
             <Bus className="w-6 h-6" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-[19px] md:text-[21px] font-bold tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white font-serif">
                 {route?.routeName || 'Route 1 - Dwarka Sector 12 Express'}
               </h1>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10.5px] font-extrabold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/40 text-[10px] font-black uppercase tracking-wider backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 Live GPS Active
               </span>
             </div>
-            <p className="text-[12.5px] text-gray-300 mt-0.5 flex items-center gap-2 flex-wrap">
-              <span>Ward: <strong className="text-white">{student?.name || 'Aarav Sharma'}</strong> ({student?.className || 'Class I (A)'})</span>
-              <span className="text-gray-500">•</span>
-              <span>Pickup Stop: <strong className="text-yellow-400">{student?.assignedStop || 'Dwarka Mor Depot'}</strong></span>
-              <span className="text-gray-500">•</span>
-              <span>Smart RFID: <strong className="text-gray-200">{student?.rfidCard || 'BUS-RFID-8841'}</strong></span>
+            <p className="text-[12px] text-blue-100 mt-1 flex items-center gap-2 flex-wrap">
+              <span>Ward: <strong className="text-white">{student?.name || 'Kabir Singh'}</strong> ({student?.className || 'Class 10th (A)'})</span>
+              <span className="text-blue-300/60">•</span>
+              <span>Pickup Stop: <strong className="text-amber-300">{student?.assignedStop || 'Dwarka Mor Depot'}</strong></span>
+              <span className="text-blue-300/60">•</span>
+              <span>Smart RFID: <strong className="text-white font-mono">{student?.rfidCard || 'BUS-RFID-8841'}</strong></span>
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end">
+        <div className="flex items-center gap-2 flex-wrap w-full md:w-auto justify-end relative z-10">
           {/* Route Switcher Dropdown */}
           {allRoutes.length > 0 && (
             <div className="relative">
               <button
                 onClick={() => setRouteMenuOpen(!routeMenuOpen)}
-                className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[11.5px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
                 title="Switch School Route"
               >
                 <span>Select Route</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                <ChevronDown className="w-3.5 h-3.5 opacity-80" />
               </button>
 
               {routeMenuOpen && (
-                <div className="absolute right-0 top-full mt-1 w-64 bg-[#2c3036] border border-white/20 shadow-xl z-50 py-1">
-                  <div className="px-3 py-1.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-white/10">
+                <div className="absolute right-0 top-full mt-2 w-64 bg-slate-900/95 backdrop-blur-md border border-slate-700 shadow-2xl rounded-2xl z-50 py-1.5 overflow-hidden">
+                  <div className="px-3.5 py-1.5 text-[9.5px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-800">
                     School Bus Routes
                   </div>
                   {allRoutes.map(r => (
@@ -221,12 +224,12 @@ export default function Transport({ activeChild }) {
                         setSelectedRouteId(r.id);
                         setRouteMenuOpen(false);
                       }}
-                      className={`w-full text-left px-3 py-2 text-[12px] flex items-center justify-between hover:bg-white/10 transition-colors ${
-                        (route?.id === r.id || (!selectedRouteId && r.name.includes('Route 1'))) ? 'bg-yellow-500/20 text-yellow-300 font-bold' : 'text-gray-200'
+                      className={`w-full text-left px-3.5 py-2 text-[12px] flex items-center justify-between hover:bg-white/10 transition-colors ${
+                        (route?.id === r.id || (!selectedRouteId && r.name.includes('Route 1'))) ? 'bg-blue-600/30 text-amber-300 font-bold' : 'text-slate-200'
                       }`}
                     >
                       <span className="truncate">{r.name}</span>
-                      <span className="text-[10px] text-gray-400 ml-2">{r.stopsCount} stops</span>
+                      <span className="text-[10px] text-slate-400 ml-2">{r.stopsCount} stops</span>
                     </button>
                   ))}
                 </div>
@@ -237,12 +240,12 @@ export default function Transport({ activeChild }) {
           {/* Auto Refresh Toggle */}
           <button
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`px-3 py-1.5 text-[12px] font-semibold flex items-center gap-1.5 transition-colors border ${
-              autoRefresh ? 'bg-emerald-600/30 text-emerald-300 border-emerald-500/50' : 'bg-white/10 text-gray-300 border-white/20 hover:bg-white/15'
+            className={`px-3 py-1.5 rounded-xl text-[11.5px] font-bold flex items-center gap-1.5 transition-all border backdrop-blur-sm cursor-pointer ${
+              autoRefresh ? 'bg-emerald-500/25 text-emerald-200 border-emerald-400/50 shadow-xs' : 'bg-white/10 text-white/90 border-white/20 hover:bg-white/20'
             }`}
             title="Toggle Live 12s Radar Refresh"
           >
-            <Radio className={`w-3.5 h-3.5 ${autoRefresh ? 'animate-pulse text-emerald-400' : 'text-gray-400'}`} />
+            <Radio className={`w-3.5 h-3.5 ${autoRefresh ? 'animate-pulse text-emerald-400' : 'text-slate-300'}`} />
             <span>Auto {autoRefresh ? 'ON' : 'OFF'}</span>
           </button>
 
@@ -250,7 +253,7 @@ export default function Transport({ activeChild }) {
           <button
             onClick={handleSimulateGPS}
             disabled={simulating}
-            className="px-3 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-400/40 text-indigo-200 text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 border border-amber-300/40 text-amber-200 text-[11.5px] font-bold flex items-center gap-1.5 transition-all backdrop-blur-sm shadow-xs cursor-pointer"
             title="Simulate Bus Moving to Next Waypoint"
           >
             <Zap className={`w-3.5 h-3.5 ${simulating ? 'animate-spin' : ''}`} />
@@ -261,7 +264,7 @@ export default function Transport({ activeChild }) {
           <button
             onClick={() => fetchTransportData(false, false)}
             disabled={refreshing}
-            className="px-3 py-1.5 bg-yellow-500 hover:bg-yellow-400 text-gray-950 text-[12px] font-bold flex items-center gap-1.5 shadow transition-colors"
+            className="px-3.5 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[11.5px] font-extrabold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
             <span>{refreshing ? 'Syncing...' : 'Sync GPS'}</span>
@@ -270,19 +273,19 @@ export default function Transport({ activeChild }) {
           {/* Report Issue Button */}
           <button
             onClick={() => setIssueModalOpen(true)}
-            className="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-3 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[11.5px] font-bold flex items-center gap-1.5 transition-all backdrop-blur-sm cursor-pointer"
           >
-            <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
-            <span>Helpline / Query</span>
+            <AlertCircle className="w-3.5 h-3.5 text-amber-300" />
+            <span>Inquiry</span>
           </button>
 
           {/* SOS Emergency Button */}
           <button
             onClick={() => setSosModalOpen(true)}
-            className="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-[12px] font-extrabold flex items-center gap-1.5 shadow uppercase tracking-wider transition-colors"
+            className="px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-[11.5px] font-black flex items-center gap-1.5 shadow-md uppercase tracking-wider transition-all cursor-pointer"
           >
             <PhoneCall className="w-3.5 h-3.5 animate-bounce" />
-            <span>SOS Desk</span>
+            <span>SOS</span>
           </button>
         </div>
       </div>
@@ -296,7 +299,7 @@ export default function Transport({ activeChild }) {
         <div className="w-full lg:w-[440px] flex flex-col gap-4 flex-shrink-0">
           
           {/* Top Vehicle Telemetry Banner Card (ERP Design) */}
-          <div className="bg-gradient-to-br from-[#1e293b] via-[#334155] to-[#1e293b] text-white p-5 rounded-none shadow-md border-l-4 border-yellow-500 flex flex-col justify-between relative overflow-hidden">
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-5 rounded-3xl shadow-md border border-slate-700/60 flex flex-col justify-between relative overflow-hidden">
             
             {/* Background bus watermark */}
             <Bus className="absolute -right-6 -bottom-6 w-36 h-36 text-white/5 pointer-events-none" />
@@ -378,68 +381,70 @@ export default function Transport({ activeChild }) {
           </div>
 
           {/* Driver & Attendant Contact Card */}
-          <div className="bg-white border border-gray-200 p-4 shadow-sm flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
-              <span className="text-[11px] font-extrabold text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col gap-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+              <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
                 <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                Verified Driver & Bus Staff
+                Verified Bus Staff
               </span>
-              <span className="text-[10.5px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 border border-emerald-200">
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                 ⭐ {driver?.rating || '4.9 Safe Driving'}
               </span>
             </div>
 
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 bg-gray-100 border border-gray-300 flex items-center justify-center flex-shrink-0 text-gray-700 font-bold text-[14px]">
+                <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center flex-shrink-0 font-black text-[15px] shadow-2xs">
                   {driver?.name?.charAt(0) || 'R'}
                 </div>
                 <div>
-                  <h3 className="font-bold text-[14px] text-gray-900 leading-tight">
+                  <h3 className="font-extrabold text-[14px] text-slate-900 leading-tight">
                     {driver?.name || 'Ramesh Kumar'}
                   </h3>
-                  <p className="text-[11px] text-gray-500 mt-0.5 flex items-center gap-2">
-                    <span>License: <strong>{driver?.licence || 'DL-042018002931'}</strong></span>
+                  <p className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-2">
+                    <span>License: <strong className="text-slate-700">{driver?.licence || 'DL-042018002931'}</strong></span>
                     <span>•</span>
-                    <span>Blood: <strong className="text-red-500">{driver?.bloodGroup || 'B+'}</strong></span>
+                    <span>Blood: <strong className="text-rose-600">{driver?.bloodGroup || 'B+'}</strong></span>
                   </p>
                 </div>
               </div>
 
               {/* Call & WhatsApp Actions */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <a
                   href={`tel:${driver?.rawPhone || '9811223344'}`}
-                  className="w-8 h-8 bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center transition-all shadow-xs cursor-pointer"
                   title="Call Driver"
                 >
-                  <Phone className="w-3.5 h-3.5" />
+                  <Phone className="w-4 h-4" />
                 </a>
                 <a
                   href={`https://wa.me/${driver?.whatsapp || '919811223344'}?text=Hello%20Driver%20${encodeURIComponent(driver?.name || 'Ramesh Kumar')},%20inquiring%20about%20student%20Aarav%20Sharma%20pickup`}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 bg-[#25D366] hover:bg-[#1fb355] text-white flex items-center justify-center transition-colors shadow-sm"
+                  className="w-9 h-9 rounded-xl bg-[#25D366] hover:bg-[#1fb355] text-white flex items-center justify-center transition-all shadow-xs cursor-pointer"
                   title="WhatsApp Driver"
                 >
-                  <MessageSquare className="w-3.5 h-3.5" />
+                  <MessageSquare className="w-4 h-4" />
                 </a>
               </div>
             </div>
 
             {/* Female Caretaker / Attendant Strip */}
             {attendant && (
-              <div className="bg-gray-50 border border-gray-200 p-2.5 flex items-center justify-between text-[11.5px] mt-1">
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-2.5 flex items-center justify-between text-[11.5px] mt-1">
                 <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                  <div className="w-7 h-7 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                    <User className="w-3.5 h-3.5" />
+                  </div>
                   <div>
-                    <span className="font-bold text-gray-800">{attendant.name}</span>
-                    <span className="text-[10px] text-gray-500 block leading-none">{attendant.role}</span>
+                    <span className="font-extrabold text-slate-800">{attendant.name}</span>
+                    <span className="text-[10px] text-slate-500 block leading-none">{attendant.role}</span>
                   </div>
                 </div>
                 <a
                   href={`tel:${attendant.rawPhone || '9876541230'}`}
-                  className="px-2.5 py-1 bg-white border border-gray-300 text-gray-700 hover:text-emerald-700 hover:border-emerald-500 text-[11px] font-bold flex items-center gap-1 transition-colors"
+                  className="px-3 py-1 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-emerald-700 hover:border-emerald-500 text-[11px] font-bold flex items-center gap-1.5 transition-all shadow-2xs"
                 >
                   <Phone className="w-3 h-3 text-emerald-600" />
                   <span>Call Staff</span>
@@ -448,34 +453,34 @@ export default function Transport({ activeChild }) {
             )}
           </div>
 
-          {/* Tab Navigation Controls */}
-          <div className="flex border-b border-gray-200 bg-white">
+          {/* Segmented Tab Navigation Controls */}
+          <div className="p-1.5 bg-slate-200/80 rounded-2xl grid grid-cols-3 gap-1 shadow-inner">
             <button
               onClick={() => setActiveTab('timeline')}
-              className={`flex-1 py-2.5 text-[12px] font-bold border-b-2 text-center transition-colors ${
+              className={`py-2 text-[11px] font-bold rounded-xl text-center transition-all cursor-pointer ${
                 activeTab === 'timeline'
-                  ? 'border-yellow-500 text-gray-900 bg-yellow-50/30'
-                  : 'border-transparent text-gray-500 hover:text-gray-900'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Route Stops ({stops.length})
+              Route ({stops.length})
             </button>
             <button
               onClick={() => setActiveTab('boarding')}
-              className={`flex-1 py-2.5 text-[12px] font-bold border-b-2 text-center transition-colors ${
+              className={`py-2 text-[11px] font-bold rounded-xl text-center transition-all cursor-pointer ${
                 activeTab === 'boarding'
-                  ? 'border-yellow-500 text-gray-900 bg-yellow-50/30'
-                  : 'border-transparent text-gray-500 hover:text-gray-900'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              RFID History ({boardingHistory.length})
+              RFID ({boardingHistory.length})
             </button>
             <button
               onClick={() => setActiveTab('safety')}
-              className={`flex-1 py-2.5 text-[12px] font-bold border-b-2 text-center transition-colors ${
+              className={`py-2 text-[11px] font-bold rounded-xl text-center transition-all cursor-pointer ${
                 activeTab === 'safety'
-                  ? 'border-yellow-500 text-gray-900 bg-yellow-50/30'
-                  : 'border-transparent text-gray-500 hover:text-gray-900'
+                  ? 'bg-white text-blue-700 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Safety Spec
@@ -484,13 +489,13 @@ export default function Transport({ activeChild }) {
 
           {/* TAB 1: ROUTE TIMELINE STOPS */}
           {activeTab === 'timeline' && (
-            <div className="bg-white border border-gray-200 flex-1 shadow-sm overflow-hidden flex flex-col min-h-[380px]">
-              <div className="p-3.5 bg-gray-50 border-b border-gray-200 flex items-center justify-between text-[12px]">
-                <div className="flex items-center gap-1.5 text-gray-700 font-bold">
-                  <MapPin className="w-4 h-4 text-yellow-600" />
+            <div className="bg-white border border-slate-200/80 rounded-3xl flex-1 shadow-xs overflow-hidden flex flex-col min-h-[380px]">
+              <div className="p-3.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between text-[12px]">
+                <div className="flex items-center gap-1.5 text-slate-800 font-extrabold">
+                  <MapPin className="w-4 h-4 text-blue-600" />
                   <span>Route Stops & Expected Timings</span>
                 </div>
-                <span className="text-[10.5px] font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 border border-emerald-300">
+                <span className="text-[10px] font-black text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
                   Morning Pickup Run
                 </span>
               </div>
@@ -673,16 +678,16 @@ export default function Transport({ activeChild }) {
         {/* =========================================================================
             RIGHT COLUMN: INTERACTIVE OPENSTREETMAP GPS RADAR VIEW
             ========================================================================= */}
-        <div className="flex-1 bg-white border border-gray-200 shadow-sm flex flex-col min-h-[580px] relative overflow-hidden">
+        <div className="flex-1 bg-white border border-slate-200/80 rounded-3xl shadow-sm flex flex-col min-h-[580px] relative overflow-hidden">
           
           {/* Map Header Overlay Bar */}
-          <div className="p-3 bg-white/95 backdrop-blur border-b border-gray-200 flex items-center justify-between z-20">
+          <div className="p-3.5 bg-white/95 backdrop-blur-md border-b border-slate-200 flex items-center justify-between z-20">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="font-bold text-[13px] text-gray-800">
+              <span className="font-extrabold text-[13px] text-slate-800">
                 Live GPS Map: {vehicle?.vehicleNumber || 'DL-01-AB-4501'}
               </span>
-              <span className="text-[11px] text-gray-400 hidden sm:inline">
+              <span className="text-[11px] text-slate-400 hidden sm:inline font-mono">
                 ({lat.toFixed(4)}° N, {lng.toFixed(4)}° E)
               </span>
             </div>
@@ -692,17 +697,17 @@ export default function Transport({ activeChild }) {
                 href={googleMapsUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="px-2.5 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-[11px] font-bold flex items-center gap-1 transition-colors"
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold flex items-center gap-1.5 transition-colors shadow-2xs"
                 title="Open in Google Maps"
               >
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-3 h-3 text-blue-600" />
                 <span>Google Maps</span>
               </a>
             </div>
           </div>
 
           {/* The Live Interactive Map (OpenStreetMap Native) */}
-          <div className="flex-1 w-full h-full relative min-h-[500px] bg-gray-100">
+          <div className="flex-1 w-full h-full relative min-h-[500px] bg-slate-100">
             <iframe
               key={`${lat}-${lng}`}
               width="100%"
@@ -712,30 +717,32 @@ export default function Transport({ activeChild }) {
               marginHeight="0"
               marginWidth="0"
               src={osmUrl}
-              className="w-full h-full grayscale-[15%] contrast-[1.05]"
+              className="w-full h-full grayscale-[10%] contrast-[1.05]"
               style={{ pointerEvents: 'auto', minHeight: '520px' }}
               title="Real-time School Bus GPS Tracking Map"
             ></iframe>
 
             {/* Floating Top Floating Speed Gauge Badge */}
-            <div className="absolute top-4 left-4 z-20 bg-[#353A40]/90 backdrop-blur text-white px-3.5 py-2 shadow-lg border border-white/20 flex items-center gap-3 pointer-events-none">
-              <div className="w-9 h-9 bg-yellow-500 text-gray-950 flex items-center justify-center font-bold text-[14px]">
+            <div className="absolute top-4 left-4 z-20 bg-slate-900/90 backdrop-blur-md text-white px-3.5 py-2 rounded-2xl shadow-xl border border-white/20 flex items-center gap-3 pointer-events-none">
+              <div className="w-9 h-9 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold text-[14px]">
                 <Bus className="w-5 h-5" />
               </div>
               <div>
-                <div className="text-[10px] text-gray-300 uppercase font-semibold">Current Speed</div>
-                <div className="text-[16px] font-extrabold font-mono text-yellow-400 leading-none mt-0.5">
+                <div className="text-[9px] text-slate-300 uppercase font-bold tracking-wider">Current Speed</div>
+                <div className="text-[16px] font-black font-mono text-amber-300 leading-none mt-0.5">
                   {vehicle?.speed || 38} km/h
                 </div>
               </div>
             </div>
 
             {/* Floating Ward's Stop Pill */}
-            <div className="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur text-gray-900 px-3 py-1.5 shadow-lg border border-amber-300 flex items-center gap-2 pointer-events-none">
-              <MapPin className="w-4 h-4 text-amber-600" />
+            <div className="absolute top-4 right-4 z-20 bg-white/95 backdrop-blur-md text-slate-900 px-3.5 py-2 rounded-2xl shadow-xl border border-amber-300/80 flex items-center gap-2.5 pointer-events-none">
+              <div className="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                <MapPin className="w-4 h-4" />
+              </div>
               <div>
-                <span className="text-[9.5px] font-black text-amber-600 uppercase block leading-none">Your Stop</span>
-                <span className="text-[12px] font-bold text-gray-800">{student?.assignedStop || 'Dwarka Mor Depot'}</span>
+                <span className="text-[9px] font-black text-amber-600 uppercase block leading-none">Your Ward Stop</span>
+                <span className="text-[12px] font-black text-slate-900">{student?.assignedStop || 'Dwarka Mor Depot'}</span>
               </div>
             </div>
 

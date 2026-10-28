@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>Student & Parent Panel</title>
+    <title>ACS Student Portal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,20 +14,24 @@
       (function() {
         try {
           var host = window.location.hostname;
-          var sessionLang = sessionStorage.getItem('portal_language');
-          var isHindi = sessionLang === 'hi';
+          var saved = localStorage.getItem('portal_language') || sessionStorage.getItem('portal_language');
+          var isHindi = saved === 'hi';
           if (isHindi) {
             document.cookie = 'googtrans=/en/hi; path=/;';
             document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
+            document.cookie = 'googtrans=/auto/hi; path=/;';
           } else {
-            // Default on open is strictly English - purge cookies
-            var domains = ['', host, '.' + host];
+            // Default on open is STRICTLY English ('en') - purge cookies
+            localStorage.setItem('portal_language', 'en');
+            sessionStorage.setItem('portal_language', 'en');
+            var domains = ['', host, '.' + host, 'localhost'];
             var paths = ['/', window.location.pathname];
             domains.forEach(function(d) {
               paths.forEach(function(p) {
                 document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
               });
             });
+            document.cookie = 'googtrans=/en/en; path=/;';
           }
         } catch (e) {}
       })();

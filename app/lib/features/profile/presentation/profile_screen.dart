@@ -637,9 +637,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: Colors.transparent,
         insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 295),
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(24),
               border: Border.all(color: const Color(0xFF2563EB), width: 2.5),
@@ -672,7 +675,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                 // 2. School Header Banner Card
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [Color(0xFF0F172A), Color(0xFF1E3A8A), Color(0xFF2563EB)],
@@ -683,14 +686,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(7),
+                        padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
                           color: Colors.white,
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(Icons.school_rounded, color: Color(0xFF2563EB), size: 26),
+                        child: const Icon(Icons.school_rounded, color: Color(0xFF2563EB), size: 18),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -698,25 +701,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Text(
                               'GREENWOOD PUBLIC SCHOOL',
                               style: GoogleFonts.outfit(
-                                fontSize: 15.5,
+                                fontSize: 12,
                                 fontWeight: FontWeight.w900,
                                 color: Colors.white,
-                                letterSpacing: 0.5,
+                                letterSpacing: 0.3,
                               ),
                             ),
                             Text(
                               'CBSE Affiliated (No. 1730452) • Estd. 1998',
-                              style: GoogleFonts.inter(fontSize: 10.5, color: Colors.white70, fontWeight: FontWeight.w600),
+                              style: GoogleFonts.inter(fontSize: 8.5, color: Colors.white70, fontWeight: FontWeight.w600),
                             ),
                             Text(
                               'Sector 10, Greenwood Enclave, Jaipur (RJ)',
-                              style: GoogleFonts.inter(fontSize: 9.5, color: Colors.white60),
+                              style: GoogleFonts.inter(fontSize: 7.5, color: Colors.white60),
                             ),
                           ],
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close_rounded, color: Colors.white, size: 22),
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
                         onPressed: () => Navigator.pop(ctx),
                       ),
                     ],
@@ -726,23 +731,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // 3. Ribbon Session Tag Bar
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  padding: const EdgeInsets.symmetric(vertical: 3),
                   color: const Color(0xFFF59E0B),
                   child: Text(
                     'STUDENT IDENTITY CARD • SESSION 2024-25',
                     textAlign: TextAlign.center,
                     style: GoogleFonts.outfit(
-                      fontSize: 11.5,
+                      fontSize: 9,
                       fontWeight: FontWeight.w900,
                       color: Colors.black,
-                      letterSpacing: 1,
+                      letterSpacing: 0.5,
                     ),
                   ),
                 ),
 
                 // 4. Card Content Body
                 Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
                       Row(
@@ -752,52 +757,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Column(
                             children: [
                               Container(
-                                width: 88,
-                                height: 104,
+                                width: 60,
+                                height: 72,
                                 decoration: BoxDecoration(
                                   color: isDark ? const Color(0xFF0F172A) : const Color(0xFFEFF6FF),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(color: const Color(0xFF2563EB), width: 2.5),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.1),
-                                      blurRadius: 6,
+                                      color: Colors.black.withValues(alpha: 0.08),
+                                      blurRadius: 4,
                                     ),
                                   ],
                                 ),
                                 child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(11),
+                                  borderRadius: BorderRadius.circular(8),
                                   child: auth.photoUrl.isNotEmpty
                                       ? Image.network(
                                           auth.photoUrl,
-                                          width: 88,
-                                          height: 104,
+                                          width: 60,
+                                          height: 72,
                                           fit: BoxFit.cover,
                                           errorBuilder: (ctx, err, stack) => const Center(
-                                            child: Icon(Icons.person_rounded, size: 64, color: Color(0xFF2563EB)),
+                                            child: Icon(Icons.person_rounded, size: 40, color: Color(0xFF2563EB)),
                                           ),
                                         )
                                       : const Center(
-                                          child: Icon(Icons.person_rounded, size: 64, color: Color(0xFF2563EB)),
+                                          child: Icon(Icons.person_rounded, size: 40, color: Color(0xFF2563EB)),
                                         ),
                                 ),
                               ),
-                              const SizedBox(height: 6),
+                              const SizedBox(height: 4),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFF10B981).withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(color: const Color(0xFF10B981)),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: const Color(0xFF10B981), width: 0.8),
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.verified_rounded, color: Color(0xFF10B981), size: 12),
-                                    const SizedBox(width: 3),
+                                    const Icon(Icons.verified_rounded, color: Color(0xFF10B981), size: 9),
+                                    const SizedBox(width: 2),
                                     Text(
                                       'VERIFIED',
-                                      style: GoogleFonts.inter(fontSize: 9.5, fontWeight: FontWeight.w900, color: const Color(0xFF10B981)),
+                                      style: GoogleFonts.inter(fontSize: 7.5, fontWeight: FontWeight.w900, color: const Color(0xFF10B981)),
                                     ),
                                   ],
                                 ),
@@ -805,7 +810,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
 
-                          const SizedBox(width: 14),
+                          const SizedBox(width: 10),
 
                           // Student Details Grid
                           Expanded(
@@ -815,22 +820,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Text(
                                   auth.studentName,
                                   style: GoogleFonts.outfit(
-                                    fontSize: 20,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w900,
                                     color: isDark ? Colors.white : const Color(0xFF0F172A),
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                  margin: const EdgeInsets.only(top: 2, bottom: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                                  margin: const EdgeInsets.only(top: 1, bottom: 4),
                                   decoration: BoxDecoration(
                                     color: const Color(0xFF2563EB).withValues(alpha: 0.12),
-                                    borderRadius: BorderRadius.circular(8),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: Text(
                                     auth.className,
                                     style: GoogleFonts.inter(
-                                      fontSize: 12,
+                                      fontSize: 9.5,
                                       fontWeight: FontWeight.bold,
                                       color: const Color(0xFF2563EB),
                                     ),
@@ -849,9 +854,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
 
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 8),
                       const Divider(height: 1),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 6),
 
                       // 5. Address & Signatures Row
                       Row(
@@ -864,76 +869,79 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Text(
                                   'Residential Address:',
-                                  style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey),
+                                  style: GoogleFonts.inter(fontSize: 8, fontWeight: FontWeight.bold, color: Colors.grey),
                                 ),
                                 Text(
                                   auth.address,
-                                  style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : const Color(0xFF334155)),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.inter(fontSize: 8.5, fontWeight: FontWeight.w600, color: isDark ? Colors.white70 : const Color(0xFF334155)),
                                 ),
                               ],
                             ),
                           ),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: 8),
                           // Principal Stamp & Signature
                           Column(
                             children: [
                               Container(
-                                padding: const EdgeInsets.all(4),
+                                padding: const EdgeInsets.all(2.5),
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
+                                  border: Border.all(color: const Color(0xFF2563EB), width: 1),
                                 ),
-                                child: const Icon(Icons.verified_user_rounded, color: Color(0xFF2563EB), size: 24),
+                                child: const Icon(Icons.verified_user_rounded, color: Color(0xFF2563EB), size: 16),
                               ),
                               Text(
                                 'Dr. Anita Saxena',
-                                style: GoogleFonts.caveat(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF2563EB)),
+                                style: GoogleFonts.caveat(fontSize: 11, fontWeight: FontWeight.bold, color: const Color(0xFF2563EB)),
                               ),
                               Text(
                                 'Principal Signature',
-                                style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey),
+                                style: GoogleFonts.inter(fontSize: 7.5, fontWeight: FontWeight.bold, color: Colors.grey),
                               ),
                             ],
                           ),
                         ],
                       ),
 
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 8),
 
                       // 6. Security Barcode & QR Code Section
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
                           color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                           border: Border.all(color: isDark ? Colors.white10 : const Color(0xFFE2E8F0)),
                         ),
                         child: Column(
                           children: [
                             Text(
                               '||||| |||| || |||||| | ||||| ||||| |||',
-                              style: GoogleFonts.vt323(fontSize: 24, letterSpacing: 2.5, color: isDark ? Colors.white70 : const Color(0xFF0F172A)),
+                              style: GoogleFonts.vt323(fontSize: 18, letterSpacing: 1.5, color: isDark ? Colors.white70 : const Color(0xFF0F172A)),
                             ),
-                            const SizedBox(height: 2),
+                            const SizedBox(height: 1),
                             Text(
                               'BARCODE VERIFICATION: STU-${auth.admissionNumber}-2024',
-                              style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.grey),
+                              style: GoogleFonts.inter(fontSize: 7.5, fontWeight: FontWeight.bold, color: Colors.grey),
                             ),
                           ],
                         ),
                       ),
 
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 10),
 
                       // Action Button
                       SizedBox(
                         width: double.infinity,
-                        height: 46,
+                        height: 36,
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2563EB),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            padding: EdgeInsets.zero,
                           ),
                           onPressed: () {
                             Navigator.pop(ctx);
@@ -944,10 +952,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             );
                           },
-                          icon: const Icon(Icons.download_rounded, size: 20, color: Colors.white),
+                          icon: const Icon(Icons.download_rounded, size: 16, color: Colors.white),
                           label: Text(
                             'Download Official Digital ID Card',
-                            style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                            style: GoogleFonts.inter(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                         ),
                       ),
@@ -959,30 +967,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _realIdRow(String label, String value, bool isDark) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 3),
+      padding: const EdgeInsets.only(bottom: 2),
       child: Row(
         children: [
           SizedBox(
-            width: 92,
+            width: 74,
             child: Text(
               label,
-              style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+              style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w600, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
             ),
           ),
           Text(
             ': ',
-            style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.bold, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
+            style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.bold, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
           ),
           Expanded(
             child: Text(
               value,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.inter(fontSize: 11.5, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF0F172A)),
+              style: GoogleFonts.inter(fontSize: 9.5, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF0F172A)),
             ),
           ),
         ],

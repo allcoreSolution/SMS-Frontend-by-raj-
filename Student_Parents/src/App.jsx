@@ -45,9 +45,12 @@ import Coaching      from './pages/academics/Coaching';
 // Communications
 import WhatsApp from './pages/comms/WhatsApp';
 import LeaveManagement from './pages/services/LeaveManagement';
+import AllModules from './pages/AllModules';
 
 const pages = [
   { path: '/dashboard',       El: Dashboard       },
+  { path: '/all-modules',     El: AllModules      },
+  { path: '/all-services',    El: AllModules      },
   { path: '/profile',         El: Profile         },
   { path: '/my-profile',      El: Profile         },
   { path: '/logout',          El: Logout          },

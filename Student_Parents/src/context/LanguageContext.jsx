@@ -10,18 +10,21 @@ export const triggerGoogleTranslate = (langCode) => {
     const host = window.location.hostname;
 
     if (isEn) {
-      const domains = ['', host, '.' + host];
+      const domains = ['', host, '.' + host, 'localhost'];
       const paths = ['/', window.location.pathname];
       domains.forEach((d) => {
         paths.forEach((p) => {
           document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
         });
       });
+      document.cookie = 'googtrans=/en/en; path=/;';
+      document.documentElement.lang = 'en';
     } else {
-      const val = `/en/${targetCode}`;
+      const val = `/en/hi`;
       document.cookie = `googtrans=${val}; path=/;`;
       document.cookie = `googtrans=${val}; path=/; domain=${host};`;
-      document.cookie = `googtrans=/auto/${targetCode}; path=/;`;
+      document.cookie = `googtrans=/auto/hi; path=/;`;
+      document.documentElement.lang = 'hi';
     }
 
     const applyToCombo = () => {
@@ -41,7 +44,7 @@ export const triggerGoogleTranslate = (langCode) => {
                 break;
               }
             } else {
-              if (optVal === 'hi' || optText.includes('hindi') || optText.includes('हिन्दी')) {
+              if (optVal === 'hi' || optVal.startsWith('hi') || optText.includes('hindi')) {
                 combo.selectedIndex = i;
                 combo.options[i].selected = true;
                 combo.value = combo.options[i].value;
@@ -52,7 +55,7 @@ export const triggerGoogleTranslate = (langCode) => {
           }
         }
         if (!matched) {
-          combo.value = isEn ? '' : targetCode;
+          combo.value = isEn ? '' : 'hi';
         }
         combo.dispatchEvent(new Event('change', { bubbles: true }));
         try {
@@ -74,10 +77,10 @@ export const triggerGoogleTranslate = (langCode) => {
 };
 
 export function LanguageProvider({ children }) {
-  // Always default to English on open
+  // Strict default English ('en') unless explicitly set to 'hi'
   const [currentLang, setCurrentLangState] = useState(() => {
     try {
-      const saved = sessionStorage.getItem('portal_language');
+      const saved = localStorage.getItem('portal_language') || sessionStorage.getItem('portal_language');
       return saved === 'hi' ? 'hi' : 'en';
     } catch (e) {
       return 'en';
@@ -86,22 +89,19 @@ export function LanguageProvider({ children }) {
 
   const [toastMessage, setToastMessage] = useState(null);
 
-  // Initialize on mount: default English on open
+  // Initialize strictly on mount - default to English unless explicitly 'hi'
   useEffect(() => {
-    const session = sessionStorage.getItem('portal_language');
-    if (session === 'hi') {
-      setCurrentLangState('hi');
-      triggerGoogleTranslate('hi');
-    } else {
-      setCurrentLangState('en');
-      triggerGoogleTranslate('en');
-    }
+    const saved = localStorage.getItem('portal_language') || sessionStorage.getItem('portal_language');
+    const valid = saved === 'hi' ? 'hi' : 'en';
+    setCurrentLangState(valid);
+    triggerGoogleTranslate(valid);
   }, []);
 
   const setLanguage = (langCode) => {
     const validCode = langCode === 'hi' ? 'hi' : 'en';
     setCurrentLangState(validCode);
     try {
+      localStorage.setItem('portal_language', validCode);
       sessionStorage.setItem('portal_language', validCode);
     } catch (e) {}
 
@@ -122,9 +122,12 @@ export function LanguageProvider({ children }) {
 
   useEffect(() => {
     const handleExternalChange = (e) => {
-      if (e.detail && (e.detail === 'en' || e.detail === 'hi') && e.detail !== currentLang) {
-        setCurrentLangState(e.detail);
-        triggerGoogleTranslate(e.detail);
+      if (e.detail && e.detail !== currentLang) {
+        const found = LANGUAGES.find(l => l.code === e.detail);
+        if (found) {
+          setCurrentLangState(found.code);
+          triggerGoogleTranslate(found.code);
+        }
       }
     };
     window.addEventListener('portal_language_changed', handleExternalChange);
@@ -164,7 +167,8 @@ export const useLanguage = () => {
   const context = useContext(LanguageContext);
   if (!context) {
     const fallbackLang = (typeof window !== 'undefined' && (localStorage.getItem('portal_language') || 'en')) || 'en';
-    const validFallback = fallbackLang === 'hi' ? 'hi' : 'en';
+    const found = LANGUAGES.find(l => l.code === fallbackLang);
+    const validFallback = found ? found.code : 'en';
     return {
       currentLang: validFallback,
       setLanguage: () => {},

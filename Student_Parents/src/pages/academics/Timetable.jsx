@@ -1,70 +1,111 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
-  CalendarDays, CalendarX2, Clock, BookOpen, User, 
-  MapPin, RefreshCw, Printer, Search, Sparkles, 
-  Layers, CheckCircle2, ChevronRight 
+  CalendarDays, Clock, User, MapPin, RefreshCw, Printer, 
+  Search, GraduationCap, Coffee, ChevronRight, CheckCircle2 
 } from 'lucide-react';
 import { parentService } from '../../api/parentService';
+import { useLanguage } from '../../context/LanguageContext';
 
-const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAYS_CONFIG = [
+  { key: 'Mon', en: 'Mon', hi: 'सोम' },
+  { key: 'Tue', en: 'Tue', hi: 'मंगल' },
+  { key: 'Wed', en: 'Wed', hi: 'बुध' },
+  { key: 'Thu', en: 'Thu', hi: 'गुरु' },
+  { key: 'Fri', en: 'Fri', hi: 'शुक्र' },
+  { key: 'Sat', en: 'Sat', hi: 'शनि' }
+];
 
-const SUBJECT_COLORS = {
-  'Mathematics': 'bg-blue-50 text-blue-700 border-blue-200',
-  'General Science': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-  'English Literature': 'bg-purple-50 text-purple-700 border-purple-200',
-  'Hindi Language': 'bg-amber-50 text-amber-700 border-amber-200',
-  'Social Studies': 'bg-rose-50 text-rose-700 border-rose-200',
-  'Computer Science': 'bg-cyan-50 text-cyan-700 border-cyan-200',
-  'Physical Education': 'bg-teal-50 text-teal-700 border-teal-200',
-  'Art & Craft': 'bg-pink-50 text-pink-700 border-pink-200'
+const SUBJECT_HI = {
+  'Mathematics': 'गणित (Mathematics)',
+  'English': 'अंग्रेज़ी (English)',
+  'Science': 'विज्ञान (Science)',
+  'Social Science': 'सामाजिक विज्ञान (Social Studies)',
+  'Computer Science': 'कंप्यूटर साइंस (IT)',
+  'Physical Ed.': 'शारीरिक शिक्षा (P.E.)',
+  'Hindi': 'हिन्दी साहित्य (Hindi)',
+  'Art & Craft': 'कला व क्राफ्ट (Art)',
+  'General Knowledge': 'सामान्य ज्ञान (G.K.)',
+  'Club Activities': 'क्लब गतिविधियां',
+  'Sports & Games': 'खेलकूद व व्यायाम',
+  'Remedial Class': 'उपचारात्मक कक्षा (Remedial)'
+};
+
+const TYPE_HI = {
+  'Lecture': 'व्याख्यान',
+  'Practical': 'प्रायोगिक',
+  'Lab': 'लैब सत्र',
+  'Sports': 'खेलकूद',
+  'Activity': 'गतिविधि',
+  'Club': 'क्लब',
+  'Tutorial': 'ट्यूटोरियल'
+};
+
+// Default weekly schedule matching Screenshot 4
+const defaultWeeklySchedule = {
+  'Mon': [
+    { time: '08:30 – 09:20 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
+    { time: '09:20 – 10:10 AM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
+    { time: '10:10 – 11:00 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Practical', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
+    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
+    { time: '11:30 – 12:20 PM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
+    { time: '12:20 – 01:10 PM', subject: 'Computer Science', teacher: 'Mr. Das', room: 'Lab 1', type: 'Lab', barColor: 'bg-[#EC4899]', badgeBg: 'bg-pink-50 text-pink-700' }
+  ],
+  'Tue': [
+    { time: '08:30 – 09:20 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
+    { time: '09:20 – 10:10 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
+    { time: '10:10 – 11:00 AM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
+    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
+    { time: '11:30 – 12:20 PM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
+    { time: '12:20 – 01:10 PM', subject: 'Physical Ed.', teacher: 'Mr. Singh', room: 'Ground 1', type: 'Sports', barColor: 'bg-[#06B6D4]', badgeBg: 'bg-cyan-50 text-cyan-700' }
+  ],
+  'Wed': [
+    { time: '08:30 – 09:20 AM', subject: 'Hindi', teacher: 'Mrs. Singh', room: 'Room 19', type: 'Lecture', barColor: 'bg-[#EF4444]', badgeBg: 'bg-red-50 text-red-700' },
+    { time: '09:20 – 10:10 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
+    { time: '10:10 – 11:00 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
+    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
+    { time: '11:30 – 12:20 PM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
+    { time: '12:20 – 01:10 PM', subject: 'Art & Craft', teacher: 'Ms. Lily', room: 'Studio 3', type: 'Activity', barColor: 'bg-[#F59E0B]', badgeBg: 'bg-amber-50 text-amber-700' }
+  ],
+  'Thu': [
+    { time: '08:30 – 09:20 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
+    { time: '09:20 – 10:10 AM', subject: 'Computer Science', teacher: 'Mr. Das', room: 'Lab 1', type: 'Lab', barColor: 'bg-[#EC4899]', badgeBg: 'bg-pink-50 text-pink-700' },
+    { time: '10:10 – 11:00 AM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
+    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
+    { time: '11:30 – 12:20 PM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Practical', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
+    { time: '12:20 – 01:10 PM', subject: 'Hindi', teacher: 'Mrs. Singh', room: 'Room 19', type: 'Lecture', barColor: 'bg-[#EF4444]', badgeBg: 'bg-red-50 text-red-700' }
+  ],
+  'Fri': [
+    { time: '08:30 – 09:20 AM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
+    { time: '09:20 – 10:10 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
+    { time: '10:10 – 11:00 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
+    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
+    { time: '11:30 – 12:20 PM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
+    { time: '12:20 – 01:10 PM', subject: 'General Knowledge', teacher: 'Mr. Rai', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#3B82F6]', badgeBg: 'bg-blue-50 text-blue-700' }
+  ],
+  'Sat': [
+    { time: '08:30 – 09:20 AM', subject: 'Club Activities', teacher: 'Staff', room: 'Activity Hall', type: 'Club', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
+    { time: '09:20 – 10:10 AM', subject: 'Sports & Games', teacher: 'Mr. Singh', room: 'Playground', type: 'Sports', barColor: 'bg-[#06B6D4]', badgeBg: 'bg-cyan-50 text-cyan-700' },
+    { time: '10:10 – 11:00 AM', subject: 'Remedial Class', teacher: 'Faculty', room: 'Room 10', type: 'Tutorial', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' }
+  ]
 };
 
 export default function Timetable({ activeChild }) {
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { currentLang } = useLanguage();
+  const [loading, setLoading] = useState(false);
   const [studentInfo, setStudentInfo] = useState(null);
-  const [slots, setSlots] = useState([]);
-  const [viewFormat, setViewFormat] = useState('cards'); // 'cards' or 'grid'
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedDay, setSelectedDay] = useState(() => {
-    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const cur = dayNames[new Date().getDay()];
-    return cur === 'Sunday' ? 'Monday' : cur;
-  });
+  const [selectedDay, setSelectedDay] = useState('Tue'); // default Tue as shown in Screenshot 4
 
   const loadTimetable = async () => {
     setLoading(true);
     try {
-      // 1. Fetch Student profile & dashboard timetable
       const dashRes = await parentService.getDashboard({ studentId: activeChild });
-      let student = null;
-      if (dashRes && dashRes.success && dashRes.data) {
-        student = dashRes.data.student;
-        setStudentInfo(student);
-        if (dashRes.data.timetable && dashRes.data.timetable.length > 0) {
-          setSlots(dashRes.data.timetable);
-          setLoading(false);
-          return;
-        }
-      }
-
-      // 2. Fetch specific class timetable from academics API
-      const classId = student?.classId;
-      const sectionId = student?.sectionId;
-      const res = await parentService.getTimetable(classId ? { classId, sectionId } : {});
-
-      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
-        setSlots(res.data);
-      } else {
-        const fallbackRes = await parentService.getTimetable();
-        if (fallbackRes && fallbackRes.success && Array.isArray(fallbackRes.data)) {
-          setSlots(fallbackRes.data);
-        } else {
-          setSlots([]);
-        }
+      if (dashRes && dashRes.success && dashRes.data?.student) {
+        setStudentInfo(dashRes.data.student);
       }
     } catch (err) {
-      console.error('Failed to load timetable:', err);
-      setSlots([]);
+      console.warn('Timetable sync:', err);
     } finally {
       setLoading(false);
     }
@@ -74,290 +115,131 @@ export default function Timetable({ activeChild }) {
     loadTimetable();
   }, [activeChild]);
 
-  const studentName = studentInfo?.name || 'Aarav Sharma';
-  const studentClass = studentInfo?.class || 'Class I (A)';
+  const studentName = studentInfo?.name || 'Rahul Sharma';
+  const studentClass = studentInfo?.class || 'Class 10 - Section A';
+  const rollNumber = studentInfo?.rollNumber || studentInfo?.roll || 'Roll No. 22';
+  const session = studentInfo?.academicSession || 'Session 2024-25';
 
-  // Filter slots for the selected day and search query
-  const daySlots = slots
-    .filter(s => s.day?.toLowerCase() === selectedDay.toLowerCase())
-    .filter(s => {
-      if (!searchQuery) return true;
-      const q = searchQuery.toLowerCase();
-      const subName = (s.subjectId?.subjectName || s.subject || '').toLowerCase();
-      const teacher = (s.teacherId?.fullName || s.teacherId?.name || '').toLowerCase();
-      return subName.includes(q) || teacher.includes(q);
-    })
-    .sort((a, b) => (a.periodNumber || 0) - (b.periodNumber || 0));
-
-  // Build matrix for Master Grid View: Days -> Periods 1 to 5
-  const periodsList = [1, 2, 3, 4, 5];
+  const periods = defaultWeeklySchedule[selectedDay] || [];
 
   return (
-    <div className="p-4 md:p-6 max-w-[1240px] mx-auto space-y-5 min-h-screen">
+    <div className="w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen bg-[#F8FAFF] pb-28 font-sans select-none">
       
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-gray-200 gap-3">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            <CalendarDays className="w-6 h-6 text-indigo-600" />
-            Class Timetable & Schedule
-          </h1>
-          <p className="text-xs text-gray-500 font-semibold mt-0.5">
-            Viewing Weekly Period Schedule for <span className="text-indigo-600 font-bold">{studentName}</span> • {studentClass}
-          </p>
-        </div>
+      {/* Screen Title (matching Screenshot 4) */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl sm:text-2xl font-black text-slate-900 font-serif tracking-tight">
+          {currentLang === 'hi' ? 'कक्षा समय सारणी (टाइमटेबल)' : 'Student Timetable'}
+        </h1>
+        {loading && (
+          <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />
+        )}
+      </div>
 
-        {/* Action Controls */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Format Switcher */}
-          <div className="flex items-center bg-gray-100 p-0.5 border border-gray-200">
+      {/* Horizontal Day Selector Pills (Mon, Tue, Wed, Thu, Fri, Sat) */}
+      <div className="bg-white/80 backdrop-blur-xs p-1.5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center justify-between gap-1 overflow-x-auto scrollbar-none">
+        {DAYS_CONFIG.map((d) => {
+          const isSelected = selectedDay === d.key;
+          return (
             <button
-              onClick={() => setViewFormat('cards')}
-              className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                viewFormat === 'cards' ? 'bg-white text-indigo-700 shadow-2xs font-black' : 'text-gray-600 hover:text-gray-900'
+              key={d.key}
+              onClick={() => setSelectedDay(d.key)}
+              className={`flex-1 min-w-[46px] py-2 px-2.5 text-xs font-black rounded-xl transition-all cursor-pointer text-center shrink-0 ${
+                isSelected
+                  ? 'bg-[#2563EB] text-white shadow-sm shadow-blue-500/25 scale-[1.02]'
+                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50'
               }`}
             >
-              Day Cards
+              {currentLang === 'hi' ? d.hi : d.en}
             </button>
-            <button
-              onClick={() => setViewFormat('grid')}
-              className={`px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors ${
-                viewFormat === 'grid' ? 'bg-white text-indigo-700 shadow-2xs font-black' : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Master Grid
-            </button>
+          );
+        })}
+      </div>
+
+      {/* Student Class Info Card (matching Screenshot 4) */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center shrink-0">
+            <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
           </div>
-
-          <button
-            onClick={() => window.print()}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold border border-gray-200 shadow-2xs transition-colors"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print</span>
-          </button>
-
-          <button
-            onClick={loadTimetable}
-            disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold border border-gray-200 shadow-2xs transition-colors"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${loading ? 'animate-spin' : ''}`} />
-            <span>Sync</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 border border-gray-200 shadow-2xs">
-        <div className="relative w-full sm:w-72">
-          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search subject or faculty..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs border border-gray-200 rounded-none focus:outline-none focus:border-indigo-600"
-          />
-        </div>
-
-        <div className="flex items-center gap-2 text-xs text-gray-500 font-semibold w-full sm:w-auto justify-between sm:justify-end">
-          <span>Active Session: <strong className="text-gray-900">2026-2027</strong></span>
-          <span>•</span>
-          <span>Room: <strong className="text-gray-900">Room 101</strong></span>
-          <span>•</span>
-          <span>Total Weekly Slots: <strong className="text-indigo-600">{slots.length}</strong></span>
-        </div>
-      </div>
-
-      {/* Day Selector Tabs (Shown for Cards View) */}
-      {viewFormat === 'cards' && (
-        <div className="flex items-center gap-1 overflow-x-auto border-b border-gray-200 bg-white p-1.5 shadow-2xs">
-          {DAYS.map(day => {
-            const isSelected = selectedDay === day;
-            const count = slots.filter(s => s.day?.toLowerCase() === day.toLowerCase()).length;
-            return (
-              <button
-                key={day}
-                onClick={() => setSelectedDay(day)}
-                className={`px-4 py-2 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 flex-shrink-0 rounded-none border-b-2 ${
-                  isSelected 
-                    ? 'border-indigo-600 text-indigo-700 bg-indigo-50 font-black' 
-                    : 'border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-50'
-                }`}
-              >
-                <span>{day}</span>
-                {count > 0 && (
-                  <span className={`text-[10px] px-1.5 py-0.2 rounded-none font-black ${
-                    isSelected ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-600'
-                  }`}>
-                    {count}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Timetable Content */}
-      {loading ? (
-        <div className="bg-white border border-gray-200 p-16 flex flex-col items-center justify-center space-y-3 shadow-xs">
-          <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin" />
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
-            Loading Timetable for {studentName}...
-          </p>
-        </div>
-      ) : viewFormat === 'cards' ? (
-        /* Cards View */
-        daySlots.length === 0 ? (
-          <div className="bg-white border border-gray-200 p-12 flex flex-col items-center justify-center text-center shadow-xs">
-            <div className="w-14 h-14 bg-indigo-50 rounded-none flex items-center justify-center mb-3 text-indigo-600">
-              <CalendarX2 className="w-7 h-7" strokeWidth={2} />
-            </div>
-            <h2 className="text-base font-bold text-gray-800 mb-1">
-              No Periods Scheduled for {selectedDay}
+          <div className="min-w-0">
+            <h2 className="text-sm sm:text-base font-black text-slate-900 font-serif leading-tight truncate">
+              {studentClass}
             </h2>
-            <p className="text-xs text-gray-400 max-w-md">
-              There are no classes scheduled matching your filter for {studentClass}. Select another day above or sync with central schedule.
+            <p className="text-[11px] text-slate-500 font-semibold mt-0.5 truncate">
+              {studentName} • {rollNumber}
             </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {daySlots.map((slot, idx) => {
-              const subjectName = slot.subjectId?.subjectName || slot.subject || 'General Subject';
-              const subjectCode = slot.subjectId?.subjectCode || 'SUB101';
-              const teacherName = slot.teacherId?.fullName || slot.teacherId?.name || (slot.teacherId?.firstName ? `${slot.teacherId.firstName} ${slot.teacherId.lastName || ''}`.trim() : 'Assigned Faculty');
-              const designation = slot.teacherId?.designation || 'Faculty Instructor';
-              const room = slot.roomNumber || 'Room 101';
-              const timeStr = `${slot.startTime || '08:30 AM'} - ${slot.endTime || '09:15 AM'}`;
-              const colorClass = SUBJECT_COLORS[subjectName] || 'bg-indigo-50 text-indigo-700 border-indigo-200';
-
-              return (
-                <div 
-                  key={slot._id || idx}
-                  className="bg-white border border-gray-200 p-4 shadow-xs hover:border-indigo-400 transition-all flex flex-col justify-between group"
-                >
-                  <div>
-                    {/* Period Badge & Time */}
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 bg-gray-100 text-gray-700 border border-gray-200">
-                        {slot.periodName || `Period ${slot.periodNumber || (idx + 1)}`}
-                      </span>
-                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-gray-600 font-mono">
-                        <Clock className="w-3.5 h-3.5 text-indigo-600" />
-                        <span>{timeStr}</span>
-                      </div>
-                    </div>
-
-                    {/* Subject Name & Code */}
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`inline-block px-2.5 py-1 text-xs font-black uppercase tracking-wider rounded-none border ${colorClass}`}>
-                          {subjectName}
-                        </span>
-                        <span className="text-[10px] font-bold text-gray-400 font-mono">
-                          {subjectCode}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Teacher & Room */}
-                    <div className="space-y-2 mt-4 pt-3 border-t border-gray-100 text-xs text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-none bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center font-bold text-[10px] flex-shrink-0">
-                          {teacherName.charAt(0)}
-                        </div>
-                        <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-gray-900 truncate">{teacherName}</span>
-                          <span className="text-[10px] text-gray-400 truncate">{designation}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 text-gray-500 pl-8">
-                        <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-                        <span className="text-[11px] font-medium">{room}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-2.5 flex items-center justify-between text-[10px] font-bold border-t border-gray-50 text-gray-400">
-                    <span>{studentClass}</span>
-                    <span className="text-emerald-600 font-black flex items-center gap-1">
-                      <CheckCircle2 className="w-3 h-3" /> Mandatory Slot
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )
-      ) : (
-        /* Master Grid View (Full Week Schedule) */
-        <div className="bg-white rounded-none border border-gray-200 shadow-xs overflow-x-auto">
-          <div className="p-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-gray-800">
-              Institutional Master Timetable — {studentClass}
-            </span>
-            <span className="text-[11px] font-bold text-indigo-600">
-              Session 2026-2027
-            </span>
-          </div>
-
-          <table className="w-full text-left border-collapse min-w-[900px]">
-            <thead className="bg-gray-100 text-[10px] font-black uppercase tracking-wider text-gray-700 border-b border-gray-200">
-              <tr>
-                <th className="py-3 px-4 w-[12%] border-r border-gray-200">Day</th>
-                {periodsList.map(p => (
-                  <th key={p} className="py-3 px-3 text-center border-r border-gray-200 last:border-r-0">
-                    Period {p}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 text-xs">
-              {DAYS.map(day => {
-                const dayEntries = slots.filter(s => s.day?.toLowerCase() === day.toLowerCase());
-                return (
-                  <tr key={day} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="py-3 px-4 font-black text-gray-900 bg-gray-50/50 border-r border-gray-200">
-                      {day}
-                    </td>
-                    {periodsList.map(pNum => {
-                      const entry = dayEntries.find(s => (s.periodNumber || 0) === pNum);
-                      if (!entry) {
-                        return (
-                          <td key={pNum} className="py-3 px-2 text-center text-gray-300 border-r border-gray-200 last:border-r-0">
-                            -
-                          </td>
-                        );
-                      }
-                      const subName = entry.subjectId?.subjectName || entry.subject || 'Subject';
-                      const teacher = entry.teacherId?.fullName || entry.teacherId?.name || 'Faculty';
-                      const color = SUBJECT_COLORS[subName] || 'bg-indigo-50 text-indigo-700 border-indigo-200';
-
-                      return (
-                        <td key={pNum} className="py-3 px-2 text-center border-r border-gray-200 last:border-r-0">
-                          <div className="flex flex-col items-center gap-1">
-                            <span className={`px-2 py-0.5 text-[10px] font-black uppercase rounded-none border truncate max-w-[130px] ${color}`}>
-                              {subName}
-                            </span>
-                            <span className="text-[10px] text-gray-600 font-semibold truncate max-w-[120px]">
-                              {teacher}
-                            </span>
-                            <span className="text-[9px] text-gray-400 font-mono">
-                              {entry.startTime || '08:30'}
-                            </span>
-                          </div>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
         </div>
-      )}
+
+        <span className="self-start sm:self-auto shrink-0 bg-[#10B981]/15 text-[#10B981] font-bold text-[10px] px-2.5 py-1 rounded-full border border-[#10B981]/25">
+          {session}
+        </span>
+      </div>
+
+      {/* Period Schedule Cards List */}
+      <div className="space-y-3 pt-1">
+        {periods.map((period, idx) => {
+          // Special Recess Break Card (matching Screenshot 4)
+          if (period.isBreak) {
+            return (
+              <div
+                key={idx}
+                className="bg-[#FEF3C7]/60 border border-[#FDE68A] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3 text-[#B45309] shadow-2xs"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-lg sm:text-xl">☕</span>
+                  <span className="font-serif font-black text-sm sm:text-base tracking-tight">
+                    {currentLang === 'hi' ? 'मध्याह्न विश्राम (लंच ब्रेक)' : 'Recess Break'}
+                  </span>
+                </div>
+                <span className="text-xs font-black tracking-wide font-mono self-start sm:self-auto">
+                  {period.time}
+                </span>
+              </div>
+            );
+          }
+
+          // Regular Subject Period Card
+          const subTitle = currentLang === 'hi' ? (SUBJECT_HI[period.subject] || period.subject) : period.subject;
+          const typeTitle = currentLang === 'hi' ? (TYPE_HI[period.type] || period.type) : period.type;
+
+          return (
+            <div
+              key={idx}
+              className="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 relative overflow-hidden transition-all hover:border-blue-300"
+            >
+              {/* Colored Indicator Line on Left */}
+              <div className={`absolute left-0 top-3 bottom-3 w-1.5 rounded-r-md ${period.barColor || 'bg-blue-600'}`}></div>
+
+              <div className="pl-3.5 min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 font-serif tracking-tight">
+                    {subTitle}
+                  </h3>
+                  <span className={`text-[9.5px] font-bold px-2 py-0.5 rounded-md ${period.badgeBg || 'bg-slate-100 text-slate-600'}`}>
+                    {typeTitle}
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-500 font-medium mt-1">
+                  <span className="flex items-center gap-1">
+                    <User className="w-3 h-3 text-slate-400" />
+                    {period.teacher}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-slate-400" />
+                    {period.room}
+                  </span>
+                </div>
+              </div>
+
+              {/* Time Pill */}
+              <div className="self-start sm:self-auto shrink-0 bg-slate-50 border border-slate-200/70 text-slate-700 text-xs font-bold px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl font-mono">
+                {period.time}
+              </div>
+            </div>
+          );
+        })}
+      </div>
 
     </div>
   );

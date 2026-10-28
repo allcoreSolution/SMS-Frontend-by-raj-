@@ -230,16 +230,16 @@ export default function LeaveManagement({ activeChild }) {
   });
 
   return (
-    <div className="min-h-full flex flex-col p-4 sm:p-6 space-y-6">
+    <div className="min-h-full flex flex-col p-3 sm:p-5 space-y-5 pb-24 bg-slate-50">
       
       {/* Toast Alert */}
       {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-[#353A40] text-white text-xs font-bold shadow-xl border-l-4 border-orange-500 animate-in fade-in slide-in-from-top-4">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 bg-slate-900/95 backdrop-blur text-white text-xs font-bold rounded-2xl shadow-xl border border-white/20 animate-in fade-in slide-in-from-top-4">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
           <span>{toastMessage.text}</span>
           <button
             onClick={() => setToastMessage(null)}
-            className="ml-3 text-gray-400 hover:text-white"
+            className="ml-3 text-slate-400 hover:text-white cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
           </button>
@@ -247,43 +247,45 @@ export default function LeaveManagement({ activeChild }) {
       )}
 
       {/* ========================================================= */}
-      {/* 1. HEADER SECTION                                         */}
+      {/* 1. HEADER SECTION (Royal Blue Gradient Hero)              */}
       {/* ========================================================= */}
-      <div className="bg-white border border-gray-200 shadow-sm p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 bg-orange-500"></span>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-5 sm:p-7 rounded-3xl shadow-lg border border-blue-400/20 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Glow circle */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-[10px] font-black text-blue-200 uppercase tracking-widest">
               Services & Resources
             </span>
-            <span className="text-gray-300">•</span>
-            <span className="text-[10px] font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2 py-0.5">
-              Attendance Absences
+            <span className="text-blue-300/60">•</span>
+            <span className="text-[10px] font-bold text-amber-300 bg-white/15 backdrop-blur-md border border-white/25 px-2.5 py-0.5 rounded-full">
+              Digital Absence Gate
             </span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
             Student Leave Management
           </h1>
-          <p className="text-xs text-gray-500 mt-0.5">
+          <p className="text-[12px] text-blue-100 mt-1">
             Submit, track, and monitor digital absence permissions for{' '}
-            <strong className="text-gray-800">{student.name}</strong> ({student.className} • Adm: #{student.admissionNo})
+            <strong className="text-white">{student.name || 'Kabir Singh'}</strong> ({student.className || 'Class 10th (A)'} • Adm: #{student.admissionNo || 'STU-2024-101'})
           </p>
         </div>
 
-        <div className="flex items-center gap-2 self-start sm:self-center flex-shrink-0">
+        <div className="flex items-center gap-2 self-start sm:self-center flex-shrink-0 relative z-10">
           <button
             onClick={() => fetchLeaves(true)}
             disabled={refreshing}
-            className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold flex items-center gap-1.5 transition-colors"
+            className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             title="Refresh Leave Records"
           >
             <RotateCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Refresh</span>
+            <span>Sync</span>
           </button>
 
           <button
             onClick={() => setApplyModalOpen(true)}
-            className="px-4 py-2 bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" /> Apply Leave
           </button>
@@ -294,54 +296,54 @@ export default function LeaveManagement({ activeChild }) {
       {/* 2. STATS & LEAVE BALANCE CARDS                            */}
       {/* ========================================================= */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white border border-gray-200 p-4 shadow-sm flex items-center gap-3.5">
-          <div className="w-10 h-10 bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center flex-shrink-0">
-            <Calendar className="w-5 h-5 text-slate-600" />
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center flex-shrink-0 shadow-2xs">
+            <Calendar className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Annual Quota
             </span>
-            <span className="text-xl font-black text-gray-900">{stats.totalAllowed} Days</span>
-            <span className="text-[10px] text-gray-500 block">Session Allowance</span>
+            <span className="text-xl font-black text-slate-900 leading-tight">{stats.totalAllowed} Days</span>
+            <span className="text-[10px] text-slate-500 block">Session Allowance</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 p-4 shadow-sm flex items-center gap-3.5">
-          <div className="w-10 h-10 bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center flex-shrink-0">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center flex-shrink-0 shadow-2xs">
             <CheckCircle2 className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Leaves Availed
             </span>
-            <span className="text-xl font-black text-indigo-900">{stats.leavesTaken} Days</span>
+            <span className="text-xl font-black text-indigo-900 leading-tight">{stats.leavesTaken} Days</span>
             <span className="text-[10px] text-indigo-600 font-semibold block">{stats.approvedCount} approved absences</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 p-4 shadow-sm flex items-center gap-3.5">
-          <div className="w-10 h-10 bg-orange-50 border border-orange-100 text-orange-600 flex items-center justify-center flex-shrink-0">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center flex-shrink-0 shadow-2xs">
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Pending Review
             </span>
-            <span className="text-xl font-black text-orange-700">{stats.pendingCount}</span>
-            <span className="text-[10px] text-orange-600 font-semibold block">Under Teacher Review</span>
+            <span className="text-xl font-black text-amber-700 leading-tight">{stats.pendingCount}</span>
+            <span className="text-[10px] text-amber-600 font-semibold block">Under Teacher Review</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 p-4 shadow-sm flex items-center gap-3.5">
-          <div className="w-10 h-10 bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center flex-shrink-0 shadow-2xs">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               Available Balance
             </span>
-            <span className="text-xl font-black text-emerald-700">{stats.available} Days</span>
+            <span className="text-xl font-black text-emerald-700 leading-tight">{stats.available} Days</span>
             <span className="text-[10px] text-emerald-600 font-semibold block">Remaining in quota</span>
           </div>
         </div>
@@ -356,16 +358,16 @@ export default function LeaveManagement({ activeChild }) {
         <div className="lg:col-span-2 space-y-4">
           
           {/* Filter & Search Bar */}
-          <div className="bg-white border border-gray-200 shadow-sm p-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-1 overflow-x-auto">
+          <div className="bg-white border border-slate-200/80 rounded-3xl shadow-xs p-3.5 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-1.5 overflow-x-auto p-1 bg-slate-100 rounded-2xl shadow-inner">
               {['ALL', 'PENDING', 'APPROVED', 'REJECTED'].map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1.5 text-xs font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     statusFilter === st
-                      ? 'bg-[#353A40] text-white shadow-xs'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-blue-600 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`}
                 >
                   {st === 'ALL' ? `All (${leaves.length})` : st}
@@ -374,49 +376,49 @@ export default function LeaveManagement({ activeChild }) {
             </div>
 
             <div className="relative flex-1 sm:max-w-xs min-w-[200px]">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Search reason or ref..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1.5 bg-gray-50 border border-gray-200 text-xs focus:outline-hidden focus:bg-white focus:border-indigo-500"
+                className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-medium focus:outline-hidden focus:bg-white focus:border-blue-500 shadow-2xs"
               />
             </div>
           </div>
 
           {/* Records List Container */}
           {loading ? (
-            <div className="bg-white border border-gray-200 p-16 flex flex-col items-center justify-center text-center space-y-3 shadow-sm min-h-[350px]">
-              <div className="w-10 h-10 border-4 border-[#f97316] border-t-transparent rounded-full animate-spin"></div>
-              <h3 className="text-sm font-bold text-gray-800">Loading Student Leave Records...</h3>
-              <p className="text-xs text-gray-500 max-w-xs">
-                Fetching leave history and balance quota from MongoDB.
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-16 flex flex-col items-center justify-center text-center space-y-3 shadow-xs min-h-[350px]">
+              <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <h3 className="text-sm font-bold text-slate-800">Loading Student Leave Records...</h3>
+              <p className="text-xs text-slate-500 max-w-xs">
+                Fetching leave history and balance quota from Central School ERP.
               </p>
             </div>
           ) : error ? (
-            <div className="bg-white border border-red-200 p-10 flex flex-col items-center justify-center text-center space-y-3 shadow-sm">
-              <AlertCircle className="w-10 h-10 text-red-500" />
-              <h3 className="text-sm font-bold text-gray-800">{error}</h3>
+            <div className="bg-white border border-rose-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center space-y-3 shadow-xs">
+              <AlertCircle className="w-10 h-10 text-rose-500" />
+              <h3 className="text-sm font-bold text-slate-800">{error}</h3>
               <button
                 onClick={() => fetchLeaves(true)}
-                className="px-4 py-2 bg-indigo-600 text-white text-xs font-bold"
+                className="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
               >
                 Try Again
               </button>
             </div>
           ) : filteredLeaves.length === 0 ? (
-            <div className="bg-white border border-gray-200 p-16 flex flex-col items-center justify-center text-center space-y-3 shadow-sm">
-              <FileWarning className="w-12 h-12 text-gray-300" strokeWidth={1.5} />
-              <h3 className="text-sm font-bold text-gray-800">No Leave Applications Found</h3>
-              <p className="text-xs text-gray-500 max-w-xs">
+            <div className="bg-white border border-slate-200/80 rounded-3xl p-16 flex flex-col items-center justify-center text-center space-y-3 shadow-xs">
+              <FileWarning className="w-12 h-12 text-slate-300" strokeWidth={1.5} />
+              <h3 className="text-sm font-bold text-slate-800">No Leave Applications Found</h3>
+              <p className="text-xs text-slate-500 max-w-xs">
                 {searchQuery || statusFilter !== 'ALL'
                   ? 'No applications match your active filter criteria.'
-                  : 'You have not submitted any leave applications for Aarav Sharma.'}
+                  : 'You have not submitted any leave applications for your student.'}
               </p>
               <button
                 onClick={() => setApplyModalOpen(true)}
-                className="px-4 py-2 bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold flex items-center gap-1.5 shadow-sm"
+                className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl flex items-center gap-1.5 shadow-sm cursor-pointer"
               >
                 <Plus className="w-4 h-4" /> Apply Leave Now
               </button>
@@ -442,15 +444,15 @@ export default function LeaveManagement({ activeChild }) {
                 return (
                   <div
                     key={lve._id}
-                    className="bg-white border border-gray-200 p-4 shadow-xs hover:border-orange-300 transition-all space-y-3"
+                    className="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs hover:border-blue-300 hover:shadow-md transition-all space-y-3"
                   >
                     {/* Header Row */}
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-2.5">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5">
+                        <span className="font-mono text-xs font-black text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
                           #{lve.leaveCode || `LVE-${lve._id?.slice(-4)}`}
                         </span>
-                        <span className="text-xs font-black text-gray-900">
+                        <span className="text-xs font-extrabold text-slate-900">
                           {lve.leaveType}
                         </span>
                         <span className="text-[10px] text-gray-500 font-semibold">

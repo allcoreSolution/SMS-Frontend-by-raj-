@@ -1,63 +1,154 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useLanguage } from '../context/LanguageContext';
 import {
-  Wallet, ClipboardCheck, FileText, BookOpen, Phone, MessageSquare,
-  Mail, Zap, Calendar, Clock, GraduationCap, ChevronLeft, ChevronRight,
-  Megaphone, User, Award, Shield, CheckCircle2, AlertTriangle,
-  RefreshCw, Info, ExternalLink, X, MapPin, Sparkles, BookMarked,
-  LayoutGrid, PenLine, Monitor
+  Calendar, Video, ClipboardList, PenLine, Wallet, CheckSquare,
+  Laptop, Grid3X3, GraduationCap, ChevronRight, User, RefreshCw,
+  Clock, CheckCircle2, AlertCircle, Megaphone, Info, Dumbbell,
+  BadgeCheck, HelpCircle, X, ChevronLeft, CalendarDays, Star,
+  BookOpen, Sparkles, Award, Shield, FileText, Phone, School, QrCode
 } from 'lucide-react';
 import { parentService } from '../api/parentService';
-import { useLanguage } from '../context/LanguageContext';
-import { getT } from '../utils/translations';
 
-const quickActions = [
-  { key: 'feePayments',  label: 'Pay Fees',      icon: Wallet,         bg: 'bg-emerald-500', route: '/fee-payments' },
-  { key: 'attendance',   label: 'Attendance',    icon: ClipboardCheck, bg: 'bg-blue-500',    route: '/attendance'   },
-  { key: 'exams',        label: 'Exam Report',   icon: FileText,       bg: 'bg-amber-500',   route: '/exams'        },
-  { key: 'timetable',    label: 'Timetable',     icon: LayoutGrid,     bg: 'bg-pink-500',    route: '/timetable'    },
-  { key: 'homework',     label: 'Homework',      icon: PenLine,        bg: 'bg-orange-500',  route: '/homework'     },
-  { key: 'documents',    label: 'Documents',     icon: BookOpen,       bg: 'bg-teal-500',    route: '/documents'    },
-  { key: 'studyCenter',  label: 'Study Center',  icon: BookMarked,     bg: 'bg-rose-500',    route: '/study-center' },
-  { key: 'noticeBoard',  label: 'Notice Board',  icon: Megaphone,      bg: 'bg-purple-500',  route: '/notice-board' },
+const getMediaUrl = (photoPath) => {
+  if (!photoPath) return null;
+  if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
+  const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
+    || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.11:5050');
+  const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
+  return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
+};
+
+// 9 Quick Action Modules (3 Columns on Mobile Phones) with English & Hindi support
+const getQuickModules = (lang) => [
+  { 
+    key: 'timetable', 
+    label: lang === 'hi' ? 'समय सारणी' : 'Timetable', 
+    icon: Calendar, 
+    color: '#8B5CF6', 
+    bg: 'bg-purple-50 hover:bg-purple-100/80', 
+    iconBg: 'bg-purple-100 text-purple-600',
+    border: 'border-purple-200/80', 
+    route: '/timetable' 
+  },
+  { 
+    key: 'homework', 
+    label: lang === 'hi' ? 'गृहकार्य' : 'Homework', 
+    icon: ClipboardList, 
+    color: '#F97316', 
+    bg: 'bg-orange-50 hover:bg-orange-100/80', 
+    iconBg: 'bg-orange-100 text-orange-600',
+    border: 'border-orange-200/80', 
+    route: '/homework' 
+  },
+  { 
+    key: 'attendance', 
+    label: lang === 'hi' ? 'उपस्थिति' : 'Attendance', 
+    icon: CheckSquare, 
+    color: '#2563EB', 
+    bg: 'bg-blue-50 hover:bg-blue-100/80', 
+    iconBg: 'bg-blue-100 text-blue-600',
+    border: 'border-blue-200/80', 
+    route: '/attendance' 
+  },
+  { 
+    key: 'fees', 
+    label: lang === 'hi' ? 'फीस देय' : 'Fee Dues', 
+    icon: Wallet, 
+    color: '#10B981', 
+    bg: 'bg-emerald-50 hover:bg-emerald-100/80', 
+    iconBg: 'bg-emerald-100 text-emerald-600',
+    border: 'border-emerald-200/80', 
+    route: '/fee-payments' 
+  },
+  { 
+    key: 'onlineExams', 
+    label: lang === 'hi' ? 'ऑनलाइन परीक्षा' : 'CBT Exams', 
+    icon: Laptop, 
+    color: '#EC4899', 
+    bg: 'bg-pink-50 hover:bg-pink-100/80', 
+    iconBg: 'bg-pink-100 text-pink-600',
+    border: 'border-pink-200/80', 
+    route: '/online-exams' 
+  },
+  { 
+    key: 'onlineClasses', 
+    label: lang === 'hi' ? 'लाइव क्लास' : 'Live Class', 
+    icon: Video, 
+    color: '#EF4444', 
+    bg: 'bg-rose-50 hover:bg-rose-100/80', 
+    iconBg: 'bg-rose-100 text-rose-600',
+    border: 'border-rose-200/80', 
+    route: '/live-classes' 
+  },
+  { 
+    key: 'studyCenter', 
+    label: lang === 'hi' ? 'स्टडी नोट्स' : 'Study Notes', 
+    icon: BookOpen, 
+    color: '#06B6D4', 
+    bg: 'bg-cyan-50 hover:bg-cyan-100/80', 
+    iconBg: 'bg-cyan-100 text-cyan-600',
+    border: 'border-cyan-200/80', 
+    route: '/study-center' 
+  },
+  { 
+    key: 'noticeBoard', 
+    label: lang === 'hi' ? 'सूचनाएं' : 'Notices', 
+    icon: Megaphone, 
+    color: '#D97706', 
+    bg: 'bg-amber-50 hover:bg-amber-100/80', 
+    iconBg: 'bg-amber-100 text-amber-700',
+    border: 'border-amber-200/80', 
+    route: '/notice-board' 
+  },
+  { 
+    key: 'viewAll', 
+    label: lang === 'hi' ? 'सभी मॉड्यूल' : 'All Modules', 
+    icon: Grid3X3, 
+    color: '#2563EB', 
+    bg: 'bg-indigo-50 hover:bg-indigo-100/80', 
+    iconBg: 'bg-indigo-100 text-indigo-600',
+    border: 'border-indigo-200/80', 
+    route: '/all-modules' 
+  },
 ];
 
-const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-
-const getDaysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
-const getFirstDay    = (y, m) => new Date(y, m, 1).getDay();
+const DAYS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAYS_HI = ['रवि', 'सोम', 'मंगल', 'बुध', 'गुरु', 'शुक्र', 'शनि'];
+const MONTHS_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June', 
+  'July', 'August', 'September', 'October', 'November', 'December'
+];
+const MONTHS_HI = [
+  'जनवरी', 'फरवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 
+  'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'
+];
 
 export default function Dashboard({ activeChild, setActiveChild }) {
   const navigate = useNavigate();
-
   const { currentLang, t } = useLanguage();
 
-  // Current calendar viewing month/year
-  const todayDate = new Date();
-  const [curDate, setCurDate] = useState(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1));
-  const [view, setView] = useState('month');
-
-  // Backend state
-  const [loading, setLoading] = useState(true);
+  // Real current date initialization
+  const today = new Date();
+  const [curDate, setCurDate] = useState(() => new Date());
+  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState(null);
   const [selectedDayEvents, setSelectedDayEvents] = useState(null);
   const [activeNoticeModal, setActiveNoticeModal] = useState(null);
+  const [showSchoolModal, setShowSchoolModal] = useState(false);
+  const [showIdCardModal, setShowIdCardModal] = useState(false);
 
   const y = curDate.getFullYear();
   const m = curDate.getMonth();
-  const daysInMonth = getDaysInMonth(y, m);
-  const firstDay    = getFirstDay(y, m);
-  const dk = (d) => `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const prevMonthLen = getDaysInMonth(y, m - 1);
-  const trailingCount = (7 - ((firstDay + daysInMonth) % 7)) % 7;
+  const daysInMonth = new Date(y, m + 1, 0).getDate();
+  const firstDay = new Date(y, m, 1).getDay();
+  const prevMonthDays = new Date(y, m, 0).getDate();
 
   // Fetch real data from backend API
   const fetchDashboardData = async (isManualRefresh = false) => {
     if (isManualRefresh) setRefreshing(true);
-    else setLoading(true);
-
     try {
       const parentUser = localStorage.getItem('parent_user');
       let parentId = null;
@@ -65,736 +156,876 @@ export default function Dashboard({ activeChild, setActiveChild }) {
         try {
           const parsed = JSON.parse(parentUser);
           parentId = parsed.parentId || parsed._id;
-        } catch (e) {
-          // ignore
-        }
+        } catch (e) {}
       }
 
       const res = await parentService.getDashboard({
-        studentId: activeChild,
-        parentId,
+        studentId: activeChild || undefined,
+        parentId: parentId || undefined,
         month: m + 1,
         year: y
       });
 
       if (res && res.success && res.data) {
         setDashboardData(res.data);
-        // If App has no active child selected yet and backend returned children, set it
-        if ((!activeChild || activeChild === 3) && res.data.student && res.data.student._id && setActiveChild) {
+        if ((!activeChild || activeChild === '1') && res.data.student && res.data.student._id && setActiveChild) {
           if (activeChild !== res.data.student._id) {
             setActiveChild(res.data.student._id);
           }
         }
       }
     } catch (err) {
-      console.error('Failed to load dashboard data from backend:', err);
+      console.warn('Backend live metrics sync warning:', err?.message);
     } finally {
-      setLoading(false);
       setRefreshing(false);
     }
   };
 
   useEffect(() => {
     fetchDashboardData();
+    const handleChildChanged = (e) => {
+      if (e.detail) {
+        fetchDashboardData();
+      }
+    };
+    window.addEventListener('portal_child_changed', handleChildChanged);
+    return () => window.removeEventListener('portal_child_changed', handleChildChanged);
   }, [activeChild, m, y]);
 
-  // Fallback defaults if backend is loading or unavailable
-  const student = dashboardData?.student || {
-    name: 'Aarav Sharma',
-    class: 'Class I (A)',
-    avatar: 'A',
-    admn: 'YIS-2024-101',
-    roll: '1',
-    dob: '15 Oct 2014',
-    bloodGroup: 'A+',
-    house: 'Red Phoenix',
-    category: 'General',
-    fatherName: 'Rajesh Kumar Gupta',
-    fatherPhone: '9876510000',
-    photo: null
+  // Multilingual dynamic data
+  const quickModules = getQuickModules(currentLang);
+  const DAYS = currentLang === 'hi' ? DAYS_HI : DAYS_EN;
+  const MONTHS = currentLang === 'hi' ? MONTHS_HI : MONTHS_EN;
+
+  // Dynamic student identity from backend
+  const student = {
+    name: dashboardData?.student?.name || 'Aarav Sharma',
+    class: dashboardData?.student?.class || 'Class I (A)',
+    photo: dashboardData?.student?.photo || null,
+    admn: dashboardData?.student?.admn || dashboardData?.student?.admissionNo || 'YIS-2024-101',
+    roll: dashboardData?.student?.roll || dashboardData?.student?.rollNo || '1',
+    session: dashboardData?.student?.academicSession || '2024-25',
+    dob: dashboardData?.student?.dob || '15 Oct 2014',
+    bloodGroup: dashboardData?.student?.bloodGroup || 'A+',
+    attendanceToday: dashboardData?.attendance?.today || (currentLang === 'hi' ? 'उपस्थित' : 'Present'),
+    attendanceRate: dashboardData?.attendance?.rate || '94%',
+    attendanceStreak: '14 Days'
   };
 
-  const fees = dashboardData?.fees || {
-    totalAssigned: 72500,
-    totalPaid: 72500,
-    totalDue: 0,
-    feesPaid: '₹72,500.00',
-    feesBalance: 'All Clear',
-    status: 'All Clear'
-  };
+  // Fees details from backend
+  const feeDueAmount = dashboardData?.fees?.feesBalance || (currentLang === 'hi' ? 'पूर्ण चुकता' : 'All Clear');
+  const feeStatus = dashboardData?.fees?.status || (currentLang === 'hi' ? 'पूर्ण चुकता' : 'All Clear');
 
-  const attendance = dashboardData?.attendance || {
-    today: 'Not Marked Yet',
-    rate: '98%',
-    presentCount: 16,
-    absentCount: 0,
-    lateCount: 1,
-    calendarMap: {}
-  };
+  // Notices from backend or fallback
+  const defaultNotices = currentLang === 'hi' ? [
+    {
+      id: '1',
+      title: 'इंटर-स्कूल साइंस व रोबोटिक्स ओलंपियाड 2026',
+      date: '22 अक्टूबर 2026 को प्रकाशित',
+      body: 'मुख्य विज्ञान सभागार में राज्य स्तरीय विज्ञान प्रदर्शनी और नवाचार प्रतियोगिता। सभी छात्र कल तक अपने मॉडल अवश्य पंजीकृत कराएं।'
+    },
+    {
+      id: '2',
+      title: 'दीपावली एवं शरद कालीन अवकाश सूचना',
+      date: '20 अक्टूबर 2026 को प्रकाशित',
+      body: 'स्कूल में 29 अक्टूबर से दीपावली व शरदकालीन अवकाश रहेगा। नियमित शीतकालीन समय सारणी के साथ परिसर पुनः खुलेगा।'
+    }
+  ] : [
+    {
+      id: '1',
+      title: 'Inter-School Science & Robotics Olympiad 2026',
+      date: 'Published on 22 Oct, 2026',
+      body: 'State-level science exposition and innovation displays scheduled at Main Science Auditorium. Students must register models by tomorrow.'
+    },
+    {
+      id: '2',
+      title: 'Diwali & Autumn Festival Break Schedule',
+      date: 'Published on 20 Oct, 2026',
+      body: 'School will observe Autumn & Diwali vacation from October 29th. Campus will reopen with regular winter class timings.'
+    }
+  ];
 
-  const notices = dashboardData?.notices && dashboardData.notices.length > 0
-    ? dashboardData.notices
-    : [
-        {
-          id: '1',
-          type: 'alert',
-          title: 'CBSE Mid-Term Assessment Date Sheet Published',
-          date: '14 Oct 2026',
-          body: 'The Mid-Term Examination Date Sheet for Classes VI to X has been finalized and uploaded to the portal. Examinations commence from 5th November 2026.'
-        },
-        {
-          id: '2',
-          type: 'notice',
-          title: 'Winter Uniform Guidelines & School Timings Update',
-          date: '14 Oct 2026',
-          body: 'Effective 1st November 2026, the school timings for all students will be 8:30 AM to 2:30 PM. All students must wear the designated navy blue blazer.'
+  const notices = (dashboardData?.notices && dashboardData.notices.length > 0)
+    ? dashboardData.notices.map(n => {
+        if (currentLang !== 'hi') return n;
+        const t = (n.title || '').toLowerCase();
+        let titleHi = n.title;
+        let bodyHi = n.body;
+        if (t.includes('library')) {
+          titleHi = 'पुस्तकालय सप्ताह: कृपया उधार ली गई पुस्तकें वापस करें';
+          bodyHi = 'यह पुस्तकालय सप्ताह है। विलंब शुल्क से बचने के लिए कृपया इस सप्ताह के अंत तक सभी पुस्तकें जमा कराएं।';
+        } else if (t.includes('application') || t.includes('portal') || t.includes('launch')) {
+          titleHi = 'समाचार अलर्ट: विद्यार्थी व अभिभावक डिजिटल पोर्टल लाइव';
+          bodyHi = 'आदरणीय अभिभावकगण, नमस्कार! विद्यालय द्वारा फीस भुगतान, समय सारणी और उपस्थिति ट्रैकिंग के लिए डिजिटल मोबाइल पोर्टल लाइव कर दिया गया है।';
+        } else if (t.includes('olympiad') || t.includes('science') || t.includes('robotics')) {
+          titleHi = 'इंटर-स्कूल साइंस व रोबोटिक्स ओलंपियाड 2026';
+          bodyHi = 'मुख्य विज्ञान सभागार में राज्य स्तरीय विज्ञान प्रदर्शनी और नवाचार प्रतियोगिता। सभी छात्र कल तक अपने मॉडल अवश्य पंजीकृत कराएं।';
+        } else if (t.includes('diwali') || t.includes('autumn') || t.includes('break')) {
+          titleHi = 'दीपावली एवं शरद कालीन अवकाश सूचना';
+          bodyHi = 'स्कूल में 29 अक्टूबर से दीपावली व शरदकालीन अवकाश रहेगा। नियमित शीतकालीन समय सारणी के साथ परिसर पुनः खुलेगा।';
         }
-      ];
-
-  const generateMonthlyEvents = (year, month) => {
-    const pad = (n) => String(n).padStart(2, '0');
-    const mStr = pad(month + 1);
-    return {
-      [`${year}-${mStr}-05`]: [{ title: 'Special Assembly & Activity', color: 'bg-emerald-500', type: 'Event' }],
-      [`${year}-${mStr}-12`]: [{ title: 'Inter-House Sports Meet', color: 'bg-blue-500', type: 'Event' }],
-      [`${year}-${mStr}-18`]: [{ title: 'PTM Interaction & Review', color: 'bg-indigo-500', type: 'Meeting' }],
-      [`${year}-${mStr}-25`]: [{ title: 'Academic Progress Showcase', color: 'bg-amber-500', type: 'Event' }],
-    };
-  };
-
-  const calendarEvents = dashboardData?.calendarEvents || generateMonthlyEvents(y, m);
-
-  const attendanceMap = attendance.calendarMap || {};
-
-  const handleCellClick = (dateStr, dayNum, events, attStatus) => {
-    setSelectedDayEvents({
-      dateStr,
-      dayNum,
-      events,
-      attStatus: attStatus || 'Holiday / No Record'
-    });
-  };
+        return {
+          ...n,
+          title: titleHi,
+          body: bodyHi,
+          date: n.date ? (currentLang === 'hi' ? `${n.date} को प्रकाशित` : n.date) : n.date
+        };
+      })
+    : defaultNotices;
 
   return (
-    <div className="p-4 sm:p-6 space-y-6 max-w-[1440px] mx-auto min-h-screen">
+    <div className="w-full max-w-full px-2.5 sm:px-5 lg:px-7 py-3 sm:py-5 space-y-3.5 sm:space-y-4 bg-[#F8FAFF] min-h-screen font-sans text-slate-800 select-none pb-24 lg:pb-8">
       
-      {/* ── TOP HEADER BAR ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-gray-200 p-4 shadow-xs">
+      {/* ── DESKTOP HEADER BAR ── */}
+      <div className="hidden lg:flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight uppercase">
-              {t('portalTitle', 'Parent & Student Portal')}
-            </h1>
-          </div>
-          <p className="text-xs text-gray-500 font-semibold mt-0.5">
-            {t('portalSub', 'Real-time synchronization with Central School ERP Node')}
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-serif">
+            {currentLang === 'hi' ? 'विद्यार्थी पोर्टल डैशबोर्ड' : 'Student Portal Dashboard'}
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">
+            {currentLang === 'hi' ? 'एसीएस स्मार्ट कैंपस में आपका स्वागत है • रियल-टाइम एकेडमिक हब' : 'Welcome to ACS Smart Campus • Real-time Academic & Attendance Hub'}
           </p>
         </div>
-
-        <div className="flex items-center gap-3">
-          {/* Refresh Button */}
-          <button
-            onClick={() => fetchDashboardData(true)}
-            disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold border border-gray-200 transition-colors shadow-2xs active:scale-95"
-            title="Reload live database metrics"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>{refreshing ? t('refreshing', 'Refreshing...') : t('syncLive', 'Sync Live')}</span>
-          </button>
-
-          {/* Active Student Pill */}
-          <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-200 px-3 py-1.5">
-            <GraduationCap className="w-4 h-4 text-indigo-600" />
-            <span className="text-xs font-bold text-indigo-900 truncate max-w-[140px] sm:max-w-none">
-              {student.name} ({student.class})
-            </span>
-          </div>
-        </div>
+        <button
+          onClick={() => fetchDashboardData(true)}
+          className="flex items-center gap-1.5 text-xs text-blue-600 font-bold bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-xl border border-blue-200 transition-colors cursor-pointer"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+          <span>{refreshing ? (currentLang === 'hi' ? 'सिंक हो रहा है...' : 'Syncing...') : (currentLang === 'hi' ? 'लाइव सिंक' : 'Sync Live')}</span>
+        </button>
       </div>
 
-      {/* ── TOP ROW: STUDENT PROFILE & NOTICE BOARD (LEFT) + METRICS & QUICK ACTIONS (RIGHT) ── */}
-      <div className="grid grid-cols-12 gap-6">
+      {/* ── MAIN CONTENT 2-COLUMN GRID ── */}
+      <div className="grid grid-cols-12 gap-3.5 sm:gap-4 items-start">
 
-        {/* ── LEFT COLUMN (4 Cols): STUDENT IDENTITY & NOTICES ── */}
-        <div className="col-span-12 xl:col-span-4 flex flex-col gap-6">
+        {/* ── LEFT / PRIMARY COLUMN (COMPACT & MOBILE-FIRST) ── */}
+        <div className="col-span-12 lg:col-span-7 xl:col-span-6 flex flex-col gap-3 sm:gap-3.5">
 
-          {/* Student Profile Card */}
-          <div className="bg-white border border-gray-200 p-5 shadow-xs relative overflow-hidden group">
-            {/* Background accent bar */}
-            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" />
+          {/* 1. COMPACT HERO BLUE GRADIENT ID CARD */}
+          <div className="w-full bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-white shadow-[0_6px_18px_-4px_rgba(37,99,235,0.3)] border border-white/20 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
 
-            {/* Profile Avatar / Photo */}
-            <div className="flex flex-col items-center text-center mt-2 mb-5">
-              <div className="relative mb-3">
-                {student.photo ? (
-                  <img
-                    src={student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo.startsWith('/') ? '' : '/'}${student.photo}`}
+            <div className="flex items-center gap-2.5 sm:gap-3.5 relative z-10">
+              {/* Avatar with Online Status Dot (NEVER CLIPPED) */}
+              <div className="relative shrink-0">
+                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                  <img 
+                    src={getMediaUrl(student.photo) || '/kabir_singh.png'} 
                     alt={student.name}
-                    className="w-20 h-20 object-cover border-2 border-indigo-200 shadow-sm"
+                    className="w-full h-full object-cover shrink-0"
+                    onError={(e) => { e.target.src = '/kabir_singh.png'; }}
                   />
-                ) : (
-                  <div className="w-20 h-20 bg-gradient-to-br from-indigo-600 to-purple-700 shadow-md border-2 border-indigo-100 flex items-center justify-center">
-                    <span className="text-3xl font-black text-white">{student.avatar}</span>
-                  </div>
-                )}
-                <span className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white ring-1 ring-emerald-200" title="Enrolled & Active" />
+                </div>
+                <span 
+                  className="absolute bottom-0 right-0 w-3 h-3 bg-[#10B981] rounded-full border-2 border-white shadow-xs" 
+                  title="Enrolled Active Student"
+                />
               </div>
 
-              <h2 className="text-lg font-black text-gray-900 uppercase tracking-wide">
-                {student.name}
-              </h2>
-              <div className="flex items-center gap-2 mt-1 flex-wrap justify-center">
-                <span className="text-[12px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5">
-                  {student.class}
-                </span>
-                <span className="text-[12px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5">
-                  {t('roll', 'Roll')}: {student.roll}
-                </span>
-              </div>
-            </div>
-
-            {/* Detailed Info Rows */}
-            <div className="divide-y divide-gray-100 text-[12.5px] mb-5">
-              {[
-                { label: t('admissionNo', 'Admission No.'), val: student.admn, icon: GraduationCap },
-                { label: t('dob', 'Date of Birth'), val: student.dob, icon: Calendar },
-                { label: t('house', 'House'), val: student.house || 'Red Phoenix', icon: Shield },
-                { label: t('bloodGroup', 'Blood Group'), val: student.bloodGroup || 'O+', icon: Sparkles },
-                { label: t('guardian', 'Guardian / Father'), val: student.fatherName || 'Parent', icon: User },
-              ].map(({ label, val, icon: Icon }) => (
-                <div key={label} className="flex items-center justify-between py-2.5">
-                  <span className="flex items-center gap-2 text-gray-500 font-bold uppercase text-[11px] tracking-wider">
-                    <Icon className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
-                    {label}
+              {/* Student info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-1">
+                  <p className="text-[10px] font-bold text-blue-200 tracking-wide uppercase">
+                    {currentLang === 'hi' ? 'स्वागत है 👋' : 'Welcome Back 👋'}
+                  </p>
+                  <button
+                    onClick={() => setShowIdCardModal(true)}
+                    className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-[#1E3A8A] px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
+                  >
+                    {currentLang === 'hi' ? 'पहचान पत्र देखें →' : 'View ID Card →'}
+                  </button>
+                </div>
+                <h2 className="text-base sm:text-xl font-black text-white font-serif tracking-tight truncate leading-tight mt-0.5">
+                  {student.name}
+                </h2>
+                <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  <span className="bg-white/20 backdrop-blur-xs text-white text-[9.5px] sm:text-[10.5px] font-bold px-2 py-0.2 rounded-full border border-white/20">
+                    {student.class}
                   </span>
-                  <span className="font-extrabold text-gray-800 text-right truncate max-w-[180px]">
-                    {val}
+                  <span className="bg-[#10B981] text-white text-[9.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
+                    {currentLang === 'hi' ? 'सक्रिय विद्यार्थी ✅' : 'Active Student ✅'}
                   </span>
                 </div>
-              ))}
+              </div>
             </div>
 
-            {/* Quick Profile Nav */}
-            <button
-              onClick={() => navigate('/my-profile')}
-              className="w-full py-2 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-600 text-gray-600 text-xs font-black uppercase tracking-wider border border-gray-200 transition-colors flex items-center justify-center gap-1.5"
-            >
-              <span>{t('viewDossier', 'View Complete Student Dossier')}</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </button>
+            {/* 3-Column Compact Details Strip */}
+            <div className="mt-2.5 bg-black/20 backdrop-blur-xs rounded-xl p-1.5 sm:p-2 border border-white/15 grid grid-cols-3 gap-1 text-center relative z-10">
+              <div className="text-left pl-1 min-w-0">
+                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                  {currentLang === 'hi' ? 'प्रवेश सं.' : 'Admission No.'}
+                </p>
+                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                  {student.admn}
+                </p>
+              </div>
+              <div className="min-w-0">
+                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                  {currentLang === 'hi' ? 'रोल नंबर' : 'Roll Number'}
+                </p>
+                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                  {student.roll}
+                </p>
+              </div>
+              <div className="text-right pr-1 min-w-0">
+                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                  {currentLang === 'hi' ? 'सत्र' : 'Session'}
+                </p>
+                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                  {student.session}
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* Notice Board Card */}
-          <div className="bg-white border border-gray-200 p-5 shadow-xs flex-1 flex flex-col">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-amber-50 border border-amber-200 flex items-center justify-center">
-                  <Megaphone className="w-3.5 h-3.5 text-amber-600" />
+          {/* 2. QUICK ACTIONS (3 COLUMNS ON MOBILE PHONES) */}
+          <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 shadow-xs">
+            <div className="flex items-center justify-between mb-2 px-0.5">
+              <div className="flex items-center gap-1.5">
+                <Grid3X3 className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                <h3 className="text-xs sm:text-sm font-black text-slate-900 font-serif tracking-tight">
+                  {currentLang === 'hi' ? 'त्वरित मॉड्यूल' : 'Quick Modules'}
+                </h3>
+              </div>
+              <button
+                onClick={() => navigate('/all-modules')}
+                className="text-[10.5px] font-bold text-[#2563EB] hover:underline cursor-pointer flex items-center gap-0.5"
+              >
+                <span>{currentLang === 'hi' ? 'सभी देखें (18)' : 'View All (18)'}</span>
+                <ChevronRight className="w-3 h-3 stroke-[2.5]" />
+              </button>
+            </div>
+
+            {/* 3 COLUMNS ON MOBILE (grid-cols-3) */}
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-6 gap-1.5 sm:gap-2">
+              {quickModules.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={action.key}
+                    type="button"
+                    onClick={() => navigate(action.route)}
+                    className="flex flex-col items-center justify-center p-1.5 sm:p-2 rounded-xl bg-slate-50 hover:bg-slate-100/90 border border-slate-200/70 transition-all active:scale-95 cursor-pointer text-center group"
+                  >
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform ${action.iconBg}`}>
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" strokeWidth={2.3} />
+                    </div>
+                    <span className="mt-1 text-[9.5px] sm:text-[10.5px] font-black text-slate-800 leading-tight truncate w-full group-hover:text-blue-600 transition-colors">
+                      {action.label}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* 3. NOTICE TICKER (COMPACT & SLEEK) */}
+          <div
+            onClick={() => navigate('/notice-board')}
+            className="w-full bg-[#EFF6FF] border border-[#BFDBFE] px-2.5 py-1.5 rounded-xl flex items-center gap-2 cursor-pointer hover:bg-blue-100/60 transition-colors shadow-2xs group"
+          >
+            <div className="w-5 h-5 rounded-md bg-[#2563EB] text-white flex items-center justify-center shrink-0 shadow-2xs">
+              <Megaphone className="w-3 h-3 stroke-[2.2] shrink-0" />
+            </div>
+            <p className="text-[10.5px] sm:text-xs font-bold text-[#1E3A8A] truncate flex-1 min-w-0 leading-tight">
+              {currentLang === 'hi' 
+                ? 'सूचना: इंटर-स्कूल साइंस व रोबोटिक्स ओलंपियाड 2026 डेट शीट जारी!' 
+                : 'Notice: Inter-School Science & Robotics Olympiad 2026 Date Sheet Released!'}
+            </p>
+            <ChevronRight className="w-3.5 h-3.5 text-[#2563EB] group-hover:translate-x-0.5 transition-transform shrink-0" />
+          </div>
+
+          {/* 4. COMPACT SCHOOL INFORMATION BANNER */}
+          <div
+            onClick={() => setShowSchoolModal(true)}
+            className="w-full bg-white border border-[#2563EB]/25 rounded-xl p-2 sm:p-2.5 shadow-2xs flex items-center gap-2.5 cursor-pointer hover:border-[#2563EB] transition-all"
+          >
+            <div className="w-8 h-8 rounded-lg bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center shrink-0">
+              <School className="w-4 h-4 stroke-[2.2] shrink-0" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between gap-1">
+                <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight font-serif truncate">
+                  ACS Smart Campus
+                </h4>
+                <span className="shrink-0 bg-[#10B981]/15 text-[#10B981] font-bold text-[8.5px] px-1.5 py-0.2 rounded-full border border-[#10B981]/25">
+                  {currentLang === 'hi' ? 'सीबीएसई संबद्ध' : 'CBSE Affiliated'}
+                </span>
+              </div>
+              <p className="text-[9.5px] sm:text-[10.5px] text-slate-500 truncate mt-0.2">
+                {currentLang === 'hi'
+                  ? 'स्थापना 2004 • ज्ञान, सत्यनिष्ठा और उत्कृष्टता • हेल्पलाइन: +91 141 2780123'
+                  : 'Estd. 2004 • Knowledge, Integrity & Excellence • Helpline: +91 141 2780123'}
+              </p>
+            </div>
+          </div>
+
+          {/* 5. SIDE-BY-SIDE FEATURE CARDS: 3 COLUMNS ON MOBILE (grid-cols-3) */}
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
+            {/* School Staff */}
+            <div
+              onClick={() => navigate('/school-visit')}
+              className="bg-white border border-[#2563EB]/25 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#2563EB] transition-all active:scale-95 group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-[#2563EB]/10 text-[#2563EB] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <BadgeCheck className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <p className="text-[10px] sm:text-[11px] font-black text-slate-900 font-serif leading-tight mt-1 truncate w-full">
+                {currentLang === 'hi' ? 'स्कूल स्टाफ' : 'School Staff'}
+              </p>
+              <p className="text-[8.5px] sm:text-[9px] font-bold text-[#2563EB] mt-0.5 truncate w-full">
+                {currentLang === 'hi' ? 'सूची देखें →' : 'Directory →'}
+              </p>
+            </div>
+
+            {/* Coaching */}
+            <div
+              onClick={() => navigate('/coaching')}
+              className="bg-white border border-[#10B981]/30 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#10B981] transition-all active:scale-95 group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-[#10B981]/15 text-[#10B981] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <Dumbbell className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <p className="text-[10px] sm:text-[11px] font-black text-slate-900 font-serif leading-tight mt-1 truncate w-full">
+                {currentLang === 'hi' ? 'कोचिंग' : 'Coaching'}
+              </p>
+              <p className="text-[8.5px] sm:text-[9px] font-bold text-[#10B981] mt-0.5 truncate w-full">
+                {currentLang === 'hi' ? 'कक्षाएं →' : 'Classes →'}
+              </p>
+            </div>
+
+            {/* Study Center */}
+            <div
+              onClick={() => navigate('/study-center')}
+              className="bg-white border border-purple-200/80 rounded-xl p-1.5 sm:p-2 shadow-2xs flex flex-col items-center justify-center text-center cursor-pointer hover:border-purple-400 transition-all active:scale-95 group"
+            >
+              <div className="w-7 h-7 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <BookOpen className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <p className="text-[10px] sm:text-[11px] font-black text-slate-900 font-serif leading-tight mt-1 truncate w-full">
+                {currentLang === 'hi' ? 'स्टडी सेंटर' : 'Study Center'}
+              </p>
+              <p className="text-[8.5px] sm:text-[9px] font-bold text-purple-600 mt-0.5 truncate w-full">
+                {currentLang === 'hi' ? 'डायरी →' : 'Logbook →'}
+              </p>
+            </div>
+          </div>
+
+          {/* 6. TODAY'S ATTENDANCE STATUS CARD (COMPACT) */}
+          <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'आज की उपस्थिति स्थिति' : "Today's Attendance Status"}
+                </p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-lg sm:text-xl font-black text-[#10B981] font-serif tracking-tight">
+                    {student.attendanceToday}
+                  </span>
+                  <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 stroke-[2.5]" />
                 </div>
-                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">{t('noticeBoard', 'Notice Board')}</h3>
+                <p className="text-[9.5px] text-slate-400 font-medium mt-0.2">
+                  {currentLang === 'hi' ? 'सत्यापित आरएफआईडी प्रवेश • 08:25 AM' : 'Verified RFID Entry • 08:25 AM'}
+                </p>
+              </div>
+
+              {/* Compact Circular Progress Gauge */}
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center shrink-0">
+                <svg className="w-11 h-11 sm:w-12 sm:h-12 transform -rotate-90">
+                  <circle
+                    cx="22"
+                    cy="22"
+                    r="17"
+                    stroke="#E2E8F0"
+                    strokeWidth="3.5"
+                    fill="transparent"
+                  />
+                  <circle
+                    cx="22"
+                    cy="22"
+                    r="17"
+                    stroke="#2563EB"
+                    strokeWidth="3.5"
+                    strokeDasharray={2 * Math.PI * 17}
+                    strokeDashoffset={(2 * Math.PI * 17) * (1 - 0.948)}
+                    strokeLinecap="round"
+                    fill="transparent"
+                  />
+                </svg>
+                <span className="absolute font-serif font-black text-slate-800 text-[10px] sm:text-[11px]">
+                  {student.attendanceRate}
+                </span>
+              </div>
+            </div>
+
+            {/* Attendance Streak Banner */}
+            <div className="mt-2 bg-[#F59E0B]/12 border border-[#F59E0B]/30 rounded-lg py-1 px-2.5 text-center flex items-center justify-center gap-1">
+              <span className="text-[10px] sm:text-[10.5px] font-bold text-[#D97706]">
+                {currentLang === 'hi' ? '🔥 14 दिन लगातार उपस्थिति स्ट्रीक!' : '🔥 14 Days Continuous Attendance Streak!'}
+              </span>
+            </div>
+          </div>
+
+          {/* 7. 4 COMPACT METRICS CARDS */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 sm:gap-2">
+            {/* Card 1: Pending Homework */}
+            <div
+              onClick={() => navigate('/homework')}
+              className="bg-white border border-[#F97316]/25 rounded-xl p-2 shadow-2xs flex items-center gap-2 cursor-pointer hover:border-[#F97316] transition-all"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#F97316]/12 text-[#F97316] flex items-center justify-center shrink-0">
+                <ClipboardList className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
+                  {currentLang === 'hi' ? '2 लंबित' : '2 Pending'}
+                </p>
+                <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
+                  {currentLang === 'hi' ? 'गृहकार्य' : 'Homework'}
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Pending Classwork */}
+            <div
+              onClick={() => navigate('/classwork')}
+              className="bg-white border border-[#6366F1]/25 rounded-xl p-2 shadow-2xs flex items-center gap-2 cursor-pointer hover:border-[#6366F1] transition-all"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#6366F1]/12 text-[#6366F1] flex items-center justify-center shrink-0">
+                <PenLine className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
+                  {currentLang === 'hi' ? '1 लंबित' : '1 Pending'}
+                </p>
+                <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
+                  {currentLang === 'hi' ? 'कक्षा कार्य' : 'Classwork'}
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Fee Due */}
+            <div
+              onClick={() => navigate('/fee-payments')}
+              className="bg-white border border-[#EF4444]/25 rounded-xl p-2 shadow-2xs flex items-center gap-2 cursor-pointer hover:border-[#EF4444] transition-all"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#10B981]/12 text-[#10B981] flex items-center justify-center shrink-0">
+                <Wallet className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-black text-emerald-600 leading-tight truncate">
+                  {feeDueAmount}
+                </p>
+                <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
+                  {currentLang === 'hi' ? 'शुल्क स्थिति' : 'Fee Status'}
+                </p>
+              </div>
+            </div>
+
+            {/* Card 4: Upcoming Exams */}
+            <div
+              onClick={() => navigate('/exams')}
+              className="bg-white border border-[#10B981]/25 rounded-xl p-2 shadow-2xs flex items-center gap-2 cursor-pointer hover:border-[#10B981] transition-all"
+            >
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[#10B981]/12 text-[#10B981] flex items-center justify-center shrink-0">
+                <HelpCircle className="w-3.5 h-3.5 stroke-[2.2] shrink-0" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
+                  {currentLang === 'hi' ? '3 आगामी' : '3 Upcoming'}
+                </p>
+                <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
+                  {currentLang === 'hi' ? 'परीक्षाएं' : 'Exams'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        {/* ── RIGHT COLUMN: INTERACTIVE ACTIVITY CALENDAR & NOTICES ── */}
+        <div className="col-span-12 lg:col-span-5 xl:col-span-6 flex flex-col gap-3.5">
+
+          {/* Real Interactive Activity Calendar */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
+            <div className="bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] text-white p-2.5 sm:p-3 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center shrink-0">
+                  <CalendarDays className="w-3.5 h-3.5 text-white shrink-0" />
+                </div>
+                <div>
+                  <h3 className="text-xs sm:text-sm font-black font-serif tracking-tight leading-none">
+                    {currentLang === 'hi' ? 'स्कूल गतिविधि कैलेंडर' : 'School Activity Calendar'}
+                  </h3>
+                  <p className="text-[9px] text-blue-200 mt-0.5">
+                    {MONTHS[m]} {y}
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => setCurDate(new Date(y, m - 1, 1))}
+                  className="p-1 rounded-md hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  title="Previous Month"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurDate(new Date())}
+                  className="px-1.5 py-0.5 text-[9.5px] font-bold bg-white text-[#1E3A8A] rounded transition-colors"
+                >
+                  {currentLang === 'hi' ? 'आज' : 'Today'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurDate(new Date(y, m + 1, 1))}
+                  className="p-1 rounded-md hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  title="Next Month"
+                >
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="p-2 sm:p-2.5">
+              <div className="grid grid-cols-7 gap-1 text-center font-bold text-[9px] sm:text-[10px] text-slate-400 mb-1">
+                {DAYS.map(d => (
+                  <span key={d} className={d === 'Sun' || d === 'रवि' ? 'text-rose-500 font-black' : ''}>{d}</span>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-7 gap-1">
+                {/* Previous month trailing days */}
+                {Array.from({ length: firstDay }).map((_, i) => (
+                  <div key={`prev-${i}`} className="h-7 sm:h-8 rounded-md bg-slate-50/50 flex items-center justify-center text-slate-300 text-[9.5px] sm:text-[10.5px]">
+                    {prevMonthDays - firstDay + i + 1}
+                  </div>
+                ))}
+
+                {/* Days of current month */}
+                {Array.from({ length: daysInMonth }).map((_, i) => {
+                  const dayNum = i + 1;
+                  const isToday = today.getDate() === dayNum && today.getMonth() === m && today.getFullYear() === y;
+                  const isSunday = (firstDay + i) % 7 === 0;
+
+                  return (
+                    <div
+                      key={`day-${dayNum}`}
+                      onClick={() => navigate('/calendar')}
+                      className={`h-7 sm:h-8 rounded-md border flex flex-col items-center justify-center relative cursor-pointer transition-all hover:scale-105 ${
+                        isToday
+                          ? 'bg-[#2563EB] border-[#2563EB] text-white font-black shadow-xs'
+                          : isSunday
+                          ? 'bg-rose-50/40 border-rose-100 text-rose-500 font-bold'
+                          : 'bg-white border-slate-100 hover:border-slate-300 text-slate-700'
+                      }`}
+                    >
+                      <span className="text-[9.5px] sm:text-[10.5px] font-bold">{dayNum}</span>
+                      {isToday && (
+                        <span className="w-1 h-1 rounded-full bg-white absolute bottom-0.5"></span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Legend */}
+              <div className="flex items-center justify-around mt-2 pt-1.5 border-t border-slate-100 text-[9px] font-semibold text-slate-500">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563EB]"></span> {currentLang === 'hi' ? 'आज' : 'Today'}
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> {currentLang === 'hi' ? 'उपस्थित' : 'Present'}
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-500"></span> {currentLang === 'hi' ? 'रविवार / अवकाश' : 'Sunday / Holiday'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Real Notices List */}
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs p-2.5 sm:p-3.5">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <Megaphone className="w-3.5 h-3.5 text-[#2563EB] shrink-0" />
+                <h3 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight font-serif">
+                  {currentLang === 'hi' ? 'आधिकारिक सूचना पट्ट' : 'Official Notice Board'}
+                </h3>
               </div>
               <button
                 onClick={() => navigate('/notice-board')}
-                className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline"
+                className="text-[10px] font-bold text-[#2563EB] hover:underline cursor-pointer"
               >
-                {t('viewAll', 'View All')}
+                {currentLang === 'hi' ? 'सभी देखें →' : 'View All →'}
               </button>
             </div>
 
-            <div className="space-y-4 overflow-y-auto max-h-[360px] pr-1">
-              {notices.map((n) => (
+            <div className="space-y-1.5">
+              {notices.slice(0, 3).map((notice) => (
                 <div
-                  key={n.id}
-                  onClick={() => setActiveNoticeModal(n)}
-                  className="p-3 bg-gray-50 hover:bg-gray-100/80 border border-gray-200 transition-colors cursor-pointer group"
+                  key={notice.id || notice._id}
+                  onClick={() => setActiveNoticeModal(notice)}
+                  className="p-2 rounded-xl bg-slate-50 hover:bg-blue-50/60 border border-slate-200/60 hover:border-blue-200 transition-all cursor-pointer group"
                 >
-                  <div className="flex items-center justify-between gap-2 mb-1.5">
-                    <span
-                      className={`text-[9.5px] font-black uppercase px-2 py-0.5 tracking-widest ${
-                        n.type === 'alert'
-                          ? 'bg-red-100 text-red-700 border border-red-200'
-                          : 'bg-blue-100 text-blue-700 border border-blue-200'
-                      }`}
-                    >
-                      {n.type === 'alert' ? t('highPriority', 'High Priority') : t('officialNotice', 'Official Notice')}
-                    </span>
-                    <span className="text-[10px] text-gray-400 font-semibold">{n.date}</span>
-                  </div>
-                  <h4 className="text-[13px] font-bold text-gray-800 group-hover:text-indigo-600 line-clamp-1 transition-colors">
-                    {n.title}
-                  </h4>
-                  <p className="text-[11.5px] text-gray-500 line-clamp-2 mt-1 leading-relaxed">
-                    {n.body}
+                  <p className="text-[11px] sm:text-xs font-bold text-slate-800 group-hover:text-blue-700 leading-snug truncate">
+                    {notice.title}
+                  </p>
+                  <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
+                    {notice.date}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
-
-        </div>
-
-        {/* ── RIGHT COLUMN (8 Cols): STATS, QUICK ACTIONS & CALENDAR ── */}
-        <div className="col-span-12 xl:col-span-8 flex flex-col gap-6">
-
-          {/* Top 3 Interactive Stat Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-            {/* Fee Due Card */}
-            <button
-              onClick={() => navigate('/fee-payments')}
-              className="bg-gradient-to-br from-red-600 to-rose-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-red-100 uppercase tracking-wider">{t('feeBalance', 'Fee Balance')}</span>
-                <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
-                  <Wallet className="w-4 h-4 text-white" />
-                </div>
-              </div>
-              <div>
-                <p className={`text-2xl font-black tracking-tight ${fees.feesBalance === 'All Clear' ? 'text-emerald-300' : 'text-white'}`}>
-                  {fees.feesBalance === 'All Clear' ? t('allClear', 'All Clear') : fees.feesBalance}
-                </p>
-                <div className="flex items-center justify-between text-[11px] text-red-100 mt-1 font-semibold">
-                  <span>{t('paid', 'Paid')}: {fees.feesPaid}</span>
-                  <span className="underline group-hover:text-white">{t('payOnline', 'Pay Online')} »</span>
-                </div>
-              </div>
-            </button>
-
-            {/* Today's Attendance Card */}
-            <button
-              onClick={() => navigate('/attendance')}
-              className="bg-gradient-to-br from-teal-600 to-emerald-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-teal-100 uppercase tracking-wider">{t('todaysAttendance', "Today's Attendance")}</span>
-                <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
-                  <ClipboardCheck className="w-4 h-4 text-white" />
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="text-xl font-black tracking-tight text-white">
-                    {attendance.today === 'Present' ? t('present', 'Present') : (attendance.today === 'Absent' ? t('absent', 'Absent') : attendance.today)}
-                  </p>
-                  {attendance.today === 'Present' && (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-300 flex-shrink-0" />
-                  )}
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-teal-100 mt-1 font-semibold">
-                  <span>{t('rate', 'Rate')}: {attendance.rate}</span>
-                  <span className="underline group-hover:text-white">{t('fullRegister', 'Full Register')} »</span>
-                </div>
-              </div>
-            </button>
-
-            {/* Academic Standing / Merit Card */}
-            <button
-              onClick={() => navigate('/exams')}
-              className="bg-gradient-to-br from-indigo-600 to-purple-700 text-white p-4 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all text-left flex flex-col justify-between relative overflow-hidden group"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-indigo-100 uppercase tracking-wider">{t('academicsTerm', 'Academics & Term')}</span>
-                <div className="w-8 h-8 bg-white/20 flex items-center justify-center">
-                  <Award className="w-4 h-4 text-white" />
-                </div>
-              </div>
-              <div>
-                <p className="text-xl font-black tracking-tight text-white">
-                  {t('termActive', 'Term 1 Active')}
-                </p>
-                <div className="flex items-center justify-between text-[11px] text-indigo-100 mt-1 font-semibold">
-                  <span>{t('house', 'House')}: {student.house || 'Red Phoenix'}</span>
-                  <span className="underline group-hover:text-white">{t('examReport', 'Exam Report')} »</span>
-                </div>
-              </div>
-            </button>
-
-          </div>
-
-          {/* Quick Actions Panel */}
-          <div className="bg-white border border-gray-200 p-4 shadow-xs">
-            <div className="flex items-center gap-2 mb-3.5">
-              <Zap className="w-4 h-4 text-amber-500" />
-              <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">{t('quickActions', 'Quick Actions & Shortcuts')}</h3>
-            </div>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
-              {quickActions.map(({ key, label, icon: Icon, bg, route }) => (
-                <button
-                  key={key || label}
-                  onClick={() => navigate(route)}
-                  className="flex flex-col items-center gap-1.5 p-2 hover:bg-gray-50 border border-transparent hover:border-gray-200 transition-all group"
-                >
-                  <div className={`w-11 h-11 ${bg} flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform`}>
-                    <Icon className="w-5 h-5" strokeWidth={2.2} />
-                  </div>
-                  <span className="text-[11px] font-bold text-gray-600 group-hover:text-gray-900 text-center leading-tight truncate w-full">
-                    {t(key, label)}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Student Activity Calendar */}
-          <div className="bg-white border border-gray-200 p-4 shadow-xs flex-1 flex flex-col">
-            
-            {/* Calendar Controls */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-blue-600" />
-                <h3 className="text-sm font-black text-gray-900 uppercase tracking-wider">
-                  {t('activityCalendar', 'Attendance & Events Activity Calendar')}
-                </h3>
-              </div>
-
-              <div className="flex items-center gap-3">
-                {/* View Switcher */}
-                <div className="flex bg-gray-100 p-0.5 border border-gray-200">
-                  <button
-                    onClick={() => setView('month')}
-                    className={`px-3 py-1 text-[11px] font-bold uppercase transition-colors ${
-                      view === 'month' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-600 hover:text-black'
-                    }`}
-                  >
-                    {t('monthView', 'Month View')}
-                  </button>
-                  <button
-                    onClick={() => setView('list')}
-                    className={`px-3 py-1 text-[11px] font-bold uppercase transition-colors ${
-                      view === 'list' ? 'bg-blue-600 text-white shadow-2xs' : 'text-gray-600 hover:text-black'
-                    }`}
-                  >
-                    {t('listSchedule', 'List Schedule')}
-                  </button>
-                </div>
-
-                {/* Month Navigator */}
-                <div className="flex items-center gap-1">
-                  <button
-                    onClick={() => setCurDate(new Date(y, m - 1, 1))}
-                    className="w-7 h-7 bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center text-gray-700 transition-colors"
-                    title="Previous month"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setCurDate(new Date(todayDate.getFullYear(), todayDate.getMonth(), 1))}
-                    className="px-2.5 h-7 bg-gray-100 hover:bg-gray-200 border border-gray-200 text-[10px] font-bold uppercase text-gray-700 transition-colors"
-                  >
-                    {t('today', 'Today')}
-                  </button>
-                  <button
-                    onClick={() => setCurDate(new Date(y, m + 1, 1))}
-                    className="w-7 h-7 bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center text-gray-700 transition-colors"
-                    title="Next month"
-                  >
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Calendar Legend */}
-            <div className="flex flex-wrap items-center gap-4 mb-3 text-[11px] font-bold text-gray-500">
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-emerald-500"></span> {t('present', 'Present')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-red-500"></span> {t('absent', 'Absent')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-amber-400"></span> {t('late', 'Late')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-pink-500"></span> {t('holiday', 'School Holiday / Fest')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-indigo-500"></span> {t('ptmMeeting', 'PTM / Meeting')}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 bg-blue-500"></span> {t('academicEvent', 'Academic Event')}
-              </span>
-              <span className="ml-auto text-xs font-black text-gray-800">
-                {MONTHS[m]} {y}
-              </span>
-            </div>
-
-            {/* View Mode: Month Grid */}
-            {view === 'month' && (
-              <div className="w-full overflow-x-auto border border-gray-200">
-                <table className="w-full border-collapse" style={{ tableLayout: 'fixed', minWidth: '600px' }}>
-                  <thead>
-                    <tr>
-                      {DAYS.map((d) => (
-                        <th
-                          key={d}
-                          className="text-center text-[10.5px] font-black uppercase text-gray-600 py-2 border-b border-gray-200 bg-gray-50/70"
-                        >
-                          {d}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {(() => {
-                      const cells = [];
-                      // prev month tail
-                      for (let i = 0; i < firstDay; i++) {
-                        cells.push({ day: prevMonthLen - firstDay + i + 1, cur: false, key: `p-${i}` });
-                      }
-                      // current month
-                      for (let d = 1; d <= daysInMonth; d++) {
-                        cells.push({ day: d, cur: true, key: `c-${d}` });
-                      }
-                      // next month lead
-                      for (let i = 0; i < trailingCount; i++) {
-                        cells.push({ day: i + 1, cur: false, key: `n-${i}` });
-                      }
-
-                      const rows = [];
-                      for (let r = 0; r < cells.length / 7; r++) {
-                        rows.push(cells.slice(r * 7, r * 7 + 7));
-                      }
-
-                      return rows.map((row, ri) => (
-                        <tr key={ri}>
-                          {row.map((cell) => {
-                            const dateStr = dk(cell.day);
-                            const events = cell.cur ? (calendarEvents[dateStr] || []) : [];
-                            const attStatus = cell.cur ? attendanceMap[dateStr] : null;
-                            const isToday = cell.cur && cell.day === todayDate.getDate() && m === todayDate.getMonth() && y === todayDate.getFullYear();
-
-                            // Attendance marker color
-                            let attBadge = null;
-                            if (attStatus === 'present') {
-                              attBadge = <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" title="Present" />;
-                            } else if (attStatus === 'absent') {
-                              attBadge = <span className="w-1.5 h-1.5 rounded-full bg-red-500" title="Absent" />;
-                            } else if (attStatus === 'late') {
-                              attBadge = <span className="w-1.5 h-1.5 rounded-full bg-amber-500" title="Late" />;
-                            }
-
-                            return (
-                              <td
-                                key={cell.key}
-                                onClick={() => cell.cur && handleCellClick(dateStr, cell.day, events, attStatus)}
-                                className={`border border-gray-200 align-top p-1 h-[78px] transition-colors ${
-                                  !cell.cur
-                                    ? 'bg-gray-50/50 cursor-default opacity-40'
-                                    : isToday
-                                    ? 'bg-indigo-50/40 hover:bg-indigo-50 cursor-pointer ring-1 ring-indigo-300 inset-0'
-                                    : 'hover:bg-gray-50/80 cursor-pointer'
-                                }`}
-                              >
-                                <div className="flex items-center justify-between mb-1">
-                                  <span
-                                    className={`text-[11px] font-black inline-flex items-center justify-center w-5 h-5 ${
-                                      isToday
-                                        ? 'bg-indigo-600 text-white shadow-2xs'
-                                        : cell.cur
-                                        ? 'text-gray-800'
-                                        : 'text-gray-300'
-                                    }`}
-                                  >
-                                    {cell.day}
-                                  </span>
-                                  {attBadge}
-                                </div>
-
-                                <div className="space-y-1">
-                                  {events.map((ev, ei) => (
-                                    <div
-                                      key={ei}
-                                      className={`${ev.color} text-white text-[8px] font-black uppercase px-1 py-0.5 truncate tracking-tighter`}
-                                      title={ev.title}
-                                    >
-                                      {ev.title}
-                                    </div>
-                                  ))}
-                                  {attStatus && (
-                                    <div className="text-[7.5px] font-bold uppercase text-gray-400 tracking-tighter">
-                                      {attStatus}
-                                    </div>
-                                  )}
-                                </div>
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      ));
-                    })()}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {/* View Mode: List Schedule */}
-            {view === 'list' && (
-              <div className="border border-gray-200 divide-y divide-gray-100 max-h-[380px] overflow-y-auto">
-                {Object.entries(calendarEvents).length > 0 ? (
-                  Object.entries(calendarEvents).map(([dateStr, evList]) => (
-                    <div key={dateStr} className="p-3 hover:bg-gray-50 flex items-start gap-3 transition-colors">
-                      <div className="bg-gray-100 border border-gray-200 px-2.5 py-1 text-center min-w-[60px]">
-                        <span className="text-[10px] font-black uppercase text-gray-500 block leading-none">
-                          {new Date(dateStr).toLocaleDateString('en-US', { month: 'short' })}
-                        </span>
-                        <span className="text-base font-black text-gray-900 block leading-tight">
-                          {new Date(dateStr).getDate()}
-                        </span>
-                      </div>
-                      <div className="flex-1">
-                        {evList.map((ev, i) => (
-                          <div key={i} className="flex items-center gap-2 mb-1">
-                            <span className={`w-2 h-2 ${ev.color}`}></span>
-                            <span className="text-xs font-bold text-gray-800">{ev.title}</span>
-                            <span className="text-[9.5px] uppercase font-bold text-gray-400 bg-gray-100 px-1.5 py-0.2">
-                              {ev.type || 'Academic'}
-                            </span>
-                          </div>
-                        ))}
-                        <p className="text-[11px] text-gray-500">
-                          Scheduled for Class {student.class} and campus attendees.
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-6 text-center text-xs text-gray-400 font-bold">
-                    No special events or holidays registered for this month.
-                  </div>
-                )}
-              </div>
-            )}
-
           </div>
 
         </div>
 
       </div>
 
-      {/* ── DAY EVENT POPUP MODAL ── */}
-      {selectedDayEvents && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-gray-300 w-full max-w-md p-5 shadow-xl animate-in fade-in duration-200">
-            <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-              <div>
-                <span className="text-[10px] font-black text-indigo-600 uppercase tracking-widest block">
-                  Calendar Schedule Detail
-                </span>
-                <h3 className="text-base font-black text-gray-900">
-                  {selectedDayEvents.dateStr} (Day {selectedDayEvents.dayNum})
-                </h3>
+      {/* ── SCHOOL INFO MODAL ── */}
+      {showSchoolModal && (
+        <div 
+          onClick={() => setShowSchoolModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150 text-slate-800"
+          >
+            <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <School className="w-5 h-5 text-amber-300 shrink-0" />
+                <h3 className="text-base font-black font-serif">ACS Smart Campus</h3>
               </div>
               <button
-                onClick={() => setSelectedDayEvents(null)}
-                className="w-7 h-7 bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600"
+                onClick={() => setShowSchoolModal(false)}
+                className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-
-            <div className="space-y-3 mb-4">
-              <div className="p-2.5 bg-gray-50 border border-gray-200 flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-600 uppercase">Student Attendance</span>
-                <span
-                  className={`text-xs font-black uppercase px-2 py-0.5 ${
-                    selectedDayEvents.attStatus === 'present'
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : selectedDayEvents.attStatus === 'absent'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {selectedDayEvents.attStatus}
-                </span>
+            <div className="p-5 space-y-3 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'संबद्धता:' : 'Affiliation:'}</span>
+                <span className="font-bold text-slate-900">{currentLang === 'hi' ? 'सीबीएसई सीनियर सेकेंडरी' : 'CBSE Senior Secondary'}</span>
               </div>
-
-              <div>
-                <h4 className="text-xs font-black uppercase text-gray-500 tracking-wider mb-2">
-                  Campus Events on this Date
-                </h4>
-                {selectedDayEvents.events.length > 0 ? (
-                  <div className="space-y-2">
-                    {selectedDayEvents.events.map((ev, i) => (
-                      <div key={i} className="p-3 border border-gray-200 bg-white">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`w-2.5 h-2.5 ${ev.color}`} />
-                          <h5 className="text-xs font-bold text-gray-900">{ev.title}</h5>
-                        </div>
-                        <p className="text-[11px] text-gray-500">
-                          {ev.description || 'General school-wide announcement and curriculum event.'}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-gray-400 italic">No formal exams or public holidays logged.</p>
-                )}
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'प्रधानाचार्य:' : 'Principal:'}</span>
+                <span className="font-bold text-slate-900">{currentLang === 'hi' ? 'डॉ. अनीता सक्सेना (पीएच.डी.)' : 'Dr. Anita Saxena (Ph.D.)'}</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'हेल्पलाइन नंबर:' : 'Hotline Helpline:'}</span>
+                <span className="font-bold text-blue-600">+91 141 2780123</span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-slate-100">
+                <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'कैंपस का स्थान:' : 'Campus Location:'}</span>
+                <span className="font-bold text-slate-900 text-right">{currentLang === 'hi' ? 'जयपुर, राजस्थान' : 'Jaipur, Rajasthan'}</span>
               </div>
             </div>
-
-            <button
-              onClick={() => setSelectedDayEvents(null)}
-              className="w-full py-2 bg-gray-900 hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors"
-            >
-              Close Window
-            </button>
           </div>
         </div>
       )}
 
-      {/* ── NOTICE DETAIL MODAL ── */}
+      {/* ── NOTICE DETAIL POPUP MODAL ── */}
       {activeNoticeModal && (
-        <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white border border-gray-300 w-full max-w-lg p-6 shadow-xl animate-in fade-in duration-200">
-            <div className="flex items-start justify-between pb-3 border-b border-gray-100 mb-4 gap-3">
-              <div>
-                <span
-                  className={`text-[9.5px] font-black uppercase px-2 py-0.5 tracking-widest ${
-                    activeNoticeModal.type === 'alert'
-                      ? 'bg-red-100 text-red-700'
-                      : 'bg-blue-100 text-blue-700'
-                  }`}
-                >
-                  {activeNoticeModal.type === 'alert' ? 'High Priority Alert' : 'School Notification'}
-                </span>
-                <h3 className="text-base font-black text-gray-900 mt-2 leading-snug">
-                  {activeNoticeModal.title}
-                </h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">Published on {activeNoticeModal.date}</p>
+        <div 
+          onClick={() => setActiveNoticeModal(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150 text-slate-800"
+          >
+            <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Megaphone className="w-4 h-4 text-amber-300" />
+                <h4 className="text-sm font-bold">{currentLang === 'hi' ? 'स्कूल आधिकारिक सूचना' : 'School Notice'}</h4>
               </div>
               <button
                 onClick={() => setActiveNoticeModal(null)}
-                className="w-7 h-7 bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 flex-shrink-0"
+                className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
-
-            <div className="p-3 bg-gray-50 border border-gray-200 text-[12.5px] text-gray-700 leading-relaxed max-h-[300px] overflow-y-auto mb-4 whitespace-pre-wrap">
-              {activeNoticeModal.body}
-            </div>
-
-            <div className="flex items-center justify-end gap-2">
+            <div className="p-5">
+              <h3 className="text-base font-black text-slate-900 font-serif leading-snug">
+                {activeNoticeModal.title}
+              </h3>
+              <p className="text-[11px] text-slate-400 font-semibold mt-1">
+                {activeNoticeModal.date}
+              </p>
+              <div className="mt-3.5 p-3.5 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-700 leading-relaxed">
+                {activeNoticeModal.body}
+              </div>
               <button
                 onClick={() => setActiveNoticeModal(null)}
-                className="px-4 py-2 bg-gray-900 hover:bg-black text-white text-xs font-black uppercase tracking-wider transition-colors"
+                className="mt-4 w-full py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs cursor-pointer"
               >
-                Acknowledge & Close
+                {currentLang === 'hi' ? 'सूचना बंद करें' : 'Dismiss Notice'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* ── FOOTER ── */}
-      <footer className="pt-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400">
-        <span>© 2026 ProjectWorlds Multi School ERP SAAS Node. All rights reserved.</span>
-        <span className="font-semibold text-gray-500">Live API Status: Connected (Port 5050)</span>
-      </footer>
+      {/* ── DIGITAL STUDENT ID CARD POPUP MODAL ── */}
+      {showIdCardModal && (
+        <div 
+          onClick={() => setShowIdCardModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-[290px] max-h-[90vh] overflow-y-auto bg-white rounded-2xl shadow-2xl border border-slate-100 animate-in zoom-in-95 duration-150 text-slate-800"
+          >
+            <div className="bg-[#1E3A8A] text-white p-2.5 text-center relative">
+              <button
+                onClick={() => setShowIdCardModal(false)}
+                className="absolute top-2 right-2 p-1 rounded-full bg-white/20 text-white hover:bg-white/30 cursor-pointer"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+              <h4 className="text-xs font-black font-serif tracking-wider uppercase">
+                ACS Smart Campus
+              </h4>
+              <p className="text-[8px] text-blue-200 font-bold uppercase tracking-widest mt-0.5">
+                {currentLang === 'hi' ? 'आधिकारिक विद्यार्थी पहचान पत्र' : 'Official Student Identity Card'}
+              </p>
+            </div>
+
+            <div className="p-3 flex flex-col items-center text-center">
+              {/* Dynamic Student Photo */}
+              <div className="w-14 h-14 rounded-full border-2 border-[#2563EB]/25 bg-slate-100 flex items-center justify-center overflow-hidden shadow-xs relative">
+                <img 
+                  src={
+                    student.photo 
+                      ? (student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo}`) 
+                      : '/kabir_singh.png'
+                  } 
+                  alt={student.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    if (e.target.src !== window.location.origin + '/kabir_singh.png') {
+                      e.target.src = '/kabir_singh.png';
+                    }
+                  }}
+                />
+              </div>
+
+              <h3 className="text-sm font-black text-slate-900 font-serif mt-1.5 leading-tight">
+                {student.name}
+              </h3>
+              <span className="inline-block mt-0.5 bg-blue-50 text-[#2563EB] border border-blue-200 text-[10px] font-bold px-2 py-0.2 rounded-full">
+                {student.class}
+              </span>
+
+              <div className="w-full mt-2.5 bg-slate-50 rounded-xl p-2.5 border border-slate-100 text-[11px] space-y-1 text-left">
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'प्रवेश संख्या:' : 'Admission No:'}</span>
+                  <span className="font-bold text-slate-900">{student.admn}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'रोल नंबर:' : 'Roll Number:'}</span>
+                  <span className="font-bold text-slate-900">{student.roll}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'सत्र:' : 'Session:'}</span>
+                  <span className="font-bold text-slate-900">{student.session}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'रक्त समूह:' : 'Blood Group:'}</span>
+                  <span className="font-bold text-emerald-600">{student.bloodGroup}</span>
+                </div>
+              </div>
+
+              {/* Official Verified QR Code */}
+              <div className="mt-2.5 pt-2 w-full border-t border-slate-100 flex flex-col items-center">
+                <div className="p-1 bg-white rounded-xl border border-slate-200/80 shadow-2xs flex flex-col items-center justify-center">
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&margin=0&data=${encodeURIComponent(`ACS-STUDENT-CARD|ADMN:${student.admn}|NAME:${student.name}|CLASS:${student.class}|ROLL:${student.roll}|SESSION:${student.session}|STATUS:VERIFIED`)}`}
+                    alt="Student Identity QR Code"
+                    className="w-20 h-20 object-contain rounded"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  {/* Offline vector QR code fallback */}
+                  <div className="hidden w-20 h-20 bg-white flex items-center justify-center p-1 relative">
+                    <svg className="w-full h-full text-slate-900" viewBox="0 0 100 100" fill="currentColor">
+                      <rect x="0" y="0" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="5" y="5" width="20" height="20" rx="2" fill="white" />
+                      <rect x="9" y="9" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="70" y="0" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="75" y="5" width="20" height="20" rx="2" fill="white" />
+                      <rect x="79" y="9" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="0" y="70" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="5" y="75" width="20" height="20" rx="2" fill="white" />
+                      <rect x="9" y="79" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="36" y="6" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="6" width="8" height="8" fill="currentColor" />
+                      <rect x="36" y="20" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="20" width="8" height="8" fill="currentColor" />
+                      
+                      <rect x="6" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="20" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="6" y="50" width="8" height="8" fill="currentColor" />
+                      <rect x="20" y="50" width="8" height="8" fill="currentColor" />
+
+                      <rect x="36" y="36" width="28" height="28" rx="4" fill="#2563EB" />
+                      <text x="50" y="54" fontSize="12" fontWeight="bold" fill="white" textAnchor="middle">ACS</text>
+
+                      <rect x="70" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="50" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="50" width="8" height="8" fill="currentColor" />
+
+                      <rect x="36" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="84" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="84" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="84" width="8" height="8" fill="currentColor" />
+                    </svg>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 mt-1 text-[9px] text-slate-500 font-semibold uppercase tracking-wider">
+                  <QrCode className="w-3 h-3 text-[#2563EB]" />
+                  <span>{currentLang === 'hi' ? 'कार्ड सत्यापन हेतु स्कैन करें' : 'Scan to Verify Student Card'}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-2.5 bg-slate-50 border-t border-slate-100 flex gap-2">
+              <button
+                onClick={() => {
+                  setShowIdCardModal(false);
+                  navigate('/my-profile');
+                }}
+                className="flex-1 py-1.5 bg-[#2563EB] hover:bg-blue-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+              >
+                {currentLang === 'hi' ? 'पूर्ण प्रोफाइल →' : 'Full Profile →'}
+              </button>
+              <button
+                onClick={() => setShowIdCardModal(false)}
+                className="py-1.5 px-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-bold text-[11px] cursor-pointer"
+              >
+                {currentLang === 'hi' ? 'बंद करें' : 'Close'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

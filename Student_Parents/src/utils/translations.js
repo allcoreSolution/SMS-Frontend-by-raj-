@@ -1,7 +1,7 @@
-// Complete Multi-Language Translations Dictionary for Student & Parent Portal
+// Complete Multi-Language Translations Dictionary for Student & Parent Portal (English and Hindi only)
 export const LANGUAGES = [
-  { code: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
-  { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳' },
+  { code: 'en', name: 'English', native: 'English', flag: '🇬🇧', isPopular: true },
+  { code: 'hi', name: 'Hindi', native: 'हिन्दी', flag: '🇮🇳', isPopular: true },
 ];
 
 export const TRANSLATIONS = {
@@ -12,6 +12,7 @@ export const TRANSLATIONS = {
     timetable: 'Timetable',
     attendance: 'Attendance',
     exams: 'Exams & Reports',
+    evaluatedPapers: 'Evaluated Papers',
     coaching: 'Coaching',
     meetings: 'Meetings',
     onlineExams: 'Online Exams',
@@ -95,6 +96,7 @@ export const TRANSLATIONS = {
     timetable: 'समय सारणी',
     attendance: 'उपस्थिति',
     exams: 'परीक्षा व परिणाम',
+    evaluatedPapers: 'जांची गई उत्तर पुस्तिकाएं',
     coaching: 'कोचिंग',
     meetings: 'अभिभावक बैठक',
     onlineExams: 'ऑनलाइन परीक्षा',

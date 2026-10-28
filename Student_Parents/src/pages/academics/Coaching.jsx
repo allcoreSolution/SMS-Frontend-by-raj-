@@ -130,86 +130,99 @@ export default function Coaching({ activeChild }) {
   const enrolledCount = programs.filter(p => p.isEnrolled).length;
 
   return (
-    <div className="p-4 md:p-6 max-w-[1240px] mx-auto space-y-5 min-h-screen">
+    <div className="p-3 sm:p-5 md:p-6 max-w-7xl mx-auto space-y-6 min-h-screen bg-[#F8FAFF] pb-24 font-sans">
       
       {/* Toast Alert */}
       {successToast && (
-        <div className="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold shadow-sm flex items-center justify-between animate-fade-in">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
+        <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold rounded-2xl shadow-sm flex items-center justify-between animate-fade-in">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>{successToast}</span>
           </div>
-          <button onClick={() => setSuccessToast('')} className="text-emerald-700 hover:text-emerald-900">
-            <X className="w-3.5 h-3.5" />
+          <button onClick={() => setSuccessToast('')} className="text-emerald-700 hover:text-emerald-900 cursor-pointer">
+            <X className="w-4 h-4" />
           </button>
         </div>
       )}
 
-      {/* Header Block */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-gray-200 gap-4">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2.5">
-            <Target className="w-6 h-6 text-indigo-600" />
-            Coaching Center & Olympiad Modules
-          </h1>
-          <p className="text-xs text-gray-500 font-semibold mt-1 flex items-center gap-2">
-            <User className="w-3.5 h-3.5 text-gray-400" />
-            Extracurricular & Advanced Training for <span className="text-indigo-600 font-bold">{studentName}</span> • {studentClass}
-          </p>
-        </div>
+      {/* Hero Header Card */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-blue-900/15 relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
 
-        <button
-          onClick={loadCoachingData}
-          disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-none shadow-2xs transition-colors self-start sm:self-auto"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${loading ? 'animate-spin' : ''}`} />
-          <span>Sync Programs</span>
-        </button>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner shrink-0">
+              <Target className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+                  Coaching &amp; Olympiad Center
+                </h1>
+                <span className="bg-white/20 backdrop-blur-md text-white border border-white/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Academic Foundation
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1">
+                Extracurricular, STEM, &amp; Advanced Training for <span className="font-bold text-white">{studentName}</span> • {studentClass}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={loadCoachingData}
+            disabled={loading}
+            className="flex items-center gap-2 px-4 py-2 bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold rounded-2xl transition-all shadow-sm self-start sm:self-auto cursor-pointer backdrop-blur-md"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span>Sync Programs</span>
+          </button>
+        </div>
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white p-3.5 border border-gray-200 shadow-xs">
-          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">Available Batches</span>
-          <span className="text-2xl font-black text-gray-900">{programs.length}</span>
-          <p className="text-[10px] text-gray-400 mt-1">Multi-discipline tracks</p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white p-3.5 sm:p-5 border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xs">
+          <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">Available Batches</span>
+          <span className="text-xl sm:text-2xl font-black text-slate-900 leading-none">{programs.length}</span>
+          <p className="text-[10.5px] sm:text-[11px] text-slate-400 mt-1 font-medium truncate">Multi-discipline tracks</p>
         </div>
-        <div className="bg-white p-3.5 border border-gray-200 shadow-xs">
-          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">Enrolled by Candidate</span>
-          <span className="text-2xl font-black text-indigo-700">{enrolledCount}</span>
-          <p className="text-[10px] text-gray-400 mt-1">Active specialized modules</p>
+        <div className="bg-white p-3.5 sm:p-5 border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xs">
+          <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">Enrolled by Candidate</span>
+          <span className="text-xl sm:text-2xl font-black text-blue-600 leading-none">{enrolledCount}</span>
+          <p className="text-[10.5px] sm:text-[11px] text-slate-400 mt-1 font-medium truncate">Active modules</p>
         </div>
-        <div className="bg-white p-3.5 border border-gray-200 shadow-xs">
-          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">Faculty Mentors</span>
-          <span className="text-2xl font-black text-emerald-600">6 Leads</span>
-          <p className="text-[10px] text-gray-400 mt-1">Certified Olympiad coaches</p>
+        <div className="bg-white p-3.5 sm:p-5 border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xs">
+          <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">Faculty Mentors</span>
+          <span className="text-xl sm:text-2xl font-black text-emerald-600 leading-none">6 Leads</span>
+          <p className="text-[10.5px] sm:text-[11px] text-slate-400 mt-1 font-medium truncate">Certified coaches</p>
         </div>
-        <div className="bg-white p-3.5 border border-gray-200 shadow-xs">
-          <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider block mb-1">Scholarship / Fee</span>
-          <span className="text-sm font-black text-purple-700 block mt-1">Curriculum Covered</span>
-          <p className="text-[10px] text-gray-400">No extra charges</p>
+        <div className="bg-white p-3.5 sm:p-5 border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xs">
+          <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider block mb-1">Scholarship / Fee</span>
+          <span className="text-xs sm:text-sm font-black text-purple-700 block mt-1 truncate">Curriculum Covered</span>
+          <p className="text-[10.5px] sm:text-[11px] text-slate-400 mt-1 font-medium truncate">No extra charges</p>
         </div>
       </div>
 
       {/* Search & Category Filter Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-2.5 border border-gray-200 shadow-2xs">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 border border-slate-200/90 rounded-2xl sm:rounded-3xl shadow-xs">
         {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           {CATEGORIES.map(cat => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 text-xs font-bold rounded-none border transition-colors flex-shrink-0 flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
                 selectedCategory === cat
-                  ? 'bg-indigo-600 text-white border-indigo-600 font-black'
-                  : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-50 text-slate-600 border border-slate-200/80 hover:bg-slate-100'
               }`}
             >
               <span>{cat}</span>
               {cat === 'My Enrolled' && enrolledCount > 0 && (
-                <span className={`text-[10px] px-1.5 py-0.2 rounded-none font-black ${
-                  selectedCategory === cat ? 'bg-white text-indigo-700' : 'bg-indigo-600 text-white'
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                  selectedCategory === cat ? 'bg-white text-blue-700' : 'bg-blue-600 text-white'
                 }`}>
                   {enrolledCount}
                 </span>
@@ -220,55 +233,55 @@ export default function Coaching({ activeChild }) {
 
         {/* Search Input */}
         <div className="relative w-full md:w-64">
-          <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search module or mentor..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs border border-gray-200 rounded-none focus:outline-none focus:border-indigo-600"
+            className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:bg-white focus:border-blue-600 font-medium"
           />
         </div>
       </div>
 
       {/* Program Cards Grid */}
       {loading ? (
-        <div className="bg-white border border-gray-200 p-16 flex flex-col items-center justify-center space-y-3">
-          <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin" />
-          <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-16 flex flex-col items-center justify-center space-y-3">
+          <RefreshCw className="w-8 h-8 text-blue-600 animate-spin" />
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">
             Loading Coaching Modules...
           </p>
         </div>
       ) : filteredPrograms.length === 0 ? (
-        <div className="bg-white border border-gray-200 p-12 text-center shadow-xs">
-          <Target className="w-12 h-12 text-gray-300 mx-auto mb-2" />
-          <h3 className="text-sm font-bold text-gray-800">No Coaching Modules Found</h3>
-          <p className="text-xs text-gray-400 mt-1">Try resetting the category filter or searching a different term.</p>
+        <div className="bg-white border border-slate-200/90 rounded-3xl p-12 text-center shadow-xs">
+          <Target className="w-12 h-12 text-slate-300 mx-auto mb-2" />
+          <h3 className="text-sm font-bold text-slate-800">No Coaching Modules Found</h3>
+          <p className="text-xs text-slate-400 mt-1">Try resetting the category filter or searching a different term.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredPrograms.map((prog) => {
             const isEnrolled = prog.isEnrolled;
 
             return (
               <div 
                 key={prog._id} 
-                className={`bg-white border rounded-none p-5 shadow-xs flex flex-col justify-between transition-all group ${
-                  isEnrolled ? 'border-emerald-500 ring-1 ring-emerald-500 bg-emerald-50/10' : 'border-gray-200 hover:border-indigo-300'
+                className={`bg-white border rounded-3xl p-5 shadow-xs flex flex-col justify-between transition-all group ${
+                  isEnrolled ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/10' : 'border-slate-200/90 hover:border-blue-300 hover:shadow-md'
                 }`}
               >
                 <div>
                   {/* Top Bar: Category & Status */}
-                  <div className="flex items-center justify-between gap-2 mb-2.5">
-                    <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-full">
                       {prog.category}
                     </span>
                     {isEnrolled ? (
-                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full flex items-center gap-1">
                         <CheckCircle2 className="w-3 h-3" /> Enrolled Active
                       </span>
                     ) : (
-                      <span className="text-[10px] font-bold text-gray-500 flex items-center gap-1">
+                      <span className="text-[10px] font-bold text-slate-500 flex items-center gap-1">
                         <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
                         {prog.rating || 4.8} ({prog.enrolledCount || 24})
                       </span>
@@ -276,19 +289,19 @@ export default function Coaching({ activeChild }) {
                   </div>
 
                   {/* Title & Description */}
-                  <h3 className="font-extrabold text-sm text-gray-900 group-hover:text-indigo-600 transition-colors mb-1.5 leading-snug">
+                  <h3 className="font-extrabold text-sm text-slate-900 group-hover:text-blue-600 transition-colors mb-1.5 leading-snug">
                     {prog.title}
                   </h3>
-                  <p className="text-[11.5px] text-gray-600 leading-relaxed mb-3">
+                  <p className="text-xs text-slate-600 leading-relaxed mb-3 font-medium">
                     {prog.description}
                   </p>
 
                   {/* Program Features / Highlights */}
                   {prog.features && prog.features.length > 0 && (
-                    <div className="space-y-1 mb-3 pt-2 border-t border-gray-100">
+                    <div className="space-y-1 mb-3 pt-2.5 border-t border-slate-100">
                       {prog.features.slice(0, 2).map((feat, i) => (
-                        <div key={i} className="flex items-center gap-1.5 text-[10.5px] text-gray-600 font-medium">
-                          <Zap className="w-3 h-3 text-amber-500 flex-shrink-0" />
+                        <div key={i} className="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+                          <Zap className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                           <span className="truncate">{feat}</span>
                         </div>
                       ))}
@@ -296,28 +309,30 @@ export default function Coaching({ activeChild }) {
                   )}
 
                   {/* Faculty & Schedule Meta */}
-                  <div className="space-y-1.5 pt-2.5 border-t border-gray-100 text-xs text-gray-600">
-                    <div className="flex items-center gap-2">
-                      <User className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                  <div className="space-y-2 pt-3 border-t border-slate-100 text-xs text-slate-600">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0">
+                        <User className="w-4 h-4" />
+                      </div>
                       <div className="truncate">
-                        <strong className="text-gray-900 font-bold">{prog.instructor?.name}</strong>
-                        <span className="text-[10.5px] text-gray-400 block truncate">{prog.instructor?.designation}</span>
+                        <strong className="text-slate-900 font-bold block">{prog.instructor?.name}</strong>
+                        <span className="text-[11px] text-slate-400 truncate">{prog.instructor?.designation}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] font-semibold text-gray-600">
-                      <Clock className="w-3.5 h-3.5 text-indigo-600 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                      <Clock className="w-4 h-4 text-blue-600 shrink-0" />
                       <span>{prog.schedule}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-gray-500">
-                      <MapPin className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <MapPin className="w-4 h-4 text-slate-400 shrink-0" />
                       <span className="truncate">{prog.venue} ({prog.mode})</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Card Actions */}
-                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
-                  <span className="text-[10px] font-black text-emerald-700 uppercase">
+                <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <span className="text-[10px] font-black text-emerald-700 uppercase bg-emerald-50 px-2 py-0.5 rounded-full">
                     {prog.fees || 'Complimentary'}
                   </span>
 
@@ -325,21 +340,21 @@ export default function Coaching({ activeChild }) {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleWithdraw(prog)}
-                        className="text-[10.5px] font-bold text-red-600 hover:text-red-800 underline transition-colors"
+                        className="text-xs font-bold text-red-600 hover:text-red-800 transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-red-50"
                       >
                         Withdraw
                       </button>
-                      <span className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider flex items-center gap-1">
-                        <Check className="w-3.5 h-3.5" /> Confirmed
+                      <span className="px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-xl flex items-center gap-1 shadow-xs">
+                        <Check className="w-3.5 h-3.5" /> Enrolled
                       </span>
                     </div>
                   ) : (
                     <button
                       onClick={() => setEnrollModalProgram(prog)}
-                      className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-wider rounded-none transition-colors shadow-2xs flex items-center gap-1"
+                      className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition-all cursor-pointer flex items-center gap-1"
                     >
                       <span>Enroll Child</span>
-                      <ChevronRight className="w-3 h-3" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
@@ -352,83 +367,83 @@ export default function Coaching({ activeChild }) {
 
       {/* Enrollment Confirmation Modal */}
       {enrollModalProgram && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-white rounded-none border border-gray-200 shadow-xl max-w-md w-full p-5 space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full p-6 space-y-4 animate-in fade-in zoom-in-95">
             
-            <div className="flex items-start justify-between border-b border-gray-100 pb-3">
+            <div className="flex items-start justify-between border-b border-slate-100 pb-3">
               <div>
-                <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider block">
+                <span className="text-[10px] font-black uppercase text-blue-600 tracking-wider block">
                   Confirm Module Enrollment
                 </span>
-                <h3 className="text-base font-black text-gray-900 leading-tight mt-0.5">
+                <h3 className="text-base font-black text-slate-900 leading-tight mt-0.5">
                   {enrollModalProgram.title}
                 </h3>
               </div>
               <button 
                 onClick={() => setEnrollModalProgram(null)}
-                className="text-gray-400 hover:text-gray-700 p-1"
+                className="text-slate-400 hover:text-slate-700 p-1 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleEnrollSubmit} className="space-y-3.5 text-xs">
-              <div className="p-3 bg-indigo-50/60 border border-indigo-200 space-y-1.5">
+            <form onSubmit={handleEnrollSubmit} className="space-y-4 text-xs">
+              <div className="p-3.5 bg-blue-50/60 rounded-2xl border border-blue-100 space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-gray-500 font-bold">Candidate:</span>
-                  <strong className="text-gray-900">{studentName} ({studentClass})</strong>
+                  <span className="text-slate-500 font-bold">Candidate:</span>
+                  <strong className="text-slate-900">{studentName} ({studentClass})</strong>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500 font-bold">Faculty Lead:</span>
-                  <span className="text-gray-800">{enrollModalProgram.instructor?.name}</span>
+                  <span className="text-slate-500 font-bold">Faculty Lead:</span>
+                  <span className="text-slate-800 font-medium">{enrollModalProgram.instructor?.name}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500 font-bold">Batch Timing:</span>
-                  <span className="text-indigo-700 font-bold">{enrollModalProgram.schedule}</span>
+                  <span className="text-slate-500 font-bold">Batch Timing:</span>
+                  <span className="text-blue-700 font-bold">{enrollModalProgram.schedule}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500 font-bold">Venue / Mode:</span>
-                  <span className="text-gray-800">{enrollModalProgram.venue}</span>
+                  <span className="text-slate-500 font-bold">Venue / Mode:</span>
+                  <span className="text-slate-800 font-medium">{enrollModalProgram.venue}</span>
                 </div>
               </div>
 
               <div>
-                <label className="block text-gray-700 font-bold mb-1">Parent / Guardian WhatsApp Phone:</label>
+                <label className="block text-slate-700 font-bold mb-1.5">Parent / Guardian WhatsApp Phone:</label>
                 <input
                   type="text"
                   required
                   value={guardianPhone}
                   onChange={(e) => setGuardianPhone(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-none focus:outline-none focus:border-indigo-600 font-mono text-xs"
+                  className="w-full p-3 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-600 font-mono text-xs font-semibold"
                 />
-                <span className="text-[10px] text-gray-400 mt-0.5 block">Batch reminder notifications will be dispatched here.</span>
+                <span className="text-[10px] text-slate-400 mt-1 block">Batch reminder notifications will be dispatched here.</span>
               </div>
 
               <div>
-                <label className="block text-gray-700 font-bold mb-1">Optional Notes or Focus Areas:</label>
+                <label className="block text-slate-700 font-bold mb-1.5">Optional Notes or Focus Areas:</label>
                 <textarea
                   rows={2}
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   placeholder="e.g. Focus on Olympiad mathematics speed..."
-                  className="w-full p-2 border border-gray-300 rounded-none focus:outline-none focus:border-indigo-600 text-xs"
+                  className="w-full p-3 border border-slate-200 rounded-2xl focus:outline-none focus:border-blue-600 text-xs font-medium"
                 />
               </div>
 
-              <div className="pt-2 flex items-center justify-end gap-2 border-t border-gray-100">
+              <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setEnrollModalProgram(null)}
-                  className="px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold uppercase tracking-wider text-[11px]"
+                  className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={enrolling}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black uppercase tracking-wider text-[11px] shadow-sm flex items-center gap-1.5"
+                  className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black rounded-xl text-xs shadow-md shadow-blue-500/20 flex items-center gap-2 cursor-pointer"
                 >
-                  {enrolling && <RefreshCw className="w-3 h-3 animate-spin" />}
+                  {enrolling && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                   <span>{enrolling ? 'Enrolling...' : 'Confirm Enrollment'}</span>
                 </button>
               </div>

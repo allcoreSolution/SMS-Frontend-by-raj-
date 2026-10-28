@@ -481,6 +481,22 @@ export const parentService = {
   clearAISession: async (id) => {
     const response = await axiosInstance.delete(`/ai-assistant/sessions/${id}`);
     return response.data;
+  },
+
+  // Student Profile Management
+  updateStudentProfile: async (studentId, data) => {
+    const response = await axiosInstance.put(`/parents/student-profile/${studentId}`, data);
+    return response.data;
+  },
+
+  changePassword: async (data) => {
+    const response = await axiosInstance.put('/parents/change-password', data);
+    return response.data;
+  },
+
+  uploadStudentPhoto: async (data) => {
+    const response = await axiosInstance.post('/parents/upload-student-photo', data);
+    return response.data;
   }
 };
 

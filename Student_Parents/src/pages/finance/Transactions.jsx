@@ -119,88 +119,97 @@ export default function Transactions({ activeChild }) {
   const studentClass = studentInfo?.class || 'Class I (A)';
 
   return (
-    <div className="p-4 md:p-6 max-w-[1240px] mx-auto space-y-6 min-h-screen">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 pb-4 bg-white p-5 rounded-xl border shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 bg-amber-50 text-amber-600 rounded-lg">
-              <FileSymlink className="w-5 h-5" />
+    <div className="p-3 sm:p-5 max-w-[1240px] mx-auto space-y-5 min-h-screen pb-24 bg-slate-50">
+      {/* Royal Blue Hero Header */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-5 sm:p-7 rounded-3xl shadow-lg border border-blue-400/20 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Glow circle */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span className="text-[10px] font-black text-blue-200 uppercase tracking-widest">
+              Financial Records
             </span>
-            <h1 className="text-2xl font-extrabold text-[#1f2937] tracking-tight">Payment & Transaction Records</h1>
+            <span className="text-blue-300/60">•</span>
+            <span className="text-[10px] font-bold text-amber-300 bg-white/15 backdrop-blur-md border border-white/25 px-2.5 py-0.5 rounded-full">
+              Verified Receipts
+            </span>
           </div>
-          <p className="text-xs text-gray-500 font-semibold mt-1 pl-10">
-            Verified bank receipts and clearance history for: <strong className="text-indigo-600 font-bold">{studentName}</strong> ({studentClass})
+          <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
+            Payment & Transaction Records
+          </h1>
+          <p className="text-[12px] text-blue-100 mt-1">
+            Verified bank receipts & online clearance history for: <strong className="text-white">{studentName || 'Kabir Singh'}</strong> ({studentClass || 'Class 10th (A)'})
           </p>
         </div>
 
-        <div className="flex items-center gap-3 pl-10 sm:pl-0">
+        <div className="flex items-center gap-2.5 self-start sm:self-center flex-shrink-0 relative z-10">
           <Link
             to="/fee-payments"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold rounded-lg transition-colors border border-gray-200"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold transition-all shadow-xs backdrop-blur-sm cursor-pointer"
           >
-            <Wallet className="w-3.5 h-3.5 text-gray-500" />
+            <Wallet className="w-4 h-4 text-amber-300" />
             <span>Fee Ledger</span>
           </Link>
 
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black transition-all shadow-md cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${refreshing ? 'animate-spin' : ''}`} />
-            <span>Sync Receipts</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            <span>Sync</span>
           </button>
         </div>
       </div>
 
       {/* KPI Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center shrink-0 shadow-2xs">
             <FileSymlink className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Total Receipts</span>
-            <span className="text-2xl font-black text-gray-900 leading-none">{stats.totalCount}</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Total Receipts</span>
+            <span className="text-2xl font-black text-slate-900 leading-none">{stats.totalCount}</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center shrink-0 shadow-2xs">
             <CheckCircle2 className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Total Settled Amount</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Total Settled Amount</span>
             <span className="text-2xl font-black text-emerald-600 leading-none">₹ {stats.totalAmount.toLocaleString()}</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-700 flex items-center justify-center shrink-0 shadow-2xs">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Online Authorizations</span>
-            <span className="text-2xl font-black text-blue-600 leading-none">{stats.onlineCount} Receipts</span>
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Online Authorizations</span>
+            <span className="text-2xl font-black text-indigo-600 leading-none">{stats.onlineCount} Receipts</span>
           </div>
         </div>
       </div>
 
       {/* Main Table / Container */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs">
+      <div className="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
         {/* Controls Toolbar */}
-        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3 flex-1 w-full">
             {/* Search */}
             <div className="relative flex-1 max-w-sm">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by receipt ID, fee head..."
-                className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 outline-none focus:border-indigo-500 focus:bg-white"
+                className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs text-slate-800 outline-none focus:border-blue-500 focus:bg-white shadow-2xs font-medium"
               />
             </div>
 
@@ -208,7 +217,7 @@ export default function Transactions({ activeChild }) {
             <select
               value={selectedMode}
               onChange={(e) => setSelectedMode(e.target.value)}
-              className="py-1.5 px-3 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 outline-none focus:border-indigo-500 cursor-pointer"
+              className="py-2 px-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-slate-700 outline-none focus:border-blue-500 cursor-pointer shadow-2xs"
             >
               <option value="All">All Modes</option>
               <option value="Online">Online</option>

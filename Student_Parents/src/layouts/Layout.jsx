@@ -9,11 +9,21 @@ import {
   Wallet, RefreshCcw, Megaphone, MessageCircle, Phone, Mail,
   Bus, BookOpen, Building2, HeartPulse, FolderOpen, Image,
   CalendarCheck, Bot, LogOut, Search, Globe, Grid3X3, ChevronDown,
-  ChevronLeft, ChevronRight, Menu, Target, FileWarning, Check, X, ArrowRight
+  ChevronLeft, ChevronRight, Menu, Target, FileWarning, Check, X, ArrowRight,
+  Home, Bell, User, FileQuestion
 } from 'lucide-react';
+const getMediaUrl = (photoPath) => {
+  if (!photoPath) return null;
+  if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
+  const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
+    || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.11:5050');
+  const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
+  return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
+};
 
 const defaultChildren = [
-  { id: '1', name: 'Kabir Singh',   class: 'Class V (A)',   avatar: 'K' },
+  { id: '1', name: 'Kabir Singh',   class: 'Nursery (A)',   avatar: 'K' },
   { id: '2', name: 'Shlok Verma',  class: 'Class III (B)', avatar: 'S' },
   { id: '3', name: 'Rajesh Singh', class: 'Class II (A)',  avatar: 'R' },
 ];
@@ -26,28 +36,11 @@ const parentPortalScreens = [
   { name: 'Class Timetable', path: '/timetable', category: 'Academics', icon: LayoutGrid, keywords: 'schedule periods routine bells subjects' },
   { name: 'Student Attendance', path: '/attendance', category: 'Academics', icon: ClipboardCheck, keywords: 'present absent leaves attendance percentage log' },
   { name: 'Exams & Reports', path: '/exams', category: 'Academics', icon: GraduationCap, keywords: 'marks grades report card results tests marksheet' },
-  { name: 'Coaching & Mentorship', path: '/coaching', category: 'Academics', icon: Target, keywords: 'remedial tuition extra classes batches' },
-  { name: 'PTM & Teacher Meetings', path: '/meetings', category: 'Academics', icon: Handshake, keywords: 'parent teacher conference slots appointments' },
+  { name: 'Meetings', path: '/meetings', category: 'Academics', icon: Handshake, keywords: 'parent teacher conference slots appointments' },
+  { name: 'Evaluated Papers', path: '/exams', category: 'Academics', icon: PenLine, keywords: 'papers test sheets answers marks' },
   { name: 'Online CBT Exams', path: '/online-exams', category: 'Academics', icon: Monitor, keywords: 'quizzes tests questions computer assessment' },
   { name: 'Daily Homework', path: '/homework', category: 'Academics', icon: PenLine, keywords: 'assignments tasks submissions daily work' },
-  { name: 'Classwork & Logbook', path: '/classwork', category: 'Academics', icon: BookMarked, keywords: 'topics taught diary daily log lesson notes' },
-  { name: 'Syllabus & Materials', path: '/study-center', category: 'Academics', icon: BookMarked, keywords: 'study center books pdfs downloads notes' },
-  { name: 'Live Online Classes', path: '/live-classes', category: 'Academics', icon: Monitor, keywords: 'zoom video stream lectures online tuition' },
-  { name: 'Fee Payments (Pay Online)', path: '/fee-payments', category: 'Financials', icon: Wallet, keywords: 'pay fees upi challan credit card netbanking dues' },
-  { name: 'Fee Receipts & Transactions', path: '/transactions', category: 'Financials', icon: RefreshCcw, keywords: 'receipts invoices history payment records' },
-  { name: 'Notice Board & Circulars', path: '/notice-board', category: 'Communications', icon: Megaphone, keywords: 'announcements news circulars notices' },
-  { name: 'SMS Notifications', path: '/sms', category: 'Communications', icon: MessageCircle, keywords: 'sms alerts mobile texts broadcasts' },
-  { name: 'WhatsApp Support', path: '/whatsapp', category: 'Communications', icon: Phone, keywords: 'chat whatsapp desk queries help' },
-  { name: 'School Email Portal', path: '/email', category: 'Communications', icon: Mail, keywords: 'inbox letters formal mail sent draft' },
-  { name: 'Bus Transport & GPS', path: '/transport', category: 'Services & Resources', icon: Bus, keywords: 'van bus tracking route live location driver' },
-  { name: 'Library & Book Search', path: '/library', category: 'Services & Resources', icon: BookOpen, keywords: 'borrow return books catalog isbn reading' },
-  { name: 'Hostel Accommodation', path: '/hostel', category: 'Services & Resources', icon: Building2, keywords: 'room warden mess boarding pass' },
-  { name: 'Health & Medical Records', path: '/health-records', category: 'Services & Resources', icon: HeartPulse, keywords: 'vaccine allergy medical checkup blood group' },
-  { name: 'Documents & Certificates', path: '/documents', category: 'Services & Resources', icon: FolderOpen, keywords: 'bonafide id card transfer marks certificate download' },
-  { name: 'School Photo Gallery', path: '/gallery', category: 'Services & Resources', icon: Image, keywords: 'events photos functions sports day annual day' },
-  { name: 'School Visit & Gate Pass', path: '/school-visit', category: 'Services & Resources', icon: CalendarCheck, keywords: 'visitor pass appointment campus visit' },
-  { name: 'Leave Application', path: '/leave-management', category: 'Services & Resources', icon: FileWarning, keywords: 'apply leave sick leave vacation absence permission' },
-  { name: 'AI School Assistant (24/7)', path: '/ai-assistant', category: 'Help & Support', icon: Bot, keywords: 'chatbot ai robot questions fees attendance help' },
+  { name: 'Study Center', path: '/study-center', category: 'Academics', icon: BookMarked, keywords: 'study center books pdfs downloads notes' },
 ];
 
 // Each item: key, label, icon, iconBg (colored box), route, subItems
@@ -64,15 +57,15 @@ const navSectionsConfig = [
     titleKey: 'academics',
     defaultTitle: 'ACADEMICS',
     items: [
-      { key: 'calendar',     label: 'Calendar',        icon: Calendar,      iconBg: 'bg-orange-500', route: '/calendar'       },
-      { key: 'timetable',    label: 'Timetable',       icon: LayoutGrid,    iconBg: 'bg-pink-500',   route: '/timetable'      },
-      { key: 'attendance',   label: 'Attendance',      icon: ClipboardCheck,iconBg: 'bg-green-500',  route: '/attendance'     },
-      { key: 'exams',        label: 'Exams & Reports', icon: GraduationCap, iconBg: 'bg-purple-500', route: '/exams'          },
-      { key: 'coaching',     label: 'Coaching',        icon: Target,        iconBg: 'bg-indigo-500', route: '/coaching'       },
-      { key: 'meetings',     label: 'Meetings',        icon: Handshake,     iconBg: 'bg-blue-400',   route: '/meetings'       },
-      { key: 'onlineExams',  label: 'Online Exams',    icon: Monitor,       iconBg: 'bg-teal-500',   route: '/online-exams'   },
-      { key: 'homework',     label: 'Homework',        icon: PenLine,       iconBg: 'bg-yellow-500', route: '/homework'       },
-      { key: 'studyCenter',  label: 'Study Center',    icon: BookMarked,    iconBg: 'bg-red-500',    subItems: [
+      { key: 'calendar',         label: 'Calendar',         icon: Calendar,       iconBg: 'bg-orange-500', route: '/calendar'       },
+      { key: 'timetable',        label: 'Timetable',        icon: LayoutGrid,     iconBg: 'bg-pink-500',   route: '/timetable'      },
+      { key: 'attendance',       label: 'Attendance',       icon: ClipboardCheck, iconBg: 'bg-green-500',  route: '/attendance'     },
+      { key: 'exams',            label: 'Exams & Reports',  icon: GraduationCap,  iconBg: 'bg-purple-500', route: '/exams'          },
+      { key: 'meetings',         label: 'Meetings',         icon: Handshake,      iconBg: 'bg-blue-400',   route: '/meetings'       },
+      { key: 'evaluatedPapers',  label: 'Evaluated Papers', icon: PenLine,        iconBg: 'bg-indigo-500', route: '/exams'          },
+      { key: 'onlineExams',      label: 'Online Exams',     icon: Monitor,        iconBg: 'bg-teal-500',   route: '/online-exams'   },
+      { key: 'homework',         label: 'Homework',         icon: PenLine,        iconBg: 'bg-yellow-500', route: '/homework'       },
+      { key: 'studyCenter',      label: 'Study Center',     icon: BookMarked,     iconBg: 'bg-red-500',    subItems: [
          { key: 'classwork',   label: 'Classwork & Logbook', route: '/classwork' },
          { key: 'syllabus',    label: 'Syllabus & Materials', route: '/study-center' },
          { key: 'liveClasses', label: 'Live Classes', route: '/live-classes' }
@@ -132,34 +125,31 @@ function NavItem({ item, active, navigate, location, lang, onSelect }) {
       <div className="flex flex-col w-full">
         <button
           onClick={() => setOpen(!open)}
-          className={`w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 transition-all text-left group
+          className={`w-full flex items-center gap-2.5 px-3.5 py-2 transition-all text-left group
             ${(active || isChildActive)
-              ? 'bg-white/5 border-l-[3px] border-orange-400 pl-2.5'
-              : 'hover:bg-white/5 border-l-[3px] border-transparent pl-2.5'}`}
-          style={{ width: 'calc(100% - 8px)' }}
+              ? 'bg-[#1e232d] border-l-[3px] border-orange-500 text-white'
+              : 'hover:bg-white/5 border-l-[3px] border-transparent text-gray-300 hover:text-white'}`}
         >
-          <div className={`w-7 h-7 ${item.iconBg} rounded-none flex items-center justify-center flex-shrink-0 shadow-sm`}>
-            <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
-          </div>
-          <span className={`flex-1 text-[12.5px] font-medium truncate ${(active || isChildActive) ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+          <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${(active || isChildActive) ? 'text-orange-400' : 'text-gray-400 group-hover:text-white'}`} strokeWidth={1.8} />
+          <span className="flex-1 text-[12.5px] font-medium truncate">
             {itemLabel}
           </span>
-          <ChevronDown className={`w-3 h-3 text-gray-500 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         {isOpen && (
-          <div className="flex flex-col ml-[42px] mt-1 space-y-1 relative mb-2">
-            <div className="absolute left-[-16px] top-0 bottom-4 w-[1px] bg-white/10" />
+          <div className="flex flex-col ml-8 mt-0.5 space-y-0.5 relative mb-1.5">
+            <div className="absolute left-[-12px] top-0 bottom-3 w-[1px] bg-white/10" />
             
             {item.subItems.map(subItem => (
               <div key={subItem.route} className="relative flex items-center">
-                <div className="w-3 h-[1px] bg-white/10 absolute left-[-16px]" />
+                <div className="w-2.5 h-[1px] bg-white/10 absolute left-[-12px]" />
                 <button
                   onClick={() => {
                     navigate(subItem.route);
                     if (onSelect) onSelect();
                   }}
-                  className={`w-full text-left flex items-center gap-2 pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
-                    ${location.pathname === subItem.route ? 'text-gray-100 font-medium' : 'text-gray-400 hover:text-white'}`}
+                  className={`w-full text-left flex items-center gap-2 pl-2 pr-2 py-1.5 transition-all text-[11px]
+                    ${location.pathname === subItem.route ? 'text-orange-400 font-semibold' : 'text-gray-400 hover:text-white'}`}
                 >
                   <span className="text-[10px] opacity-70">»</span>
                   {getT(subItem.key, lang) || subItem.label}
@@ -178,16 +168,13 @@ function NavItem({ item, active, navigate, location, lang, onSelect }) {
         navigate(item.route);
         if (onSelect) onSelect();
       }}
-      className={`w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 transition-all text-left group
+      className={`w-full flex items-center gap-2.5 px-3.5 py-2 transition-all text-left group
         ${active
-          ? 'bg-white/10 border-l-[3px] border-orange-400 pl-2.5'
-          : 'hover:bg-white/5 border-l-[3px] border-transparent pl-2.5'}`}
-      style={{ width: 'calc(100% - 8px)' }}
+          ? 'bg-[#1e232d] border-l-[3px] border-orange-500 text-white font-medium'
+          : 'hover:bg-white/5 border-l-[3px] border-transparent text-gray-300 hover:text-white'}`}
     >
-      <div className={`w-7 h-7 ${item.iconBg} rounded-none flex items-center justify-center flex-shrink-0 shadow-sm`}>
-        <Icon className="w-3.5 h-3.5 text-white" strokeWidth={2.2} />
-      </div>
-      <span className={`flex-1 text-[12.5px] font-medium truncate ${active ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+      <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${active ? 'text-orange-400' : 'text-gray-400 group-hover:text-white'}`} strokeWidth={1.8} />
+      <span className="flex-1 text-[12.5px] font-medium truncate">
         {itemLabel}
       </span>
     </button>
@@ -198,11 +185,34 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [sideOpen, setSideOpen] = useState(true);
+  const [sideOpen, setSideOpen] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
+  });
   const [childOpen, setChildOpen] = useState(true);
   const [topChildOpen, setTopChildOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [langSearch, setLangSearch] = useState('');
   const [avatarOpen, setAvatarOpen] = useState(false);
+
+  // Auto-close drawer on mobile on navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setSideOpen(false);
+    }
+  }, [location.pathname]);
+
+  // Handle window resize for responsive layout
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 1024) {
+        setSideOpen(false);
+      } else {
+        setSideOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Search States
   const [menuSearch, setMenuSearch] = useState('');
@@ -237,7 +247,25 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   const { currentLang, setLanguage, t, currentLanguageObj, languages } = useLanguage();
 
   const [childrenList, setChildrenList] = useState(defaultChildren);
-  const [parentProfile, setParentProfile] = useState(null);
+  const [parentProfile, setParentProfile] = useState(() => {
+    try {
+      const stored = localStorage.getItem('parent_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const parentName = parentProfile?.name || parentProfile?.fullName || 'Parent Account';
+  const parentInitials = parentName
+    ? parentName
+        .split(' ')
+        .filter(Boolean)
+        .map(w => w[0].toUpperCase())
+        .slice(0, 2)
+        .join('')
+    : 'PA';
+
   const langDropdownRef = useRef(null);
   const avatarDropdownRef = useRef(null);
   const topChildDropdownRef = useRef(null);
@@ -255,27 +283,33 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         setTopChildOpen(false);
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
-      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
-  // Load children
+  // Load children from real backend API
   useEffect(() => {
     async function loadPortalChildren() {
       try {
         const parentUser = localStorage.getItem('parent_user');
         let parentId = null;
+        let studentId = null;
         if (parentUser) {
           try {
             const parsed = JSON.parse(parentUser);
-            parentId = parsed.parentId || parsed._id;
+            if (parsed.role === 'Student') {
+              studentId = parsed.studentId || parsed._id;
+            } else {
+              parentId = parsed.parentId || parsed._id;
+            }
           } catch (e) {}
         }
-        const res = await parentService.getDashboard({ parentId });
+        const res = await parentService.getDashboard({
+          parentId: parentId || undefined,
+          studentId: activeChild || studentId || undefined
+        });
         if (res && res.success && res.data) {
           if (res.data.children && res.data.children.length > 0) {
             setChildrenList(res.data.children);
@@ -296,11 +330,25 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       }
     }
     loadPortalChildren();
-  }, []);
+
+    const handleChildChanged = (e) => {
+      if (e.detail && setActiveChild) {
+        setActiveChild(e.detail);
+      }
+    };
+    window.addEventListener('portal_child_changed', handleChildChanged);
+    return () => window.removeEventListener('portal_child_changed', handleChildChanged);
+  }, [activeChild]);
 
   const handleSelectLanguage = (langCode) => {
     setLanguage(langCode);
     setLangOpen(false);
+  };
+
+  const handleNavSelect = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setSideOpen(false);
+    }
   };
 
   const current = childrenList.find(c => (c.id === activeChild || c._id === activeChild)) || childrenList[0] || defaultChildren[0];
@@ -309,54 +357,80 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   return (
     <div className="flex h-screen bg-gray-100 font-sans overflow-hidden">
 
-      {/* ── SIDEBAR ─────────────────────────────────────── */}
-      <aside className={`${sideOpen ? 'w-60' : 'w-0'} transition-all duration-300 overflow-hidden flex-shrink-0 flex flex-col bg-[#353A40] border-r border-[#2a2e33]`}>
+      {/* ── MOBILE BACKDROP OVERLAY ── */}
+      {sideOpen && (
+        <div 
+          onClick={() => setSideOpen(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-200"
+        />
+      )}
 
-        {/* Logo: ALL CORE SOLUTION */}
+      {/* ── SIDEBAR (Fixed Drawer on Mobile, In-flow on Desktop) ──────────────── */}
+      <aside 
+        className={`
+          fixed inset-y-0 left-0 z-50 lg:static lg:z-auto
+          ${sideOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0 lg:w-0'}
+          transition-all duration-300 ease-in-out
+          overflow-hidden flex-shrink-0 flex flex-col bg-[#272b35] border-r border-[#1e222b] shadow-2xl lg:shadow-none
+        `}
+      >
+
+        {/* Logo: ACS-SCHOOL */}
         <div 
           onClick={() => {
             navigate('/dashboard');
-            setSideOpen(false);
+            if (typeof window !== 'undefined' && window.innerWidth < 1024) setSideOpen(false);
           }} 
-          className="flex items-center gap-2.5 px-[15px] py-3.5 flex-shrink-0 border-b border-[#2a2e33] cursor-pointer hover:bg-white/5 transition-colors"
-          title="All Core Solution School ERP - Go to Dashboard"
+          className="flex items-center justify-between px-4 py-3.5 flex-shrink-0 border-b border-[#1e222b] cursor-pointer hover:bg-white/5 transition-colors"
+          title="ACS-SCHOOL - Go to Dashboard"
         >
-          <div className="w-8 h-8 rounded-none flex-shrink-0 overflow-hidden shadow-sm">
-            <div className="w-full h-full bg-gradient-to-br from-orange-500 via-amber-500 to-red-600 flex items-center justify-center">
-              <span className="text-white font-black text-[11px] tracking-wider">ACS</span>
+          <div className="flex items-center gap-2.5">
+            {/* ACS Official School Logo Emblem */}
+            <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/30 border border-blue-400/30 overflow-hidden">
+              <GraduationCap className="w-5 h-5 text-white drop-shadow-sm" strokeWidth={2.4} />
+              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-amber-400 rounded-full border-2 border-[#272b35]" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-white text-[15px] tracking-wider uppercase leading-tight font-serif">
+                ACS-SCHOOL
+              </span>
+              <span className="text-[9px] font-bold text-blue-300 tracking-widest uppercase leading-none">
+                Smart Campus
+              </span>
             </div>
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-extrabold text-white text-[13px] tracking-wide truncate">
-              ALL CORE SOLUTION
-            </span>
-            <span className="text-[9px] font-bold text-orange-400 uppercase tracking-widest leading-none">
-              School ERP
-            </span>
-          </div>
+
+          {/* Close button for mobile drawer */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSideOpen(false);
+            }}
+            className="lg:hidden p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer"
+            title="Close Drawer"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Search */}
-        <div className="px-3 py-2.5 flex-shrink-0 border-b border-[#2a2e33]">
-          <div className="flex items-center gap-2 bg-[#2a2e33] rounded-none px-3 py-2 border border-white/5 mx-1 relative" style={{ width: 'calc(100% - 8px)' }}>
-            <Search className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+        <div className="px-3.5 py-3 flex-shrink-0 border-b border-[#1e222b]">
+          <div className="flex items-center bg-[#353b47] rounded overflow-hidden border border-white/5">
             <input
               type="text"
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
-              className="bg-transparent text-[12px] text-gray-200 outline-none flex-1 w-0 placeholder-gray-500 pr-5"
-              placeholder={getT('searchMenu', currentLang) || 'Search Menu...'}
+              className="bg-transparent text-[11.5px] text-gray-200 outline-none flex-1 px-3 py-1.5 placeholder-gray-400"
+              placeholder="Search Menu..."
             />
-            {menuSearch && (
-              <button
-                type="button"
-                onClick={() => setMenuSearch('')}
-                className="absolute right-2 text-gray-400 hover:text-white text-xs cursor-pointer"
-                title="Clear filter"
-              >
-                ✕
-              </button>
-            )}
+            <button
+              type="button"
+              className="bg-[#414856] hover:bg-[#4a5263] px-2.5 py-2 text-gray-300 transition-colors cursor-pointer flex items-center justify-center"
+              title="Search"
+            >
+              <Search className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
 
@@ -438,7 +512,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 navigate={navigate}
                 location={location}
                 lang={currentLang}
-                onSelect={() => setSideOpen(false)}
+                onSelect={handleNavSelect}
               />
 
               {/* Viewing: child dropdown */}
@@ -474,7 +548,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                           key={childId}
                           onClick={() => {
                             if (setActiveChild) setActiveChild(childId);
-                            setSideOpen(false);
+                            handleNavSelect();
                           }}
                           className={`w-full text-left flex items-center justify-between pl-3 pr-2 py-1.5 rounded-none transition-all text-[11.5px]
                             ${isSelected ? 'bg-white/10 text-white font-bold' : 'text-gray-400 hover:text-white'}`}
@@ -495,7 +569,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 navigate={navigate}
                 location={location}
                 lang={currentLang}
-                onSelect={() => setSideOpen(false)}
+                onSelect={handleNavSelect}
               />
 
               {/* Other Sections */}
@@ -512,7 +586,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                       navigate={navigate}
                       location={location}
                       lang={currentLang}
-                      onSelect={() => setSideOpen(false)}
+                      onSelect={handleNavSelect}
                     />
                   ))}
                 </div>
@@ -530,7 +604,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             type="button"
             onClick={() => {
               handleSelectLanguage(currentLang === 'hi' ? 'en' : 'hi');
-              setSideOpen(false);
+              handleNavSelect();
             }}
             className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5 cursor-pointer"
             style={{ width: 'calc(100% - 8px)' }}
@@ -541,17 +615,17 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
             </div>
             <div className="flex flex-col min-w-0 flex-1">
               <span className="text-[12.5px] font-medium text-gray-300 group-hover:text-white truncate">
-                {currentLang === 'hi' ? 'Switch to English' : 'हिन्दी में बदलें'}
+                {currentLang === 'hi' ? 'अंग्रेज़ी में बदलें (English)' : 'हिन्दी में बदलें (Hindi)'}
               </span>
               <span className="text-[10px] text-indigo-300 font-bold truncate">
-                {activeLanguageObj.flag} {activeLanguageObj.native}
+                {currentLang === 'hi' ? 'सक्रिय: हिन्दी 🇮🇳' : `${activeLanguageObj.flag} ${activeLanguageObj.native}`}
               </span>
             </div>
           </button>
           <button
             onClick={() => {
               navigate('/logout');
-              setSideOpen(false);
+              handleNavSelect();
             }}
             className="w-full flex items-center gap-3 pr-3 py-2 rounded-none mx-1 hover:bg-white/5 transition-all text-left group border-l-[3px] border-transparent pl-2.5"
             style={{ width: 'calc(100% - 8px)' }}
@@ -568,10 +642,14 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           <div className="mt-6 mb-3 pt-3 border-t border-white/10 px-2 text-center">
             <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-3 border border-white/10 shadow-xs hover:border-[#ff5c0a]/40 transition-colors text-center">
               <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-                &copy; 2026 School ERP
+                &copy; 2026 {currentLang === 'hi' ? 'स्कूल ईआरपी' : 'School ERP'}
               </p>
               <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
-                Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+                {currentLang === 'hi' ? 'निर्माता' : 'Developed by'}{' '}
+                <span className="text-white font-bold">RAJ YADAV</span>{' '}
+                <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">
+                  @ALLCORE SOLUTION
+                </span>
               </p>
             </div>
           </div>
@@ -583,127 +661,134 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-30 select-none" style={{ paddingRight: 'max(0.65rem, env(safe-area-inset-right))', paddingLeft: 'max(0.65rem, env(safe-area-inset-left))' }}>
+        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-1 sm:py-2 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-40 select-none overflow-visible" style={{ paddingRight: 'max(0.85rem, env(safe-area-inset-right))', paddingLeft: 'max(0.5rem, env(safe-area-inset-left))' }}>
           
-          {/* Left Actions: Menu Toggle & Quick Dashboard Button */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          {/* Left Actions: Menu Toggle & Student Portal Logo */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0">
             <button 
               onClick={() => setSideOpen(!sideOpen)} 
-              className="p-1.5 rounded-none hover:bg-gray-100 text-gray-600 transition-colors flex-shrink-0"
+              className="p-1 rounded-lg hover:bg-gray-100 text-gray-700 transition-colors shrink-0 cursor-pointer"
               title="Toggle Sidebar Menu"
             >
-              <Menu className="w-4 h-4" />
+              <Menu className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
             </button>
             
-            {/* Working Dashboard Button in Topbar */}
-            <button
+            <div 
               onClick={() => navigate('/dashboard')}
-              className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-none transition-colors flex items-center gap-1.5 text-xs font-bold flex-shrink-0 ${
-                location.pathname === '/dashboard'
-                  ? 'bg-yellow-50 text-yellow-800 border border-yellow-300'
-                  : 'hover:bg-gray-100 text-gray-700 border border-gray-200 bg-gray-50'
-              }`}
-              title="Navigate to Dashboard"
+              className="flex items-center gap-1 sm:gap-2 cursor-pointer select-none group min-w-0"
             >
-              <LayoutDashboard className="w-4 h-4 text-yellow-500" strokeWidth={2.3} />
-              <span className="hidden sm:inline font-bold">{getT('dashboard', currentLang)}</span>
-            </button>
-          </div>
-
-          {/* Center Search Trigger: Compact on mobile, expanded on md+ */}
-          <div className="flex-1 max-w-xs md:max-w-md mx-1.5 sm:mx-3 min-w-0">
-            {/* Full search bar for tablet/desktop */}
-            <button
-              type="button"
-              onClick={() => setIsSearchModalOpen(true)}
-              className="hidden md:flex w-full items-center justify-between gap-2 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-none text-xs text-gray-500 font-medium transition-colors shadow-2xs group cursor-pointer"
-              title="Search modules, fees, homework... (Ctrl+K)"
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <Search className="w-3.5 h-3.5 text-gray-400 group-hover:text-indigo-600 transition-colors flex-shrink-0" />
-                <span className="truncate text-gray-500 group-hover:text-gray-700">
-                  {getT('searchPortal', currentLang) || 'Search portal (fees, homework, exams...)'}
+              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-blue-600/10 text-[#2563EB] flex items-center justify-center shrink-0 shadow-2xs group-hover:bg-blue-600/20 transition-colors">
+                <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[65px] xs:max-w-[110px] sm:max-w-none">
+                  {currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal'}
+                </span>
+                <span className="text-[8.5px] font-bold text-blue-600 tracking-widest uppercase hidden sm:block">
+                  ACS School
                 </span>
               </div>
-              <kbd className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold text-gray-400 bg-white border border-gray-200 rounded-none shadow-2xs">
-                Ctrl+K
-              </kbd>
-            </button>
+            </div>
+          </div>
 
-            {/* Mobile compact search pill */}
+          {/* Spacer */}
+          <div className="flex-1 min-w-[2px] sm:min-w-[4px]"></div>
+          
+          {/* Active Ward / Child Switcher (Dual Portal) */}
+          <div className="relative shrink-0" ref={topChildDropdownRef}>
             <button
               type="button"
-              onClick={() => setIsSearchModalOpen(true)}
-              className="md:hidden flex items-center gap-1.5 px-2 py-1.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-none text-xs text-gray-500 font-medium transition-colors cursor-pointer w-full max-w-[140px]"
-              title="Search portal"
+              id="student-switcher-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setTopChildOpen(!topChildOpen);
+                setLangOpen(false);
+                setAvatarOpen(false);
+              }}
+              className="flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-xl bg-blue-50/90 hover:bg-blue-100 border border-blue-200/90 text-blue-950 transition-all text-xs font-bold cursor-pointer shadow-2xs shrink-0 active:scale-95"
+              title="Switch Student / Ward"
             >
-              <Search className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-              <span className="truncate text-[11px] text-gray-400">Search...</span>
+              <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-blue-600 text-white text-[9px] sm:text-[10px] font-black flex items-center justify-center shrink-0 shadow-2xs pointer-events-none">
+                {current?.avatar || current?.name?.[0] || 'A'}
+              </div>
+              <div className="flex flex-col text-left min-w-0 pointer-events-none">
+                <span className="text-[10px] sm:text-[11px] font-extrabold text-slate-900 leading-tight truncate max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
+                  {current?.name || 'Aarav Sharma'}
+                </span>
+                <span className="text-[8px] sm:text-[8.5px] font-bold text-blue-600 truncate leading-tight hidden xs:block max-w-[45px] xs:max-w-[70px] sm:max-w-[130px]">
+                  {current?.class || 'Class I (A)'}
+                </span>
+              </div>
+              <ChevronDown className={`w-3 h-3 text-blue-600 transition-transform shrink-0 pointer-events-none ${topChildOpen ? 'rotate-180' : ''}`} />
             </button>
-          </div>
-          
-          {/* Right Action Icons: Language, Apps, Avatar */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0 min-w-0 pr-1 sm:pr-0">
-            
-            {/* Active Student Pill Dropdown - Hidden on small screens to save space */}
-            <div className="relative hidden lg:block" ref={topChildDropdownRef}>
-              <button 
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setTopChildOpen(!topChildOpen); setLangOpen(false); setAvatarOpen(false); }}
-                className="flex items-center gap-2 px-3 py-1 bg-purple-50 border border-purple-200 rounded-none shadow-sm cursor-pointer hover:bg-purple-100 transition-colors"
+
+            {/* Mobile backdrop for student switcher */}
+            {topChildOpen && (
+              <div 
+                className="fixed inset-0 z-[80] sm:hidden bg-black/30 backdrop-blur-2xs" 
+                onClick={() => setTopChildOpen(false)} 
+              />
+            )}
+
+            {topChildOpen && (
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ top: '56px' }}
+                className="fixed sm:absolute sm:top-full mt-1.5 left-2 right-2 sm:left-0 sm:right-auto max-w-sm sm:w-72 bg-white border border-slate-200/90 shadow-2xl rounded-2xl z-[100] py-2 animate-in fade-in zoom-in-95 sm:zoom-in-100 duration-150 overflow-hidden"
               >
-                {current.photo ? (
-                  <img
-                    src={current.photo.startsWith('http') || current.photo.startsWith('data:') ? current.photo : `http://localhost:5050${current.photo.startsWith('/') ? '' : '/'}${current.photo}`}
-                    alt={current.name}
-                    className="w-5 h-5 rounded-none object-cover shadow-xs"
-                  />
-                ) : (
-                  <div className="w-5 h-5 rounded-none bg-purple-500 text-white flex items-center justify-center text-[10px] font-black shadow-inner">
-                    {current.avatar}
-                  </div>
-                )}
-                <span className="text-[11px] uppercase tracking-wider font-extrabold text-purple-700">{current.name}</span>
-                <span className="text-[10px] uppercase font-bold text-purple-400 opacity-70 border-l border-purple-300 pl-1.5 ml-1">• {current.class}</span>
-                <ChevronDown className={`w-3.5 h-3.5 text-purple-600 transition-transform ml-1 ${topChildOpen ? 'rotate-180' : ''}`} />
-              </button>
-              
-              {topChildOpen && (
-                <div className="absolute top-full mt-2 w-64 right-0 bg-white border border-gray-200 shadow-xl rounded-none z-50 flex flex-col divide-y divide-gray-100">
-                  <div className="px-3 py-1.5 bg-gray-50 text-[10px] font-bold uppercase text-gray-500 tracking-wider">
-                    {getT('viewingChild', currentLang)}
-                  </div>
-                  {childrenList.map(child => {
-                    const childId = child.id || child._id;
-                    const isSelected = activeChild === childId || activeChild === child.id || activeChild === child._id;
-                    const cPhoto = child.photo ? (child.photo.startsWith('http') || child.photo.startsWith('data:') ? child.photo : `http://localhost:5050${child.photo.startsWith('/') ? '' : '/'}${child.photo}`) : null;
+                <div className="px-3 py-1.5 bg-blue-50/70 border-b border-blue-100 flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase text-blue-900 tracking-wider">
+                    {currentLang === 'hi' ? 'विद्यार्थी चुनें' : 'Select Student / Ward'}
+                  </span>
+                  <span className="text-[9px] font-bold text-blue-600 bg-white border border-blue-200 px-1.5 py-0.5 rounded-full">
+                    {childrenList.length} {currentLang === 'hi' ? 'छात्र' : 'Wards'}
+                  </span>
+                </div>
+                <div className="divide-y divide-slate-100 max-h-56 overflow-y-auto">
+                  {childrenList.map((c) => {
+                    const cId = c.id || c._id;
+                    const isSelected = (current?.id === cId || current?._id === cId);
                     return (
                       <button
-                        key={childId}
-                        onClick={() => { setActiveChild(childId); setTopChildOpen(false); }}
-                        className={`text-left px-3 py-2 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center gap-2.5 ${
-                          isSelected ? 'bg-purple-50 text-purple-700 border-l-[3px] border-purple-500 font-extrabold' : 'text-gray-600 hover:bg-gray-50 border-l-[3px] border-transparent'
+                        key={cId}
+                        type="button"
+                        onClick={() => {
+                          if (setActiveChild) setActiveChild(cId);
+                          try {
+                            localStorage.setItem('active_child', cId);
+                          } catch (e) {}
+                          setTopChildOpen(false);
+                          window.dispatchEvent(new CustomEvent('portal_child_changed', { detail: cId }));
+                        }}
+                        className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between transition-colors cursor-pointer ${
+                          isSelected ? 'bg-blue-50 text-blue-900 font-bold' : 'text-slate-700 hover:bg-slate-50'
                         }`}
                       >
-                        {cPhoto ? (
-                          <img src={cPhoto} alt={child.name} className="w-6 h-6 rounded-none object-cover shadow-xs flex-shrink-0" />
-                        ) : (
-                          <div className="w-6 h-6 bg-purple-500 text-white flex items-center justify-center text-[10px] shadow-sm font-black flex-shrink-0">{child.avatar}</div>
-                        )}
-                        <div className="flex flex-col min-w-0 flex-1">
-                          <span className="truncate">{child.name}</span>
-                          <span className="text-[9px] text-gray-400 font-medium normal-case">{child.class} • Roll #{child.roll || '-'}</span>
+                        <div className="flex items-center gap-2.5 min-w-0 pointer-events-none">
+                          <div className={`w-7 h-7 rounded-full text-white text-xs font-black flex items-center justify-center shrink-0 shadow-2xs ${
+                            isSelected ? 'bg-blue-600' : 'bg-slate-400'
+                          }`}>
+                            {c.avatar || c.name?.[0] || 'A'}
+                          </div>
+                          <div className="flex flex-col min-w-0">
+                            <span className="font-extrabold text-slate-900 leading-tight truncate">{c.name}</span>
+                            <span className="text-[10px] text-blue-600 font-medium">{c.class}</span>
+                          </div>
                         </div>
-                        {isSelected && <span className="text-purple-600 text-xs font-bold">✓</span>}
+                        {isSelected && <Check className="w-4 h-4 text-blue-600 stroke-[3] flex-shrink-0" />}
                       </button>
                     );
                   })}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right Action Icons: Language, Apps, Avatar */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0 ml-0.5 sm:ml-1 pr-1 sm:pr-0">
             
-            {/* Dedicated Language Selector: English & Hindi Only */}
-            <div className="relative flex-shrink-0" ref={langDropdownRef}>
+            {/* Dedicated 2-Language Selector (English & Hindi Only) */}
+            <div className="relative shrink-0" ref={langDropdownRef}>
               <button 
                 type="button"
                 id="language-switch-btn"
@@ -713,129 +798,243 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   setTopChildOpen(false);
                   setAvatarOpen(false);
                 }}
-                className={`flex items-center gap-1.5 sm:gap-2 text-[11px] font-extrabold uppercase tracking-wider border rounded-none px-2 sm:px-2.5 py-1.5 cursor-pointer transition-all shadow-2xs ${
+                className={`flex items-center gap-0.5 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-xl cursor-pointer transition-all shadow-2xs border shrink-0 active:scale-95 ${
                   langOpen 
-                    ? 'bg-indigo-50 border-indigo-400 text-indigo-700 ring-2 ring-indigo-200' 
-                    : 'bg-white hover:bg-gray-50 border-gray-300 text-gray-700'
+                    ? 'bg-blue-50 border-blue-400 text-blue-900 ring-2 ring-blue-200' 
+                    : 'bg-white hover:bg-slate-50 border-slate-200/90 text-slate-700'
                 }`}
-                title="Change Language / भाषा बदलें"
+                title="Change Language / भाषा बदलें (English / हिन्दी)"
                 aria-label="Change Language"
               >
-                <Globe className="w-4 h-4 text-indigo-600 flex-shrink-0" />
-                <span className="font-black text-indigo-950 text-xs">{activeLanguageObj.code.toUpperCase()}</span>
-                <span className="hidden md:inline font-bold normal-case text-gray-700">
-                  {activeLanguageObj.native}
+                <span className="text-sm leading-none shrink-0 pointer-events-none">{currentLang === 'hi' ? '🇮🇳' : '🇬🇧'}</span>
+                <span className="font-extrabold text-slate-900 text-xs tracking-tight hidden sm:inline-block pointer-events-none">
+                  {currentLang === 'hi' ? 'हिन्दी' : 'English'}
                 </span>
-                <ChevronDown className={`w-3.5 h-3.5 text-gray-400 transition-transform flex-shrink-0 ${langOpen ? 'rotate-180' : ''}`} />
+                <span className="text-[9px] sm:text-[9.5px] font-black uppercase text-blue-700 bg-blue-100/80 px-1 sm:px-1.5 py-0.2 rounded-md shrink-0 pointer-events-none">
+                  {currentLang.toUpperCase()}
+                </span>
+                <ChevronDown className={`w-2.5 h-2.5 sm:w-3 sm:h-3 text-slate-400 transition-transform shrink-0 pointer-events-none ${langOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {/* Mobile backdrop for language dropdown */}
+              {langOpen && (
+                <div 
+                  className="fixed inset-0 z-[80] sm:hidden bg-black/30 backdrop-blur-2xs" 
+                  onClick={() => setLangOpen(false)} 
+                />
+              )}
 
               {langOpen && (
                 <div 
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-full mt-2 right-0 w-48 sm:w-52 max-w-[calc(100vw-20px)] bg-white border border-gray-200 shadow-2xl rounded-none z-[100] flex flex-col py-1 animate-in fade-in slide-in-from-top-2 duration-150"
+                  style={{ top: '56px' }}
+                  className="fixed sm:absolute sm:top-full mt-1.5 left-2 right-2 sm:left-auto sm:right-0 max-w-sm sm:w-80 bg-white border border-slate-200/90 shadow-2xl rounded-2xl sm:rounded-3xl z-[100] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 sm:zoom-in-100 duration-150"
                 >
-                   <div className="px-3 py-2 bg-indigo-50/80 border-b border-indigo-100 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <Globe className="w-3.5 h-3.5 text-indigo-600" />
-                        <p className="text-[11px] font-black uppercase text-indigo-950 tracking-wider">
-                          Language / भाषा
+                   {/* Popover Header */}
+                   <div className="p-3.5 bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white flex items-center justify-between">
+                      <div className="flex items-center gap-2 pointer-events-none">
+                        <Globe className="w-4 h-4 text-blue-200" />
+                        <p className="text-xs font-black uppercase tracking-wider">
+                          Select Language / भाषा चुनें
                         </p>
                       </div>
-                      <span className="text-[10px] font-bold text-indigo-700 bg-white border border-indigo-200 px-1.5 py-0.5">
-                        {activeLanguageObj.code.toUpperCase()}
+                      <span className="text-[10px] font-extrabold text-white bg-white/20 backdrop-blur-xs border border-white/30 px-2 py-0.5 rounded-full">
+                        {currentLang === 'hi' ? 'HI Active' : 'EN Active'}
                       </span>
                    </div>
-                   
-                   <div className="divide-y divide-gray-100">
-                     {languages.map((lang) => {
-                       const isSelected = currentLang === lang.code;
-                       return (
-                         <button
-                           type="button"
-                           key={lang.code}
-                           onClick={(e) => {
-                             e.stopPropagation();
-                             handleSelectLanguage(lang.code);
-                           }}
-                           className={`w-full px-3.5 py-2.5 text-left text-xs flex items-center justify-between transition-colors cursor-pointer ${
-                             isSelected 
-                               ? 'bg-indigo-50 text-indigo-700 font-black border-l-[3px] border-indigo-600' 
-                               : 'text-gray-700 hover:bg-gray-50 border-l-[3px] border-transparent font-medium'
-                           }`}
-                         >
-                           <div className="flex items-center gap-2.5 min-w-0">
-                             <span className="text-base leading-none flex-shrink-0">{lang.flag}</span>
-                             <div className="flex flex-col min-w-0">
-                               <span className="font-extrabold text-gray-900 leading-tight truncate">{lang.native}</span>
-                               <span className="text-[10px] text-gray-500 font-medium">{lang.name}</span>
-                             </div>
+
+                   {/* 2 Exclusive Languages: English & Hindi */}
+                   <div className="p-3 space-y-2">
+                     {/* 1. English (Default) */}
+                     <button
+                       type="button"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleSelectLanguage('en');
+                       }}
+                       className={`w-full p-3 rounded-2xl text-left text-xs flex items-center justify-between transition-all cursor-pointer border active:scale-98 ${
+                         currentLang === 'en'
+                           ? 'bg-blue-50/90 text-blue-900 font-black border-blue-500 shadow-xs ring-1 ring-blue-400'
+                           : 'text-slate-700 hover:bg-slate-50 border-slate-200 font-medium'
+                       }`}
+                     >
+                       <div className="flex items-center gap-3 min-w-0 pointer-events-none">
+                         <span className="text-2xl leading-none shrink-0">🇬🇧</span>
+                         <div className="flex flex-col min-w-0">
+                           <div className="flex items-center gap-1.5">
+                             <span className="font-extrabold text-slate-900 text-sm leading-tight">English</span>
+                             <span className="text-[9px] font-bold text-blue-600 bg-blue-100/80 px-1.5 py-0.2 rounded">Default</span>
                            </div>
-                           {isSelected && <Check className="w-4 h-4 text-indigo-600 stroke-[3] flex-shrink-0" />}
-                         </button>
-                       );
-                     })}
+                           <span className="text-[11px] text-slate-400 font-semibold mt-0.5">Primary Portal Language</span>
+                         </div>
+                       </div>
+                       {currentLang === 'en' && (
+                         <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                           <Check className="w-3 h-3 stroke-[3]" />
+                         </div>
+                       )}
+                     </button>
+
+                     {/* 2. Hindi */}
+                     <button
+                       type="button"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         handleSelectLanguage('hi');
+                       }}
+                       className={`w-full p-3 rounded-2xl text-left text-xs flex items-center justify-between transition-all cursor-pointer border active:scale-98 ${
+                         currentLang === 'hi'
+                           ? 'bg-blue-50/90 text-blue-900 font-black border-blue-500 shadow-xs ring-1 ring-blue-400'
+                           : 'text-slate-700 hover:bg-slate-50 border-slate-200 font-medium'
+                       }`}
+                     >
+                       <div className="flex items-center gap-3 min-w-0 pointer-events-none">
+                         <span className="text-2xl leading-none shrink-0">🇮🇳</span>
+                         <div className="flex flex-col min-w-0">
+                           <div className="flex items-center gap-1.5">
+                             <span className="font-extrabold text-slate-900 text-sm leading-tight">हिन्दी</span>
+                             <span className="text-[9px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">Hindi</span>
+                           </div>
+                           <span className="text-[11px] text-slate-400 font-semibold mt-0.5">हिन्दी भाषा में अनुवाद</span>
+                         </div>
+                       </div>
+                       {currentLang === 'hi' && (
+                         <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                           <Check className="w-3 h-3 stroke-[3]" />
+                         </div>
+                       )}
+                     </button>
+                   </div>
+
+                   {/* Footer Status */}
+                   <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-[10.5px] font-medium text-slate-500 text-center flex items-center justify-center gap-1.5">
+                     <span>🌐 Instant portal switch (English &bull; हिन्दी)</span>
                    </div>
                 </div>
               )}
             </div>
             
-            {/* Grid Apps Button -> Also Navigates to Dashboard */}
+            {/* Grid Apps Button -> Navigates to All Modules */}
             <button 
-              onClick={() => navigate('/dashboard')}
-              className="hidden sm:flex p-1.5 rounded-none border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer group relative flex-shrink-0"
-              title="Quick Dashboard"
+              onClick={() => navigate('/all-modules')}
+              className="hidden sm:flex p-1.5 rounded-lg border border-transparent hover:border-gray-200 hover:bg-gray-50 transition-colors cursor-pointer group relative flex-shrink-0"
+              title="All Modules"
             >
               <Grid3X3 className="w-4 h-4 text-gray-600" />
               <div className="absolute top-full right-0 mt-2 bg-gray-900 border border-black text-white text-[9px] font-black px-2.5 py-1.5 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50 shadow-md">
-                {getT('dashboard', currentLang)}
+                Modules
               </div>
             </button>
+
+            {/* Notification Bell with red badge */}
+            <button
+              type="button"
+              onClick={() => navigate('/notice-board')}
+              className="relative p-1 sm:p-1.5 rounded-full text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer shrink-0"
+              title="Notice Board & Notifications"
+            >
+              <Bell className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 shrink-0" />
+              <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
+            </button>
             
-            {/* Profile Avatar Click Menu */}
-            <div className="relative inline-block z-40 flex-shrink-0 mr-1 sm:mr-0" ref={avatarDropdownRef}>
+            {/* Profile Avatar Button with Dropdown Menu */}
+            <div className="relative shrink-0" ref={avatarDropdownRef}>
               <button
                 type="button"
                 id="profile-avatar-btn"
                 onClick={(e) => { 
-                  e.stopPropagation(); 
-                  setAvatarOpen(prev => !prev); 
+                  e.stopPropagation();
+                  setAvatarOpen(!avatarOpen);
                   setLangOpen(false); 
                   setTopChildOpen(false); 
                 }}
-                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-none border border-orange-300 bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white font-black text-xs sm:text-[13px] shadow-sm transition-transform cursor-pointer hover:scale-105 flex-shrink-0 ${avatarOpen ? 'ring-2 ring-orange-400' : ''}`}
-                title={parentProfile?.name || 'Parent Profile'}
-                aria-label="Parent Profile Menu"
+                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-blue-500/90 bg-[#2563EB] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs transition-transform cursor-pointer hover:ring-2 hover:ring-blue-300 hover:scale-105 shrink-0 overflow-hidden active:scale-95"
+                title={`My Profile - ${current?.name || 'Student'}`}
+                aria-label="My Profile"
               >
-                {parentProfile?.name ? parentProfile.name.charAt(0).toUpperCase() : 'P'}
+                <img 
+                  src={getMediaUrl(current?.photo) || '/kabir_singh.png'}
+                  alt={current?.name || 'Student Profile'}
+                  className="w-full h-full object-cover pointer-events-none"
+                  onError={(e) => {
+                    if (e.target.src !== window.location.origin + '/kabir_singh.png') {
+                      e.target.src = '/kabir_singh.png';
+                    }
+                  }}
+                />
               </button>
-              
+
+              {/* Mobile backdrop for avatar dropdown */}
+              {avatarOpen && (
+                <div 
+                  className="fixed inset-0 z-[80] sm:hidden bg-black/30 backdrop-blur-2xs" 
+                  onClick={() => setAvatarOpen(false)} 
+                />
+              )}
+
               {avatarOpen && (
                 <div 
                   onClick={(e) => e.stopPropagation()}
-                  className="absolute top-full right-0 mt-2 w-52 max-w-[calc(100vw-20px)] bg-white border border-gray-200 shadow-2xl rounded-none z-[100] flex flex-col py-1 animate-in fade-in slide-in-from-top-2 duration-150"
+                  style={{ top: '56px' }}
+                  className="fixed sm:absolute sm:top-full mt-1.5 right-2 sm:right-0 max-w-sm w-64 sm:w-72 bg-white border border-slate-200/90 shadow-2xl rounded-2xl z-[100] p-3 flex flex-col overflow-hidden animate-in fade-in zoom-in-95 sm:zoom-in-100 duration-150"
                 >
-                   <div className="p-3 border-b border-gray-100 bg-orange-50/60">
-                      <p className="text-[12px] font-black text-gray-800 leading-tight uppercase tracking-wide truncate">
-                        {parentProfile?.name || 'Parent / Guardian'}
-                      </p>
-                      <p className="text-[10px] font-bold text-gray-500 truncate mt-0.5">
-                        {parentProfile?.email || parentProfile?.phone || 'parent@portal.edu'}
-                      </p>
-                   </div>
-                   <button 
-                     type="button"
-                     onClick={() => { setAvatarOpen(false); navigate('/my-profile'); }} 
-                     className="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-gray-700 hover:bg-orange-50 hover:text-orange-700 flex items-center gap-2 border-l-[3px] border-transparent hover:border-orange-400 transition-all cursor-pointer"
-                   >
-                     <UserCog className="w-4 h-4 text-orange-500" /> {t('myProfile', 'My Profile')}
-                   </button>
-                   <button 
-                     type="button"
-                     onClick={() => { setAvatarOpen(false); navigate('/logout'); }} 
-                     className="px-3.5 py-2.5 text-left text-xs font-bold uppercase tracking-wider text-red-600 hover:bg-red-50 flex items-center gap-2 border-l-[3px] border-transparent hover:border-red-400 transition-all cursor-pointer"
-                   >
-                     <LogOut className="w-4 h-4 text-red-500" /> {t('logout', 'Logout')}
-                   </button>
+                  <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
+                    <div className="w-11 h-11 rounded-full border border-blue-200 overflow-hidden bg-blue-50 flex items-center justify-center shrink-0">
+                      <img 
+                        src={getMediaUrl(current?.photo) || '/kabir_singh.png'}
+                        alt={current?.name || 'Student'}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { e.target.src = '/kabir_singh.png'; }}
+                      />
+                    </div>
+                    <div className="flex flex-col min-w-0">
+                      <span className="font-extrabold text-slate-900 text-sm leading-tight truncate">
+                        {current?.name || 'Aarav Sharma'}
+                      </span>
+                      <span className="text-[11px] text-blue-600 font-bold mt-0.5 truncate">
+                        {current?.class || 'Class I (A)'}
+                      </span>
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        Admn: {current?.admn || 'YIS-2024-101'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="py-2 space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAvatarOpen(false);
+                        navigate('/my-profile');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-blue-700 hover:bg-blue-50/80 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <User className="w-4 h-4 text-blue-600" />
+                      <span>{currentLang === 'hi' ? 'मेरी प्रोफाइल देखें' : 'View My Profile'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAvatarOpen(false);
+                        navigate('/dashboard');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:text-blue-700 hover:bg-blue-50/80 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <GraduationCap className="w-4 h-4 text-emerald-600" />
+                      <span>{currentLang === 'hi' ? 'विद्यार्थी डैशबोर्ड' : 'Student Dashboard'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAvatarOpen(false);
+                        navigate('/logout');
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50/80 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-600" />
+                      <span>{currentLang === 'hi' ? 'लॉगआउट करें' : 'Logout / साइन आउट'}</span>
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -844,9 +1043,43 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
           {pageContent}
         </main>
+
+        {/* Fixed Native Mobile Bottom Navigation Bar */}
+        <nav 
+          className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-1 py-1 flex items-center justify-around shadow-[0_-3px_12px_rgba(0,0,0,0.05)] lg:hidden select-none"
+          style={{ paddingBottom: 'max(0.35rem, env(safe-area-inset-bottom))' }}
+        >
+          {[
+            { label: currentLang === 'hi' ? 'होम' : 'Home', path: '/dashboard', icon: Home },
+            { label: currentLang === 'hi' ? 'समय सारणी' : 'Timetable', path: '/timetable', icon: Calendar },
+            { label: currentLang === 'hi' ? 'गृहकार्य' : 'Homework', path: '/homework', icon: ClipboardCheck },
+            { label: currentLang === 'hi' ? 'परीक्षाएं' : 'Exams', path: '/exams', icon: FileQuestion },
+            { label: currentLang === 'hi' ? 'प्रोफाइल' : 'Profile', path: '/my-profile', icon: User },
+          ].map((tab) => {
+            const isActive = location.pathname === tab.path || (tab.path === '/dashboard' && (location.pathname === '/' || location.pathname === '/dashboard'));
+            const Icon = tab.icon;
+            return (
+              <button
+                key={tab.label}
+                type="button"
+                onClick={() => navigate(tab.path)}
+                className={`flex flex-col items-center justify-center py-0.5 px-1 min-w-[50px] transition-all cursor-pointer ${
+                  isActive ? 'text-[#2563EB]' : 'text-slate-400 hover:text-slate-600'
+                }`}
+              >
+                <div className={`p-0.5 rounded-lg transition-colors shrink-0 ${isActive ? 'bg-blue-50 text-blue-600' : 'bg-transparent'}`}>
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'stroke-[2.5]' : 'stroke-2'}`} />
+                </div>
+                <span className={`text-[8.5px] sm:text-[9px] mt-0.5 tracking-tight truncate max-w-full ${isActive ? 'font-black text-[#2563EB]' : 'font-semibold text-slate-500'}`}>
+                  {tab.label}
+                </span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       {/* Spotlight Command Modal */}

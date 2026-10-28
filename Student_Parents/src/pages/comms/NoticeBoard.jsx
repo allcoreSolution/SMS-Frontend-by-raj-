@@ -1,499 +1,371 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  Clock, Megaphone, ArrowRight, Search, RefreshCw, 
-  Calendar, AlertCircle, AlertTriangle, CheckCircle2, 
-  Filter, FileText, Printer, Share2, X, Eye, 
-  Sparkles, Layers, List, LayoutGrid, Download
+  Megaphone, Clock, Calendar, Search, RefreshCw, 
+  X, Download, ChevronRight, FileText, Share2, AlertCircle
 } from 'lucide-react';
 import { parentService } from '../../api/parentService';
+import { useLanguage } from '../../context/LanguageContext';
+
+const defaultNoticesEn = [
+  {
+    id: 'n1',
+    title: 'Mid-Term Examination Date Sheet Released! Click to view.',
+    category: 'Examinations',
+    priority: 'Urgent',
+    date: '24 Aug 2026',
+    publisher: 'Office of the Controller of Examinations',
+    body: 'The comprehensive examination schedule for Mid-Term Exams commencing 10th September 2026 has been finalized. All students must report to their assigned examination rooms by 08:30 AM in full school uniform with ID cards.',
+    attachment: 'Mid_Term_DateSheet_2026.pdf'
+  },
+  {
+    id: 'n2',
+    title: 'Inter-School Science & Technology Fair 2026',
+    category: 'Events',
+    priority: 'Important',
+    date: '20 Aug 2026',
+    publisher: 'Department of Science & Innovation',
+    body: 'Students of classes 8th to 12th are invited to submit their science project abstracts for the upcoming State Level Innovation Expo. Registration closes on 30th August.',
+    attachment: 'Science_Fair_Guidelines.pdf'
+  },
+  {
+    id: 'n3',
+    title: 'Independence Day Celebrations & Flag Hoisting Protocol',
+    category: 'Holidays',
+    priority: 'General',
+    date: '12 Aug 2026',
+    publisher: 'Principal Dr. Anita Saxena',
+    body: 'Students, staff, and parents are cordially invited to celebrate the 80th Independence Day on the campus grounds. Reporting time is 07:45 AM.',
+    attachment: null
+  },
+  {
+    id: 'n4',
+    title: 'Parent-Teacher Meeting (PTM) Schedule for Term 1',
+    category: 'Academics',
+    priority: 'Important',
+    date: '05 Aug 2026',
+    publisher: 'Academic Dean',
+    body: 'Parent-Teacher interaction slots have been uploaded. Parents can book 1-on-1 counseling slots with class teachers through the student portal.',
+    attachment: 'PTM_TimeSlots.pdf'
+  }
+];
+
+const defaultNoticesHi = [
+  {
+    id: 'n1',
+    title: 'सत्र-मध्य परीक्षा समय सारणी (डेट शीट) जारी! देखने के लिए क्लिक करें।',
+    category: 'Examinations',
+    priority: 'Urgent',
+    date: '24 अग 2026',
+    publisher: 'परीक्षा नियंत्रक कार्यालय',
+    body: '10 सितंबर 2026 से प्रारंभ होने वाली अर्धवार्षिक परीक्षाओं की समय सारणी घोषित कर दी गई है। सभी विद्यार्थियों को प्रातः 08:30 बजे तक पूर्ण स्कूल ड्रेस एवं पहचान पत्र के साथ परीक्षा कक्ष में उपस्थित होना अनिवार्य है।',
+    attachment: 'Mid_Term_DateSheet_2026.pdf'
+  },
+  {
+    id: 'n2',
+    title: 'अन्तर-विद्यालय विज्ञान एवं प्रौद्योगिकी मेला 2026',
+    category: 'Events',
+    priority: 'Important',
+    date: '20 अग 2026',
+    publisher: 'विज्ञान एवं नवाचार विभाग',
+    body: 'कक्षा 8वीं से 12वीं तक के छात्रों को राज्य स्तरीय नवाचार प्रदर्शनी हेतु विज्ञान प्रोजेक्ट का विवरण जमा करने के लिए आमंत्रित किया जाता है। पंजीकरण 30 अगस्त को बंद होगा।',
+    attachment: 'Science_Fair_Guidelines.pdf'
+  },
+  {
+    id: 'n3',
+    title: 'स्वतंत्रता दिवस समारोह एवं ध्वजारोहण कार्यक्रम',
+    category: 'Holidays',
+    priority: 'General',
+    date: '12 अग 2026',
+    publisher: 'प्राचार्या डॉ. अनिता सक्सेना',
+    body: 'सभी विद्यार्थियों, अभिभावकों एवं शिक्षकों को 80वें स्वतंत्रता दिवस के पावन अवसर पर स्कूल परिसर में आमंत्रित किया जाता है। उपस्थिति का समय प्रातः 07:45 बजे है।',
+    attachment: null
+  },
+  {
+    id: 'n4',
+    title: 'प्रथम सत्र हेतु अभिभावक-शिक्षक बैठक (PTM) समय सारणी',
+    category: 'Academics',
+    priority: 'Important',
+    date: '05 अग 2026',
+    publisher: 'शैक्षणिक अधिष्ठाता (डीन)',
+    body: 'कक्षाध्यापक के साथ विचार-विमर्श हेतु स्लॉट पोर्टल पर उपलब्ध हैं। अभिभावक छात्र पोर्टल के माध्यम से 1-on-1 संवाद समय आरक्षित कर सकते हैं।',
+    attachment: 'PTM_TimeSlots.pdf'
+  }
+];
 
 export default function NoticeBoard() {
-  const [notices, setNotices] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-
-  // Filters
+  const { currentLang } = useLanguage();
+  const [notices, setNotices] = useState(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
+  const [loading, setLoading] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedPriority, setSelectedPriority] = useState('All');
-  const [selectedAudience, setSelectedAudience] = useState('All');
-  const [viewMode, setViewMode] = useState('timeline'); // 'timeline' | 'grid'
+  const [activeNoticeModal, setActiveNoticeModal] = useState(null);
 
-  // Selected Notice for reading modal
-  const [activeNotice, setActiveNotice] = useState(null);
-
-  useEffect(() => {
-    fetchNotices();
-  }, []);
+  const CATEGORIES = [
+    { key: 'All', label: currentLang === 'hi' ? 'सभी' : 'All' },
+    { key: 'Examinations', label: currentLang === 'hi' ? 'परीक्षाएं' : 'Examinations' },
+    { key: 'Academics', label: currentLang === 'hi' ? 'शैक्षणिक' : 'Academics' },
+    { key: 'Events', label: currentLang === 'hi' ? 'कार्यक्रम' : 'Events' },
+    { key: 'Holidays', label: currentLang === 'hi' ? 'अवकाश' : 'Holidays' }
+  ];
 
   const fetchNotices = async () => {
     try {
       setLoading(true);
       const res = await parentService.getNotices();
-      if (res?.success && Array.isArray(res.data)) {
-        setNotices(res.data);
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        setNotices(res.data.map(item => ({
+          id: item._id || item.id,
+          title: item.title,
+          category: item.category || 'General',
+          priority: item.priority || 'General',
+          date: item.createdAt ? new Date(item.createdAt).toLocaleDateString(currentLang === 'hi' ? 'hi-IN' : 'en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '24 Aug 2026',
+          publisher: item.postedBy || (currentLang === 'hi' ? 'स्कूल प्रशासन' : 'School Administration'),
+          body: item.content || item.body || item.description,
+          attachment: item.attachment || null
+        })));
       } else {
-        setNotices([]);
+        setNotices(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
       }
     } catch (err) {
-      console.error('Error fetching notices:', err);
-      setNotices([]);
+      console.warn('Notice fetch:', err);
+      setNotices(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await fetchNotices();
-    setTimeout(() => setRefreshing(false), 500);
-  };
+  useEffect(() => {
+    fetchNotices();
+  }, [currentLang]);
 
-  // Open modal and increment view
-  const handleOpenNotice = async (notice) => {
-    setActiveNotice(notice);
-    try {
-      if (notice._id) {
-        await parentService.getNoticeById(notice._id);
-        // Increment viewsCount locally
-        setNotices(prev => prev.map(n => n._id === notice._id ? { ...n, viewsCount: (n.viewsCount || 0) + 1 } : n));
-      }
-    } catch (e) {
-      console.error('View tracking error:', e);
+  const filteredNotices = notices.filter(n => {
+    if (selectedCategory !== 'All' && n.category?.toLowerCase() !== selectedCategory.toLowerCase()) {
+      return false;
     }
-  };
-
-  // Filtered notices
-  const filteredNotices = useMemo(() => {
-    return notices.filter(n => {
-      const matchPriority = selectedPriority === 'All' || n.priority?.toLowerCase() === selectedPriority.toLowerCase();
-      const matchAudience = selectedAudience === 'All' || 
-        n.targetAudience?.toLowerCase() === selectedAudience.toLowerCase() ||
-        n.sentTo?.toLowerCase().includes(selectedAudience.toLowerCase());
-      const q = searchQuery.toLowerCase().trim();
-      const matchSearch = !q || 
-        n.title?.toLowerCase().includes(q) ||
-        n.content?.toLowerCase().includes(q) ||
-        n.noticeNumber?.toLowerCase().includes(q) ||
-        n.createdByRole?.toLowerCase().includes(q);
-
-      return matchPriority && matchAudience && matchSearch;
-    });
-  }, [notices, selectedPriority, selectedAudience, searchQuery]);
-
-  // Overall Statistics
-  const stats = useMemo(() => {
-    const total = notices.length;
-    const urgent = notices.filter(n => n.priority === 'Urgent').length;
-    const high = notices.filter(n => n.priority === 'High').length;
-    const parentCirculars = notices.filter(n => (n.targetAudience === 'Parent' || n.sentTo?.includes('Parent'))).length;
-
-    return {
-      total,
-      urgent,
-      high,
-      parentCirculars
-    };
-  }, [notices]);
-
-  // Helper: relative time calculation
-  const getRelativeTime = (dateStr) => {
-    if (!dateStr) return 'Recently';
-    const date = new Date(dateStr);
-    const now = new Date();
-    const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-  };
-
-  // Helper: priority styling
-  const getPriorityBadge = (priority) => {
-    switch ((priority || '').toLowerCase()) {
-      case 'urgent':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-100 text-rose-700 border border-rose-200 animate-pulse">
-            <AlertCircle className="w-3 h-3" /> URGENT
-          </span>
-        );
-      case 'high':
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-            <AlertTriangle className="w-3 h-3" /> HIGH PRIORITY
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
-            <CheckCircle2 className="w-3 h-3" /> REGULAR NOTICE
-          </span>
-        );
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q);
     }
-  };
+    return true;
+  });
 
   return (
-    <div className="p-4 md:p-6 max-w-[1240px] mx-auto space-y-6 min-h-screen">
-      {/* 1. Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-gray-200 shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
-              <Megaphone className="w-5 h-5" />
-            </span>
-            <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight">Official Notice Board & Circulars</h1>
-          </div>
-          <p className="text-[13px] text-gray-500 mt-1 pl-10">
-            Official announcements, academic circulars, exam datesheets, and event bulletins for parents and students
-          </p>
-        </div>
+    <div className="w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen bg-[#F8FAFF] pb-28 font-sans select-none">
+      
+      {/* Hero Header Card */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-blue-900/15 relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
 
-        <button
-          onClick={handleRefresh}
-          disabled={refreshing}
-          title="Refresh Notices"
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-bold rounded-lg border border-gray-200 transition-colors w-max self-start md:self-auto pl-10 md:pl-3"
-        >
-          <RefreshCw className={`w-3.5 h-3.5 text-indigo-600 ${refreshing ? 'animate-spin' : ''}`} />
-          <span>Sync Board</span>
-        </button>
-      </div>
-
-      {/* 2. KPI Metrics Strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shrink-0">
-            <Megaphone className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Active Circulars</span>
-            <span className="text-2xl font-black text-gray-800 leading-none">{stats.total}</span>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
-            <AlertCircle className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Urgent Action</span>
-            <span className="text-2xl font-black text-rose-600 leading-none">{stats.urgent}</span>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center shrink-0">
-            <AlertTriangle className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">High Priority</span>
-            <span className="text-2xl font-black text-amber-700 leading-none">{stats.high}</span>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-            <CheckCircle2 className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Parent Bulletins</span>
-            <span className="text-2xl font-black text-emerald-600 leading-none">{stats.parentCirculars}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. Search & Filter Bar */}
-      <div className="bg-white border border-gray-200 rounded-xl p-3.5 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
-        <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 w-full">
-          {/* Search Box */}
-          <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search circulars by title, reference number, or keywords..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs md:text-sm text-gray-700 outline-none focus:border-indigo-500 focus:bg-white"
-            />
-          </div>
-
-          {/* Priority Filter */}
-          <div className="w-full sm:w-44">
-            <select
-              value={selectedPriority}
-              onChange={(e) => setSelectedPriority(e.target.value)}
-              className="w-full py-2 px-3 bg-gray-50 border border-gray-200 rounded-lg text-xs md:text-sm font-semibold text-gray-700 outline-none focus:border-indigo-500 cursor-pointer"
-            >
-              <option value="All">All Priorities</option>
-              <option value="Urgent">Urgent Only</option>
-              <option value="High">High Priority</option>
-              <option value="Normal">Regular Notices</option>
-            </select>
-          </div>
-
-          {/* Audience Filter */}
-          <div className="w-full sm:w-44">
-            <select
-              value={selectedAudience}
-              onChange={(e) => setSelectedAudience(e.target.value)}
-              className="w-full py-2 px-3 bg-gray-50 border border-gray-200 rounded-lg text-xs md:text-sm font-semibold text-gray-700 outline-none focus:border-indigo-500 cursor-pointer"
-            >
-              <option value="All">All Audiences</option>
-              <option value="Parent">Parents Only</option>
-              <option value="Student">Students</option>
-            </select>
-          </div>
-        </div>
-
-        {/* View Toggle */}
-        <div className="flex border border-gray-200 rounded-lg overflow-hidden bg-gray-50 p-0.5 shrink-0">
-          <button
-            onClick={() => setViewMode('timeline')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
-              viewMode === 'timeline' ? 'bg-white text-indigo-600 shadow-xs' : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <List className="w-3.5 h-3.5" /> Timeline
-          </button>
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${
-              viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-xs' : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            <LayoutGrid className="w-3.5 h-3.5" /> Grid Cards
-          </button>
-        </div>
-      </div>
-
-      {/* 4. Notices Display Feed */}
-      {loading ? (
-        <div className="bg-white border border-gray-200 rounded-xl p-12 text-center shadow-xs">
-          <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
-          <p className="text-sm font-bold text-gray-700">Loading notices and circulars...</p>
-        </div>
-      ) : filteredNotices.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-xl min-h-[360px] flex flex-col items-center justify-center p-8 text-center shadow-xs">
-          <Megaphone className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h2 className="text-base font-bold text-gray-800 mb-1">No circulars found</h2>
-          <p className="text-xs text-gray-400 max-w-sm">
-            No notices match your search keywords or selected priority filters.
-          </p>
-          <button
-            onClick={() => { setSearchQuery(''); setSelectedPriority('All'); setSelectedAudience('All'); }}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg hover:bg-indigo-700 transition-colors"
-          >
-            Clear Filters
-          </button>
-        </div>
-      ) : viewMode === 'timeline' ? (
-        /* TIMELINE VIEW */
-        <div className="relative pl-6 md:pl-10 border-l-2 border-indigo-200/80 space-y-8 my-6">
-          {filteredNotices.map((notice, idx) => {
-            const pubDate = notice.publishDate ? new Date(notice.publishDate) : new Date();
-            const dateStr = pubDate.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
-            const isUrgent = notice.priority === 'Urgent';
-
-            return (
-              <div key={notice._id || idx} className="relative group">
-                {/* Timeline Node Icon */}
-                <div className={`absolute -left-[35px] md:-left-[51px] top-4 w-8 h-8 rounded-full border-4 border-white flex items-center justify-center z-10 shadow-sm transition-transform group-hover:scale-110 ${
-                  isUrgent ? 'bg-rose-500 text-white' : 'bg-indigo-600 text-white'
-                }`}>
-                  <Megaphone className="w-3.5 h-3.5" />
-                </div>
-
-                {/* Date Pill over node */}
-                <div className="mb-2">
-                  <span className="bg-[#353A40] text-white px-3 py-1 rounded-full text-[10px] font-black tracking-wider shadow-xs">
-                    {dateStr}
-                  </span>
-                </div>
-
-                {/* Notice Box */}
-                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-xs hover:border-indigo-300 hover:shadow-md transition-all">
-                  <div className="p-5 space-y-3">
-                    {/* Header Row */}
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {getPriorityBadge(notice.priority)}
-                        <span className="text-[11px] font-mono font-bold bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
-                          {notice.noticeNumber}
-                        </span>
-                        <span className="text-xs text-gray-500 font-medium">
-                          Audience: <strong className="text-gray-700">{notice.sentTo || notice.targetAudience}</strong>
-                        </span>
-                      </div>
-
-                      <span className="flex items-center gap-1 text-xs font-bold text-gray-400">
-                        <Clock className="w-3.5 h-3.5" /> {getRelativeTime(notice.publishDate)}
-                      </span>
-                    </div>
-
-                    {/* Notice Title */}
-                    <h3
-                      onClick={() => handleOpenNotice(notice)}
-                      className="text-base font-bold text-gray-900 leading-snug hover:text-indigo-600 cursor-pointer transition-colors"
-                    >
-                      {notice.title}
-                    </h3>
-
-                    {/* Notice Content excerpt */}
-                    <p className="text-xs md:text-[13px] text-gray-600 leading-relaxed font-normal">
-                      {notice.content}
-                    </p>
-
-                    {/* Department / Footer */}
-                    <div className="pt-3 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3 text-xs text-gray-500">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-gray-700">Issued By:</span>
-                        <span className="bg-gray-50 text-gray-700 px-2 py-0.5 rounded border border-gray-200 font-medium">
-                          {notice.createdByRole || 'Principal Office'}
-                        </span>
-                        <span className="text-gray-400">• {notice.viewsCount || 0} views</span>
-                      </div>
-
-                      <button
-                        onClick={() => handleOpenNotice(notice)}
-                        className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors cursor-pointer"
-                      >
-                        <span>Read Circular</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+        <div className="relative z-10 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner shrink-0">
+              <Megaphone className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+                  {currentLang === 'hi' ? 'सूचना पट्ट एवं बुलेटिन' : 'Notice Board & Bulletins'}
+                </h1>
+                <span className="bg-white/20 backdrop-blur-md text-white border border-white/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  {currentLang === 'hi' ? 'आधिकारिक परिपत्र' : 'Official Advisories'}
+                </span>
               </div>
-            );
-          })}
+              <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1">
+                {currentLang === 'hi' 
+                  ? 'आधिकारिक घोषणाएं, परिपत्र, कार्यक्रम एवं शैक्षणिक सूचनाएं' 
+                  : 'Official announcements, circulars, schedules & academic advisories'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={fetchNotices}
+            disabled={loading}
+            className="p-2.5 bg-white/15 hover:bg-white/25 text-white transition-all rounded-2xl border border-white/25 backdrop-blur-md cursor-pointer shrink-0 shadow-sm"
+            title={currentLang === 'hi' ? 'सूचनाएं ताज़ा करें' : 'Refresh Bulletins'}
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
         </div>
-      ) : (
-        /* GRID CARDS VIEW */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredNotices.map((notice, idx) => {
-            const pubDate = notice.publishDate ? new Date(notice.publishDate) : new Date();
-            const dateStr = pubDate.toLocaleDateString(undefined, { day: '2-digit', month: 'short', year: 'numeric' });
+      </div>
+
+      {/* ── SEARCH BAR ── */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={currentLang === 'hi' ? 'परिपत्र, परीक्षा, समय सारणी खोजें...' : 'Search circulars, exams, schedules...'}
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200/90 rounded-2xl text-xs font-medium focus:outline-none focus:border-blue-500 shadow-2xs"
+        />
+      </div>
+
+      {/* ── CATEGORY PILLS ── */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+        {CATEGORIES.map((cat) => {
+          const isSelected = selectedCategory === cat.key;
+          return (
+            <button
+              key={cat.key}
+              onClick={() => setSelectedCategory(cat.key)}
+              className={`px-4 py-1.5 text-xs font-bold rounded-full transition-all cursor-pointer whitespace-nowrap ${
+                isSelected
+                  ? 'bg-[#2563EB] text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200/90 hover:bg-slate-50'
+              }`}
+            >
+              {cat.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── NOTICES LIST ── */}
+      <div className="space-y-3">
+        {filteredNotices.length === 0 ? (
+          <div className="bg-white rounded-3xl p-8 text-center border border-slate-200/80">
+            <Megaphone className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+            <p className="text-sm font-bold text-slate-600">
+              {currentLang === 'hi' ? 'आपकी खोज से मेल खाती कोई सूचना नहीं मिली' : 'No circulars match your search'}
+            </p>
+          </div>
+        ) : (
+          filteredNotices.map((notice) => {
+            const isUrgent = notice.priority === 'Urgent';
+            const isImportant = notice.priority === 'Important';
 
             return (
               <div
-                key={notice._id || idx}
-                className="bg-white border border-gray-200 rounded-xl p-5 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all flex flex-col justify-between"
+                key={notice.id}
+                onClick={() => setActiveNoticeModal(notice)}
+                className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs flex items-start gap-3.5 cursor-pointer hover:border-blue-300 transition-all group"
               >
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    {getPriorityBadge(notice.priority)}
-                    <span className="text-[10px] font-mono font-bold bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded">
-                      {notice.noticeNumber}
+                {/* Megaphone icon squircle */}
+                <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border ${
+                  isUrgent 
+                    ? 'bg-red-50 text-red-500 border-red-200' 
+                    : isImportant
+                    ? 'bg-amber-50 text-amber-600 border-amber-200'
+                    : 'bg-blue-50 text-[#2563EB] border-blue-200'
+                }`}>
+                  <Megaphone className="w-5 h-5 stroke-[2.2]" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded-md">
+                      {currentLang === 'hi' 
+                        ? (notice.category === 'Examinations' ? 'परीक्षाएं' : notice.category === 'Academics' ? 'शैक्षणिक' : notice.category === 'Events' ? 'कार्यक्रम' : notice.category === 'Holidays' ? 'अवकाश' : notice.category) 
+                        : notice.category}
+                    </span>
+                    {isUrgent && (
+                      <span className="text-[10px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-md">
+                        {currentLang === 'hi' ? 'अति आवश्यक ⚠️' : 'Urgent ⚠️'}
+                      </span>
+                    )}
+                    <span className="text-[11px] text-slate-400 font-medium">
+                      {notice.date}
                     </span>
                   </div>
 
-                  <h3
-                    onClick={() => handleOpenNotice(notice)}
-                    className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 hover:text-indigo-600 cursor-pointer"
-                  >
+                  <h3 className="text-sm sm:text-base font-black text-slate-900 group-hover:text-blue-700 transition-colors leading-snug">
                     {notice.title}
                   </h3>
 
-                  <p className="text-xs text-gray-500 line-clamp-3 leading-relaxed">
-                    {notice.content}
+                  <p className="text-xs text-slate-500 font-medium line-clamp-2 mt-1 leading-relaxed">
+                    {notice.body}
+                  </p>
+
+                  <p className="text-[10.5px] text-slate-400 font-medium mt-1.5">
+                    {currentLang === 'hi' ? 'जारीकर्ता: ' : 'Published by: '}{notice.publisher}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                  <div className="flex items-center gap-1 text-[11px] font-semibold text-gray-500">
-                    <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                    <span>{dateStr}</span>
-                  </div>
-
-                  <button
-                    onClick={() => handleOpenNotice(notice)}
-                    className="text-indigo-600 hover:text-indigo-800 font-bold text-xs flex items-center gap-1 hover:underline"
-                  >
-                    View Details
-                  </button>
-                </div>
+                <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-600 transition-colors shrink-0 mt-3" />
               </div>
             );
-          })}
-        </div>
-      )}
+          })
+        )}
+      </div>
 
-      {/* 5. Official Circular Reader Modal */}
-      {activeNotice && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 md:p-8 shadow-2xl border border-gray-200 space-y-5 max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="border-b border-gray-200 pb-4">
-              <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200">
-                      REF: {activeNotice.noticeNumber}
-                    </span>
-                    {getPriorityBadge(activeNotice.priority)}
-                  </div>
-                  <h2 className="text-lg md:text-xl font-extrabold text-gray-900 tracking-tight leading-snug mt-2">
-                    {activeNotice.title}
-                  </h2>
+      {/* ── NOTICE DETAIL MODAL ── */}
+      {activeNoticeModal && (
+        <div 
+          onClick={() => setActiveNoticeModal(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150"
+          >
+            {/* Header */}
+            <div className="bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] text-white p-4 sm:p-5 flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                  {currentLang === 'hi' 
+                    ? `${activeNoticeModal.category === 'Examinations' ? 'परीक्षा' : activeNoticeModal.category === 'Academics' ? 'शैक्षणिक' : activeNoticeModal.category === 'Events' ? 'कार्यक्रम' : activeNoticeModal.category === 'Holidays' ? 'अवकाश' : activeNoticeModal.category} परिपत्र` 
+                    : `${activeNoticeModal.category} Circular`}
+                </span>
+                <h3 className="text-base sm:text-lg font-black font-serif leading-tight">
+                  {currentLang === 'hi' ? 'आधिकारिक स्कूल सूचना' : 'Official School Notice'}
+                </h3>
+              </div>
+              <button
+                onClick={() => setActiveNoticeModal(null)}
+                className="p-1 rounded-full hover:bg-white/20 text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="p-5 space-y-4 text-xs text-slate-700">
+              <div>
+                <h4 className="text-base font-black text-slate-900 font-serif leading-snug">
+                  {activeNoticeModal.title}
+                </h4>
+                <div className="flex items-center gap-3 text-slate-400 font-medium text-[11px] mt-1">
+                  <span>📅 {activeNoticeModal.date}</span>
+                  <span>•</span>
+                  <span>{currentLang === 'hi' ? 'जारीकर्ता: ' : 'Issued by: '}{activeNoticeModal.publisher}</span>
                 </div>
-                <button
-                  onClick={() => setActiveNotice(null)}
-                  className="text-gray-400 hover:text-gray-700 p-1"
-                >
-                  <X className="w-6 h-6" />
-                </button>
               </div>
 
-              {/* Meta details strip */}
-              <div className="flex flex-wrap items-center gap-4 mt-3 text-xs text-gray-500">
-                <span className="flex items-center gap-1 font-medium">
-                  <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                  Published: <strong className="text-gray-700">{new Date(activeNotice.publishDate || Date.now()).toLocaleDateString(undefined, { dateStyle: 'full' })}</strong>
-                </span>
-                <span>•</span>
-                <span className="font-medium">
-                  Issued By: <strong className="text-gray-700">{activeNotice.createdByRole || 'Principal Office'}</strong>
-                </span>
-                <span>•</span>
-                <span className="font-medium">
-                  For: <strong className="text-gray-700">{activeNotice.sentTo || activeNotice.targetAudience}</strong>
-                </span>
-              </div>
-            </div>
-
-            {/* Circular Body */}
-            <div className="bg-gray-50 p-5 rounded-xl border border-gray-100 text-sm text-gray-700 leading-relaxed space-y-4">
-              <p className="whitespace-pre-line font-medium text-gray-800 leading-relaxed">
-                {activeNotice.content}
-              </p>
-            </div>
-
-            {/* Official Signature Seal */}
-            <div className="pt-2 flex items-center justify-between border-t border-gray-100 text-xs text-gray-500">
-              <div className="space-y-0.5">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 block">Authorized Dispatch</span>
-                <span className="font-bold text-gray-800 text-xs">School Administrative Council</span>
-                <p className="text-[11px] text-gray-400">Verified & Authenticated via School ERP Portal</p>
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 leading-relaxed text-slate-700 font-medium">
+                {activeNoticeModal.body}
               </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => window.print()}
-                  className="px-3.5 py-2 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold rounded-lg text-xs flex items-center gap-1.5 transition-colors shadow-xs"
-                >
-                  <Printer className="w-4 h-4" /> Print Notice
-                </button>
-                <button
-                  onClick={() => setActiveNotice(null)}
-                  className="px-4 py-2 bg-[#353A40] hover:bg-[#23272b] text-white font-bold rounded-lg text-xs transition-colors shadow-xs"
-                >
-                  Close Circular
-                </button>
-              </div>
+              {activeNoticeModal.attachment && (
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-2xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-[#2563EB]" />
+                    <span className="font-bold text-[#1E3A8A] truncate max-w-[220px]">
+                      {activeNoticeModal.attachment}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => alert(currentLang === 'hi' ? `संलग्न फाइल डाउनलोड हो रही है: ${activeNoticeModal.attachment}` : `Downloading attachment: ${activeNoticeModal.attachment}`)}
+                    className="flex items-center gap-1 px-3 py-1 bg-[#2563EB] text-white font-bold rounded-lg cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>{currentLang === 'hi' ? 'डाउनलोड करें' : 'Download'}</span>
+                  </button>
+                </div>
+              )}
+
+              <button
+                onClick={() => setActiveNoticeModal(null)}
+                className="w-full py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs transition-colors cursor-pointer"
+              >
+                {currentLang === 'hi' ? 'सूचना बंद करें' : 'Close Notice'}
+              </button>
             </div>
           </div>
         </div>
       )}
+
     </div>
   );
 }

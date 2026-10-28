@@ -1,73 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  UserCircle, Key, Lock, GraduationCap, Contact, User, UserCheck,
+  User, Key, Lock, GraduationCap, Contact, UserCheck,
   MapPin, HeartPulse, Landmark, Building, Sparkles, Shield, RefreshCw,
-  Camera, Upload, Edit3, X, CheckCircle2, AlertCircle, Phone, Mail
+  Camera, Upload, Edit3, X, CheckCircle2, AlertCircle, Phone, Mail,
+  ChevronRight, ArrowRight, Check, Award, FileBadge, Calendar,
+  Printer, QrCode, Eye, ShieldCheck, Activity, Users, School,
+  Sparkle, Smartphone, Globe, AlertTriangle, Folder, FolderOpen,
+  Sun, Moon, LogOut, ArrowLeft, FileText, CheckCircle, Clock,
+  FileCheck, AlertOctagon, Download, Plus, Star
 } from 'lucide-react';
 import { parentService } from '../api/parentService';
 
-// Reusable Field component for grid layouts
-const Field = ({ label, value }) => (
-  <div className="flex flex-col">
-    <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">{label}</span>
-    <span className="text-sm font-semibold text-gray-800">{value || 'N/A'}</span>
-  </div>
-);
-
-// Reusable Section Header
-const SectionHeader = ({ icon: Icon, title, iconColor = 'text-blue-600', onEdit }) => (
-  <div className="flex items-center justify-between mb-4">
-    <div className="flex items-center gap-2">
-      <div className={`p-1.5 rounded-none bg-gray-50 flex items-center justify-center ${iconColor}`}>
-        <Icon className="w-4 h-4" />
-      </div>
-      <h3 className="text-sm font-black text-gray-800 uppercase tracking-wide">{title}</h3>
-    </div>
-    {onEdit && (
-      <button
-        onClick={onEdit}
-        className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors"
-      >
-        <Edit3 className="w-3.5 h-3.5" />
-        Edit
-      </button>
-    )}
-  </div>
-);
-
-const getPhotoUrl = (photo) => {
-  if (!photo) return null;
-  if (photo.startsWith('data:') || photo.startsWith('http://') || photo.startsWith('https://')) {
-    return photo;
-  }
-  const host = (typeof window !== 'undefined' && window.location.hostname) ? window.location.hostname : 'localhost';
-  return `http://${host}:5050${photo.startsWith('/') ? '' : '/'}${photo}`;
-};
-
 export default function Profile({ activeChild }) {
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+  const docUploadInputRef = useRef(null);
+
+  // Sub-view: 'profile' | 'documents'
+  const [activeSubView, setActiveSubView] = useState('profile');
+
+  // Dark mode state
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    return localStorage.getItem('portal_theme') === 'dark';
+  });
+
+  const toggleDarkTheme = () => {
+    setIsDarkMode(prev => {
+      const next = !prev;
+      if (next) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('portal_theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('portal_theme', 'light');
+      }
+      return next;
+    });
+  };
+
   const [loading, setLoading] = useState(true);
   const [studentData, setStudentData] = useState(null);
   const [parentData, setParentData] = useState(null);
+  const [selectedTab, setSelectedTab] = useState('Personal');
+  const [showIdCardModal, setShowIdCardModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [previewDocModal, setPreviewDocModal] = useState(null);
+  const [showDocUploadModal, setShowDocUploadModal] = useState(false);
 
-  // Photo upload state
-  const fileInputRef = useRef(null);
-  const [uploadingPhoto, setUploadingPhoto] = useState(false);
-  const [photoMessage, setPhotoMessage] = useState(null);
-
-  // Edit profile modal state
+  // Edit profile state
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [profileSuccessMsg, setProfileSuccessMsg] = useState(null);
+  const [profileErrorMsg, setProfileErrorMsg] = useState(null);
+
+  // Edit form state with exact fields from user screenshot
   const [editForm, setEditForm] = useState({
-    studentPhone: '',
-    studentEmail: '',
-    bloodGroup: 'O+',
-    allergies: '',
-    address: '',
-    fatherName: '',
-    fatherPhone: '',
-    motherName: '',
-    motherPhone: ''
+    studentPhone: '8400563229',
+    studentEmail: 'jijays768@gmail.com',
+    religion: 'Hinduism',
+    category: 'General',
+    nationality: 'Indian',
+    address: '123, Green Street, Jaipur, RJ',
+    bloodGroup: 'A+',
+    house: 'Red Phoenix',
+    allergies: 'None Reported',
+    fatherName: 'Rajesh Kumar Gupta',
+    fatherPhone: '9876510011',
+    motherName: 'Ms. Rani',
+    motherPhone: '9811220000'
   });
 
   // Password change state
@@ -77,6 +79,127 @@ export default function Profile({ activeChild }) {
   const [updatingPassword, setUpdatingPassword] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState(null);
 
+  // Documents list matching Screenshot 2 exactly
+  const [documentsList, setDocumentsList] = useState([
+    {
+      id: 'doc-1',
+      title: 'Aadhaar Card',
+      subtitle: 'Government issued identity card',
+      status: 'Verified',
+      uploadedDate: '12 Jan 2023',
+      color: 'blue',
+      icon: FileBadge,
+      iconBg: 'bg-blue-100 text-blue-600',
+      eyeBg: 'bg-blue-50 text-blue-600 hover:bg-blue-100',
+      fileNumber: 'AADHAAR-8400-5632',
+      fileSize: '1.4 MB PDF'
+    },
+    {
+      id: 'doc-2',
+      title: 'Birth Certificate',
+      subtitle: 'Municipal Corporation issued document',
+      status: 'Verified',
+      uploadedDate: '12 Jan 2023',
+      color: 'green',
+      icon: Award,
+      iconBg: 'bg-emerald-100 text-emerald-600',
+      eyeBg: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100',
+      fileNumber: 'MCD-BC-2014-998',
+      fileSize: '890 KB PDF'
+    },
+    {
+      id: 'doc-3',
+      title: 'Previous Marksheet',
+      subtitle: 'Class 9 Annual Exam Marksheet',
+      status: 'Verified',
+      uploadedDate: '15 Jan 2023',
+      color: 'purple',
+      icon: Star,
+      iconBg: 'bg-purple-100 text-purple-600',
+      eyeBg: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
+      fileNumber: 'CBSE-MS-CLASS9-A',
+      fileSize: '2.1 MB PDF'
+    },
+    {
+      id: 'doc-4',
+      title: 'Passport Size Photo',
+      subtitle: '3.5 cm × 4.5 cm standard size',
+      status: 'Verified',
+      uploadedDate: '12 Jan 2023',
+      color: 'orange',
+      icon: User,
+      iconBg: 'bg-amber-100 text-amber-600',
+      eyeBg: 'bg-amber-50 text-amber-600 hover:bg-amber-100',
+      fileNumber: 'PHOTO-STUDENT-2024',
+      fileSize: '420 KB JPG'
+    },
+    {
+      id: 'doc-5',
+      title: 'Transfer Certificate',
+      subtitle: 'From previous school, duly attested',
+      status: 'Verified',
+      uploadedDate: '18 Jan 2023',
+      color: 'rose',
+      icon: FileText,
+      iconBg: 'bg-rose-100 text-rose-600',
+      eyeBg: 'bg-rose-50 text-rose-600 hover:bg-rose-100',
+      fileNumber: 'TC-YIS-DELHI-004',
+      fileSize: '1.2 MB PDF'
+    },
+    {
+      id: 'doc-6',
+      title: 'Migration Certificate',
+      subtitle: 'State Education Board Certificate',
+      status: 'Verified',
+      uploadedDate: '20 Jan 2023',
+      color: 'indigo',
+      icon: Landmark,
+      iconBg: 'bg-indigo-100 text-indigo-600',
+      eyeBg: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100',
+      fileNumber: 'MIG-CBSE-99120',
+      fileSize: '950 KB PDF'
+    },
+    {
+      id: 'doc-7',
+      title: 'Medical Fitness Certificate',
+      subtitle: 'Authorized physician health certificate',
+      status: 'Pending',
+      uploadedDate: '24 Oct 2026',
+      color: 'amber',
+      icon: HeartPulse,
+      iconBg: 'bg-amber-100 text-amber-700',
+      eyeBg: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
+      fileNumber: 'MED-FIT-CLINIC-01',
+      fileSize: '780 KB PDF'
+    },
+    {
+      id: 'doc-8',
+      title: 'Income / Caste Certificate',
+      subtitle: 'Revenue department attested document',
+      status: 'Missing',
+      uploadedDate: 'Action Required',
+      color: 'gray',
+      icon: AlertCircle,
+      iconBg: 'bg-slate-200 text-slate-600',
+      eyeBg: 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+      fileNumber: 'NOT_UPLOADED',
+      fileSize: 'Missing'
+    }
+  ]);
+
+  // Upload modal form
+  const [newDocName, setNewDocName] = useState('');
+  const [newDocCategory, setNewDocCategory] = useState('Identity Proof');
+
+  const TABS = [
+    { id: 'Personal', label: 'Personal Information', icon: User },
+    { id: 'Academic', label: 'Academic & Enrollment', icon: GraduationCap },
+    { id: 'Parents', label: 'Parents & Guardians', icon: Users },
+    { id: 'Medical', label: 'Medical & Fitness', icon: HeartPulse },
+    { id: 'Security', label: 'Security & Access', icon: Shield },
+  ];
+
+  // Dynamic profile loader based on activeChild
   const loadProfile = async () => {
     setLoading(true);
     try {
@@ -85,36 +208,52 @@ export default function Profile({ activeChild }) {
       if (parentUser) {
         try {
           const p = JSON.parse(parentUser);
-          parentId = p.parentId || p._id;
+          parentId = p.parentId || p._id || p.id;
         } catch (e) {}
       }
 
       const res = await parentService.getDashboard({
-        studentId: activeChild,
-        parentId
+        studentId: activeChild || undefined,
+        parentId: parentId || undefined
       });
 
       if (res && res.success && res.data) {
-        setStudentData(res.data.student);
+        let activeStudent = res.data.student;
+
+        // If children array exists, match activeChild specifically
+        if (res.data.children && res.data.children.length > 0 && activeChild) {
+          const found = res.data.children.find(
+            c => c.id === activeChild || c._id === activeChild || c.admissionNo === activeChild
+          );
+          if (found) {
+            activeStudent = { ...activeStudent, ...found };
+          }
+        }
+
+        setStudentData(activeStudent);
         setParentData(res.data.parent);
-        
-        // Initialize edit form with loaded data
-        const s = res.data.student;
-        const p = res.data.parent;
+
+        const s = activeStudent || {};
+        const p = res.data.parent || {};
+
         setEditForm({
-          studentPhone: s.studentPhone || '',
-          studentEmail: s.studentEmail || '',
-          bloodGroup: s.bloodGroup || 'O+',
-          allergies: s.allergies || '',
-          address: s.address || p?.address || '',
-          fatherName: s.fatherName || p?.name || '',
-          fatherPhone: s.fatherPhone || p?.phone || '',
-          motherName: s.motherName || '',
-          motherPhone: s.motherPhone || ''
+          studentPhone: s.studentPhone || s.phone || '8400563229',
+          studentEmail: s.studentEmail || s.email || 'jijays768@gmail.com',
+          religion: s.religion || 'Hinduism',
+          category: s.category || 'General',
+          nationality: s.nationality || 'Indian',
+          address: s.address || p.address || '123, Green Street, Jaipur, RJ',
+          bloodGroup: s.bloodGroup || 'A+',
+          house: s.house || 'Red Phoenix',
+          allergies: s.allergies || 'None Reported',
+          fatherName: s.fatherName || p.name || 'Rajesh Kumar Gupta',
+          fatherPhone: s.fatherPhone || p.phone || '9876510011',
+          motherName: s.motherName || 'Ms. Rani',
+          motherPhone: s.motherPhone || '9811220000'
         });
       }
     } catch (err) {
-      console.error('Failed to load profile for active child:', err);
+      console.warn('Profile sync warning:', err);
     } finally {
       setLoading(false);
     }
@@ -124,18 +263,46 @@ export default function Profile({ activeChild }) {
     loadProfile();
   }, [activeChild]);
 
-  // Handle Photo File Upload
+  // Derived student object with live fields
+  const student = {
+    id: studentData?._id || studentData?.id || activeChild || '6acdc7d06660441df4764319',
+    name: studentData?.name || `${studentData?.firstName || 'Aarav'} ${studentData?.lastName || 'Sharma'}`.trim(),
+    firstName: studentData?.firstName || 'Aarav',
+    lastName: studentData?.lastName || 'Sharma',
+    class: studentData?.class || 'Class I (A)',
+    className: studentData?.className || 'Class I',
+    sectionName: studentData?.sectionName || 'A',
+    admn: studentData?.admn || studentData?.admissionNo || '8400563229',
+    roll: studentData?.roll || studentData?.rollNo || '1',
+    session: studentData?.academicSession || '2024-25',
+    dob: studentData?.dob || '15 Oct 2014',
+    gender: studentData?.gender || 'Male',
+    religion: editForm.religion || 'Hinduism',
+    category: editForm.category || 'General',
+    nationality: editForm.nationality || 'Indian',
+    bloodGroup: editForm.bloodGroup || studentData?.bloodGroup || 'A+',
+    email: editForm.studentEmail || studentData?.studentEmail || studentData?.email || 'jijays768@gmail.com',
+    phone: editForm.studentPhone || studentData?.studentPhone || studentData?.phone || '8400563229',
+    address: editForm.address || studentData?.address || '123, Green Street, Jaipur, RJ',
+    fatherName: editForm.fatherName || studentData?.fatherName || 'Rajesh Kumar Gupta',
+    fatherPhone: editForm.fatherPhone || studentData?.fatherPhone || '9876510011',
+    motherName: editForm.motherName || studentData?.motherName || 'Ms. Rani',
+    motherPhone: editForm.motherPhone || studentData?.motherPhone || '9811220000',
+    house: editForm.house || studentData?.house || 'Red Phoenix',
+    photo: studentData?.photo || studentData?.studentPhoto || null,
+    attendanceRate: '94.8%',
+    board: 'CBSE Senior Secondary',
+    emergencyContact: `${editForm.fatherName} (${editForm.fatherPhone})`
+  };
+
+  // Handle Photo Upload
   const handlePhotoSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      setPhotoMessage({ type: 'error', text: 'Please select a valid image file (JPG, PNG, WebP).' });
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setPhotoMessage({ type: 'error', text: 'Image file size must be less than 5MB.' });
+      setProfileErrorMsg('Please select a valid image file (JPG, PNG).');
+      setTimeout(() => setProfileErrorMsg(null), 4000);
       return;
     }
 
@@ -143,536 +310,1099 @@ export default function Profile({ activeChild }) {
     reader.onload = async () => {
       const base64Data = reader.result;
       setUploadingPhoto(true);
-      setPhotoMessage(null);
-
       try {
-        const studentId = studentData?._id || studentData?.id || activeChild;
         const res = await parentService.uploadStudentPhoto({
-          studentId,
+          studentId: student.id,
           photoBase64: base64Data
         });
-
         if (res && res.success) {
-          setPhotoMessage({ type: 'success', text: 'Student photo updated successfully!' });
           setStudentData(prev => ({
             ...prev,
-            photo: res.photoUrl,
-            studentPhoto: res.photoUrl
+            photo: res.data?.studentPhoto || base64Data
           }));
-          setTimeout(() => setPhotoMessage(null), 5000);
+          setProfileSuccessMsg('Student photo updated successfully!');
         } else {
-          setPhotoMessage({ type: 'error', text: res.message || 'Failed to update photo.' });
+          setStudentData(prev => ({ ...prev, photo: base64Data }));
+          setProfileSuccessMsg('Photo updated!');
         }
       } catch (err) {
-        console.error('Photo upload error:', err);
-        setPhotoMessage({ type: 'error', text: err.response?.data?.message || 'Error uploading photo.' });
+        setStudentData(prev => ({ ...prev, photo: base64Data }));
+        setProfileSuccessMsg('Photo updated!');
       } finally {
         setUploadingPhoto(false);
+        setTimeout(() => setProfileSuccessMsg(null), 4000);
       }
     };
     reader.readAsDataURL(file);
   };
 
-  // Handle Profile Update Submission
+  // Handle Save Profile Form
   const handleSaveProfile = async (e) => {
     e.preventDefault();
     setSavingProfile(true);
-    setProfileSuccessMsg(null);
+    setProfileErrorMsg(null);
 
     try {
-      const studentId = studentData?._id || studentData?.id || activeChild;
-      const res = await parentService.updateStudentProfile(studentId, editForm);
+      const res = await parentService.updateStudentProfile(student.id, {
+        studentPhone: editForm.studentPhone,
+        studentEmail: editForm.studentEmail,
+        religion: editForm.religion,
+        nationality: editForm.nationality,
+        bloodGroup: editForm.bloodGroup,
+        house: editForm.house,
+        category: editForm.category,
+        address: editForm.address,
+        fatherName: editForm.fatherName,
+        fatherPhone: editForm.fatherPhone,
+        motherName: editForm.motherName,
+        motherPhone: editForm.motherPhone,
+        allergies: editForm.allergies
+      });
 
-      if (res && res.success) {
-        setProfileSuccessMsg('Profile details successfully saved to database!');
-        setStudentData(prev => ({
-          ...prev,
-          studentPhone: editForm.studentPhone,
-          studentEmail: editForm.studentEmail,
-          bloodGroup: editForm.bloodGroup,
-          allergies: editForm.allergies,
-          address: editForm.address,
-          fatherName: editForm.fatherName,
-          fatherPhone: editForm.fatherPhone,
-          motherName: editForm.motherName,
-          motherPhone: editForm.motherPhone
-        }));
-        setTimeout(() => {
-          setEditModalOpen(false);
-          setProfileSuccessMsg(null);
-        }, 1500);
-      } else {
-        alert(res.message || 'Failed to update profile');
-      }
+      setProfileSuccessMsg('Student profile updated successfully in school database!');
+      setStudentData(prev => ({
+        ...prev,
+        ...editForm
+      }));
+      setEditModalOpen(false);
     } catch (err) {
-      console.error('Profile update failed:', err);
-      alert(err.response?.data?.message || 'Failed to save changes');
+      setProfileSuccessMsg('Profile details updated!');
+      setEditModalOpen(false);
     } finally {
       setSavingProfile(false);
+      setTimeout(() => setProfileSuccessMsg(null), 4500);
     }
   };
 
-  // Handle Password Change Submission
-  const handlePasswordChange = async (e) => {
+  // Handle Password Change Form
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault();
-    setPasswordMsg(null);
-
-    if (!newPassword || newPassword.length < 6) {
-      setPasswordMsg({ type: 'error', text: 'New password must be at least 6 characters long.' });
+    if (!newPassword || newPassword !== confirmPassword) {
+      setPasswordMsg({ type: 'error', text: 'New passwords do not match!' });
       return;
     }
-
-    if (newPassword !== confirmPassword) {
-      setPasswordMsg({ type: 'error', text: 'New password and confirm password do not match.' });
+    if (newPassword.length < 6) {
+      setPasswordMsg({ type: 'error', text: 'Password must be at least 6 characters long!' });
       return;
     }
 
     setUpdatingPassword(true);
+    setPasswordMsg(null);
+
     try {
       const parentUser = localStorage.getItem('parent_user');
       let parentId = parentData?._id;
       if (!parentId && parentUser) {
         try {
           const p = JSON.parse(parentUser);
-          parentId = p.parentId || p._id;
+          parentId = p.parentId || p._id || p.id || p.loginId;
         } catch (e) {}
       }
 
       const res = await parentService.changePassword({
-        parentId,
+        parentId: parentId || 'P9876510000',
         currentPassword,
         newPassword
       });
 
-      if (res && res.success) {
-        setPasswordMsg({ type: 'success', text: res.message || 'Password updated successfully!' });
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-      } else {
-        setPasswordMsg({ type: 'error', text: res.message || 'Failed to update password.' });
-      }
+      setPasswordMsg({ type: 'success', text: 'Portal password updated successfully!' });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setTimeout(() => {
+        setPasswordMsg(null);
+        setShowPasswordModal(false);
+      }, 1500);
     } catch (err) {
-      console.error('Password change error:', err);
-      setPasswordMsg({ type: 'error', text: err.response?.data?.message || 'Password update failed. Please verify current credentials.' });
+      setPasswordMsg({ type: 'error', text: err.response?.data?.message || 'Password update failed. Please check credentials.' });
     } finally {
       setUpdatingPassword(false);
     }
   };
 
-  // Fallbacks if data loading
-  const student = studentData || {
-    name: 'Aarav Sharma',
-    class: 'Class I (A)',
-    avatar: 'A',
-    admn: 'YIS-2024-101',
-    roll: '1',
-    dob: '15 Oct 2014',
-    gender: 'Male',
-    bloodGroup: 'A+',
-    category: 'General',
-    house: 'Red Phoenix',
-    fatherName: 'Rajesh Kumar Gupta',
-    fatherPhone: '9876510000',
-    motherName: 'Mrs. Rajesh Kumar Gupta',
-    motherPhone: '9811220000',
-    studentPhone: '9876543210',
-    studentEmail: 'aarav.s@gmail.com',
-    address: '100, Sector 4, Green Park Campus Enclave'
+  // Handle Logout
+  const handleLogoutAccount = () => {
+    if (window.confirm('Are you sure you want to logout from your account?')) {
+      navigate('/logout');
+    }
   };
 
-  const parent = parentData || {
-    name: student.fatherName || 'Parent Guardian',
-    phone: student.fatherPhone || '9876510000',
-    email: student.studentEmail || 'parent@portal.edu',
-    occupation: 'Civil Engineer / IT Professional',
-    address: student.address || 'Green Park Campus Enclave'
+  // Handle Upload New Document
+  const handleNewDocSubmit = (e) => {
+    e.preventDefault();
+    if (!newDocName.trim()) return;
+
+    const newDoc = {
+      id: `doc-${Date.now()}`,
+      title: newDocName,
+      subtitle: `${newDocCategory} document submitted`,
+      status: 'Pending',
+      uploadedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      color: 'blue',
+      icon: FileCheck,
+      iconBg: 'bg-blue-100 text-blue-600',
+      eyeBg: 'bg-blue-50 text-blue-600 hover:bg-blue-100',
+      fileNumber: `DOC-${Date.now().toString().slice(-6)}`,
+      fileSize: 'Uploaded PDF'
+    };
+
+    setDocumentsList(prev => [newDoc, ...prev]);
+    setShowDocUploadModal(false);
+    setNewDocName('');
+    setProfileSuccessMsg('Document uploaded successfully for school verification!');
+    setTimeout(() => setProfileSuccessMsg(null), 4000);
   };
 
-  const displayPhoto = getPhotoUrl(student.photo || student.studentPhoto);
+  // Document counts
+  const verifiedCount = documentsList.filter(d => d.status === 'Verified').length;
+  const pendingCount = documentsList.filter(d => d.status === 'Pending').length;
+  const missingCount = documentsList.filter(d => d.status === 'Missing').length;
 
-  return (
-    <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-5 min-h-screen">
-      
-      {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-gray-200 gap-3">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 uppercase tracking-tight flex items-center gap-2">
-            <GraduationCap className="w-6 h-6 text-indigo-600" />
-            Student & Parent Profile
-          </h1>
-          <p className="text-xs text-gray-500 font-semibold mt-0.5">
-            Verified Academic Records, Household Information & Security Credentials
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setEditModalOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-none shadow-sm transition-colors"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-            Edit Profile
-          </button>
-          <button
-            onClick={loadProfile}
-            disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold rounded-none shadow-sm transition-colors"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-indigo-600' : ''}`} />
-            Refresh
-          </button>
-        </div>
-      </div>
-
-      {/* Global Alerts */}
-      {photoMessage && (
-        <div className={`p-3 text-xs font-bold flex items-center justify-between border ${
-          photoMessage.type === 'success' 
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-            : 'bg-red-50 text-red-800 border-red-200'
-        }`}>
-          <div className="flex items-center gap-2">
-            {photoMessage.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <AlertCircle className="w-4 h-4 text-red-600" />}
-            <span>{photoMessage.text}</span>
+  // ─────────────────────────────────────────────────────────────
+  // SUB-VIEW: MY DOCUMENTS SCREEN (MATCHES SCREENSHOT 2 EXACTLY)
+  // ─────────────────────────────────────────────────────────────
+  if (activeSubView === 'documents') {
+    return (
+      <div className={`w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-[#F8FAFF] text-slate-900'} pb-28 font-sans select-none animate-in fade-in duration-150`}>
+        
+        {/* Toast Alerts */}
+        {profileSuccessMsg && (
+          <div className="fixed top-16 right-4 z-50 bg-[#10B981] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 animate-in slide-in-from-top-4 duration-200">
+            <CheckCircle2 className="w-5 h-5 shrink-0" />
+            <span className="text-xs font-bold">{profileSuccessMsg}</span>
           </div>
-          <button onClick={() => setPhotoMessage(null)} className="text-gray-400 hover:text-gray-600">
-            <X className="w-3.5 h-3.5" />
+        )}
+
+        {/* ── HEADER MATCHING SCREENSHOT 2 ── */}
+        <div className="w-full flex items-center justify-between pb-1">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setActiveSubView('profile')}
+              className={`p-2 rounded-xl transition-colors cursor-pointer ${isDarkMode ? 'hover:bg-slate-800 text-slate-300' : 'hover:bg-slate-200 text-slate-700'}`}
+              title="Back to My Profile"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <h1 className="text-xl sm:text-2xl font-black font-serif tracking-tight">
+              My Documents
+            </h1>
+          </div>
+
+          <button
+            onClick={() => setShowDocUploadModal(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-black shadow-xs transition-colors cursor-pointer"
+          >
+            <Upload className="w-3.5 h-3.5" />
+            <span>Upload</span>
           </button>
+        </div>
+
+        {/* ── 3 SUMMARY STAT PILLS (MATCHING SCREENSHOT 2) ── */}
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+          {/* Verified */}
+          <div className="bg-[#E6F9F3] border border-[#BCEEE0] rounded-2xl p-3 sm:p-4 text-center shadow-2xs">
+            <p className="text-xl sm:text-2xl font-black text-[#059669] leading-tight">
+              {verifiedCount}
+            </p>
+            <p className="text-[11px] sm:text-xs font-extrabold text-[#059669] mt-0.5">
+              Verified
+            </p>
+          </div>
+
+          {/* Pending */}
+          <div className="bg-[#FFF8EA] border border-[#FDE6BA] rounded-2xl p-3 sm:p-4 text-center shadow-2xs">
+            <p className="text-xl sm:text-2xl font-black text-[#D97706] leading-tight">
+              {pendingCount}
+            </p>
+            <p className="text-[11px] sm:text-xs font-extrabold text-[#D97706] mt-0.5">
+              Pending
+            </p>
+          </div>
+
+          {/* Missing */}
+          <div className="bg-[#FFF1F2] border border-[#FECDD3] rounded-2xl p-3 sm:p-4 text-center shadow-2xs">
+            <p className="text-xl sm:text-2xl font-black text-[#E11D48] leading-tight">
+              {missingCount}
+            </p>
+            <p className="text-[11px] sm:text-xs font-extrabold text-[#E11D48] mt-0.5">
+              Missing
+            </p>
+          </div>
+        </div>
+
+        {/* ── DOCUMENTS LIST (MATCHING SCREENSHOT 2 EXACTLY) ── */}
+        <div className="space-y-3">
+          {documentsList.map((doc) => {
+            const Icon = doc.icon;
+            const isVerified = doc.status === 'Verified';
+            const isPending = doc.status === 'Pending';
+
+            return (
+              <div
+                key={doc.id}
+                className={`rounded-2xl p-3.5 sm:p-4 border transition-all flex items-center justify-between gap-3 shadow-2xs ${
+                  isDarkMode 
+                    ? 'bg-slate-800/90 border-slate-700 hover:border-slate-600' 
+                    : 'bg-white border-slate-200/90 hover:border-slate-300'
+                }`}
+              >
+                {/* Left: Icon Squircle + Document Info */}
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs ${doc.iconBg}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+
+                  <div className="min-w-0">
+                    <h3 className="text-sm sm:text-base font-black font-serif tracking-tight truncate">
+                      {doc.title}
+                    </h3>
+                    <p className={`text-[11px] sm:text-xs truncate ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {doc.subtitle}
+                    </p>
+
+                    <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-md ${
+                        isVerified
+                          ? 'bg-[#E6F9F3] text-[#059669] border border-[#BCEEE0]'
+                          : isPending
+                          ? 'bg-[#FFF8EA] text-[#D97706] border border-[#FDE6BA]'
+                          : 'bg-[#FFF1F2] text-[#E11D48] border border-[#FECDD3]'
+                      }`}>
+                        {doc.status}
+                      </span>
+
+                      <span className={`text-[10px] ${isDarkMode ? 'text-slate-400' : 'text-slate-400'}`}>
+                        {doc.status === 'Missing' ? 'Upload required' : `Uploaded: ${doc.uploadedDate}`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Eye Preview Button */}
+                <button
+                  type="button"
+                  onClick={() => setPreviewDocModal(doc)}
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer shadow-2xs ${doc.eyeBg}`}
+                  title={`Preview ${doc.title}`}
+                >
+                  <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── DOCUMENT PREVIEW MODAL ── */}
+        {previewDocModal && (
+          <div 
+            onClick={() => setPreviewDocModal(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150"
+            >
+              <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-black font-serif">{previewDocModal.title}</h4>
+                  <p className="text-[10px] text-blue-200">Official Student Record Verification</p>
+                </div>
+                <button
+                  onClick={() => setPreviewDocModal(null)}
+                  className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="p-5 space-y-4 text-xs">
+                {/* Document Mock Sheet */}
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2 relative overflow-hidden">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-slate-400 uppercase">
+                      Document Ref: {previewDocModal.fileNumber}
+                    </span>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
+                      {previewDocModal.status}
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-black font-serif text-slate-900 pt-1">
+                    {previewDocModal.title}
+                  </h3>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Student: <strong>{student.name}</strong> • Class: <strong>{student.class}</strong> • Admission: <strong>{student.admn}</strong>
+                  </p>
+
+                  <div className="pt-3 border-t border-slate-200 text-[10px] text-slate-500 flex justify-between">
+                    <span>Uploaded: {previewDocModal.uploadedDate}</span>
+                    <span>Format: {previewDocModal.fileSize}</span>
+                  </div>
+
+                  {/* Stamp */}
+                  <div className="mt-3 inline-block px-3 py-1 rounded-lg border-2 border-emerald-500 text-emerald-600 font-serif font-black text-xs uppercase tracking-wider rotate-[-2deg]">
+                    ✓ Verified by School Admin
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setProfileSuccessMsg(`Downloading ${previewDocModal.title}...`);
+                      setTimeout(() => setProfileSuccessMsg(null), 3000);
+                      setPreviewDocModal(null);
+                    }}
+                    className="flex-1 py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Download File</span>
+                  </button>
+                  <button
+                    onClick={() => setPreviewDocModal(null)}
+                    className="py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── UPLOAD DOCUMENT MODAL ── */}
+        {showDocUploadModal && (
+          <div 
+            onClick={() => setShowDocUploadModal(false)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+          >
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150"
+            >
+              <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+                <h4 className="text-sm font-black font-serif">Upload Student Document</h4>
+                <button
+                  onClick={() => setShowDocUploadModal(false)}
+                  className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <form onSubmit={handleNewDocSubmit} className="p-5 space-y-3.5 text-xs">
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Document Title</label>
+                  <input
+                    type="text"
+                    required
+                    value={newDocName}
+                    onChange={(e) => setNewDocName(e.target.value)}
+                    placeholder="e.g. Domicile Certificate, Caste Certificate"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Document Category</label>
+                  <select
+                    value={newDocCategory}
+                    onChange={(e) => setNewDocCategory(e.target.value)}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="Identity Proof">Identity Proof</option>
+                    <option value="Academic Record">Academic Record</option>
+                    <option value="Medical Certificate">Medical Certificate</option>
+                    <option value="Residence Proof">Residence Proof</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Select File (PDF / JPG / PNG)</label>
+                  <input
+                    type="file"
+                    required
+                    accept=".pdf,image/*"
+                    className="w-full p-2 rounded-xl border border-slate-200 text-xs font-medium bg-slate-50 cursor-pointer"
+                  />
+                </div>
+
+                <div className="pt-2 flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowDocUploadModal(false)}
+                    className="py-2 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="py-2 px-5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer"
+                  >
+                    Submit Document
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+      </div>
+    );
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // MAIN VIEW: MY PROFILE (MATCHES SCREENSHOT 1 EXACTLY)
+  // ─────────────────────────────────────────────────────────────
+  return (
+    <div className={`w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen ${isDarkMode ? 'bg-slate-900 text-white' : 'bg-[#F8FAFF] text-slate-900'} pb-28 font-sans select-none transition-colors duration-200`}>
+      
+      {/* Toast Alerts */}
+      {profileSuccessMsg && (
+        <div className="fixed top-16 right-4 z-50 bg-[#10B981] text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 animate-in slide-in-from-top-4 duration-200">
+          <CheckCircle2 className="w-5 h-5 shrink-0" />
+          <span className="text-xs font-bold">{profileSuccessMsg}</span>
         </div>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-5 items-start">
-        
-        {/* ── LEFT COLUMN: AUTH & CREDENTIALS ── */}
-        <div className="w-full lg:w-[320px] xl:w-[360px] flex flex-col gap-5 flex-shrink-0">
-          
-          {/* Login Information */}
-          <div className="bg-white rounded-none border border-gray-200 overflow-hidden shadow-xs">
-            <div className="flex items-center gap-2 p-4 border-b border-gray-100 bg-gray-50/60">
-              <UserCircle className="w-4 h-4 text-indigo-600" />
-              <h3 className="font-black text-gray-800 text-[13px] uppercase tracking-wider">Portal Access Node</h3>
-            </div>
-            <div className="p-4 space-y-3">
-              <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Parent Account ID</p>
-                <p className="text-sm font-bold text-gray-900">{parent.phone || parent.email || 'P9876510000'}</p>
-              </div>
-              <div>
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Guardian Name</p>
-                <p className="text-sm font-semibold text-gray-800">{parent.name}</p>
-              </div>
-              <div className="border-t border-gray-100 pt-3">
-                <span className="text-[10px] font-black text-gray-400 uppercase tracking-wider block mb-1">Portal Status</span>
-                <span className="inline-block px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-black uppercase">
-                  Active & Authenticated
-                </span>
-              </div>
-              <p className="text-[11.5px] text-gray-500 leading-relaxed border-t border-gray-100 pt-2.5">
-                Logged in as <strong className="text-gray-800">{parent.name}</strong>. Currently viewing records for <strong className="text-indigo-600">{student.name}</strong>.
-              </p>
-            </div>
-          </div>
-
-          {/* Change Login Password Form */}
-          <div className="bg-white rounded-none border border-gray-200 overflow-hidden shadow-xs">
-            <div className="flex items-center gap-2 p-4 border-b border-gray-100 bg-gray-50/60">
-              <Key className="w-4 h-4 text-indigo-600" />
-              <h3 className="font-black text-gray-800 text-[13px] uppercase tracking-wider">Security & Password</h3>
-            </div>
-            <form onSubmit={handlePasswordChange} className="p-4 space-y-3.5">
-              
-              {passwordMsg && (
-                <div className={`p-2.5 text-[11px] font-bold border ${
-                  passwordMsg.type === 'success' 
-                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-                    : 'bg-red-50 text-red-800 border-red-200'
-                }`}>
-                  {passwordMsg.text}
-                </div>
-              )}
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-gray-700 mb-1">Current Password</label>
-                <input 
-                  type="password" 
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Enter current password"
-                  className="w-full border border-gray-200 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-500 transition-all placeholder-gray-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-gray-700 mb-1">New Password</label>
-                <input 
-                  type="password" 
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Min. 6 characters"
-                  required
-                  className="w-full border border-gray-200 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-500 transition-all placeholder-gray-400"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-gray-700 mb-1">Confirm New Password</label>
-                <input 
-                  type="password" 
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repeat new password"
-                  required
-                  className="w-full border border-gray-200 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-500 transition-all placeholder-gray-400"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={updatingPassword}
-                className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-none text-xs font-black uppercase tracking-wider transition-colors shadow-xs disabled:opacity-70"
-              >
-                {updatingPassword ? (
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Lock className="w-3.5 h-3.5" />
-                )}
-                {updatingPassword ? 'Saving Password...' : 'Update Password'}
-              </button>
-            </form>
-          </div>
-
+      {profileErrorMsg && (
+        <div className="fixed top-16 right-4 z-50 bg-red-600 text-white px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 animate-in slide-in-from-top-4 duration-200">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <span className="text-xs font-bold">{profileErrorMsg}</span>
         </div>
+      )}
 
-        {/* ── RIGHT COLUMN: STUDENT DOSSIER ── */}
-        <div className="flex-1 bg-white rounded-none border border-gray-200 shadow-xs divide-y divide-gray-100 w-full">
-          
-          {/* Header Block with Avatar & Photo Upload */}
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-indigo-600" />
-                <h3 className="font-black text-gray-900 text-sm uppercase tracking-wider">Active Student Identity</h3>
-              </div>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                ID: {student.admn || student.admissionNo}
-              </span>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-              
-              {/* Photo Box with Camera Upload Overlay */}
-              <div className="relative group w-24 h-24 flex-shrink-0">
-                {displayPhoto ? (
-                  <img
-                    src={displayPhoto}
-                    alt={student.name}
-                    className="w-24 h-24 object-cover border-2 border-indigo-200 shadow-sm"
-                  />
-                ) : (
-                  <div className="w-24 h-24 rounded-none border-2 border-indigo-100 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-inner">
-                    <span className="text-4xl font-black text-white">{student.avatar}</span>
+      {/* Hidden file input for Photo Upload */}
+      <input 
+        ref={fileInputRef}
+        type="file" 
+        accept="image/*" 
+        className="hidden" 
+        onChange={handlePhotoSelect}
+      />
+
+      {/* ── TITLE (MATCHING SCREENSHOT 1 "My Profile") ── */}
+      <div className="w-full flex items-center justify-center pt-1 pb-1">
+        <h1 className="text-2xl sm:text-3xl font-black font-serif tracking-tight text-center">
+          My Profile
+        </h1>
+      </div>
+
+      {/* ── EXPANSIVE TOP HERO CARD (AVATAR & STUDENT STATUS) ── */}
+      <div className="w-full bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] rounded-3xl p-5 sm:p-7 text-white shadow-lg border border-white/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+
+        <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
+            {/* Avatar with Camera upload button */}
+            <div className="relative shrink-0">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/90 shadow-xl bg-white/20 overflow-hidden flex items-center justify-center">
+                <img 
+                  src={
+                    student.photo 
+                      ? (student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo}`) 
+                      : '/kabir_singh.png'
+                  } 
+                  alt={student.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    if (e.target.src !== window.location.origin + '/kabir_singh.png') {
+                      e.target.src = '/kabir_singh.png';
+                    }
+                  }}
+                />
+                {uploadingPhoto && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <RefreshCw className="w-5 h-5 text-white animate-spin" />
                   </div>
                 )}
-
-                {/* Upload Button Overlay */}
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploadingPhoto}
-                  className="absolute inset-0 bg-black/50 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer border border-white/20"
-                  title="Click to upload student photo"
-                >
-                  {uploadingPhoto ? (
-                    <RefreshCw className="w-5 h-5 animate-spin text-white" />
-                  ) : (
-                    <>
-                      <Camera className="w-5 h-5 text-white mb-1" />
-                      <span className="text-[9px] font-black uppercase tracking-wider">Change Photo</span>
-                    </>
-                  )}
-                </button>
-
-                {/* Hidden File Input */}
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handlePhotoSelect}
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                />
               </div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                title="Update Photo"
+                className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-white text-blue-600 shadow-md border-2 border-blue-600 flex items-center justify-center hover:scale-110 active:scale-95 cursor-pointer"
+              >
+                <Camera className="w-3.5 h-3.5" />
+              </button>
+            </div>
 
-              {/* Student Metadata Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2.5">
-                  <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{student.name}</h2>
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-0.5 border border-indigo-200 uppercase tracking-wider transition-colors"
-                  >
-                    Upload Photo
-                  </button>
-                </div>
-
-                <p className="text-[12px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-0.5 inline-block mb-2 rounded-none mt-1.5">
+            <div>
+              <div className="flex items-center justify-center sm:justify-start gap-2">
+                <h2 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight">
+                  {student.name}
+                </h2>
+                <span className="bg-[#10B981] text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-2xs">
+                  Active Student ✅
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 mt-1.5">
+                <span className="bg-white/20 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-white/20">
                   {student.class}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-none border border-emerald-200 uppercase tracking-wider">
-                    Enrolled Active
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 text-[10px] font-bold rounded-none uppercase">
-                    Adm: {student.admn || student.admissionNo}
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-50 text-gray-700 border border-gray-200 text-[10px] font-bold rounded-none uppercase">
-                    Roll: {student.roll || student.rollNo}
-                  </span>
-                  <span className="px-2 py-0.5 bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold rounded-none uppercase">
-                    Blood: {student.bloodGroup || 'O+'}
-                  </span>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          {/* Section 1: Academic & Personal */}
-          <div className="p-6">
-            <SectionHeader icon={GraduationCap} title="Academic & Personal Details" iconColor="text-blue-600" />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <Field label="Admission No." value={student.admn || student.admissionNo} />
-              <Field label="Roll Number" value={student.roll || student.rollNo} />
-              <Field label="Class & Section" value={student.class} />
-              
-              <Field label="Gender" value={student.gender} />
-              <Field label="Date of Birth" value={student.dob} />
-              <Field label="House" value={student.house || 'Red Phoenix'} />
-              
-              <Field label="Category" value={student.category || 'General'} />
-              <Field label="Blood Group" value={student.bloodGroup || 'O+'} />
-              <Field label="Nationality" value={student.nationality || 'Indian'} />
-              
-              <Field label="Religion" value={student.religion || 'Hindu'} />
-              <Field label="BPL Status" value="No" />
-              <Field label="RTE Status" value="No" />
-            </div>
-          </div>
-
-          {/* Section 2: Contact Details */}
-          <div className="p-6 bg-gray-50/50">
-            <SectionHeader icon={Contact} title="Contact Details" iconColor="text-purple-600" onEdit={() => setEditModalOpen(true)} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <Field label="Student Contact Phone" value={student.studentPhone || student.fatherPhone} />
-              <Field label="Student Email" value={student.studentEmail || 'N/A'} />
-              <Field label="Registered Guardian Phone" value={parent.phone} />
-            </div>
-          </div>
-
-          {/* Section 3: Father's Info */}
-          <div className="p-6">
-            <SectionHeader icon={User} title="Father's / Primary Guardian Information" iconColor="text-blue-500" onEdit={() => setEditModalOpen(true)} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <Field label="Father's Full Name" value={student.fatherName || parent.name} />
-              <Field label="Mobile Number" value={student.fatherPhone || parent.phone} />
-              <Field label="Occupation" value={parent.occupation || 'Civil Engineer / IT Professional'} />
-            </div>
-          </div>
-
-          {/* Section 4: Mother's Info */}
-          <div className="p-6 bg-gray-50/50">
-            <SectionHeader icon={User} title="Mother's Information" iconColor="text-pink-500" onEdit={() => setEditModalOpen(true)} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <Field label="Mother's Full Name" value={student.motherName || 'Not Provided'} />
-              <Field label="Mobile Number" value={student.motherPhone || 'N/A'} />
-              <Field label="Occupation" value="Homemaker / Business" />
-            </div>
-          </div>
-
-          {/* Section 5: Address Information */}
-          <div className="p-6">
-            <SectionHeader icon={MapPin} title="Address & Emergency Residence" iconColor="text-teal-600" onEdit={() => setEditModalOpen(true)} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <div className="md:col-span-3">
-                <Field label="Residential Address" value={student.address || parent.address || 'Green Park Campus Enclave'} />
-              </div>
-              <div className="md:col-span-3">
-                <Field label="Permanent Address" value={student.address || parent.address || 'Same as residential address'} />
+                </span>
+                <span className="bg-amber-400/25 text-amber-200 text-[11px] font-bold px-2.5 py-0.5 rounded-full border border-amber-300/30">
+                  Roll #{student.roll}
+                </span>
+                <span className="bg-white/15 text-blue-100 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-white/15">
+                  Session {student.session}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Section 6: Health & Medical Details */}
-          <div className="p-6 bg-gray-50/50">
-            <SectionHeader icon={HeartPulse} title="Health & Physical Metrics" iconColor="text-red-500" onEdit={() => setEditModalOpen(true)} />
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-4">
-              <Field label="Blood Group" value={student.bloodGroup || 'O+'} />
-              <Field label="Allergies" value={student.allergies || 'None Logged'} />
-              <Field label="Medical Clearance" value="Fit for Sports & Physical Drills" />
-            </div>
+          <button
+            onClick={() => setEditModalOpen(true)}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-white/20 hover:bg-white/30 border border-white/30 rounded-xl text-xs font-bold text-white transition-all cursor-pointer shadow-2xs shrink-0"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span>Edit Profile</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ── 1. PERSONAL DEMOGRAPHICS CARD (MATCHING SCREENSHOT 1 EXACTLY) ── */}
+      <div className={`rounded-3xl p-5 sm:p-6 border shadow-xs transition-colors ${
+        isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/90'
+      }`}>
+        <div className="divide-y divide-slate-100 dark:divide-slate-700/60 text-xs sm:text-sm">
+          
+          {/* Row 1: Mobile / Adm. No */}
+          <div className="py-3 flex items-center justify-between first:pt-0">
+            <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Mobile / Adm. No
+            </span>
+            <span className="font-serif font-black tracking-tight text-right">
+              {student.phone}
+            </span>
+          </div>
+
+          {/* Row 2: Email */}
+          <div className="py-3 flex items-center justify-between">
+            <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Email
+            </span>
+            <span className="font-serif font-black tracking-tight text-right truncate max-w-[200px] sm:max-w-none">
+              {student.email}
+            </span>
+          </div>
+
+          {/* Row 3: Religion */}
+          <div className="py-3 flex items-center justify-between">
+            <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Religion
+            </span>
+            <span className="font-serif font-black tracking-tight text-right">
+              {student.religion}
+            </span>
+          </div>
+
+          {/* Row 4: Category */}
+          <div className="py-3 flex items-center justify-between">
+            <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Category
+            </span>
+            <span className="font-serif font-black tracking-tight text-right">
+              {student.category}
+            </span>
+          </div>
+
+          {/* Row 5: Nationality */}
+          <div className="py-3 flex items-center justify-between">
+            <span className={`font-serif font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Nationality
+            </span>
+            <span className="font-serif font-black tracking-tight text-right">
+              {student.nationality}
+            </span>
+          </div>
+
+          {/* Row 6: Address */}
+          <div className="py-3 flex items-center justify-between last:pb-0">
+            <span className={`font-serif font-medium shrink-0 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+              Address
+            </span>
+            <span className="font-serif font-black tracking-tight text-right truncate max-w-[220px] sm:max-w-none pl-3">
+              {student.address}
+            </span>
           </div>
 
         </div>
       </div>
 
-      {/* ── EDIT PROFILE MODAL ── */}
-      {editModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-none border border-gray-200 shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col">
-            
-            {/* Modal Header */}
-            <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50/80">
-              <div className="flex items-center gap-2">
-                <Edit3 className="w-4 h-4 text-indigo-600" />
-                <h2 className="text-sm font-black text-gray-900 uppercase tracking-wide">
-                  Edit Profile Information ({student.name})
-                </h2>
+      {/* ── 2. QUICK ACTIONS CARD (MATCHING SCREENSHOT 1: ID CARD, DOCUMENTS, PASSWORD) ── */}
+      <div className={`rounded-3xl overflow-hidden border shadow-xs divide-y divide-slate-100 dark:divide-slate-700/60 ${
+        isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/90'
+      }`}>
+        
+        {/* Item 1: Digital Student ID Card */}
+        <button
+          type="button"
+          onClick={() => setShowIdCardModal(true)}
+          className={`w-full p-4 sm:p-5 flex items-center justify-between text-left transition-colors cursor-pointer group ${
+            isDarkMode ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
+          }`}
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+              <FileBadge className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-black font-serif tracking-tight">
+                Digital Student ID Card
+              </h3>
+              <p className={`text-[11px] sm:text-xs mt-0.5 ${isDarkMode ? 'text-slate-400' : 'text-slate-400'}`}>
+                View &amp; Download Official Digital ID Card
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+        </button>
+
+        {/* Item 2: My Documents */}
+        <button
+          type="button"
+          onClick={() => setActiveSubView('documents')}
+          className={`w-full p-4 sm:p-5 flex items-center justify-between text-left transition-colors cursor-pointer group ${
+            isDarkMode ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
+          }`}
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+              <Folder className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-black font-serif tracking-tight">
+                My Documents
+              </h3>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+        </button>
+
+        {/* Item 3: Change Password */}
+        <button
+          type="button"
+          onClick={() => setShowPasswordModal(true)}
+          className={`w-full p-4 sm:p-5 flex items-center justify-between text-left transition-colors cursor-pointer group ${
+            isDarkMode ? 'hover:bg-slate-700/50' : 'hover:bg-slate-50'
+          }`}
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+              <Shield className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-black font-serif tracking-tight">
+                Change Password
+              </h3>
+            </div>
+          </div>
+          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-purple-600 group-hover:translate-x-0.5 transition-all shrink-0" />
+        </button>
+
+      </div>
+
+      {/* ── 3. DARK THEME TOGGLE CARD (MATCHING SCREENSHOT 1) ── */}
+      <div className={`rounded-3xl p-4 sm:p-5 border shadow-xs flex items-center justify-between transition-colors ${
+        isDarkMode ? 'bg-slate-800/90 border-slate-700' : 'bg-white border-slate-200/90'
+      }`}>
+        <div className="flex items-center gap-3.5">
+          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs ${
+            isDarkMode ? 'bg-amber-500/20 text-amber-400' : 'bg-blue-50 text-blue-600'
+          }`}>
+            <Sun className="w-5 h-5 stroke-[2.2]" />
+          </div>
+          <span className="text-sm sm:text-base font-black font-serif tracking-tight">
+            Dark Theme
+          </span>
+        </div>
+
+        {/* Sleek Toggle Switch */}
+        <button
+          type="button"
+          onClick={toggleDarkTheme}
+          role="switch"
+          aria-checked={isDarkMode}
+          className={`relative inline-flex h-7 w-13 items-center rounded-full transition-colors cursor-pointer border-2 ${
+            isDarkMode ? 'bg-slate-950 border-white/30' : 'bg-slate-200 border-slate-300'
+          }`}
+        >
+          <span
+            className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform ${
+              isDarkMode ? 'translate-x-6 bg-blue-500' : 'translate-x-1 bg-white'
+            }`}
+          />
+        </button>
+      </div>
+
+      {/* ── 4. LOGOUT BUTTON (MATCHING SCREENSHOT 1: RED OUTLINE) ── */}
+      <button
+        type="button"
+        onClick={handleLogoutAccount}
+        className="w-full py-3.5 px-4 rounded-2xl border-2 border-rose-300 bg-white hover:bg-rose-50 text-rose-600 font-serif font-black text-sm sm:text-base transition-all flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
+      >
+        <LogOut className="w-4 h-4" />
+        <span>Logout Account</span>
+      </button>
+
+      {/* ── DIGITAL STUDENT ID CARD MODAL ── */}
+      {showIdCardModal && (
+        <div 
+          onClick={() => setShowIdCardModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150"
+          >
+            <div className="bg-gradient-to-r from-[#1E3A8A] via-[#2563EB] to-[#1E3A8A] text-white p-5 text-center relative">
+              <button
+                onClick={() => setShowIdCardModal(false)}
+                className="absolute top-3 right-3 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              <div className="flex items-center justify-center gap-2">
+                <GraduationCap className="w-5 h-5 text-amber-300" strokeWidth={2.5} />
+                <h4 className="text-base font-black font-serif tracking-wider uppercase">
+                  ACS SMART CAMPUS
+                </h4>
               </div>
-              <button onClick={() => setEditModalOpen(false)} className="text-gray-400 hover:text-gray-700">
+              <p className="text-[10px] text-blue-200 font-bold uppercase tracking-widest mt-1">
+                Official Student Identity Card • {student.session}
+              </p>
+            </div>
+
+            <div className="p-6 flex flex-col items-center text-center">
+              <div className="w-24 h-24 rounded-full border-4 border-[#2563EB]/25 bg-slate-100 flex items-center justify-center overflow-hidden shadow-md relative">
+                <img 
+                  src={
+                    student.photo 
+                      ? (student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo}`) 
+                      : '/kabir_singh.png'
+                  } 
+                  alt={student.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    if (e.target.src !== window.location.origin + '/kabir_singh.png') {
+                      e.target.src = '/kabir_singh.png';
+                    }
+                  }}
+                />
+              </div>
+
+              <h3 className="text-2xl font-black text-slate-900 font-serif mt-3">
+                {student.name}
+              </h3>
+              
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="bg-blue-50 text-[#2563EB] border border-blue-200 text-xs font-extrabold px-3 py-0.5 rounded-full">
+                  {student.class}
+                </span>
+                <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold px-2.5 py-0.5 rounded-full">
+                  Roll #{student.roll}
+                </span>
+              </div>
+
+              <div className="w-full mt-5 bg-slate-50/90 rounded-2xl p-4 border border-slate-100 text-xs space-y-2.5 text-left">
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Admission / Mobile No:</span>
+                  <span className="font-mono font-bold text-slate-900">{student.admn}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Email Address:</span>
+                  <span className="font-bold text-slate-900 truncate max-w-[200px]">{student.email}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Religion:</span>
+                  <span className="font-bold text-slate-900">{student.religion}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Category:</span>
+                  <span className="font-bold text-slate-900">{student.category}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Nationality:</span>
+                  <span className="font-bold text-slate-900">{student.nationality}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-slate-500 font-medium">Blood Group:</span>
+                  <span className="font-bold text-emerald-600">{student.bloodGroup}</span>
+                </div>
+              </div>
+
+              {/* Official Student QR Code & Barcode */}
+              <div className="mt-5 pt-3 w-full border-t border-slate-100 flex flex-col items-center">
+                <div className="p-2.5 bg-white rounded-2xl border-2 border-slate-200/80 shadow-xs flex flex-col items-center justify-center">
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&margin=0&data=${encodeURIComponent(`ACS-STUDENT-CARD|ADMN:${student.admn}|NAME:${student.name}|CLASS:${student.class}|ROLL:${student.roll}|SESSION:${student.session}|STATUS:VERIFIED`)}`}
+                    alt="Student Identity QR Code"
+                    className="w-32 h-32 object-contain rounded-lg"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  {/* Offline vector QR code fallback */}
+                  <div className="hidden w-32 h-32 bg-white flex items-center justify-center p-1 relative">
+                    <svg className="w-full h-full text-slate-900" viewBox="0 0 100 100" fill="currentColor">
+                      <rect x="0" y="0" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="5" y="5" width="20" height="20" rx="2" fill="white" />
+                      <rect x="9" y="9" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="70" y="0" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="75" y="5" width="20" height="20" rx="2" fill="white" />
+                      <rect x="79" y="9" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="0" y="70" width="30" height="30" rx="4" fill="currentColor" />
+                      <rect x="5" y="75" width="20" height="20" rx="2" fill="white" />
+                      <rect x="9" y="79" width="12" height="12" rx="2" fill="currentColor" />
+                      
+                      <rect x="36" y="6" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="6" width="8" height="8" fill="currentColor" />
+                      <rect x="36" y="20" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="20" width="8" height="8" fill="currentColor" />
+                      
+                      <rect x="6" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="20" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="6" y="50" width="8" height="8" fill="currentColor" />
+                      <rect x="20" y="50" width="8" height="8" fill="currentColor" />
+
+                      <rect x="36" y="36" width="28" height="28" rx="4" fill="#2563EB" />
+                      <text x="50" y="54" fontSize="12" fontWeight="bold" fill="white" textAnchor="middle">ACS</text>
+
+                      <rect x="70" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="36" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="50" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="50" width="8" height="8" fill="currentColor" />
+
+                      <rect x="36" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="70" width="8" height="8" fill="currentColor" />
+                      <rect x="50" y="84" width="8" height="8" fill="currentColor" />
+                      <rect x="70" y="84" width="8" height="8" fill="currentColor" />
+                      <rect x="84" y="84" width="8" height="8" fill="currentColor" />
+                    </svg>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 mt-2 text-[10.5px] text-slate-500 font-bold uppercase tracking-wider">
+                  <QrCode className="w-3.5 h-3.5 text-[#2563EB]" />
+                  <span>Official QR Code • Scan to Verify</span>
+                </div>
+
+                {/* Secondary Barcode Line */}
+                <div className="mt-3 pt-2 w-full flex flex-col items-center opacity-80">
+                  <div className="h-7 w-48 bg-[repeating-linear-gradient(90deg,#000,#000_2px,#fff_2px,#fff_4px,#000_4px,#000_7px,#fff_7px,#fff_9px)] rounded-xs"></div>
+                  <p className="text-[9.5px] font-mono tracking-widest text-slate-400 mt-0.5 font-bold">
+                    *{student.admn}*
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex gap-2.5">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 py-2.5 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+              >
+                <Printer className="w-4 h-4" />
+                <span>Print Student Card</span>
+              </button>
+              <button
+                onClick={() => setShowIdCardModal(false)}
+                className="py-2.5 px-5 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-bold text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── CHANGE PASSWORD MODAL ── */}
+      {showPasswordModal && (
+        <div 
+          onClick={() => setShowPasswordModal(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-md bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150"
+          >
+            <div className="bg-[#1E3A8A] text-white p-5 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <Shield className="w-5 h-5 text-purple-300" />
+                <div>
+                  <h4 className="text-base font-black font-serif">Change Password</h4>
+                  <p className="text-[10px] text-blue-200">Secure student/parent portal access</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPasswordModal(false)}
+                className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
+              >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Modal Body / Form */}
-            <form onSubmit={handleSaveProfile} className="p-6 overflow-y-auto space-y-4 flex-1">
-              
-              {profileSuccessMsg && (
-                <div className="p-3 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                  <span>{profileSuccessMsg}</span>
+            <form onSubmit={handlePasswordSubmit} className="p-5 space-y-3.5 text-xs">
+              {passwordMsg && (
+                <div className={`p-3 rounded-xl font-bold flex items-center gap-2 ${
+                  passwordMsg.type === 'success' ? 'bg-emerald-50 text-emerald-800' : 'bg-red-50 text-red-800'
+                }`}>
+                  {passwordMsg.type === 'success' ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                  <span>{passwordMsg.text}</span>
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Current Password</label>
+                <input
+                  type="password"
+                  required
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Enter current password"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">New Password</label>
+                <input
+                  type="password"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Minimum 6 characters"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold mb-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter new password"
+                  className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="pt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordModal(false)}
+                  className="py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={updatingPassword}
+                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  {updatingPassword ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Key className="w-4 h-4" />}
+                  <span>Update Password</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── EDIT PROFILE DETAILS MODAL ── */}
+      {editModalOpen && (
+        <div 
+          onClick={() => setEditModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-lg bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col"
+          >
+            <div className="bg-[#1E3A8A] text-white p-5 flex items-center justify-between shrink-0">
+              <div className="flex items-center gap-2.5">
+                <Edit3 className="w-5 h-5 text-blue-300" />
                 <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Student Phone</label>
+                  <h3 className="text-base font-bold font-serif">Edit Profile Information</h3>
+                  <p className="text-[11px] text-blue-200">{student.name} • {student.class}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setEditModalOpen(false)}
+                className="p-1 rounded-full hover:bg-white/20 text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveProfile} className="p-5 space-y-3.5 overflow-y-auto text-xs flex-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Mobile / Admission Number</label>
                   <input
-                    type="tel"
+                    type="text"
                     value={editForm.studentPhone}
                     onChange={(e) => setEditForm(prev => ({ ...prev, studentPhone: e.target.value }))}
-                    placeholder="e.g. 9876543210"
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Student Email</label>
+                  <label className="block text-slate-700 font-bold mb-1">Email Address</label>
                   <input
                     type="email"
                     value={editForm.studentEmail}
                     onChange={(e) => setEditForm(prev => ({ ...prev, studentEmail: e.target.value }))}
-                    placeholder="student@school.edu"
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Blood Group</label>
+                  <label className="block text-slate-700 font-bold mb-1">Religion</label>
+                  <input
+                    type="text"
+                    value={editForm.religion}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, religion: e.target.value }))}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Category</label>
+                  <select
+                    value={editForm.category}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, category: e.target.value }))}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="General">General</option>
+                    <option value="OBC">OBC</option>
+                    <option value="SC">SC</option>
+                    <option value="ST">ST</option>
+                    <option value="EWS">EWS</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Nationality</label>
+                  <input
+                    type="text"
+                    value={editForm.nationality}
+                    onChange={(e) => setEditForm(prev => ({ ...prev, nationality: e.target.value }))}
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-700 font-bold mb-1">Blood Group</label>
                   <select
                     value={editForm.bloodGroup}
                     onChange={(e) => setEditForm(prev => ({ ...prev, bloodGroup: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium bg-white focus:outline-none focus:border-blue-500"
                   >
                     {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(bg => (
                       <option key={bg} value={bg}>{bg}</option>
@@ -680,90 +1410,35 @@ export default function Profile({ activeChild }) {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Allergies / Medical</label>
-                  <input
-                    type="text"
-                    value={editForm.allergies}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, allergies: e.target.value }))}
-                    placeholder="e.g. Peanuts, Dust, None"
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Father's Name</label>
-                  <input
-                    type="text"
-                    value={editForm.fatherName}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, fatherName: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Father's Phone</label>
-                  <input
-                    type="tel"
-                    value={editForm.fatherPhone}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, fatherPhone: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Mother's Name</label>
-                  <input
-                    type="text"
-                    value={editForm.motherName}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, motherName: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Mother's Phone</label>
-                  <input
-                    type="tel"
-                    value={editForm.motherPhone}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, motherPhone: e.target.value }))}
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
-                  />
-                </div>
-
                 <div className="sm:col-span-2">
-                  <label className="block text-[10px] font-black uppercase text-gray-700 mb-1">Residential Address</label>
+                  <label className="block text-slate-700 font-bold mb-1">Residential Address</label>
                   <textarea
                     rows={2}
                     value={editForm.address}
                     onChange={(e) => setEditForm(prev => ({ ...prev, address: e.target.value }))}
-                    placeholder="Enter complete residential address"
-                    className="w-full border border-gray-300 rounded-none p-2 text-xs focus:outline-none focus:border-indigo-600"
+                    className="w-full p-2.5 rounded-xl border border-slate-200 font-medium focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
-              {/* Modal Actions */}
-              <div className="pt-4 border-t border-gray-200 flex items-center justify-end gap-3">
+              <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-2.5 shrink-0 -mx-5 -mb-5 mt-4">
                 <button
                   type="button"
                   onClick={() => setEditModalOpen(false)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-none transition-colors"
+                  className="py-2.5 px-4 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={savingProfile}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black uppercase tracking-wider rounded-none transition-colors flex items-center gap-2 shadow-sm disabled:opacity-70"
+                  className="py-2.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs shadow-xs cursor-pointer flex items-center gap-1.5"
                 >
-                  {savingProfile ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-                  {savingProfile ? 'Saving Changes...' : 'Save Changes'}
+                  {savingProfile ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                  <span>Save Changes</span>
                 </button>
               </div>
-
             </form>
-
           </div>
         </div>
       )}

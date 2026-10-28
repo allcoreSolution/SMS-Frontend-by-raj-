@@ -121,52 +121,63 @@ export default function LiveClasses() {
   const liveNowCount = activeClasses.filter(c => c.status === 'Live').length;
 
   return (
-    <div className="p-4 md:p-6 max-w-[1240px] mx-auto space-y-6">
-      {/* 1. Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-xl border border-gray-200 shadow-xs">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="p-2 bg-teal-50 text-teal-600 rounded-lg">
-              <Video className="w-5 h-5" />
-            </span>
-            <h1 className="text-2xl font-extrabold text-gray-800 tracking-tight">Live Classes & Online Rooms</h1>
-          </div>
-          <p className="text-[13px] text-gray-500 mt-1 pl-10">
-            Join interactive live classrooms and track scheduled lectures for{' '}
-            <span className="font-semibold text-gray-700">{activeChild?.firstName} {activeChild?.lastName}</span>
-          </p>
-        </div>
+    <div className="p-3 sm:p-5 md:p-6 max-w-7xl mx-auto space-y-6 pb-24 font-sans">
+      {/* 1. Hero Header */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-blue-900/15 relative overflow-hidden">
+        {/* Glow effects */}
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
 
-        {/* Child Badge & Refresh */}
-        <div className="flex items-center gap-3 self-start md:self-auto pl-10 md:pl-0">
-          <div className="bg-[#0ea5e9] text-white px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 text-xs font-bold shadow-xs">
-            <GraduationCap className="w-4 h-4" />
-            <span>{activeChild?.className || 'Class I'} {activeChild?.section ? `- ${activeChild.section}` : ''}</span>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner shrink-0">
+              <Video className="w-7 h-7" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white">Live Classes &amp; Virtual Rooms</h1>
+                <span className="bg-white/20 backdrop-blur-md text-white border border-white/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Live Lectures
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1">
+                Join interactive live classrooms and track scheduled lectures for{' '}
+                <span className="font-bold text-white">{activeChild?.firstName} {activeChild?.lastName}</span>
+              </p>
+            </div>
           </div>
 
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            title="Refresh Schedules"
-            className="p-2 text-gray-500 hover:text-gray-800 bg-gray-50 hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors"
-          >
-            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-blue-600' : ''}`} />
-          </button>
+          {/* Child Badge & Refresh */}
+          <div className="flex items-center gap-3 self-start md:self-auto">
+            <div className="bg-white/15 backdrop-blur-md border border-white/25 text-white px-3.5 py-2 rounded-2xl flex items-center gap-2 text-xs font-bold shadow-sm">
+              <GraduationCap className="w-4 h-4 text-blue-200" />
+              <span>{activeChild?.className || 'Class I'} {activeChild?.section ? `- ${activeChild.section}` : ''}</span>
+            </div>
+
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              title="Refresh Schedules"
+              className="p-2.5 text-white hover:text-blue-100 bg-white/15 hover:bg-white/25 rounded-2xl border border-white/25 transition-all shadow-sm cursor-pointer backdrop-blur-md"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin text-white' : ''}`} />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* 2. Top Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center shrink-0">
-            <Video className="w-5 h-5" />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xs flex items-center gap-2.5 sm:gap-3.5">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-rose-100">
+            <Video className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Live Right Now</span>
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-black text-rose-600 leading-none">{liveNowCount}</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block truncate">Live Now</span>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="text-xl sm:text-2xl font-black text-rose-600 leading-none">{liveNowCount}</span>
               {liveNowCount > 0 && (
-                <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700 animate-pulse">
+                <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-rose-100 text-rose-700 animate-pulse">
                   Active
                 </span>
               )}
@@ -174,33 +185,33 @@ export default function LiveClasses() {
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
-            <Clock className="w-5 h-5" />
+        <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xs flex items-center gap-2.5 sm:gap-3.5">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 text-blue-600 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-blue-100">
+            <Clock className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Upcoming Scheduled</span>
-            <span className="text-2xl font-black text-gray-800 leading-none">{activeClasses.length - liveNowCount}</span>
-          </div>
-        </div>
-
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-            <History className="w-5 h-5" />
-          </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Completed Sessions</span>
-            <span className="text-2xl font-black text-emerald-600 leading-none">{pastClasses.length}</span>
+          <div className="min-w-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block truncate">Scheduled</span>
+            <span className="text-xl sm:text-2xl font-black text-slate-800 leading-none mt-0.5 block">{activeClasses.length - liveNowCount}</span>
           </div>
         </div>
 
-        <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-xs flex items-center gap-3.5">
-          <div className="w-11 h-11 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center shrink-0">
-            <PlayCircle className="w-5 h-5" />
+        <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xs flex items-center gap-2.5 sm:gap-3.5">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-50 text-emerald-600 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-emerald-100">
+            <History className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Recordings Saved</span>
-            <span className="text-2xl font-black text-gray-800 leading-none">
+          <div className="min-w-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block truncate">Completed</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-600 leading-none mt-0.5 block">{pastClasses.length}</span>
+          </div>
+        </div>
+
+        <div className="bg-white border border-slate-200/90 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-xs flex items-center gap-2.5 sm:gap-3.5">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-50 text-purple-600 rounded-xl sm:rounded-2xl flex items-center justify-center shrink-0 border border-purple-100">
+            <PlayCircle className="w-5 h-5 sm:w-6 sm:h-6" />
+          </div>
+          <div className="min-w-0">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block truncate">Recordings</span>
+            <span className="text-xl sm:text-2xl font-black text-slate-800 leading-none mt-0.5 block">
               {pastClasses.filter(c => c.recordingUrl).length}
             </span>
           </div>
@@ -208,8 +219,8 @@ export default function LiveClasses() {
       </div>
 
       {/* 3. Filters and View Switcher */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 rounded-xl border border-gray-200 shadow-xs">
-        <div className="flex items-center gap-3 flex-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 flex-1">
           {/* Search */}
           <div className="relative flex-1 max-w-sm">
             <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -256,13 +267,13 @@ export default function LiveClasses() {
       </div>
 
       {/* 4. Active & Scheduled Classes */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs">
-        <div className="bg-gradient-to-r from-[#16a34a] to-[#15803d] text-white px-5 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <Video className="w-5 h-5" strokeWidth={2.5} />
-            <h2 className="text-sm font-bold tracking-wide">Active & Scheduled Live Classes</h2>
+            <h2 className="text-sm font-black tracking-wide">Active &amp; Scheduled Live Classes</h2>
           </div>
-          <span className="text-xs bg-white/20 px-2.5 py-0.5 rounded-full font-bold">
+          <span className="text-xs bg-white/20 px-3 py-1 rounded-full font-extrabold backdrop-blur-md">
             {filteredActive.length} Available
           </span>
         </div>
@@ -437,13 +448,13 @@ export default function LiveClasses() {
       </div>
 
       {/* 5. Past Classes Archive */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-xs">
-        <div className="bg-gradient-to-r from-[#4b5563] to-[#374151] text-white px-5 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <div className="bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-sm">
+        <div className="bg-gradient-to-r from-slate-700 to-slate-900 text-white px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <History className="w-5 h-5" strokeWidth={2.5} />
-            <h2 className="text-sm font-bold tracking-wide">Past Classes & Recordings Archive</h2>
+            <h2 className="text-sm font-black tracking-wide">Past Classes &amp; Recordings Archive</h2>
           </div>
-          <span className="text-xs bg-white/20 px-2.5 py-0.5 rounded-full font-bold">
+          <span className="text-xs bg-white/20 px-3 py-1 rounded-full font-extrabold backdrop-blur-md">
             {filteredPast.length} Past Lectures
           </span>
         </div>

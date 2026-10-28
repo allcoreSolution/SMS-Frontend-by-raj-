@@ -441,114 +441,117 @@ export default function Email() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pb-16">
+    <div className="min-h-screen bg-[#F8FAFF] pb-24 font-sans p-3 sm:p-5 md:p-6 max-w-7xl mx-auto space-y-6">
       
-      {/* Top Banner Header */}
-      <div className="bg-[#353A40] text-white border-b border-gray-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      {/* Top Royal Blue Hero Banner */}
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] rounded-3xl p-5 sm:p-7 text-white shadow-xl shadow-blue-900/15 relative overflow-hidden">
+        <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-48 h-48 bg-blue-400/20 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white/15 backdrop-blur-md border border-white/25 flex items-center justify-center text-white shadow-inner shrink-0">
+              <Mail className="w-7 h-7" />
+            </div>
             <div>
-              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-blue-400 font-semibold mb-1">
-                <span>Communications</span>
-                <span>/</span>
-                <span className="text-white">Email Inbox</span>
-              </div>
-              <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-                <span className="p-2 bg-[#2563eb] text-white rounded-none shadow-md inline-flex items-center justify-center">
-                  <Mail className="w-6 h-6" />
+              <div className="flex items-center gap-2.5 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  Official School Mailbox &amp; E-Dispatches
+                </h1>
+                <span className="bg-white/20 backdrop-blur-md text-white border border-white/30 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Encrypted Mail
                 </span>
-                Official School Mailbox & E-Dispatches
-              </h1>
-              <p className="text-xs text-gray-300 mt-1 max-w-2xl">
-                Encrypted official school letters, fee clearance tax receipts, academic marksheet evaluations, and direct helpdesk email dispatch.
+              </div>
+              <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1 max-w-2xl">
+                Encrypted letters, fee tax clearance receipts, academic marksheet evaluations, and direct helpdesk dispatch.
               </p>
             </div>
+          </div>
 
-            {/* Quick Actions in Top Banner */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <button
-                onClick={() => setIsComposeOpen(true)}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 shadow-sm rounded-none"
-              >
-                <Plus className="w-4 h-4" />
-                Compose Mail
-              </button>
+          {/* Quick Actions in Top Banner */}
+          <div className="flex items-center gap-2.5 flex-wrap self-start md:self-auto">
+            <button
+              onClick={() => setIsComposeOpen(true)}
+              className="px-4 py-2 bg-white text-blue-700 hover:bg-blue-50 text-xs font-bold rounded-xl transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Compose Mail</span>
+            </button>
 
-              <button
-                onClick={handleOpenSmtpModal}
-                className="px-3 py-2 bg-gray-700 hover:bg-gray-600 text-white text-xs font-semibold uppercase tracking-wider transition-all duration-150 flex items-center gap-2 rounded-none border border-gray-600"
-                title="Configure Live SMTP Server"
-              >
-                <Settings className="w-4 h-4 text-amber-400" />
-                SMTP Gateway
-              </button>
+            <button
+              onClick={handleOpenSmtpModal}
+              className="px-3.5 py-2 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl border border-white/25 transition-all flex items-center gap-1.5 backdrop-blur-md cursor-pointer"
+              title="Configure Live SMTP Server"
+            >
+              <Settings className="w-4 h-4 text-amber-300" />
+              <span>SMTP Gateway</span>
+            </button>
 
-              <button
-                onClick={handleRefresh}
-                disabled={refreshing}
-                title="Refresh Mailbox"
-                className="p-2 bg-gray-700 hover:bg-gray-600 text-gray-200 transition-colors rounded-none"
-              >
-                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              </button>
-            </div>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              title="Refresh Mailbox"
+              className="p-2.5 bg-white/15 hover:bg-white/25 text-white transition-all rounded-xl border border-white/25 backdrop-blur-md cursor-pointer"
+            >
+              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
           </div>
         </div>
       </div>
 
       {/* Main Mailbox Workspace */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      <div className="space-y-6">
 
         {/* 4 Summary Stats Bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white p-4 border border-gray-200 border-l-4 border-l-blue-600 shadow-sm">
+          <div className="bg-white p-5 border border-slate-200/90 rounded-3xl shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Inbox Mails</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{counts.inbox}</p>
-                <p className="text-[11px] text-gray-500 mt-0.5">Active school messages</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Inbox Mails</p>
+                <p className="text-2xl font-black text-slate-900 mt-1 leading-none">{counts.inbox}</p>
+                <p className="text-[11px] text-slate-400 mt-1 font-medium">Active messages</p>
               </div>
-              <div className="p-2.5 bg-blue-50 text-blue-600">
-                <Inbox className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100">
+                <Inbox className="w-6 h-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 border border-gray-200 border-l-4 border-l-amber-500 shadow-sm">
+          <div className="bg-white p-5 border border-slate-200/90 rounded-3xl shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Unread Mails</p>
-                <p className="text-2xl font-bold text-amber-600 mt-1">{counts.unread}</p>
-                <p className="text-[11px] text-gray-500 mt-0.5">Require your review</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Unread Mails</p>
+                <p className="text-2xl font-black text-amber-600 mt-1 leading-none">{counts.unread}</p>
+                <p className="text-[11px] text-slate-400 mt-1 font-medium">Require review</p>
               </div>
-              <div className="p-2.5 bg-amber-50 text-amber-600">
-                <AlertCircle className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100">
+                <AlertCircle className="w-6 h-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 border border-gray-200 border-l-4 border-l-yellow-500 shadow-sm">
+          <div className="bg-white p-5 border border-slate-200/90 rounded-3xl shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Starred</p>
-                <p className="text-2xl font-bold text-yellow-600 mt-1">{counts.starred}</p>
-                <p className="text-[11px] text-gray-500 mt-0.5">Flagged important</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Starred</p>
+                <p className="text-2xl font-black text-yellow-600 mt-1 leading-none">{counts.starred}</p>
+                <p className="text-[11px] text-slate-400 mt-1 font-medium">Flagged priority</p>
               </div>
-              <div className="p-2.5 bg-yellow-50 text-yellow-600">
-                <Star className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-yellow-50 text-yellow-600 flex items-center justify-center border border-yellow-100">
+                <Star className="w-6 h-6" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-4 border border-gray-200 border-l-4 border-l-emerald-600 shadow-sm">
+          <div className="bg-white p-5 border border-slate-200/90 rounded-3xl shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Sent Queries</p>
-                <p className="text-2xl font-bold text-emerald-600 mt-1">{counts.sent}</p>
-                <p className="text-[11px] text-gray-500 mt-0.5">Dispatched to school</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Sent Queries</p>
+                <p className="text-2xl font-black text-emerald-600 mt-1 leading-none">{counts.sent}</p>
+                <p className="text-[11px] text-slate-400 mt-1 font-medium">Dispatched to school</p>
               </div>
-              <div className="p-2.5 bg-emerald-50 text-emerald-600">
-                <Send className="w-5 h-5" />
+              <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <Send className="w-6 h-6" />
               </div>
             </div>
           </div>
@@ -563,32 +566,32 @@ export default function Email() {
             {/* Primary Action Button */}
             <button
               onClick={() => setIsComposeOpen(true)}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 transition-all rounded-none"
+              className="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs uppercase tracking-wider shadow-md shadow-blue-500/20 flex items-center justify-center gap-2 transition-all rounded-2xl cursor-pointer"
             >
               <Plus className="w-4 h-4" />
-              New Mail to School
+              <span>New Mail to School</span>
             </button>
 
             {/* Folder Navigation Menu */}
-            <div className="bg-white border border-gray-200 shadow-sm p-3">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider px-3 py-1 block">
+            <div className="bg-white border border-slate-200/90 rounded-3xl shadow-xs p-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider px-2 py-1 block">
                 Mail Folders
               </span>
               <div className="space-y-1 mt-2">
                 <button
                   onClick={() => { setActiveFolder('inbox'); setSelectedCategory('All'); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-semibold transition-colors rounded-none ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold transition-all rounded-2xl cursor-pointer ${
                     activeFolder === 'inbox' 
-                      ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600 font-bold' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-700 font-black shadow-2xs' 
+                      : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    <Inbox className="w-4 h-4" />
-                    Inbox
+                    <Inbox className="w-4 h-4 text-blue-600" />
+                    <span>Inbox</span>
                   </span>
                   {counts.unread > 0 && (
-                    <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-600 text-white rounded-none">
+                    <span className="px-2 py-0.5 text-[10px] font-black bg-blue-600 text-white rounded-full">
                       {counts.unread}
                     </span>
                   )}
@@ -596,75 +599,75 @@ export default function Email() {
 
                 <button
                   onClick={() => { setActiveFolder('starred'); setSelectedCategory('All'); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-semibold transition-colors rounded-none ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold transition-all rounded-2xl cursor-pointer ${
                     activeFolder === 'starred' 
-                      ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600 font-bold' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-700 font-black shadow-2xs' 
+                      : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                    Starred
+                    <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                    <span>Starred</span>
                   </span>
-                  <span className="text-xs text-gray-400">{counts.starred}</span>
+                  <span className="text-xs text-slate-400 font-mono">{counts.starred}</span>
                 </button>
 
                 <button
                   onClick={() => { setActiveFolder('sent'); setSelectedCategory('All'); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-semibold transition-colors rounded-none ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold transition-all rounded-2xl cursor-pointer ${
                     activeFolder === 'sent' 
-                      ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600 font-bold' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-700 font-black shadow-2xs' 
+                      : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    <Send className="w-4 h-4" />
-                    Sent Mails
+                    <Send className="w-4 h-4 text-emerald-600" />
+                    <span>Sent Mails</span>
                   </span>
-                  <span className="text-xs text-gray-400">{counts.sent}</span>
+                  <span className="text-xs text-slate-400 font-mono">{counts.sent}</span>
                 </button>
 
                 <button
                   onClick={() => { setActiveFolder('trash'); setSelectedCategory('All'); }}
-                  className={`w-full flex items-center justify-between px-3 py-2 text-xs font-semibold transition-colors rounded-none ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 text-xs font-bold transition-all rounded-2xl cursor-pointer ${
                     activeFolder === 'trash' 
-                      ? 'bg-blue-50 text-blue-700 border-l-4 border-l-blue-600 font-bold' 
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-50 text-blue-700 font-black shadow-2xs' 
+                      : 'text-slate-600 hover:bg-slate-50'
                   }`}
                 >
                   <span className="flex items-center gap-2.5">
-                    <Trash2 className="w-4 h-4" />
-                    Trash Bin
+                    <Trash2 className="w-4 h-4 text-red-500" />
+                    <span>Trash Bin</span>
                   </span>
-                  <span className="text-xs text-gray-400">{counts.trash}</span>
+                  <span className="text-xs text-slate-400 font-mono">{counts.trash}</span>
                 </button>
               </div>
             </div>
 
             {/* Category Filter Pills */}
-            <div className="bg-white border border-gray-200 shadow-sm p-4">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider block mb-3">
+            <div className="bg-white border border-slate-200/90 rounded-3xl shadow-xs p-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-2 px-1">
                 Filter by Category
               </span>
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 {['All', 'Fees', 'Academics', 'Notices', 'Attendance', 'Health', 'Events'].map(cat => (
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`w-full text-left px-3 py-1.5 text-xs font-medium transition-colors flex items-center justify-between rounded-none ${
+                    className={`w-full text-left px-3 py-2 text-xs font-bold transition-all flex items-center justify-between rounded-xl cursor-pointer ${
                       selectedCategory === cat 
-                        ? 'bg-[#353A40] text-white font-bold' 
-                        : 'text-gray-600 hover:bg-gray-100'
+                        ? 'bg-blue-600 text-white shadow-sm' 
+                        : 'text-slate-600 hover:bg-slate-50'
                     }`}
                   >
                     <span>{cat === 'All' ? 'All Categories' : cat}</span>
                     {cat !== 'All' && (
                       <span className={`w-2 h-2 rounded-full ${
                         cat === 'Fees' ? 'bg-emerald-500' :
-                        cat === 'Academics' ? 'bg-blue-500' :
-                        cat === 'Notices' ? 'bg-amber-500' :
-                        cat === 'Attendance' ? 'bg-cyan-500' :
-                        cat === 'Health' ? 'bg-rose-500' : 'bg-purple-500'
+                        cat === 'Academics' ? 'bg-blue-400' :
+                        cat === 'Notices' ? 'bg-amber-400' :
+                        cat === 'Attendance' ? 'bg-cyan-400' :
+                        cat === 'Health' ? 'bg-rose-400' : 'bg-purple-400'
                       }`} />
                     )}
                   </button>
@@ -673,12 +676,12 @@ export default function Email() {
             </div>
 
             {/* School Helpdesk Directory Card */}
-            <div className="bg-white border border-gray-200 shadow-sm p-4">
-              <h4 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+            <div className="bg-white border border-slate-200/90 rounded-3xl shadow-xs p-5">
+              <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider flex items-center gap-1.5 mb-1.5">
                 <School className="w-4 h-4 text-blue-600" />
-                School Departments Directory
+                <span>Departments Directory</span>
               </h4>
-              <p className="text-[11px] text-gray-500 mb-3">Click any department to write an email directly:</p>
+              <p className="text-[11px] text-slate-400 mb-3 font-medium">Click any department to write directly:</p>
 
               <div className="space-y-2">
                 {(schoolSettings?.departments || [
@@ -699,10 +702,10 @@ export default function Email() {
                       });
                       setIsComposeOpen(true);
                     }}
-                    className="p-2 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 text-xs cursor-pointer transition-colors group"
+                    className="p-2.5 bg-slate-50 hover:bg-blue-50/80 border border-slate-100 hover:border-blue-200 rounded-2xl text-xs cursor-pointer transition-all group"
                   >
-                    <p className="font-bold text-gray-900 text-[11px] group-hover:text-blue-700">{dept.name}</p>
-                    <p className="text-[10px] text-gray-500 font-mono truncate">{dept.email}</p>
+                    <p className="font-bold text-slate-900 text-xs group-hover:text-blue-700">{dept.name}</p>
+                    <p className="text-[11px] text-slate-400 font-mono truncate">{dept.email}</p>
                   </div>
                 ))}
               </div>
@@ -714,22 +717,22 @@ export default function Email() {
           <div className="lg:col-span-9 space-y-4">
             
             {/* Toolbar Header */}
-            <div className="bg-white border border-gray-200 p-3 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+            <div className="bg-white border border-slate-200/90 rounded-3xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-3">
               
               {/* Search Bar */}
               <div className="relative w-full md:w-80">
-                <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search emails by subject, sender, or content..."
+                  placeholder="Search subject, sender, content..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2 border border-gray-300 text-xs focus:ring-1 focus:ring-blue-500 focus:border-blue-500 rounded-none"
+                  className="w-full pl-9 pr-8 py-2 bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:border-blue-600 rounded-2xl outline-none font-medium"
                 />
                 {searchQuery && (
                   <button
                     onClick={() => setSearchQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -738,12 +741,12 @@ export default function Email() {
 
               {/* Status & Sort Controls */}
               <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                <div className="flex items-center gap-1.5 text-xs">
-                  <span className="text-gray-400 font-medium">Status:</span>
+                <div className="flex items-center gap-1.5 text-xs font-semibold">
+                  <span className="text-slate-400 font-bold">Status:</span>
                   <select
                     value={filterReadStatus}
                     onChange={(e) => setFilterReadStatus(e.target.value)}
-                    className="border border-gray-300 py-1.5 px-2 bg-white text-xs text-gray-700 rounded-none"
+                    className="border border-slate-200 py-1.5 px-3 bg-slate-50 text-xs text-slate-700 rounded-xl outline-none focus:border-blue-500 font-bold cursor-pointer"
                   >
                     <option value="all">All Mails</option>
                     <option value="unread">Unread Only</option>
@@ -751,14 +754,14 @@ export default function Email() {
                   </select>
                 </div>
 
-                <span className="text-xs text-gray-400 border-l border-gray-200 pl-3">
-                  Showing <strong className="text-gray-700">{filteredEmails.length}</strong> emails
+                <span className="text-xs text-slate-400 border-l border-slate-200 pl-3 font-medium">
+                  Showing <strong className="text-slate-700 font-black">{filteredEmails.length}</strong> emails
                 </span>
               </div>
             </div>
 
             {/* Email List Container */}
-            <div className="bg-white border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200/90 rounded-3xl shadow-xs overflow-hidden">
               {loading ? (
                 <div className="p-16 text-center">
                   <RefreshCw className="w-8 h-8 text-blue-600 animate-spin mx-auto mb-3" />

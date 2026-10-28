@@ -7,8 +7,10 @@ export default function Logout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate cleanup tasks
+    // Cleanup all session keys
     localStorage.removeItem('parent_token');
+    localStorage.removeItem('parent_user');
+    localStorage.removeItem('active_child');
 
     // Switch to done state instead of bouncing back to '/'
     const timer = setTimeout(() => {

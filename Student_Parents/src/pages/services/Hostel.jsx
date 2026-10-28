@@ -166,16 +166,16 @@ export default function Hostel({ activeChild }) {
   const todayMenu = weeklyMessMenu.find(m => m.day.toLowerCase() === selectedDay.toLowerCase()) || weeklyMessMenu[0];
 
   return (
-    <div className="p-4 md:p-6 max-w-[1400px] mx-auto min-h-screen bg-[#f8f9fa] space-y-5">
+    <div className="p-3 sm:p-5 max-w-[1400px] mx-auto min-h-screen bg-slate-50 space-y-5 pb-24">
       
       {/* Toast Notification */}
       {notification && (
-        <div className="p-4 bg-emerald-50 border border-emerald-300 text-emerald-900 text-[13px] font-semibold flex items-center justify-between shadow-sm">
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-[13px] font-semibold flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-emerald-600" />
             <span>{notification}</span>
           </div>
-          <button onClick={() => setNotification(null)} className="text-gray-400 hover:text-gray-700">
+          <button onClick={() => setNotification(null)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -184,28 +184,31 @@ export default function Hostel({ activeChild }) {
       {/* =========================================================================
           TOP COMMAND HEADER & STUDENT BOARDER PROFILE
           ========================================================================= */}
-      <div className="bg-[#353A40] text-white p-5 md:p-6 rounded-none shadow-md">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-[#1E3A8A] via-[#1D4ED8] to-[#2563EB] text-white p-5 sm:p-7 rounded-3xl shadow-lg border border-blue-400/20 relative overflow-hidden">
+        {/* Glow circle */}
+        <div className="absolute -right-16 -top-16 w-60 h-60 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
           
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-amber-500 text-gray-950 flex items-center justify-center flex-shrink-0 font-bold shadow">
+            <div className="w-13 h-13 rounded-2xl bg-white/15 backdrop-blur-md text-amber-300 flex items-center justify-center flex-shrink-0 font-bold shadow-md border border-white/20">
               <Building2 className="w-7 h-7" />
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-[20px] md:text-[22px] font-bold tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white font-serif">
                   {hostel?.name || 'Tagore Boys Hostel (Block A)'}
                 </h1>
-                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10.5px] font-extrabold uppercase tracking-wider">
+                <span className="px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/40 text-[10px] font-black uppercase tracking-wider backdrop-blur-sm">
                   Active Boarder
                 </span>
               </div>
-              <p className="text-[12.5px] text-gray-300 mt-1 flex items-center gap-2 flex-wrap">
-                <span>Resident: <strong className="text-white">{student?.name || 'Aarav Sharma'}</strong> ({student?.className || 'Class I-A'})</span>
-                <span className="text-gray-500">•</span>
-                <span>Room: <strong className="text-yellow-400 font-mono">Room {room?.roomNumber || '101'}</strong> ({allocation?.bedNumber || 'Bed 1'})</span>
-                <span className="text-gray-500">•</span>
-                <span>Warden: <strong className="text-gray-200">{hostel?.warden?.name || 'Rajesh Sharma'}</strong></span>
+              <p className="text-[12px] text-blue-100 mt-1 flex items-center gap-2 flex-wrap">
+                <span>Resident: <strong className="text-white">{student?.name || 'Kabir Singh'}</strong> ({student?.className || 'Class 10th (A)'})</span>
+                <span className="text-blue-300/60">•</span>
+                <span>Room: <strong className="text-amber-300 font-mono">Room {room?.roomNumber || '101'}</strong> ({allocation?.bedNumber || 'Bed 1'})</span>
+                <span className="text-blue-300/60">•</span>
+                <span>Warden: <strong className="text-white">{hostel?.warden?.name || 'Rajesh Sharma'}</strong></span>
               </p>
             </div>
           </div>
@@ -214,33 +217,33 @@ export default function Hostel({ activeChild }) {
           <div className="flex items-center gap-2 flex-wrap self-start lg:self-auto">
             <button
               onClick={() => setGatePassModalOpen(true)}
-              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-gray-950 text-[12px] font-bold flex items-center gap-1.5 shadow transition-colors"
+              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-[12px] font-extrabold flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
             >
-              <QrCode className="w-3.5 h-3.5" />
+              <QrCode className="w-4 h-4" />
               <span>Apply Gate Pass</span>
             </button>
 
             <button
               onClick={() => setMaintenanceModalOpen(true)}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             >
-              <Zap className="w-3.5 h-3.5 text-yellow-400" />
-              <span>Maintenance / Query</span>
+              <Zap className="w-4 h-4 text-amber-300" />
+              <span>Maintenance</span>
             </button>
 
             <a
               href={`tel:${hostel?.warden?.rawPhone || '9876543210'}`}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
               title="Call Warden"
             >
-              <Phone className="w-3.5 h-3.5 text-emerald-400" />
+              <Phone className="w-4 h-4 text-emerald-300" />
               <span>Call Warden</span>
             </a>
 
             <button
               onClick={() => fetchHostelData(false)}
               disabled={refreshing}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/15 border border-white/20 text-white text-[12px] font-semibold flex items-center gap-1.5 transition-colors"
+              className="px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-[12px] font-bold flex items-center gap-1.5 transition-all shadow-xs backdrop-blur-sm cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin' : ''}`} />
               <span>{refreshing ? 'Syncing...' : 'Sync'}</span>
@@ -250,39 +253,39 @@ export default function Hostel({ activeChild }) {
         </div>
 
         {/* 4 Highlights Tiles */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/10">
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[20px] font-extrabold tracking-tight font-mono text-yellow-400 block leading-none">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-5 pt-4 border-t border-white/15 relative z-10">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[22px] font-black tracking-tight font-mono text-amber-300 block leading-none">
               Room {room?.roomNumber || '101'}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               {room?.roomType || 'Deluxe AC (2-Bed)'}
             </span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[20px] font-extrabold tracking-tight font-mono text-white block leading-none">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[22px] font-black tracking-tight font-mono text-white block leading-none">
               {allocation?.bedNumber?.split(' ')[0] || 'Bed 1'}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Window Side (Ground Floor)
             </span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[20px] font-extrabold tracking-tight font-mono text-emerald-400 block leading-none">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[22px] font-black tracking-tight font-mono text-emerald-300 block leading-none">
               ₹{allocation?.monthlyFee || 5500}
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Monthly Boarding Fee (Paid)
             </span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 p-3 text-center">
-            <span className="text-[20px] font-extrabold tracking-tight font-mono text-white block leading-none">
+          <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3.5 rounded-2xl text-center shadow-xs">
+            <span className="text-[22px] font-black tracking-tight font-mono text-white block leading-none">
               {gatePasses.length} Passes
             </span>
-            <span className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mt-1.5 block">
+            <span className="text-[10px] uppercase tracking-wider font-extrabold text-blue-200 mt-1.5 block">
               Total Outpasses Issued
             </span>
           </div>
