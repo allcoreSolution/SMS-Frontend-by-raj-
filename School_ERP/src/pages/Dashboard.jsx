@@ -12,13 +12,22 @@ import axiosInstance from '../api/axios';
 import { getTranslation } from '../utils/translations';
 
 export default function Dashboard() {
+  // User & School context
+  const userStr = localStorage.getItem('user');
+  let userData = null;
+  if (userStr) {
+    try { userData = JSON.parse(userStr); } catch (e) {}
+  }
+
   const [metrics, setMetrics] = useState({
-    totalStudents: '280',
-    monthlyCollection: '₹15,28,876',
-    attendanceToday: '13%',
-    activeStaff: '10',
-    pendingDues: '₹92,34,500'
+    totalStudents: '0',
+    monthlyCollection: '₹0',
+    attendanceToday: '0%',
+    activeStaff: '0',
+    pendingDues: '₹0'
   });
+
+  const [latestNotice, setLatestNotice] = useState('All Core School ERP • Ready');
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentLang, setCurrentLang] = useState(() => {
@@ -48,46 +57,61 @@ export default function Dashboard() {
   // Fetch real metrics from backend API
   const fetchStats = async () => {
     try {
-      const [studentRes, transactionRes, attRes, staffRes, feesDashRes] = await Promise.allSettled([
+      const [studentRes, transactionRes, attRes, staffRes, feesDashRes, noticeRes] = await Promise.allSettled([
         studentService.getStudents({ limit: 1 }),
         financeService.getAllTransactions({ limit: 100 }),
         attendanceService.getAttendanceSummary(),
         hrService.getStaff({ limit: 1 }),
-        axiosInstance.get('/fees-dashboard')
+        axiosInstance.get('/fees-dashboard'),
+        noticeService.getNotices()
       ]);
 
       if (studentRes.status === 'fulfilled') {
-        const count = studentRes.value?.total || studentRes.value?.count || (Array.isArray(studentRes.value?.data) ? studentRes.value.data.length : null);
-        if (count && count > 0) {
-          setMetrics(prev => ({ ...prev, totalStudents: count.toLocaleString() }));
-        }
+        const val = studentRes.value;
+        const count = val?.pagination?.total ?? val?.total ?? val?.count ?? (Array.isArray(val?.data) ? val.data.length : null);
+        setMetrics(prev => ({ ...prev, totalStudents: count !== null && count !== undefined ? Number(count).toLocaleString() : '0' }));
+      } else {
+        setMetrics(prev => ({ ...prev, totalStudents: '0' }));
       }
 
       if (feesDashRes.status === 'fulfilled' && feesDashRes.value?.data?.data) {
         const fData = feesDashRes.value.data.data;
-        if (fData.totalCollected > 0) {
-          setMetrics(prev => ({ ...prev, monthlyCollection: `₹${Number(fData.totalCollected).toLocaleString('en-IN')}` }));
-        }
-        if (fData.totalDue > 0) {
-          setMetrics(prev => ({ ...prev, pendingDues: `₹${Number(fData.totalDue).toLocaleString('en-IN')}` }));
-        }
-      } else if (transactionRes.status === 'fulfilled' && Array.isArray(transactionRes.value?.data)) {
-        const txs = transactionRes.value.data;
+        setMetrics(prev => ({
+          ...prev,
+          monthlyCollection: `₹${Number(fData.totalCollected || 0).toLocaleString('en-IN')}`,
+          pendingDues: `₹${Number(fData.totalDue || 0).toLocaleString('en-IN')}`
+        }));
+      } else if (transactionRes.status === 'fulfilled') {
+        const txs = Array.isArray(transactionRes.value?.data) ? transactionRes.value.data : [];
         const totalPaid = txs.reduce((acc, curr) => acc + (Number(curr.amountPaid) || Number(curr.amount) || 0), 0);
-        if (totalPaid > 0) {
-          setMetrics(prev => ({ ...prev, monthlyCollection: `₹${totalPaid.toLocaleString('en-IN')}` }));
-        }
+        setMetrics(prev => ({
+          ...prev,
+          monthlyCollection: `₹${Number(totalPaid || 0).toLocaleString('en-IN')}`,
+          pendingDues: '₹0'
+        }));
+      } else {
+        setMetrics(prev => ({ ...prev, monthlyCollection: '₹0', pendingDues: '₹0' }));
       }
 
-      if (attRes.status === 'fulfilled' && attRes.value?.data?.percentage) {
-        setMetrics(prev => ({ ...prev, attendanceToday: `${attRes.value.data.percentage}%` }));
+      const attPercent = attRes.value?.data?.data?.percentage ?? attRes.value?.data?.percentage;
+      if (attRes.status === 'fulfilled' && attPercent !== undefined) {
+        setMetrics(prev => ({ ...prev, attendanceToday: `${attPercent}` }));
+      } else {
+        setMetrics(prev => ({ ...prev, attendanceToday: '0%' }));
       }
 
       if (staffRes.status === 'fulfilled') {
-        const staffCount = staffRes.value?.total || staffRes.value?.count || (Array.isArray(staffRes.value?.data) ? staffRes.value.data.length : null);
-        if (staffCount && staffCount > 0) {
-          setMetrics(prev => ({ ...prev, activeStaff: staffCount.toString() }));
-        }
+        const val = staffRes.value;
+        const staffCount = val?.pagination?.total ?? val?.total ?? val?.count ?? (Array.isArray(val?.data) ? val.data.length : null);
+        setMetrics(prev => ({ ...prev, activeStaff: staffCount !== null && staffCount !== undefined ? Number(staffCount).toString() : '0' }));
+      } else {
+        setMetrics(prev => ({ ...prev, activeStaff: '0' }));
+      }
+
+      if (noticeRes.status === 'fulfilled' && Array.isArray(noticeRes.value?.data) && noticeRes.value.data.length > 0) {
+        setLatestNotice(noticeRes.value.data[0].title);
+      } else {
+        setLatestNotice('All Core School ERP • Ready');
       }
     } catch (err) {
       console.warn("Stats fetch fallback", err);
@@ -102,11 +126,6 @@ export default function Dashboard() {
   }, []);
 
   // User & School greeting
-  const userStr = localStorage.getItem('user');
-  let userData = null;
-  if (userStr) {
-    try { userData = JSON.parse(userStr); } catch (e) {}
-  }
   const schoolDisplayName = userData?.username || userData?.name || 'school';
   const schoolName = userData?.tenant?.schoolName || 'ALL CORE SOLUTION';
 
@@ -147,7 +166,7 @@ export default function Dashboard() {
               <span>{getTranslation('updates', currentLang)}</span>
             </button>
             <div className="px-3 text-xs text-gray-600 font-medium truncate max-w-[200px] sm:max-w-[260px]">
-              Fee Distribution (Sep 17)
+              {latestNotice}
             </div>
           </div>
         </div>
@@ -162,7 +181,7 @@ export default function Dashboard() {
           icon="student"
           iconBg="bg-[#0284c7]"
           color="#0284c7"
-          data={[15, 18, 22, 26, 25, 29, 34, 38]}
+          data={[0, 0, 0, 0]}
         />
 
         {/* Card 2: Collected This Month */}
@@ -171,10 +190,10 @@ export default function Dashboard() {
           value={metrics.monthlyCollection}
           icon="money"
           iconBg="bg-[#10b981]"
-          trend="1133%"
+          trend={metrics.monthlyCollection !== '₹0' ? '+0%' : null}
           trendColor="text-emerald-700 bg-emerald-50"
           color="#10b981"
-          data={[10, 14, 18, 25, 32, 28, 45, 52]}
+          data={[0, 0, 0, 0]}
         />
 
         {/* Card 3: Attendance Today */}
@@ -184,7 +203,7 @@ export default function Dashboard() {
           icon="attendance"
           iconBg="bg-[#6366f1]"
           color="#6366f1"
-          data={[28, 26, 24, 20, 18, 16, 14, 13]}
+          data={[0, 0, 0, 0]}
         />
 
         {/* Card 4: Active Staff */}
@@ -194,7 +213,7 @@ export default function Dashboard() {
           icon="staff"
           iconBg="bg-[#8b5cf6]"
           color="#8b5cf6"
-          data={[10, 10, 10, 10, 10, 10, 10, 10]}
+          data={[0, 0, 0, 0]}
         />
 
         {/* Card 5: Pending Dues */}
@@ -204,7 +223,7 @@ export default function Dashboard() {
           icon="pending"
           iconBg="bg-[#f43f5e]"
           color="#f43f5e"
-          data={[45, 42, 38, 35, 30, 28, 25, 22]}
+          data={[0, 0, 0, 0]}
         />
       </div>
 

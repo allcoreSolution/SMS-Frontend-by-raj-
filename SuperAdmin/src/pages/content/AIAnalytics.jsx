@@ -2,12 +2,7 @@ import React from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Brain, TrendingUp, AlertTriangle, Lightbulb, Users, IndianRupee } from 'lucide-react';
 
-const churnRisk = [
-  { school: 'Sunrise School', risk: 82, reason: 'Low login activity (14 days)', plan: 'Basic' },
-  { school: 'Ali Public School', risk: 75, reason: 'Fee collection dropped 60%', plan: 'Basic' },
-  { school: 'Green Valley', risk: 61, reason: 'Support tickets unresolved', plan: 'Standard' },
-  { school: 'St. Mary Convent', risk: 45, reason: 'Attendance module unused', plan: 'Standard' },
-];
+const churnRisk = [];
 
 const engagementData = [
   { month: 'Apr', score: 72 }, { month: 'May', score: 75 }, { month: 'Jun', score: 71 },

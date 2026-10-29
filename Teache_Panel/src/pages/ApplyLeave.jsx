@@ -8,9 +8,9 @@ import Swal from 'sweetalert2';
 import { leaveService } from '../api/leaveService';
 
 const leaveBalance = [
-  { type: 'Casual Leave', total: 12, used: 3, color: 'blue' },
-  { type: 'Medical Leave', total: 10, used: 1, color: 'green' },
-  { type: 'Earned Leave', total: 15, used: 5, color: 'indigo' },
+  { type: 'Casual Leave', total: 12, used: 0, color: 'blue' },
+  { type: 'Medical Leave', total: 10, used: 0, color: 'green' },
+  { type: 'Earned Leave', total: 15, used: 0, color: 'indigo' },
 ];
 
 const statusStyle = {
@@ -43,48 +43,19 @@ const ApplyLeave = () => {
 
   const filtered = history.filter(h => filterStatus === 'All' || h.status === filterStatus);
 
-  const DEFAULT_SEED_LEAVE_APPLICATIONS = [
-    {
-      _id: 'lv-app-1',
-      leaveType: 'Casual Leave',
-      startDate: '2026-10-12',
-      endDate: '2026-10-13',
-      reason: 'Family Event & Festival Celebration',
-      status: 'Approved',
-      createdAt: '2026-10-08T10:00:00.000Z'
-    },
-    {
-      _id: 'lv-app-2',
-      leaveType: 'Medical Leave',
-      startDate: '2026-09-04',
-      endDate: '2026-09-05',
-      reason: 'Seasonal Viral Fever & Medical Rest',
-      status: 'Approved',
-      createdAt: '2026-09-03T09:15:00.000Z'
-    },
-    {
-      _id: 'lv-app-3',
-      leaveType: 'Earned Leave',
-      startDate: '2026-11-15',
-      endDate: '2026-11-18',
-      reason: 'Annual Personal Time-off',
-      status: 'Pending',
-      createdAt: '2026-10-25T14:30:00.000Z'
-    }
-  ];
+  const DEFAULT_SEED_LEAVE_APPLICATIONS = [];
 
   const fetchLeaves = async () => {
     try {
       setLoading(true);
       const res = await leaveService.getLeaveApplications();
-      if(res && res.success && res.data && res.data.length > 0) {
+      if(res && res.success && Array.isArray(res.data)) {
         setHistory(res.data);
       } else {
-        setHistory(DEFAULT_SEED_LEAVE_APPLICATIONS);
+        setHistory([]);
       }
     } catch (e) {
-      console.warn('Loading fallback seed leave applications:', e);
-      setHistory(DEFAULT_SEED_LEAVE_APPLICATIONS);
+      setHistory([]);
     } finally {
       setLoading(false);
     }

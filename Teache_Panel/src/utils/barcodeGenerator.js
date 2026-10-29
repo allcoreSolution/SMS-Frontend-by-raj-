@@ -18,8 +18,8 @@ const CODE128_PATTERNS = [
  * @param {string} text - The alphanumeric text to encode
  * @returns {object} { bars, totalWidth, height }
  */
-export const getCode128Bars = (text = 'STF-101') => {
-  const clean = String(text || 'STF-101').trim();
+export const getCode128Bars = (text = 'STAFF') => {
+  const clean = String(text || 'STAFF').trim();
   const start = 104; // Start Code B
   let checksum = start;
   const codes = [start];

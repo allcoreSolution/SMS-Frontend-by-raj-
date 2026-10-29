@@ -118,32 +118,7 @@ const OSMModule = () => {
           { qNo: 'Q3', label: 'Geometry', maxMarks: 15, text: 'State and prove theorem' },
           { qNo: 'Q4', label: 'Word Problem', maxMarks: 15, text: 'Application problem' }
         ],
-        sheets: [
-          {
-            id: 'SHT-' + Date.now().toString().slice(-4),
-            studentId: 'STU-101',
-            studentName: 'Aarav Sharma',
-            rollNo: '101',
-            anonymousCode: 'MASK-' + Math.floor(100 + Math.random() * 900),
-            fileName: 'Student_Answersheet.pdf',
-            pages: 3,
-            status: 'Pending',
-            totalAwarded: 0,
-            marks: []
-          },
-          {
-            id: 'SHT-' + (Date.now() + 1).toString().slice(-4),
-            studentId: 'STU-102',
-            studentName: 'Diya Patel',
-            rollNo: '102',
-            anonymousCode: 'MASK-' + Math.floor(100 + Math.random() * 900),
-            fileName: 'Student_Answersheet.pdf',
-            pages: 3,
-            status: 'Pending',
-            totalAwarded: 0,
-            marks: []
-          }
-        ]
+        sheets: []
       };
 
       await osmService.createSession(payload);
@@ -415,7 +390,7 @@ const OSMModule = () => {
                     BLIND OSM MASK: {currentSheet?.anonymousCode || 'MASK-9821'}
                   </span>
                   <p className="text-xs text-gray-400 mt-1 font-sans">
-                    Student Identity Encrypted • Evaluator: Amit Sharma
+                    Student Identity Encrypted • Evaluator: Faculty
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-full border-2 border-emerald-600 text-emerald-700 flex items-center justify-center font-bold text-[9px] uppercase tracking-tighter text-center">

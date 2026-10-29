@@ -2,28 +2,9 @@ import React, { useState } from 'react';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Download, Users, TrendingUp, AlertTriangle } from 'lucide-react';
 
-const weeklyData = [
-  { day: 'Mon', present: 92, absent: 8 },
-  { day: 'Tue', present: 88, absent: 12 },
-  { day: 'Wed', present: 95, absent: 5 },
-  { day: 'Thu', present: 90, absent: 10 },
-  { day: 'Fri', present: 85, absent: 15 },
-  { day: 'Sat', present: 70, absent: 30 },
-];
-
-const monthlyTrend = [
-  { month: 'Apr', rate: 88 }, { month: 'May', rate: 90 }, { month: 'Jun', rate: 87 },
-  { month: 'Jul', rate: 91 }, { month: 'Aug', rate: 89 }, { month: 'Sep', rate: 92 },
-];
-
-const schoolAttendance = [
-  { name: 'Montessori School', rate: 95, students: 1274, absent: 64 },
-  { name: 'SSVP School', rate: 91, students: 868, absent: 78 },
-  { name: 'Oxford International', rate: 93, students: 1100, absent: 77 },
-  { name: 'Green Valley', rate: 88, students: 620, absent: 74 },
-  { name: 'St. Mary Convent', rate: 86, students: 780, absent: 109 },
-  { name: 'Sunrise School', rate: 82, students: 450, absent: 81 },
-];
+const weeklyData = [];
+const monthlyTrend = [];
+const schoolAttendance = [];
 
 const AttendanceReport = () => {
   const [view, setView] = useState('overview');
@@ -43,10 +24,10 @@ const AttendanceReport = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Avg Attendance Rate', value: '89.2%', icon: TrendingUp, color: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Total Students', value: '52,400', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Present Today', value: '46,700', icon: Users, color: 'text-teal-600', bg: 'bg-teal-50' },
-          { label: 'Low Attendance Schools', value: '12', icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
+          { label: 'Avg Attendance Rate', value: '0%', icon: TrendingUp, color: 'text-green-600', bg: 'bg-green-50' },
+          { label: 'Total Students', value: '0', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Present Today', value: '0', icon: Users, color: 'text-teal-600', bg: 'bg-teal-50' },
+          { label: 'Low Attendance Schools', value: '0', icon: AlertTriangle, color: 'text-red-500', bg: 'bg-red-50' },
         ].map((k, i) => (
           <div key={i} className="bg-white rounded-none border border-gray-200 p-4 shadow-sm flex items-center gap-3">
             <div className={`w-10 h-10 rounded-none ${k.bg} flex items-center justify-center`}>
@@ -114,7 +95,11 @@ const AttendanceReport = () => {
               </tr>
             </thead>
             <tbody>
-              {schoolAttendance.map((s, i) => (
+              {schoolAttendance.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center py-8 text-sm text-gray-400 font-medium">No school attendance records found</td>
+                </tr>
+              ) : schoolAttendance.map((s, i) => (
                 <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
                   <td className="px-4 py-3 font-semibold text-gray-800">{s.name}</td>
                   <td className="px-4 py-3 text-gray-600">{s.students.toLocaleString()}</td>

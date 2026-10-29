@@ -548,7 +548,7 @@ const Assignments = () => {
                           <td className="px-4 py-3.5 text-[12px] font-mono font-bold text-gray-700">
                             {a.submissionCount || (a.submissions ? a.submissions.length : 0)} / {a.totalStudents || 40}
                           </td>
-                          <td className="px-4 py-3.5 text-[12px] text-gray-600">{a.teacherName || 'Amit Sharma'}</td>
+                          <td className="px-4 py-3.5 text-[12px] text-gray-600">{a.teacherName || 'Teacher Faculty'}</td>
                           <td className="px-4 py-3.5 text-center">
                             <div className="flex items-center justify-center gap-1">
                               <button 

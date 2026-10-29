@@ -6,6 +6,7 @@ import {
   Lock, ArrowRight, ShieldCheck, GraduationCap, 
   Eye, EyeOff, AlertCircle, ExternalLink, Users, Globe
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function Login() {
   const [roleTab, setRoleTab] = useState('student'); // 'student' | 'parent'
@@ -81,6 +82,117 @@ export default function Login() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const defaultPlaceholder = isStudentRole 
+      ? 'e.g. YIS-2024-101 or student@yis.edu' 
+      : 'e.g. 9876510108 or parent@gmail.com';
+
+    const { value: identifier } = await Swal.fire({
+      title: currentLang === 'hi' ? 'पासवर्ड रीसेट करें' : 'Reset Password',
+      text: currentLang === 'hi' 
+        ? 'अपना पंजीकृत प्रवेश संख्या (Admission ID), मोबाइल नंबर या ईमेल दर्ज करें:'
+        : 'Enter your registered Admission ID, Mobile Number or Email address:',
+      input: 'text',
+      inputValue: userId || '',
+      inputPlaceholder: defaultPlaceholder,
+      showCancelButton: true,
+      confirmButtonText: currentLang === 'hi' ? 'ओटीपी भेजें' : 'Send OTP',
+      cancelButtonText: currentLang === 'hi' ? 'रद्द करें' : 'Cancel',
+      confirmButtonColor: isStudentRole ? '#2563EB' : '#059669',
+      inputValidator: (val) => {
+        if (!val || !val.trim()) {
+          return currentLang === 'hi' ? 'कृपया अपनी आईडी या ईमेल दर्ज करें!' : 'Please enter your ID or Email!';
+        }
+      }
+    });
+
+    if (identifier) {
+      try {
+        Swal.fire({
+          title: currentLang === 'hi' ? 'ओटीपी भेजा जा रहा है...' : 'Sending OTP...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const res = await authService.forgotPassword(identifier.trim());
+
+        if (res && res.success) {
+          const { value: formValues } = await Swal.fire({
+            title: currentLang === 'hi' ? 'ओटीपी और नया पासवर्ड दर्ज करें' : 'Enter OTP & New Password',
+            html: `
+              <p style="font-size: 13px; color: #555; margin-bottom: 12px;">
+                ${res.message || 'OTP has been dispatched. Please check your registered email / phone.'}
+              </p>
+              <input id="swal-otp" class="swal2-input" placeholder="6-digit OTP" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 4px; font-weight: bold;">
+              <input id="swal-password" type="password" class="swal2-input" placeholder="Enter New Password (min 4 chars)">
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: currentLang === 'hi' ? 'पासवर्ड अपडेट करें' : 'Update Password',
+            confirmButtonColor: isStudentRole ? '#2563EB' : '#059669',
+            preConfirm: () => {
+              const otpVal = document.getElementById('swal-otp')?.value;
+              const newPassVal = document.getElementById('swal-password')?.value;
+              if (!otpVal || !newPassVal) {
+                Swal.showValidationMessage('Please fill both OTP and New Password');
+                return false;
+              }
+              if (newPassVal.length < 4) {
+                Swal.showValidationMessage('Password must be at least 4 characters');
+                return false;
+              }
+              return { otp: otpVal.trim(), newPassword: newPassVal.trim() };
+            }
+          });
+
+          if (formValues) {
+            Swal.fire({
+              title: currentLang === 'hi' ? 'पासवर्ड अपडेट हो रहा है...' : 'Updating Password...',
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading()
+            });
+
+            const resetRes = await authService.resetPassword({
+              email: identifier.trim(),
+              otp: formValues.otp,
+              newPassword: formValues.newPassword
+            });
+
+            if (resetRes && resetRes.success) {
+              Swal.fire({
+                icon: 'success',
+                title: currentLang === 'hi' ? 'पासवर्ड रीसेट सफल!' : 'Password Reset Successful!',
+                text: currentLang === 'hi' 
+                  ? 'आपका पासवर्ड सफलतापूर्वक अपडेट हो गया है। अब नए पासवर्ड से लॉगिन करें।'
+                  : 'Your password has been updated successfully. You can now login with your new credentials.',
+                confirmButtonColor: isStudentRole ? '#2563EB' : '#059669'
+              });
+              setPassword(formValues.newPassword);
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Reset Failed',
+                text: resetRes?.message || 'Could not reset password. Please verify the OTP.'
+              });
+            }
+          }
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Request Failed',
+            text: res?.message || 'Failed to dispatch password reset OTP.'
+          });
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Connection Error',
+          text: err.response?.data?.message || err.message || 'Unable to connect to auth server'
+        });
+      }
     }
   };
 
@@ -421,9 +533,15 @@ export default function Login() {
                 />
                 <span>{currentLang === 'hi' ? 'सत्र याद रखें' : 'Remember session'}</span>
               </label>
-              <span className={`text-[10px] font-bold ${isStudentRole ? 'text-blue-600' : 'text-emerald-600'}`}>
-                {currentLang === 'hi' ? 'नोड ऑनलाइन' : 'Node Live'}
-              </span>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className={`text-[11px] font-bold hover:underline cursor-pointer transition-colors ${
+                  isStudentRole ? 'text-blue-600 hover:text-blue-700' : 'text-emerald-600 hover:text-emerald-700'
+                }`}
+              >
+                {currentLang === 'hi' ? 'पासवर्ड भूल गए?' : 'Forgot Password?'}
+              </button>
             </div>
 
             <button

@@ -107,13 +107,7 @@ const Assessment = () => {
         recurrence: createForm.recurrence,
         instructions: createForm.instructions,
         status: 'Draft',
-        entries: [
-          { studentName: 'Aarav Sharma', rollNo: '101', admissionNo: 'ADM-2024-01', marksObtained: 0, maxMarks: Number(createForm.totalMarks) || 25, status: 'Present' },
-          { studentName: 'Diya Patel', rollNo: '102', admissionNo: 'ADM-2024-02', marksObtained: 0, maxMarks: Number(createForm.totalMarks) || 25, status: 'Present' },
-          { studentName: 'Rohan Verma', rollNo: '103', admissionNo: 'ADM-2024-03', marksObtained: 0, maxMarks: Number(createForm.totalMarks) || 25, status: 'Present' },
-          { studentName: 'Ananya Iyer', rollNo: '104', admissionNo: 'ADM-2024-04', marksObtained: 0, maxMarks: Number(createForm.totalMarks) || 25, status: 'Present' },
-          { studentName: 'Kabir Mehta', rollNo: '105', admissionNo: 'ADM-2024-05', marksObtained: 0, maxMarks: Number(createForm.totalMarks) || 25, status: 'Present' }
-        ]
+        entries: []
       };
 
       await assessmentService.createAssessment(payload);
@@ -128,11 +122,7 @@ const Assessment = () => {
   // Open Marks Entry Modal
   const handleOpenMarksEntry = (ass) => {
     setActiveAssessmentForMarks(ass);
-    setMarksEntries(ass.entries?.length > 0 ? [...ass.entries] : [
-      { studentName: 'Aarav Sharma', rollNo: '101', marksObtained: 20, maxMarks: ass.totalMarks || 25, status: 'Present' },
-      { studentName: 'Diya Patel', rollNo: '102', marksObtained: 18, maxMarks: ass.totalMarks || 25, status: 'Present' },
-      { studentName: 'Rohan Verma', rollNo: '103', marksObtained: 15, maxMarks: ass.totalMarks || 25, status: 'Present' }
-    ]);
+    setMarksEntries(ass.entries?.length > 0 ? [...ass.entries] : []);
   };
 
   // Save Marks to DB

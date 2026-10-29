@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
   CheckCircle2, Clock, Calendar, Bus, AlertCircle, FileText, 
   Users, Gift, UserCheck, ShieldCheck, Download, GraduationCap,
@@ -28,18 +28,19 @@ const Card = ({ children, title, subtitle, className = "" }) => (
 // 1. Setup Status
 export const SetupStatus = () => {
   const tasks = [
-    { name: 'Academic Session', status: 'Done', color: 'text-green-600', bg: 'bg-green-100' },
-    { name: 'Classes & Sections', status: 'Done', color: 'text-green-600', bg: 'bg-green-100' },
-    { name: 'Subjects', status: 'Done', color: 'text-green-600', bg: 'bg-green-100' },
-    { name: 'Fees Assigned', status: 'Done', color: 'text-green-600', bg: 'bg-green-100' },
+    { name: 'Academic Session (2026-27)', status: 'Active', color: 'text-green-600', bg: 'bg-green-100' },
+    { name: 'Admit First Student', status: 'Pending', color: 'text-amber-600', bg: 'bg-amber-100' },
+    { name: 'Add Faculty / Staff', status: 'Pending', color: 'text-amber-600', bg: 'bg-amber-100' },
+    { name: 'Assign Fees to Class', status: 'Pending', color: 'text-amber-600', bg: 'bg-amber-100' },
   ];
+
   return (
-    <Card title={<><ShieldCheck className="w-4 h-4 text-blue-500" /> Setup Status</>} subtitle="Required configurations">
+    <Card title={<><ShieldCheck className="w-4 h-4 text-blue-500" /> Setup Status</>} subtitle="Institutional Readiness">
       <div className="space-y-3 mt-2">
         {tasks.map((t, i) => (
           <div key={i} className="flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-green-500" />
+              <CheckCircle2 className={`w-4 h-4 ${t.status === 'Active' ? 'text-green-500' : 'text-blue-500'}`} />
               <span className="text-gray-700 font-medium">{t.name}</span>
             </div>
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${t.bg} ${t.color}`}>{t.status}</span>
@@ -52,12 +53,32 @@ export const SetupStatus = () => {
 
 // 2. Attendance (Donut)
 export const AttendanceDonut = () => {
+  const [attData, setAttData] = React.useState(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    import('../../api/attendanceService').then(({ attendanceService }) => {
+      attendanceService.getAttendanceSummary().then(res => {
+        if (isMounted && res?.data) {
+          setAttData(res.data.data || res.data);
+        }
+      }).catch(() => {});
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   const todayStr = new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
+  const present = attData?.present ?? 0;
+  const absent = attData?.absent ?? 0;
+  const late = attData?.late ?? 0;
+  const percentage = attData?.percentage || '0%';
+
   const data = [
-    { name: 'Present', value: 66, color: '#3b82f6' },
-    { name: 'Absent', value: 19, color: '#f59e0b' },
-    { name: 'Resolved', value: 25, color: '#6366f1' },
+    { name: 'Present', value: present, color: '#3b82f6' },
+    { name: 'Absent', value: absent, color: '#f59e0b' },
+    { name: 'Late', value: late, color: '#6366f1' },
   ];
+
   return (
     <Card title="Today's Attendance" subtitle={`Students • ${todayStr}`}>
       <div className="flex items-center gap-4 mt-2">
@@ -71,7 +92,9 @@ export const AttendanceDonut = () => {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
-          <div className="absolute inset-0 flex items-center justify-center font-bold text-gray-700 text-sm">22%</div>
+          <div className="absolute inset-0 flex items-center justify-center font-bold text-gray-700 text-sm">
+            {percentage}
+          </div>
         </div>
         <div className="space-y-1.5 flex-1">
           {data.map((d, i) => (
@@ -88,9 +111,7 @@ export const AttendanceDonut = () => {
       <div className="mt-4 pt-3 border-t border-gray-100">
         <h4 className="text-[10px] font-bold text-gray-400 mb-2 uppercase">Class-wise Breakdown</h4>
         <div className="space-y-1.5">
-           <div className="flex justify-between text-[11px]"><span className="text-gray-600">Class I</span><span className="text-green-600 font-medium">95%</span></div>
-           <div className="flex justify-between text-[11px]"><span className="text-gray-600">Nursery</span><span className="text-green-600 font-medium">92%</span></div>
-           <div className="flex justify-between text-[11px]"><span className="text-gray-600">Class II</span><span className="text-green-600 font-medium">91%</span></div>
+          <p className="text-[11px] text-gray-400 italic">No classes marked today yet</p>
         </div>
       </div>
     </Card>
@@ -99,37 +120,11 @@ export const AttendanceDonut = () => {
 
 // 3. Pending Fee Dues
 export const PendingFees = () => {
-  const students = [
-    { name: 'Ananya Desai', class: 'Class X', amount: '₹66,000', status: 'Overdue' },
-    { name: 'Ravi Khatri', class: 'Class IX', amount: '₹66,000', status: 'Overdue' },
-    { name: 'Diya Rana', class: 'Class VIII', amount: '₹66,000', status: 'Overdue' },
-    { name: 'Rohan Pandey', class: 'Class VII', amount: '₹66,000', status: 'Overdue' },
-    { name: 'Priya Malhotra', class: 'Class VI', amount: '₹66,000', status: 'Overdue' },
-  ];
   return (
     <Card title="Pending Fee Dues" subtitle="This month">
-      <div className="flex justify-between text-[10px] text-gray-400 font-semibold mb-2 uppercase px-1">
-        <span>Student</span>
-        <span>Amount</span>
-      </div>
-      <div className="space-y-3">
-        {students.map((s, i) => (
-          <div key={i} className="flex justify-between items-center text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center text-[10px] font-bold text-blue-800">
-                {s.name.charAt(0)}
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700 leading-tight">{s.name}</p>
-                <p className="text-[10px] text-gray-500 leading-tight">{s.class}</p>
-              </div>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-gray-800">{s.amount}</p>
-              <p className="text-[9px] text-red-500 font-semibold">{s.status}</p>
-            </div>
-          </div>
-        ))}
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No pending fee dues</p>
+        <p className="text-[10px] text-gray-400 mt-1">All accounts are currently clear.</p>
       </div>
     </Card>
   );
@@ -138,26 +133,10 @@ export const PendingFees = () => {
 // 4. Timetable
 export const Timetable = () => {
   return (
-    <Card title="Today's Timetable" subtitle="Nursery A">
-      <div className="relative border-l-2 border-gray-100 ml-2 mt-2 space-y-4 pb-2">
-        <div className="relative pl-4">
-          <span className="absolute -left-1.5 top-1.5 w-2.5 h-2.5 rounded-full bg-gray-300 ring-4 ring-white"></span>
-          <div className="text-[10px] text-gray-400 font-medium">08:00</div>
-          <div className="text-xs font-semibold text-gray-700">Drawing & Coloring</div>
-          <div className="text-[10px] text-gray-500">Arti Sharma</div>
-        </div>
-        <div className="relative pl-4">
-          <span className="absolute -left-1.5 top-1.5 w-2.5 h-2.5 rounded-full bg-blue-500 ring-4 ring-white"></span>
-          <div className="text-[10px] text-blue-500 font-bold">09:00 (Now)</div>
-          <div className="text-xs font-bold text-blue-700 bg-blue-50 py-1 px-2 rounded -ml-2 inline-block">Rhymes & Stories</div>
-          <div className="text-[10px] text-gray-500">Arti Sharma</div>
-        </div>
-        <div className="relative pl-4">
-          <span className="absolute -left-1.5 top-1.5 w-2.5 h-2.5 rounded-full bg-gray-300 ring-4 ring-white"></span>
-          <div className="text-[10px] text-gray-400 font-medium">10:00</div>
-          <div className="text-xs font-semibold text-gray-700">English</div>
-          <div className="text-[10px] text-gray-500">Arti Sharma</div>
-        </div>
+    <Card title="Today's Timetable" subtitle="Daily routine">
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No periods scheduled today</p>
+        <p className="text-[10px] text-gray-400 mt-1">Configure class timetable in Academics.</p>
       </div>
     </Card>
   );
@@ -165,49 +144,11 @@ export const Timetable = () => {
 
 // 5. Events
 export const UpcomingEvents = () => {
-  const now = new Date();
-  const day1 = new Date(now.getTime() + 2 * 24 * 3600 * 1000);
-  const day2 = new Date(now.getTime() + 6 * 24 * 3600 * 1000);
-  const day3 = new Date(now.getTime() + 10 * 24 * 3600 * 1000);
-
-  const events = [
-    { 
-      date: String(day1.getDate()), 
-      month: day1.toLocaleDateString('en-US', { month: 'short' }), 
-      title: 'Annual Art & Craft Fair', 
-      desc: 'Parents are welcome to see student artworks.' 
-    },
-    { 
-      date: String(day2.getDate()), 
-      month: day2.toLocaleDateString('en-US', { month: 'short' }), 
-      title: 'Winter Sports & Athletics Meet', 
-      desc: 'Inter-house championship featuring track & field.' 
-    },
-    { 
-      date: String(day3.getDate()), 
-      month: day3.toLocaleDateString('en-US', { month: 'short' }), 
-      title: 'Science & Robotics Exhibition', 
-      desc: 'Educational excursion and project presentation.' 
-    },
-  ];
   return (
     <Card title="Upcoming Events" subtitle="This month">
-      <div className="space-y-3 mt-1">
-        {events.map((e, i) => (
-          <div key={i} className="flex gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 flex flex-col items-center justify-center flex-shrink-0">
-              <span className="text-blue-600 font-bold text-sm leading-tight">{e.date}</span>
-              <span className="text-blue-400 text-[9px] uppercase font-semibold">{e.month}</span>
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                <h4 className="text-[11px] font-bold text-gray-800 line-clamp-1">{e.title}</h4>
-                <span className="px-1.5 py-0.5 rounded text-[8px] bg-purple-50 text-purple-600 font-semibold uppercase">Event</span>
-              </div>
-              <p className="text-[10px] text-gray-500 line-clamp-2 mt-0.5">{e.desc}</p>
-            </div>
-          </div>
-        ))}
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No upcoming events</p>
+        <p className="text-[10px] text-gray-400 mt-1">School events and holidays will appear here.</p>
       </div>
     </Card>
   );
@@ -215,31 +156,11 @@ export const UpcomingEvents = () => {
 
 // 6. Transport Status
 export const TransportStatus = () => {
-  const routes = [
-    { id: 'CG04-MH2391', route: 'Rajpur - Phoolchowk', status: 'On trip', color: 'text-green-600', icon: 'text-green-500 bg-green-50' },
-    { id: 'CG04-KA8234', route: 'Sec 4 - Shankar Nagar', status: 'On trip', color: 'text-green-600', icon: 'text-orange-500 bg-orange-50' },
-    { id: 'CG04-KA9478', route: 'Katora Talab - Telibandha', status: 'Idle', color: 'text-gray-500', icon: 'text-blue-500 bg-blue-50' },
-  ];
   return (
     <Card title={<><BusFront className="w-4 h-4 text-indigo-500" /> Transport Status</>} subtitle="Fleet overview">
-      <div className="space-y-3 mt-2">
-        {routes.map((r, i) => (
-          <div key={i} className="flex items-center justify-between p-2 rounded-lg border border-gray-100 bg-gray-50/50">
-            <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-md flex items-center justify-center ${r.icon}`}>
-                <Bus className="w-4 h-4" />
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-gray-700">{r.id}</p>
-                <p className="text-[9px] text-gray-500 truncate w-24">{r.route}</p>
-              </div>
-            </div>
-            <div className={`text-[10px] font-bold flex items-center gap-1 ${r.color}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${r.status === 'On trip' ? 'bg-green-500' : 'bg-gray-400'}`}></div>
-              {r.status}
-            </div>
-          </div>
-        ))}
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No active vehicles</p>
+        <p className="text-[10px] text-gray-400 mt-1">Add buses and routes in Transport module.</p>
       </div>
     </Card>
   );
@@ -248,10 +169,10 @@ export const TransportStatus = () => {
 // 7. Fee Collection Overview
 export const FeeCollectionChart = () => {
   const data = [
-    { name: 'Jan', value: 30 }, { name: 'Feb', value: 40 }, { name: 'Mar', value: 35 },
-    { name: 'Apr', value: 80 }, { name: 'May', value: 45 }, { name: 'Jun', value: 30 },
-    { name: 'Jul', value: 20 }, { name: 'Aug', value: 90 }, { name: 'Sep', value: 25 },
-    { name: 'Oct', value: 35 }, { name: 'Nov', value: 40 }, { name: 'Dec', value: 30 },
+    { name: 'Jan', value: 0 }, { name: 'Feb', value: 0 }, { name: 'Mar', value: 0 },
+    { name: 'Apr', value: 0 }, { name: 'May', value: 0 }, { name: 'Jun', value: 0 },
+    { name: 'Jul', value: 0 }, { name: 'Aug', value: 0 }, { name: 'Sep', value: 0 },
+    { name: 'Oct', value: 0 }, { name: 'Nov', value: 0 }, { name: 'Dec', value: 0 },
   ];
   return (
     <Card title="Fee Collection Overview" subtitle="Collected over last 12 mos">
@@ -265,7 +186,7 @@ export const FeeCollectionChart = () => {
         </ResponsiveContainer>
       </div>
       <div className="flex items-center gap-2 mt-4 text-[10px] text-gray-500 justify-center">
-        <div className="w-2 h-2 rounded-full bg-indigo-600"></div> Collected (₹)
+        <div className="w-2 h-2 rounded-full bg-indigo-600"></div> Collected (₹0)
       </div>
     </Card>
   );
@@ -273,20 +194,40 @@ export const FeeCollectionChart = () => {
 
 // 8. Announcements
 export const Announcements = () => {
+  const [notices, setNotices] = React.useState([]);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    import('../../api/noticeService').then(({ noticeService }) => {
+      noticeService.getNotices().then(res => {
+        if (isMounted && res?.data && Array.isArray(res.data)) {
+          setNotices(res.data);
+        }
+      }).catch(() => {});
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   return (
     <Card title={<><Bell className="w-4 h-4 text-orange-500" /> Announcements</>} subtitle="Latest notices" className="w-[300px]">
-      <div className="space-y-4 mt-2">
-        <div>
-          <h4 className="text-[11px] font-bold text-gray-800 line-clamp-1">Notice - Library week - bring back borrowed books</h4>
-          <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">All students! Please return any borrowed books by the end of this week to avoid late fee penalties...</p>
-          <p className="text-[9px] text-gray-400 mt-1 flex items-center gap-1"><Clock className="w-3 h-3" /> 2 hours ago</p>
+      {notices.length > 0 ? (
+        <div className="space-y-4 mt-2">
+          {notices.slice(0, 3).map((n, i) => (
+            <div key={n._id || i} className={i > 0 ? "pt-3 border-t border-gray-100" : ""}>
+              <h4 className="text-[11px] font-bold text-gray-800 line-clamp-1">{n.title}</h4>
+              <p className="text-[10px] text-gray-500 mt-1 line-clamp-2">{n.content}</p>
+              <p className="text-[9px] text-gray-400 mt-1 flex items-center gap-1">
+                <Clock className="w-3 h-3" /> {n.publishDate ? new Date(n.publishDate).toLocaleDateString() : 'Recent'}
+              </p>
+            </div>
+          ))}
         </div>
-        <div className="pt-3 border-t border-gray-100">
-          <span className="text-[9px] font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded uppercase mb-1 inline-block">News Alert</span>
-          <p className="text-[10px] text-gray-600 line-clamp-2 leading-tight">Dear Parents, Greetings! We are pleased to inform you that the school is launching a new AI mobile application along with the classic...</p>
-          <p className="text-[9px] text-gray-400 mt-1 flex items-center gap-1"><Clock className="w-3 h-3" /> 12 hours ago</p>
+      ) : (
+        <div className="h-full flex flex-col items-center justify-center text-center p-4">
+          <p className="text-xs font-semibold text-gray-700">No active notices</p>
+          <p className="text-[10px] text-gray-400 mt-1">Publish notices from Notice Board.</p>
         </div>
-      </div>
+      )}
     </Card>
   );
 };
@@ -295,40 +236,9 @@ export const Announcements = () => {
 export const UpcomingExams = () => {
   return (
     <Card title="Upcoming Exams" subtitle="Next scheduled assessments">
-      <div className="space-y-3 mt-1">
-        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-100 rounded text-blue-600 flex flex-col items-center justify-center font-bold text-[10px] leading-tight">
-              <span>11</span><span>Aug</span>
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold text-gray-700">English</h4>
-              <p className="text-[9px] text-gray-500">Class II • Half Yearly Exam</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-purple-100 rounded text-purple-600 flex flex-col items-center justify-center font-bold text-[10px] leading-tight">
-              <span>21</span><span>Aug</span>
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold text-gray-700">English</h4>
-              <p className="text-[9px] text-gray-500">Class III • Half Yearly Exam</p>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center bg-gray-50 p-2 rounded-lg border border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-orange-100 rounded text-orange-600 flex flex-col items-center justify-center font-bold text-[10px] leading-tight">
-              <span>24</span><span>Aug</span>
-            </div>
-            <div>
-              <h4 className="text-[11px] font-bold text-gray-700">Mathematics</h4>
-              <p className="text-[9px] text-gray-500">Class II • Half Yearly Exam</p>
-            </div>
-          </div>
-        </div>
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No upcoming exams</p>
+        <p className="text-[10px] text-gray-400 mt-1">Schedule exams in Examination module.</p>
       </div>
     </Card>
   );
@@ -344,7 +254,7 @@ export const Admissions = () => {
           <div className="text-[10px] text-green-700 font-semibold mt-1">Admitted</div>
         </div>
         <div className="bg-blue-50 rounded-lg p-3 text-center border border-blue-100">
-          <div className="text-xl font-bold text-blue-600">2</div>
+          <div className="text-xl font-bold text-blue-600">0</div>
           <div className="text-[10px] text-blue-700 font-semibold mt-1">Pending</div>
         </div>
         <div className="bg-gray-50 rounded-lg p-3 text-center border border-gray-100">
@@ -352,17 +262,17 @@ export const Admissions = () => {
           <div className="text-[10px] text-gray-700 font-semibold mt-1">Interested</div>
         </div>
         <div className="bg-red-50 rounded-lg p-3 text-center border border-red-100">
-          <div className="text-xl font-bold text-red-600">1</div>
+          <div className="text-xl font-bold text-red-600">0</div>
           <div className="text-[10px] text-red-700 font-semibold mt-1">Rejected</div>
         </div>
       </div>
       <div className="mt-4 pt-3 border-t border-gray-100">
         <div className="flex justify-between items-center text-[10px] text-gray-500 font-semibold mb-1">
           <span>Seat Capacity</span>
-          <span>2K</span>
+          <span>0</span>
         </div>
         <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-          <div className="h-full bg-blue-500 rounded-full" style={{width: '10%'}}></div>
+          <div className="h-full bg-blue-500 rounded-full" style={{width: '0%'}}></div>
         </div>
       </div>
     </Card>
@@ -373,37 +283,9 @@ export const Admissions = () => {
 export const Birthdays = () => {
   return (
     <Card title={<><Gift className="w-4 h-4 text-pink-500" /> Today's Birthdays</>} subtitle="Students & Staff">
-      <div className="space-y-3 mt-2">
-        <div className="flex justify-between items-center">
-           <div className="flex items-center gap-2">
-             <div className="w-7 h-7 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-[11px]">KS</div>
-             <div>
-               <p className="text-[11px] font-bold text-gray-700">Kabir Singh</p>
-               <p className="text-[9px] text-gray-500">Student • Class V</p>
-             </div>
-           </div>
-           <span className="text-[10px] font-medium text-gray-400">21 Aug</span>
-        </div>
-        <div className="flex justify-between items-center pt-2 border-t border-gray-50">
-           <div className="flex items-center gap-2">
-             <div className="w-7 h-7 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center font-bold text-[11px]">M</div>
-             <div>
-               <p className="text-[11px] font-bold text-gray-700">Meenakshi</p>
-               <p className="text-[9px] text-gray-500">Staff</p>
-             </div>
-           </div>
-           <span className="text-[10px] font-medium text-gray-400">22 Aug</span>
-        </div>
-        <div className="flex justify-between items-center pt-2 border-t border-gray-50">
-           <div className="flex items-center gap-2">
-             <div className="w-7 h-7 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-[11px]">AD</div>
-             <div>
-               <p className="text-[11px] font-bold text-gray-700">Ali Dubey</p>
-               <p className="text-[9px] text-gray-500">Student • Class VI</p>
-             </div>
-           </div>
-           <span className="text-[10px] font-medium text-gray-400">24 Aug</span>
-        </div>
+      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+        <p className="text-xs font-semibold text-gray-700">No birthdays today</p>
+        <p className="text-[10px] text-gray-400 mt-1">Student and staff birthdays will appear here.</p>
       </div>
     </Card>
   );
@@ -411,54 +293,40 @@ export const Birthdays = () => {
 
 // 12. Staff Snapshot
 export const StaffSnapshot = () => {
+  const [staffCount, setStaffCount] = React.useState(0);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    import('../../api/hrService').then(({ hrService }) => {
+      hrService.getStaff({ limit: 1 }).then(res => {
+        if (isMounted) {
+          const val = res;
+          const count = val?.pagination?.total ?? val?.total ?? val?.count ?? (Array.isArray(val?.data) ? val.data.length : 0);
+          setStaffCount(count || 0);
+        }
+      }).catch(() => {});
+    });
+    return () => { isMounted = false; };
+  }, []);
+
   return (
     <Card title={<><Users className="w-4 h-4 text-teal-500" /> Staff Snapshot</>} subtitle="Attendance today">
       <div className="flex justify-between mt-2 px-4">
         <div className="text-center">
-          <div className="text-xl font-bold text-teal-600">7</div>
-          <div className="text-[10px] text-gray-500 font-semibold">Present</div>
+          <div className="text-xl font-bold text-teal-600">{staffCount}</div>
+          <div className="text-[10px] text-gray-500 font-semibold">Total Staff</div>
         </div>
         <div className="text-center">
           <div className="text-xl font-bold text-gray-400">0</div>
           <div className="text-[10px] text-gray-500 font-semibold">Absent</div>
         </div>
         <div className="text-center">
-          <div className="text-xl font-bold text-orange-500">7</div>
+          <div className="text-xl font-bold text-orange-500">0</div>
           <div className="text-[10px] text-gray-500 font-semibold">Away</div>
         </div>
       </div>
-      
-      <div className="mt-4 space-y-2">
-         <div className="flex justify-between items-center">
-           <div className="flex items-center gap-2">
-             <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-[9px] font-bold text-blue-700">AS</div>
-             <div>
-               <p className="text-[10px] font-bold text-gray-700 leading-tight">Arti Sharma</p>
-               <p className="text-[8px] text-gray-500">Senior Teacher</p>
-             </div>
-           </div>
-           <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[8px] font-semibold uppercase">Unmarked</span>
-         </div>
-         <div className="flex justify-between items-center">
-           <div className="flex items-center gap-2">
-             <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-[9px] font-bold text-green-700">RD</div>
-             <div>
-               <p className="text-[10px] font-bold text-gray-700 leading-tight">Rahul Dubey</p>
-               <p className="text-[8px] text-gray-500">Staff</p>
-             </div>
-           </div>
-           <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[8px] font-semibold uppercase">Unmarked</span>
-         </div>
-         <div className="flex justify-between items-center">
-           <div className="flex items-center gap-2">
-             <div className="w-6 h-6 rounded-full bg-teal-100 flex items-center justify-center text-[9px] font-bold text-teal-700">VS</div>
-             <div>
-               <p className="text-[10px] font-bold text-gray-700 leading-tight">Vikas Singh</p>
-               <p className="text-[8px] text-gray-500">Staff</p>
-             </div>
-           </div>
-           <span className="px-1.5 py-0.5 bg-gray-100 text-gray-500 rounded text-[8px] font-semibold uppercase">Unmarked</span>
-         </div>
+      <div className="mt-8 text-center text-[11px] text-gray-400">
+        {staffCount > 0 ? `${staffCount} active faculty member registered` : 'No staff registered yet'}
       </div>
     </Card>
   );

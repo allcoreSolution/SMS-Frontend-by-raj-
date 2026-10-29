@@ -97,16 +97,28 @@ export default function FooterLanding() {
                  <span>Teacher & Staff Panel (:5177)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="/apk/Accountant.apk" download="Accountant.apk" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Download Accountant APK (Android)</span>
-                 <Download className="w-3 h-3 text-emerald-400" />
+               <a href="http://localhost:5178" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Accountant & Fee Panel (:5178)</span>
+                 <ExternalLink className="w-3 h-3 text-emerald-400" />
                </a>
                <a href="http://localhost:5176" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>School Admin ERP (:5176)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="/apk/Student_Parents.apk" download="Student_Parents.apk" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href="http://localhost:5175" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Student & Parent Portal (:5175)</span>
+                 <ExternalLink className="w-3 h-3 text-amber-400" />
+               </a>
+               <a href="/apk/Teacher.apk" download="Teacher.apk" className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Download Teacher APK (Android)</span>
+                 <Download className="w-3 h-3 text-emerald-400" />
+               </a>
+               <a href="/apk/Student_Parents.apk" download="Student_Parents.apk" className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>Download Student & Parent APK (Android)</span>
+                 <Download className="w-3 h-3 text-emerald-400" />
+               </a>
+               <a href="/apk/Driver.apk" download="Driver.apk" className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-semibold flex items-center gap-1.5">
+                 <span>Download Driver APK (Android)</span>
                  <Download className="w-3 h-3 text-emerald-400" />
                </a>
                <a href="http://localhost:5179" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">

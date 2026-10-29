@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { Shield, AlertTriangle, CheckCircle, Eye, Trash2, Flag, X } from 'lucide-react';
 
-const initFlagged = [
-  { id: 1, type: 'Chat Message', school: 'SSVP School', content: 'Inappropriate language detected in parent chat', severity: 'High', time: '10 min ago', status: 'Pending' },
-  { id: 2, type: 'Notice Board', school: 'Green Valley', content: 'Spam content detected in notice', severity: 'Medium', time: '1 hour ago', status: 'Pending' },
-  { id: 3, type: 'Profile Photo', school: 'Sunrise School', content: 'Inappropriate profile image uploaded', severity: 'High', time: '2 hours ago', status: 'Resolved' },
-  { id: 4, type: 'Homework', school: 'Montessori School', content: 'External link in homework description', severity: 'Low', time: '3 hours ago', status: 'Resolved' },
-  { id: 5, type: 'Chat Message', school: 'Oxford International', content: 'Bulk messaging pattern detected', severity: 'Medium', time: '5 hours ago', status: 'Pending' },
-];
+const initFlagged = [];
 
 const rules = [
   { name: 'Profanity Filter', desc: 'Block offensive language in chats and notices', enabled: true },

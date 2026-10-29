@@ -308,12 +308,20 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
+                      href="/apk/Teacher.apk" 
+                      download="Teacher.apk"
+                      className="w-full bg-emerald-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                    >
+                      <Download className="w-4 h-4 text-white" />
+                      <span>Download Teacher APK (Android) ⬇</span>
+                    </a>
+                    <a 
                       href="http://localhost:5177" 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-indigo-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-indigo-50 text-indigo-900 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-indigo-900 hover:bg-indigo-100 transition-colors flex items-center justify-center gap-1 shadow-[1px_1px_0_0_#111827]"
                     >
-                      <span>Launch Teacher Panel :5177</span>
+                      <span>Launch Teacher Web Panel :5177</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -330,36 +338,48 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 2. Accountant & Fee Collection App (Accountant APK) */}
+                {/* 2. Accountant & Fee Collection Panel (Web Panel :5178) */}
                 <div className="bg-white border-[2.5px] border-teal-900 p-4 shadow-[4px_4px_0_0_#134e4a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="w-10 h-10 bg-teal-100 border-[1.5px] border-teal-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#134e4a]">
                         💰
                       </div>
-                      <span className="text-[10px] font-black bg-teal-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Android APK • Accountant App
+                      <span className="text-[10px] font-black bg-teal-700 text-white px-2 py-0.5 uppercase tracking-wide">
+                        Port 5178 • Accountant Panel
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Accountant & Fee Desk</h4>
                     <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
-                      Specialized finance Android APK for fee collection, due fee search, fee groups/types, income/expense vouchers, day book ledgers, and accounts auditing.
+                      Specialized finance web portal for live fee collection, search due fees, fee groups, income/expense vouchers, day book ledgers, and accounts dashboard.
                     </p>
                     <div className="text-[11px] bg-teal-50/70 border border-teal-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Package: <span className="font-bold text-teal-900">com.schoolerp.accountant</span></div>
-                      <div>App Version: <span className="font-bold text-gray-900">v1.0.0 (Android APK)</span></div>
-                      <div>Default User: <span className="font-bold text-gray-900">accountant@yug.edu</span></div>
+                      <div>Project: <span className="font-bold text-teal-900">Accountant (Web Panel)</span></div>
+                      <div>Default User: <span className="font-bold text-gray-900">accountant@allcoresolution.com</span></div>
+                      <div>Password: <span className="font-bold text-gray-900">admin@123</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="/apk/Accountant.apk" 
-                      download="Accountant.apk"
-                      className="w-full bg-teal-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      href="http://localhost:5178" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="w-full bg-teal-700 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <Download className="w-4 h-4 text-white" />
-                      <span>Download Accountant APK (Android)</span>
+                      <span>Launch Accountant Panel :5178</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
                     </a>
+                    <div className="flex gap-1.5 text-[10.5px] font-bold">
+                      <a href="http://localhost:5178/accounts/dashboard" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Dashboard ↗
+                      </a>
+                      <a href="http://localhost:5178/collect-fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Collect Fees ↗
+                      </a>
+                      <a href="http://localhost:5178/search-due-fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Due Fees ↗
+                      </a>
+                    </div>
                   </div>
                 </div>
 
@@ -521,13 +541,33 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
+                      href="http://localhost:5175" 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="w-full bg-emerald-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                    >
+                      <span>Launch Student Portal :5175</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                    <a 
                       href="/apk/Student_Parents.apk" 
                       download="Student_Parents.apk"
-                      className="w-full bg-emerald-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 text-emerald-400 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-[1px_1px_0_0_#111827]"
                     >
-                      <Download className="w-4 h-4 text-white" />
+                      <Download className="w-3.5 h-3.5 text-emerald-400" />
                       <span>Download Student & Parent APK (Android)</span>
                     </a>
+                    <div className="flex gap-1.5 text-[10.5px] font-bold">
+                      <a href="http://localhost:5175/fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Fees ↗
+                      </a>
+                      <a href="http://localhost:5175/attendance" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        Attendance ↗
+                      </a>
+                      <a href="http://localhost:5175/online-exams" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                        CBT Exams ↗
+                      </a>
+                    </div>
                   </div>
                 </div>
 

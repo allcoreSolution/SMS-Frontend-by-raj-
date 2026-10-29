@@ -117,25 +117,7 @@ export default function CocurricularGrades() {
           };
         });
       } else {
-        // Fallback realistic roster if student directory is empty
-        const fallbackNames = [
-          'Dhruv Agarwal', 'Prisha Iyer', 'Jay Mehta', 'Riya Das', 
-          'Karan Shukla', 'Saanvi Bhatt', 'Laksh Chaudhary', 'Aarav Sharma'
-        ];
-        roster = fallbackNames.map((name, idx) => {
-          const studentGrades = savedMap[name] || {};
-          areas.forEach(area => {
-            if (!studentGrades[area]) studentGrades[area] = idx % 2 === 0 ? 'A' : 'B';
-          });
-          return {
-            id: `fb-${idx}`,
-            name,
-            roll: (idx + 1).toString(),
-            adm: `YISADM-02${idx + 1}`,
-            grades: studentGrades,
-            remarks: ''
-          };
-        });
+        roster = [];
       }
 
       setStudents(roster);

@@ -9,13 +9,7 @@ const weeklyEngagement = [
   { day: 'Sun', sessions: 280, avgTime: 8 },
 ];
 
-const topSchools = [
-  { name: 'Montessori School', sessions: 4820, avgTime: '22 min', score: 94 },
-  { name: 'Oxford International', sessions: 4210, avgTime: '20 min', score: 91 },
-  { name: 'SSVP School', sessions: 3890, avgTime: '18 min', score: 88 },
-  { name: 'St. Mary Convent', sessions: 3240, avgTime: '17 min', score: 84 },
-  { name: 'Green Valley', sessions: 2980, avgTime: '15 min', score: 79 },
-];
+const topSchools = [];
 
 const moduleUsage = [
   { module: 'Fee Module', usage: 95 }, { module: 'Attendance', usage: 88 },

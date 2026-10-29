@@ -30,27 +30,30 @@ const Header = () => {
       const stored = localStorage.getItem('user');
       if (stored) {
         const u = JSON.parse(stored);
+        const rawName = u.fullName || u.name || (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) || u.username;
+        const cleanName = rawName ? rawName.replace(/\s*\([^)]*admin[^)]*\)/gi, '').trim() : '';
+        const name = cleanName && cleanName.toLowerCase() !== 'admin' ? cleanName : (u.role === 'Staff' ? 'Staff Member' : 'Teacher Faculty');
         if (u.role === 'Staff') {
           return {
-            name: u.fullName || u.name || 'Rajesh Verma',
+            name,
             role: 'Staff',
-            designation: u.designation || 'Senior Administrative Officer',
-            avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
+            designation: u.designation || 'Staff Faculty',
+            avatar: ''
           };
         }
         return {
-          name: u.fullName || u.name || 'Amit Sharma',
+          name,
           role: u.role || 'Teacher',
-          designation: u.designation || 'Senior PGT Mathematics',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+          designation: u.designation || 'Faculty',
+          avatar: ''
         };
       }
     } catch (_) {}
     return {
-      name: 'Amit Sharma',
+      name: 'Teacher Faculty',
       role: 'Teacher',
-      designation: 'Senior PGT Mathematics',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      designation: 'Faculty',
+      avatar: ''
     };
   });
 
@@ -113,12 +116,15 @@ const Header = () => {
       if (stored) {
         try {
           const u = JSON.parse(stored);
+          const rawName = u.fullName || u.name || (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) || u.username;
+          const cleanName = rawName ? rawName.replace(/\s*\([^)]*admin[^)]*\)/gi, '').trim() : '';
+          const name = cleanName && cleanName.toLowerCase() !== 'admin' ? cleanName : (u.role === 'Staff' ? 'Staff Member' : 'Teacher Faculty');
           if (u.role === 'Staff') {
             setProfile({
-              name: u.fullName || u.name || 'Rajesh Verma',
+              name,
               role: 'Staff',
-              designation: u.designation || 'Senior Administrative Officer',
-              avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
+              designation: u.designation || 'Staff Faculty',
+              avatar: ''
             });
             return;
           }
@@ -127,12 +133,16 @@ const Header = () => {
       const res = await teacherService.getProfile();
       if (res?.data?.personalInfo) {
         const info = res.data.personalInfo;
-        setProfile({
-          name: info.fullName || 'Amit Sharma',
-          role: info.role || 'Teacher',
-          designation: info.designation || 'Senior PGT Mathematics',
-          avatar: info.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
-        });
+        const validName = info.fullName && info.fullName !== 'Amit Sharma' && info.fullName !== 'Faculty Member' ? info.fullName : null;
+        if (validName) {
+          setProfile(prev => ({
+            ...prev,
+            name: validName,
+            role: info.role || prev.role || 'Teacher',
+            designation: info.designation || prev.designation || 'Faculty',
+            avatar: info.photo || ''
+          }));
+        }
       }
     } catch (err) {
       // Fallback to localStorage user if present
@@ -297,6 +307,30 @@ const Header = () => {
     setSession(s);
     localStorage.setItem('erp_session', s);
     showToast(`${t('sessionChangedToast', 'Academic session switched to')} ${s}`, 'success');
+  };
+
+  const handleToggleRole = () => {
+    try {
+      const stored = localStorage.getItem('user');
+      const u = stored ? JSON.parse(stored) : {};
+      const newRole = (u.role === 'Staff' || profile.role === 'Staff') ? 'Teacher' : 'Staff';
+      const updatedUser = {
+        ...u,
+        role: newRole,
+        fullName: u.fullName || u.name || (newRole === 'Staff' ? 'Staff Member' : 'Teacher Faculty')
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setProfile(prev => ({
+        ...prev,
+        role: newRole,
+        name: updatedUser.fullName,
+        designation: newRole === 'Staff' ? 'Staff Faculty' : 'Faculty',
+        avatar: ''
+      }));
+      window.dispatchEvent(new Event('storage'));
+      showToast(`Switched view to ${newRole} Dashboard`, 'success');
+      setActiveMenu(null);
+    } catch (_) {}
   };
 
   const handleSignOut = () => {
@@ -633,8 +667,20 @@ const Header = () => {
           </button>
         </div>
         
+        {/* Quick Role Switcher Pill */}
+        <button
+          type="button"
+          onClick={handleToggleRole}
+          title="Click to switch between Teacher & Staff Panel"
+          className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all cursor-pointer bg-slate-50 hover:bg-orange-50 border-slate-200 hover:border-[#ff5c0a] text-slate-700 hover:text-[#ff5c0a] shrink-0"
+        >
+          <span className={`w-2 h-2 rounded-full ${profile.role === 'Staff' ? 'bg-indigo-500' : 'bg-emerald-500'}`} />
+          <span>{profile.role === 'Staff' ? 'Staff Desk' : 'Teacher Desk'}</span>
+          <span className="text-[9px] opacity-60">⇄</span>
+        </button>
+
         {/* User Profile Dropdown */}
-        <div className="relative flex items-center ml-1 border-l border-gray-200 pl-3">
+        <div className="relative flex items-center ml-1 border-l border-gray-200 pl-2.5 sm:pl-3">
           <div 
             onClick={(e) => toggle(e, 'profile')} 
             className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform"
@@ -662,6 +708,20 @@ const Header = () => {
                 <p className="text-xs font-bold text-gray-800 truncate">{profile.name}</p>
                 <p className="text-[10px] text-gray-500 truncate">{profile.designation}</p>
               </div>
+
+              {/* Quick Role Switch in Menu */}
+              <div 
+                onClick={handleToggleRole} 
+                className="px-4 py-2 flex items-center justify-between text-xs text-indigo-600 hover:bg-indigo-50 cursor-pointer font-bold transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Switch to {profile.role === 'Staff' ? 'Teacher' : 'Staff'}</span>
+                </div>
+                <span className="text-[9.5px] bg-indigo-100 px-1.5 py-0.5 rounded text-indigo-700">Toggle</span>
+              </div>
+
+              <div className="border-t border-gray-100 my-1"></div>
 
               <div 
                 onClick={() => { navigate('/my-profile'); setActiveMenu(null); }} 

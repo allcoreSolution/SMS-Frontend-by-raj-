@@ -64,6 +64,9 @@ const Login = () => {
         if (res.data.data.tenant?._id) {
           localStorage.setItem('schoolId', res.data.data.tenant._id);
         }
+        if (res.data.data.tenant?.schoolName) {
+          localStorage.setItem('schoolName', res.data.data.tenant.schoolName);
+        }
 
         Swal.fire({
           icon: 'success',

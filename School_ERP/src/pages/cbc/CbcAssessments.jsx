@@ -7,15 +7,7 @@ import {
 import CbcHeader from './CbcHeader';
 import cbcService from '../../api/cbcService';
 
-const SAMPLE_STUDENTS = [
-  { studentId: 'std-1', studentName: 'Aarav Sharma', rollNo: '01', rating: 4, remarks: 'Demonstrates deep mastery independently.' },
-  { studentId: 'std-2', studentName: 'Priya Patel', rollNo: '02', rating: 3, remarks: 'Met all performance benchmarks accurately.' },
-  { studentId: 'std-3', studentName: 'Rohan Gupta', rollNo: '03', rating: 3, remarks: 'Consistent effort, good presentation.' },
-  { studentId: 'std-4', studentName: 'Ishita Singh', rollNo: '04', rating: 4, remarks: 'Innovative modeling and clear articulation.' },
-  { studentId: 'std-5', studentName: 'Karan Malhotra', rollNo: '05', rating: 2, remarks: 'Approaching standard; practice required.' },
-  { studentId: 'std-6', studentName: 'Ananya Verma', rollNo: '06', rating: 3, remarks: 'Very methodical and thorough.' },
-  { studentId: 'std-7', studentName: 'Kabir Das', rollNo: '07', rating: 4, remarks: 'Exceeded expectation with creative examples.' },
-];
+const SAMPLE_STUDENTS = [];
 
 const CbcAssessments = () => {
   const navigate = useNavigate();
@@ -78,11 +70,7 @@ const CbcAssessments = () => {
 
   const handleOpenGrading = (assessment) => {
     setGradingAssessment(assessment);
-    if (assessment.scores && assessment.scores.length > 0) {
-      setStudentScores(assessment.scores);
-    } else {
-      setStudentScores(SAMPLE_STUDENTS);
-    }
+    setStudentScores(assessment.scores || []);
   };
 
   const handleScoreChange = (index, rating) => {

@@ -4,7 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teacher Portal - Multi-School ERP</title>
+    <title>Teacher &amp; Staff Portal - Multi-School ERP</title>
+
+    <!-- Mobile APK Environment Early Configuration -->
+    <script type="text/javascript">
+      (function() {
+        try {
+          if (!window.__ERP_API_BASE_URL__) {
+            var savedApi = localStorage.getItem('api_override_url');
+            if (savedApi) {
+              window.__ERP_API_BASE_URL__ = savedApi;
+            } else if (window.location.hostname === 'app.schoolerp' || (navigator.userAgent && navigator.userAgent.indexOf('SchoolErpTeacherApp') !== -1)) {
+              window.__ERP_API_BASE_URL__ = 'http://192.168.1.11:5050/api';
+              localStorage.setItem('api_override_url', 'http://192.168.1.11:5050/api');
+            }
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Strict Reset: Ensure English is active on open & Google Translate cookies are wiped immediately -->
     <script type="text/javascript">

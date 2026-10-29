@@ -88,82 +88,16 @@ const MyTimetable = () => {
     notes: ''
   });
 
-  const DEFAULT_STAFF_TIMETABLE = {
-    'Monday': [
-      { period: 'P1', subject: 'Morning Assembly & Gate Supervision', class: 'Admin Operations', room: 'Main Gate', notes: 'Staff punctual arrival check' },
-      { period: 'P2', subject: 'Daily Biometric Sync & Attendance Audit', class: 'HR Desk', room: 'Office 101', notes: 'Verify staff leaves and punches' },
-      { period: 'P3', subject: 'Admissions & Visitor Counseling', class: 'Reception', room: 'Helpdesk A', notes: 'Parent queries & prospectus issue' },
-      { period: 'P4', subject: 'Student Fee & Receipt Verification', class: 'Accounts Desk', room: 'Counter 2', notes: 'Bank challan reconciliations' },
-      { period: 'P5', subject: 'State Board Compliance Filings', class: 'Registrar', room: 'Room 204', notes: 'CBSE portal document uploads' },
-      { period: 'P6', subject: 'Staff Leave & Advance Processing', class: 'HR Management', room: 'Room 104', notes: 'Review applications' },
-      { period: 'P7', subject: 'Campus Logistics & Store Indents', class: 'Estate Office', room: 'Central Depot', notes: 'Verify inventory receipts' },
-      { period: 'P8', subject: 'Daily Administrative Sign-off', class: 'Directorate', room: 'Office B-2', notes: 'Sign registers and day summary' }
-    ],
-    'Tuesday': [
-      { period: 'P1', subject: 'Morning Assembly & Gate Supervision', class: 'Admin Operations', room: 'Main Gate', notes: 'Staff punctual arrival check' },
-      { period: 'P2', subject: 'Daily Biometric Sync & Attendance Audit', class: 'HR Desk', room: 'Office 101', notes: 'Verify staff leaves and punches' },
-      { period: 'P3', subject: 'Student Records Archive & TC Issuance', class: 'Records Room', room: 'Archive Desk', notes: 'Transfer certificates processing' },
-      { period: 'P4', subject: 'Student Fee & Receipt Verification', class: 'Accounts Desk', room: 'Counter 2', notes: 'Fee collection desk oversight' },
-      { period: 'P5', subject: 'Campus Maintenance Inspection', class: 'Estate Team', room: 'Campus Wings', notes: 'Water coolers & electricals check' },
-      { period: 'P6', subject: 'Vendor Meetings & Purchase Orders', class: 'Procurement', room: 'Office 102', notes: 'Lab chemicals & stationery POs' },
-      { period: 'P7', subject: 'Transport Route Safety Audit', class: 'Transport Desk', room: 'Bus Bay', notes: 'GPS & camera tracking check' },
-      { period: 'P8', subject: 'Daily Administrative Sign-off', class: 'Directorate', room: 'Office B-2', notes: 'Summary sign-off' }
-    ],
-    'Wednesday': [
-      { period: 'P1', subject: 'Morning Assembly & Gate Supervision', class: 'Admin Operations', room: 'Main Gate', notes: 'Staff punctual arrival check' },
-      { period: 'P2', subject: 'Daily Biometric Sync & Attendance Audit', class: 'HR Desk', room: 'Office 101', notes: 'Verify staff leaves and punches' },
-      { period: 'P3', subject: 'Admissions & Visitor Counseling', class: 'Reception', room: 'Helpdesk A', notes: 'Parent meetings' },
-      { period: 'P4', subject: 'Student Fee & Receipt Verification', class: 'Accounts Desk', room: 'Counter 2', notes: 'Reconciliations' },
-      { period: 'P5', subject: 'Staff Welfare & Grievance Triage', class: 'HR Committee', room: 'Room 105', notes: 'Review helpdesk tickets' },
-      { period: 'P6', subject: 'Internal Audit & Register Checks', class: 'Accounts', room: 'Room 101', notes: 'Vouchers cross-verification' },
-      { period: 'P7', subject: 'Store Inventory Inspection', class: 'Stores', room: 'Central Depot', notes: 'Stock verification' },
-      { period: 'P8', subject: 'Daily Administrative Sign-off', class: 'Directorate', room: 'Office B-2', notes: 'Summary sign-off' }
-    ],
-    'Thursday': [
-      { period: 'P1', subject: 'Morning Assembly & Gate Supervision', class: 'Admin Operations', room: 'Main Gate', notes: 'Staff arrival' },
-      { period: 'P2', subject: 'Daily Biometric Sync & Attendance Audit', class: 'HR Desk', room: 'Office 101', notes: 'Punch sync' },
-      { period: 'P3', subject: 'Library & Digital Lab Systems Check', class: 'IT & Admin', room: 'Server Room', notes: 'Network bandwidth check' },
-      { period: 'P4', subject: 'Student Fee & Receipt Verification', class: 'Accounts Desk', room: 'Counter 2', notes: 'Counter check' },
-      { period: 'P5', subject: 'Government Correspondence & Mail', class: 'Despatch', room: 'Admin Room', notes: 'Inward/Outward registers' },
-      { period: 'P6', subject: 'Health & Medical Desk Coordination', class: 'Infirmary', room: 'Health Bay', notes: 'Check medical kits' },
-      { period: 'P7', subject: 'Examination Hall Logistics Prep', class: 'Exam Office', room: 'Exam Centre', notes: 'Furniture & roster check' },
-      { period: 'P8', subject: 'Daily Administrative Sign-off', class: 'Directorate', room: 'Office B-2', notes: 'Summary sign-off' }
-    ],
-    'Friday': [
-      { period: 'P1', subject: 'Morning Assembly & Gate Supervision', class: 'Admin Operations', room: 'Main Gate', notes: 'Assembly oversight' },
-      { period: 'P2', subject: 'Daily Biometric Sync & Attendance Audit', class: 'HR Desk', room: 'Office 101', notes: 'Weekly attendance report' },
-      { period: 'P3', subject: 'Admissions & Visitor Counseling', class: 'Reception', room: 'Helpdesk A', notes: 'Lead conversions' },
-      { period: 'P4', subject: 'Student Fee & Receipt Verification', class: 'Accounts Desk', room: 'Counter 2', notes: 'Weekly collection audit' },
-      { period: 'P5', subject: 'Staff Duty Roster Planning', class: 'Administration', room: 'Office 101', notes: 'Next week shifts roster' },
-      { period: 'P6', subject: 'Vendor Bills & Invoice Signatures', class: 'Accounts & HR', room: 'Principal Office', notes: 'Cheque & RTGS approvals' },
-      { period: 'P7', subject: 'Security & CCTV Surveillance Review', class: 'Security Cell', room: 'Control Room', notes: 'Weekly safety review' },
-      { period: 'P8', subject: 'Weekly Administrative Sign-off', class: 'Directorate', room: 'Office B-2', notes: 'Weekly report sign-off' }
-    ],
-    'Saturday': [
-      { period: 'P1', subject: 'Weekend Administrative Coordination', class: 'Admin Office', room: 'Office 101', notes: 'Weekly files disposal' },
-      { period: 'P2', subject: 'Facility Maintenance & Deep Cleaning', class: 'Estate', room: 'All Blocks', notes: 'Sanitization audit' },
-      { period: 'P3', subject: 'Parent Queries & Special Helpdesk', class: 'Front Office', room: 'Helpdesk', notes: 'Visitor support' },
-      { period: 'P4', subject: 'Staff Departmental Meeting', class: 'Admin Staff', room: 'Conference Hall', notes: 'Weekly review' }
-    ]
-  };
+  const DEFAULT_STAFF_TIMETABLE = {};
 
   // Fetch timetable data from API
   const fetchTimetable = async () => {
     try {
       setLoading(true);
       const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
-      const isStaff = storedUser.role === 'Staff';
       const params = {};
       if (storedUser.email) params.email = storedUser.email;
       if (storedUser.id || storedUser._id) params.teacherId = storedUser.id || storedUser._id;
-
-      if (isStaff) {
-        setTimetable(DEFAULT_STAFF_TIMETABLE);
-        setStats({ classCount: 44, avgPerDay: 7.3, assignedClasses: 6, freePeriodsCount: 4 });
-        setTeacherInfo({ name: storedUser.fullName || 'Rajesh Verma', designation: 'Senior Administrative Officer' });
-        setLoading(false);
-        return;
-      }
 
       const res = await timetableService.getTimetable(params);
       if (res && res.success && res.data && res.data.timetable && Object.keys(res.data.timetable).length > 0) {
@@ -178,13 +112,15 @@ const MyTimetable = () => {
         if (res.data.subjects) setSubjectList(res.data.subjects);
         if (res.data.teacher) setTeacherInfo(res.data.teacher);
       } else {
-        setTimetable(DEFAULT_STAFF_TIMETABLE);
-        setStats({ classCount: 44, avgPerDay: 7.3, assignedClasses: 6, freePeriodsCount: 4 });
+        setTimetable({});
+        setStats({ classCount: 0, avgPerDay: 0, assignedClasses: 0, freePeriodsCount: 0 });
+        if (storedUser.fullName || storedUser.name) {
+          setTeacherInfo({ name: storedUser.fullName || storedUser.name, designation: storedUser.designation || 'Faculty' });
+        }
       }
     } catch (err) {
-      console.warn('Loading fallback seed timetable:', err);
-      setTimetable(DEFAULT_STAFF_TIMETABLE);
-      setStats({ classCount: 44, avgPerDay: 7.3, assignedClasses: 6, freePeriodsCount: 4 });
+      setTimetable({});
+      setStats({ classCount: 0, avgPerDay: 0, assignedClasses: 0, freePeriodsCount: 0 });
     } finally {
       setLoading(false);
     }

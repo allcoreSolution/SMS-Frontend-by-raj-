@@ -204,12 +204,15 @@ const getLocalAssessments = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_ASSESSMENTS_SEED));
-      return DEFAULT_ASSESSMENTS_SEED;
+      return [];
     }
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) {
+      return parsed.filter(a => !a.id?.startsWith('ass-') || a._id !== a.id);
+    }
+    return [];
   } catch {
-    return DEFAULT_ASSESSMENTS_SEED;
+    return [];
   }
 };
 

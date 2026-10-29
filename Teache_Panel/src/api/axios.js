@@ -1,18 +1,29 @@
 import axios from 'axios';
 
-// Ensure this maps precisely to your Node.js backend URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+// Dynamically resolve API URL supporting Web & Mobile APK (Android WebView)
+export const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    if (window.__ERP_API_BASE_URL__) return window.__ERP_API_BASE_URL__;
+    const override = localStorage.getItem('api_override_url');
+    if (override) return override;
+  }
+  return import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+};
 
 const axiosInstance = axios.create({
-  baseURL: API_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
   timeout: 10000,
 });
 
-// Optional: Add intercepted authentication logic here later
 axiosInstance.interceptors.request.use((config) => {
+  const dynamicBase = getApiBaseUrl();
+  if (dynamicBase) {
+    config.baseURL = dynamicBase;
+  }
+
   const token = localStorage.getItem('token');
   const schoolId = localStorage.getItem('schoolId'); // Tenant SaaS ID
   
@@ -31,18 +42,33 @@ axiosInstance.interceptors.request.use((config) => {
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    // You can parse global responses here, maybe transform pagination format
     return response;
   },
   (error) => {
-    console.error('API Call Error: ', error.response || error.message);
+    // Graceful error logging without spam
+    if (error.response) {
+      console.warn(`[API ${error.response.status}] ${error.config?.method?.toUpperCase()} ${error.config?.url}:`, error.response.data?.message || error.response.statusText);
+    } else {
+      console.warn('API Network/Connection Error: ', error.message);
+    }
     
+    // Only perform forced logout if an EXPLICIT authentication verification endpoint rejects the token
     if (error.response && error.response.status === 401) {
-      // Token expired or unauthorized - only redirect if NOT already on login page and NOT a login attempt
-      const isLoginRequest = error.config?.url?.includes('/auth/login');
+      const reqUrl = error.config?.url || '';
+      const isLoginRequest = reqUrl.includes('/auth/login');
+      const isAuthVerifyRequest = reqUrl.includes('/auth/me') || reqUrl.includes('/auth/verify') || reqUrl.includes('/auth/refresh');
       const isOnLoginPage = typeof window !== 'undefined' && window.location.pathname.includes('/login');
+      
+      const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') : null;
+      const isDemoSession = !token || token.startsWith('demo_') || token.startsWith('demo-') || token.includes('demo');
 
-      if (!isLoginRequest && !isOnLoginPage) {
+      // NEVER log out a user if:
+      // 1. They are already on the login page or attempting to log in
+      // 2. They are running in demo/offline staff or teacher mode
+      // 3. The 401 was returned by an optional feature endpoint (e.g. /chats/..., /surveys, /loans, /health)
+      //    because individual feature pages have local seed fallbacks.
+      if (!isLoginRequest && !isOnLoginPage && !isDemoSession && isAuthVerifyRequest) {
+        console.warn('Authentication token expired on core verify endpoint. Redirecting to login...');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('schoolId');

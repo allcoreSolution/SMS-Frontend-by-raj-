@@ -148,34 +148,55 @@ export default function Hero() {
               </div>
            </a>
 
-           {/* Floating Badge for Teacher Panel :5177 */}
-           <a
-              href="http://localhost:5177"
-              target="_blank"
-              rel="noreferrer"
-              className="absolute -top-4 -right-2 sm:-right-4 bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] z-20 px-3 py-1.5 flex items-center gap-2 hover:bg-amber-100 transition-all hover:scale-105 cursor-pointer"
-              title="Click to launch Teacher Panel on http://localhost:5177"
-           >
-              <span className="text-base">👨‍🏫</span>
-              <div className="text-left">
-                <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Teacher & Staff</div>
-                <div className="text-[10px] font-black text-gray-900 leading-none">Teacher Panel :5177 ↗</div>
-              </div>
-           </a>
+           {/* Floating Badge for Teacher Panel & Teacher APK */}
+           <div className="absolute -top-4 -right-2 sm:-right-4 z-20 flex flex-col gap-1">
+             <a
+                href="http://localhost:5177"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] px-3 py-1.5 flex items-center gap-2 hover:bg-amber-100 transition-all hover:scale-105 cursor-pointer"
+                title="Click to launch Teacher Panel on http://localhost:5177"
+             >
+                <span className="text-base">👩‍🏫</span>
+                <div className="text-left">
+                  <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Teacher & Staff</div>
+                  <div className="text-[10px] font-black text-gray-900 leading-none">Teacher Panel :5177 ↗</div>
+                </div>
+             </a>
+             <a
+                href="/apk/Teacher.apk"
+                download="Teacher.apk"
+                className="bg-emerald-600 text-white border-2 border-gray-900 shadow-[2px_2px_0_0_#111827] px-2.5 py-1 flex items-center justify-center gap-1 hover:bg-emerald-700 transition-all text-[9px] font-black uppercase tracking-wider"
+                title="Download Teacher Android APK"
+             >
+                <span>Teacher APK (Android) ⬇</span>
+             </a>
+           </div>
 
-           {/* Floating Badge for Accountant APK Download */}
-           <a
-              href="/apk/Accountant.apk"
-              download="Accountant.apk"
-              className="absolute -bottom-4 right-4 sm:right-6 bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] z-20 px-3 py-1.5 flex items-center gap-2 hover:bg-emerald-100 transition-all hover:scale-105 cursor-pointer"
-              title="Download Accountant Android APK"
-           >
-              <span className="text-base">💼</span>
-              <div className="text-left">
-                <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Finance & Accounts</div>
-                <div className="text-[10px] font-black text-emerald-800 leading-none">Download Accountant APK ⬇</div>
-              </div>
-           </a>
+           {/* Floating Badge for Accountant Panel :5178 & Driver APK */}
+           <div className="absolute -bottom-4 right-4 sm:right-6 z-20 flex flex-col gap-1">
+             <a
+                href="http://localhost:5178"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] px-3 py-1.5 flex items-center gap-2 hover:bg-teal-100 transition-all hover:scale-105 cursor-pointer"
+                title="Launch Accountant Panel on http://localhost:5178"
+             >
+                <span className="text-base">💼</span>
+                <div className="text-left">
+                  <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Finance & Fee Desk</div>
+                  <div className="text-[10px] font-black text-teal-900 leading-none">Accountant Panel :5178 ↗</div>
+                </div>
+             </a>
+             <a
+                href="/apk/Driver.apk"
+                download="Driver.apk"
+                className="bg-amber-400 text-gray-950 border-2 border-gray-900 shadow-[2px_2px_0_0_#111827] px-2.5 py-1 flex items-center justify-center gap-1 hover:bg-amber-300 transition-all text-[9px] font-black uppercase tracking-wider"
+                title="Download Driver Android APK"
+             >
+                <span>Driver APK (Android) ⬇</span>
+             </a>
+           </div>
         </div>
 
       </div>

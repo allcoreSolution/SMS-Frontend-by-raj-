@@ -42,38 +42,7 @@ const Complaints = () => {
     fetchComplaints();
   }, []);
 
-  const DEFAULT_SEED_COMPLAINTS = [
-    {
-      id: 'cmp-1',
-      subject: 'Biometric Machine Sensor Delay in Admin Block Gate 2',
-      category: 'Infrastructure',
-      against: 'IT & Maintenance Department',
-      date: '24 Oct, 2026',
-      status: 'In Review',
-      priority: 'High',
-      description: 'The optical fingerprint scanner on Gate 2 is having response lag during peak staff punch-in hours between 08:45 AM - 09:00 AM.'
-    },
-    {
-      id: 'cmp-2',
-      subject: 'Air Conditioner Servicing Required in Records Room',
-      category: 'Infrastructure',
-      against: 'Estate & Campus Management',
-      date: '20 Oct, 2026',
-      status: 'Resolved',
-      priority: 'Medium',
-      description: 'AC cooling in archive document store was inefficient; technician visited and filter was serviced.'
-    },
-    {
-      id: 'cmp-3',
-      subject: 'Stationery Requisition for Mid-Term Office Supplies',
-      category: 'Staff',
-      against: 'Central Store Head',
-      date: '15 Oct, 2026',
-      status: 'Resolved',
-      priority: 'Low',
-      description: 'A4 paper reams, official letterheads and laser printer toners dispatched successfully to the Administrative Office.'
-    }
-  ];
+  const DEFAULT_SEED_COMPLAINTS = [];
 
   const fetchComplaints = async () => {
     try {
@@ -102,11 +71,10 @@ const Complaints = () => {
         });
         setComplaints(mapped);
       } else {
-        setComplaints(DEFAULT_SEED_COMPLAINTS);
+        setComplaints([]);
       }
     } catch (err) {
-      console.warn('Loading fallback seed complaints:', err);
-      setComplaints(DEFAULT_SEED_COMPLAINTS);
+      setComplaints([]);
     } finally {
       setLoading(false);
     }

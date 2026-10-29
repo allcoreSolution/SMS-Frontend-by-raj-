@@ -38,23 +38,23 @@ export default function Ecosystem() {
     },
     { 
       title: 'Teacher & Staff App', 
-      sub: 'DEDICATED TEACHER PORTAL', 
+      sub: 'ANDROID • APK DOWNLOAD', 
       desc: 'Empower educators with attendance marking, lesson planning, marks entry, online exam question banks, PTM scheduling, and teacher leave management.', 
       icon: '👩‍🏫', 
-      tag: 'Port 5177 • Teache_Panel', 
-      actionType: 'url',
-      actionTarget: 'http://localhost:5177',
-      btnText: 'Open Teacher Panel :5177 ↗'
+      tag: 'Android APK • Teacher App', 
+      actionType: 'download',
+      actionTarget: '/apk/Teacher.apk',
+      btnText: 'Download Teacher APK ⬇'
     },
     { 
-      title: 'Accountant App', 
-      sub: 'ANDROID • APK DOWNLOAD', 
-      desc: 'Specialized accounting mobile app for collecting fees, searching due dues, managing fee groups, income/expense vouchers, and daily day-book balance.', 
+      title: 'Accountant & Fee Desk', 
+      sub: 'REACT 18 • PORT 5178', 
+      desc: 'Specialized accounting web portal for collecting fees, searching due dues, managing fee groups, income/expense vouchers, and daily day-book balance.', 
       icon: '💰', 
-      tag: 'Android APK • v1.0.0', 
-      actionType: 'download',
-      actionTarget: '/apk/Accountant.apk',
-      btnText: 'Download Accountant APK ⬇'
+      tag: 'Port 5178 • Accountant', 
+      actionType: 'url',
+      actionTarget: 'http://localhost:5178',
+      btnText: 'Open Accountant Panel :5178 ↗'
     },
     { 
       title: 'Windows Biometric API', 
@@ -154,7 +154,7 @@ export default function Ecosystem() {
                💡
              </div>
              <p className="text-xs sm:text-sm font-bold text-gray-700 leading-snug">
-               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin on <strong>5179</strong>, School ERP on <strong>5176</strong>, Teacher Panel on <strong>5177</strong>, Branch Admin on <strong>5174</strong>, plus dedicated <strong>Android APKs</strong> for Accountant and Student/Parent.
+               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin on <strong>5179</strong>, School ERP on <strong>5176</strong>, Teacher on <strong>5177</strong>, Accountant on <strong>5178</strong>, Student/Parent on <strong>5175</strong>, Driver on <strong>5180</strong>, Branch Admin on <strong>5174</strong>, plus dedicated <strong>Android APKs</strong> for Teachers, Parents, and Drivers.
              </p>
            </div>
            

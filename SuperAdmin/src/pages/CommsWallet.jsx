@@ -3,13 +3,8 @@ import { Wallet, Plus, MessageSquare, Phone, Mail, Download, X, CheckCircle } fr
 import { tenantService } from '../api/tenantService';
 import { toArray } from '../utils/helpers';
 
-const initTransactions = [
-  { id: 1, type: 'SMS', school: 'Montessori School', count: 500, cost: 99, date: 'Sep 01, 2024', balance: 1200 },
-  { id: 2, type: 'Email', school: 'SSVP School', count: 1000, cost: 49, date: 'Aug 31, 2024', balance: 1151 },
-  { id: 3, type: 'WhatsApp', school: 'Green Valley', count: 200, cost: 79, date: 'Aug 30, 2024', balance: 1072 },
-  { id: 4, type: 'SMS', school: 'Oxford International', count: 1000, cost: 199, date: 'Aug 29, 2024', balance: 873 },
-  { id: 5, type: 'Recharge', school: '—', count: 0, cost: -2000, date: 'Aug 28, 2024', balance: 2873 },
-];
+const initTransactions = [];
+
 
 export default function CommsWallet() {
   const [transactions, setTransactions] = useState(initTransactions);
@@ -18,7 +13,7 @@ export default function CommsWallet() {
   const [selectedSchool, setSelectedSchool] = useState('');
   const [schoolsList, setSchoolsList] = useState([]);
   const [toast, setToast] = useState(null);
-  const [balance, setBalance] = useState(873);
+  const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {

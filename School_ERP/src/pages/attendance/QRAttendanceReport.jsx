@@ -36,30 +36,8 @@ export default function QRAttendanceReport() {
       // fallback
     }
 
-    // Fallback: merge recorded punches from qrAttendanceService with candidates
-    const livePunches = qrAttendanceService.getPunches();
-    const rows = CANDIDATES_DATABASE.map(cand => {
-      const candidatePunches = livePunches.filter(p => p.candidateId === cand.id);
-      const inPunch = candidatePunches.find(p => p.direction === 'IN');
-      const outPunch = candidatePunches.find(p => p.direction === 'OUT');
-
-      const isMarked = candidatePunches.length > 0;
-      return {
-        id: cand.id,
-        date: fromDate,
-        name: cand.name,
-        type: cand.type,
-        classDesig: cand.classDesig,
-        admStaffId: cand.rollNo || cand.code,
-        avatar: cand.avatar,
-        in: inPunch ? inPunch.timeFormatted : (isMarked ? '08:00 AM' : '—'),
-        out: outPunch ? outPunch.timeFormatted : '—',
-        duration: inPunch && outPunch ? '6h 15m' : (inPunch ? 'On Campus' : 'Absent'),
-        status: isMarked ? (inPunch && outPunch ? 'Completed' : 'Present') : 'Absent'
-      };
-    });
-
-    setReportData(rows);
+    // If backend has no data, default to empty list
+    setReportData([]);
     setLoading(false);
   };
 

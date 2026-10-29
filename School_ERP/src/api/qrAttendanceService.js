@@ -181,41 +181,13 @@ export const qrAttendanceService = {
     try {
       const raw = localStorage.getItem(PUNCHES_KEY);
       if (!raw) {
-        // Seed initial morning demo check-ins
-        const initial = [
-          {
-            id: 'punch-1',
-            candidateId: 'STU-1001',
-            name: 'Aarav Sharma',
-            type: 'Student',
-            classDesig: 'Class 10 - A',
-            rollNo: '1001',
-            direction: 'IN',
-            timestamp: new Date(Date.now() - 42 * 60 * 1000).toISOString(),
-            timeFormatted: '07:45:12 AM',
-            location: 'Main Gate Terminal',
-            device: 'Camera Station #1',
-            avatar: CANDIDATES_DATABASE[0].avatar
-          },
-          {
-            id: 'punch-2',
-            candidateId: 'STF-2001',
-            name: 'Dr. Ramesh Kumar',
-            type: 'Staff',
-            classDesig: 'Senior Mathematics HOD',
-            rollNo: 'EMP-2001',
-            direction: 'IN',
-            timestamp: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
-            timeFormatted: '07:52:04 AM',
-            location: 'Main Gate Terminal',
-            device: 'Camera Station #1',
-            avatar: CANDIDATES_DATABASE[5].avatar
-          }
-        ];
-        localStorage.setItem(PUNCHES_KEY, JSON.stringify(initial));
-        return initial;
+        return [];
       }
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(p => !p.id?.startsWith('punch-'));
+      }
+      return [];
     } catch {
       return [];
     }
@@ -226,34 +198,13 @@ export const qrAttendanceService = {
     try {
       const raw = localStorage.getItem(AUDIT_KEY);
       if (!raw) {
-        const initialAudit = [
-          {
-            id: 'audit-1',
-            time: new Date(Date.now() - 42 * 60 * 1000).toISOString(),
-            outcome: 'Accepted',
-            resultReason: 'Marked IN Successfully',
-            targetName: 'Aarav Sharma',
-            targetType: 'Student',
-            device: 'Camera Station #1',
-            location: 'Main Gate Terminal',
-            mode: 'QR'
-          },
-          {
-            id: 'audit-2',
-            time: new Date(Date.now() - 35 * 60 * 1000).toISOString(),
-            outcome: 'Accepted',
-            resultReason: 'Marked IN Successfully',
-            targetName: 'Dr. Ramesh Kumar',
-            targetType: 'Staff',
-            device: 'Camera Station #1',
-            location: 'Main Gate Terminal',
-            mode: 'QR'
-          }
-        ];
-        localStorage.setItem(AUDIT_KEY, JSON.stringify(initialAudit));
-        return initialAudit;
+        return [];
       }
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.filter(a => !a.id?.startsWith('audit-'));
+      }
+      return [];
     } catch {
       return [];
     }

@@ -2,23 +2,9 @@ import React, { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Download, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react';
 
-const dailyData = [
-  { day: 'Mon', sent: 1200, delivered: 1150, failed: 50 },
-  { day: 'Tue', sent: 980, delivered: 940, failed: 40 },
-  { day: 'Wed', sent: 1450, delivered: 1400, failed: 50 },
-  { day: 'Thu', sent: 1100, delivered: 1060, failed: 40 },
-  { day: 'Fri', sent: 1300, delivered: 1250, failed: 50 },
-  { day: 'Sat', sent: 600, delivered: 580, failed: 20 },
-  { day: 'Sun', sent: 200, delivered: 195, failed: 5 },
-];
+const dailyData = [];
 
-const logs = [
-  { id: 1, school: 'Montessori School', type: 'Fee Reminder', phone: '+91 98765 XXXXX', status: 'Delivered', time: '10:30 AM', cost: '₹0.20' },
-  { id: 2, school: 'SSVP School', type: 'Attendance Alert', phone: '+91 87654 XXXXX', status: 'Delivered', time: '09:15 AM', cost: '₹0.20' },
-  { id: 3, school: 'Green Valley', type: 'Exam Notice', phone: '+91 76543 XXXXX', status: 'Failed', time: '08:45 AM', cost: '₹0.00' },
-  { id: 4, school: 'Oxford International', type: 'Fee Reminder', phone: '+91 65432 XXXXX', status: 'Pending', time: '08:00 AM', cost: '₹0.20' },
-  { id: 5, school: 'Sunrise School', type: 'Holiday Notice', phone: '+91 54321 XXXXX', status: 'Delivered', time: '07:30 AM', cost: '₹0.20' },
-];
+const logs = [];
 
 const statusBadge = (s) => {
   if (s === 'Delivered') return <span className="flex items-center gap-1 text-green-600 bg-green-50 px-2 py-0.5 rounded-none text-xs font-semibold"><CheckCircle className="w-3 h-3" />Delivered</span>;
@@ -46,10 +32,10 @@ const SMSReport = () => {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'Total Sent (Month)', value: '6,830', color: 'text-blue-600' },
-          { label: 'Delivered', value: '6,575', color: 'text-green-600' },
-          { label: 'Failed', value: '255', color: 'text-red-500' },
-          { label: 'Delivery Rate', value: '96.3%', color: 'text-orange-500' },
+          { label: 'Total Sent (Month)', value: '0', color: 'text-blue-600' },
+          { label: 'Delivered', value: '0', color: 'text-green-600' },
+          { label: 'Failed', value: '0', color: 'text-red-500' },
+          { label: 'Delivery Rate', value: '0%', color: 'text-orange-500' },
         ].map((k, i) => (
           <div key={i} className="bg-white rounded-none border border-gray-200 p-4 shadow-sm">
             <p className={`text-2xl font-bold ${k.color}`}>{k.value}</p>

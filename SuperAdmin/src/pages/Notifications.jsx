@@ -1,20 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, CheckCircle, Trash2, UserPlus, DollarSign, AlertCircle, LogIn, Settings, Check, X } from 'lucide-react';
 
-const INIT_NOTIFS = [
-  { id: 1,  type: 'register', title: 'New school registered',       desc: 'Ali Public School joined the platform',              time: '5 min ago',   read: false },
-  { id: 2,  type: 'payment',  title: 'Payment received',            desc: '₹4,999 from Montessori School — Premium plan',       time: '1 hour ago',  read: false },
-  { id: 3,  type: 'alert',    title: 'Server CPU alert',            desc: 'CPU usage spiked to 78% on production server',       time: '2 hours ago', read: false },
-  { id: 4,  type: 'login',    title: 'New admin login',             desc: 'School admin logged in from new device — Oxford',    time: '3 hours ago', read: true  },
-  { id: 5,  type: 'payment',  title: 'Payment received',            desc: '₹2,499 from St. Mary Convent — Standard plan',       time: '5 hours ago', read: true  },
-  { id: 6,  type: 'register', title: 'New school registered',       desc: 'Sunrise Public School joined the platform',          time: '1 day ago',   read: true  },
-  { id: 7,  type: 'alert',    title: 'Support ticket raised',       desc: 'Green Valley — Report card not generating',          time: '1 day ago',   read: true  },
-  { id: 8,  type: 'system',   title: 'System update available',     desc: 'Platform v2.4.1 is ready to install',                time: '2 days ago',  read: true  },
-  { id: 9,  type: 'payment',  title: 'Payment failed',              desc: '₹999 from Sunrise School — card declined',           time: '2 days ago',  read: true  },
-  { id: 10, type: 'login',    title: 'Super Admin login',           desc: 'You logged in from Chrome on Windows',               time: '3 days ago',  read: true  },
-  { id: 11, type: 'register', title: 'New school registered',       desc: 'Green Valley School joined the platform',            time: '4 days ago',  read: true  },
-  { id: 12, type: 'system',   title: 'Backup completed',            desc: 'Daily database backup completed successfully',       time: '4 days ago',  read: true  },
-];
+const INIT_NOTIFS = [];
 
 const TYPE_CONFIG = {
   register: { icon: UserPlus,    bg: 'bg-blue-100',   color: 'text-blue-600',   label: 'Registration' },

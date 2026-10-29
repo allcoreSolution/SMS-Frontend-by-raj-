@@ -17,29 +17,30 @@ export default function Showcase() {
       theme: 'border-amber-400'
     },
     {
-      title: 'Teacher & Staff Dedicated Desk',
-      port: ':5177',
-      badge: 'Teacher Panel',
+      title: 'Teacher & Staff App (Android APK)',
+      port: 'APK',
+      badge: 'Teacher App',
       badgeColor: 'bg-emerald-400 text-gray-900',
-      url: 'http://localhost:5177',
-      desc: 'Exclusive workspace for educators: Student Attendance marking, Exam Marksheet entry, Teacher Leave apply, and Lesson Planners.',
+      url: '/apk/Teacher.apk',
+      isDownload: true,
+      downloadName: 'Teacher.apk',
+      desc: 'Exclusive native Android mobile app for educators: Student Attendance marking, Exam Marksheet entry, Teacher Leave apply, and Lesson Planners.',
       stats: [
-        { label: 'Attendance', val: '1-Click Fast Marking' },
+        { label: 'Platform', val: 'Android APK (Teacher.apk)' },
         { label: 'Exams & Marks', val: 'Term 1 / CBT Evaluation' }
       ],
       theme: 'border-emerald-400'
     },
     {
-      title: 'Accountant App (Android APK)',
-      port: 'APK',
-      badge: 'Accountant',
+      title: 'Accountant & Financial Panel',
+      port: ':5178',
+      badge: 'Accountant Panel',
       badgeColor: 'bg-teal-400 text-gray-900',
-      url: '/apk/Accountant.apk',
-      isDownload: true,
-      downloadName: 'Accountant.apk',
-      desc: 'Specialized finance Android APK: Instant Fee Invoicing, Defaulter reminders, Income & Expense vouchers, and Cash Ledgers.',
+      url: 'http://localhost:5178',
+      isDownload: false,
+      desc: 'Specialized finance web portal: Instant Fee Invoicing, Defaulter reminders, Fee Group allocation, Income & Expense vouchers, and Cash Ledgers.',
       stats: [
-        { label: 'Platform', val: 'Android APK' },
+        { label: 'Platform', val: 'Web Portal (:5178)' },
         { label: 'Fee Counter', val: 'Online & Cash Invoicing' }
       ],
       theme: 'border-teal-400'

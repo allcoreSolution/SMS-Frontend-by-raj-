@@ -22,25 +22,25 @@ const ClassicTeacherLayout = () => {
   
   // Real data state
   const [stats, setStats] = useState({
-    students: 15,
+    students: 0,
     pendingHomework: 0,
-    subjectsAssigned: 10,
-    pendingLeaves: 1
+    subjectsAssigned: 0,
+    pendingLeaves: 0
   });
 
   const [teacherProfile, setTeacherProfile] = useState({
     fullName: (storedUser.fullName && !storedUser.fullName.toLowerCase().includes('admin')) 
       ? storedUser.fullName 
-      : 'Amit Sharma',
-    designation: 'Senior Teacher',
-    department: 'Science & Math',
-    email: storedUser.email || 'amit.sharma@school.edu',
-    photo: 'https://i.pravatar.cc/150?img=11',
+      : (storedUser.username || 'Teacher Faculty'),
+    designation: storedUser.designation || 'Teacher Faculty',
+    department: storedUser.department || 'Academics',
+    email: storedUser.email || '',
+    photo: '',
     latestSalary: {
-      month: 'August',
+      month: '—',
       year: 2026,
-      netSalary: '₹48,500.00',
-      status: 'Paid'
+      netSalary: '₹0.00',
+      status: 'Pending'
     }
   });
 
@@ -64,10 +64,10 @@ const ClassicTeacherLayout = () => {
         const d = res.data;
         if (d.stats) {
           setStats({
-            students: d.stats.students || 15,
-            pendingHomework: d.stats.pendingHomework || 0,
-            subjectsAssigned: d.stats.subjectsAssigned || 10,
-            pendingLeaves: d.stats.pendingLeaves || 0
+            students: d.stats.students ?? 0,
+            pendingHomework: d.stats.pendingHomework ?? 0,
+            subjectsAssigned: d.stats.subjectsAssigned ?? 0,
+            pendingLeaves: d.stats.pendingLeaves ?? 0
           });
         }
         if (d.teacherProfile) {
@@ -76,7 +76,7 @@ const ClassicTeacherLayout = () => {
             ...d.teacherProfile,
             fullName: (storedUser.fullName && !storedUser.fullName.toLowerCase().includes('admin'))
               ? storedUser.fullName
-              : (d.teacherProfile.fullName || 'Amit Sharma')
+              : (d.teacherProfile.fullName || 'Teacher Faculty')
           }));
         }
         if (d.announcements) setNotices(d.announcements);
@@ -203,31 +203,31 @@ const ClassicTeacherLayout = () => {
 
       <div className="p-4 space-y-4">
         {/* Top Stat Blocks */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           
           {/* Blue Block */}
-          <div className="bg-[#007bff] text-white p-4 relative overflow-hidden flex flex-col justify-between h-24">
-            <span className="text-2xl font-bold z-10 relative">{stats.students}</span>
-            <span className="text-sm z-10 relative">{t('Students Assigned', 'Students Assigned')}</span>
-            <User className="absolute right-4 top-1/2 -translate-y-1/2 w-16 h-16 opacity-20" />
+          <div className="bg-[#007bff] text-white p-3 rounded-lg relative overflow-hidden flex flex-col justify-between h-18">
+            <span className="text-xl font-bold z-10 relative">{stats.students}</span>
+            <span className="text-xs z-10 relative">{t('Students Assigned', 'Students Assigned')}</span>
+            <User className="absolute right-3 top-1/2 -translate-y-1/2 w-12 h-12 opacity-20" />
           </div>
 
           {/* Teal Double Block */}
-          <div className="flex bg-[#20c997] text-white h-24">
-             <div className="flex-1 p-4 flex flex-col justify-between relative border-r border-white/20">
-               <span className="text-2xl font-bold z-10">{stats.pendingHomework}</span>
-               <span className="text-sm z-10">{t('Pending Homework', 'Pending Homework')}</span>
+          <div className="flex bg-[#20c997] text-white h-18 rounded-lg overflow-hidden">
+             <div className="flex-1 p-3 flex flex-col justify-between relative border-r border-white/20">
+               <span className="text-xl font-bold z-10">{stats.pendingHomework}</span>
+               <span className="text-xs z-10">{t('Pending Homework', 'Pending Homework')}</span>
              </div>
-             <div className="flex-1 p-4 flex flex-col justify-between relative">
-               <span className="text-2xl font-bold z-10">{stats.subjectsAssigned}</span>
-               <span className="text-sm z-10">{t('Subjects Assigned', 'Subjects Assigned')}</span>
+             <div className="flex-1 p-3 flex flex-col justify-between relative">
+               <span className="text-xl font-bold z-10">{stats.subjectsAssigned}</span>
+               <span className="text-xs z-10">{t('Subjects Assigned', 'Subjects Assigned')}</span>
              </div>
           </div>
 
           {/* Yellow Block */}
-          <div className="bg-[#ffc107] text-[#856404] p-4 relative overflow-hidden flex flex-col justify-between h-24">
-            <span className="text-2xl font-bold z-10 relative">{stats.pendingLeaves}</span>
-            <span className="text-sm z-10 relative">{t('Pending Leave Requests', 'Pending Leave Requests')}</span>
+          <div className="bg-[#ffc107] text-[#856404] p-3 rounded-lg relative overflow-hidden flex flex-col justify-between h-18">
+            <span className="text-xl font-bold z-10 relative">{stats.pendingLeaves}</span>
+            <span className="text-xs z-10 relative">{t('Pending Leave Requests', 'Pending Leave Requests')}</span>
           </div>
 
         </div>

@@ -107,12 +107,7 @@ export default function TeacherRemarks() {
             principalRemark: s.principalRemark || 'Promoted to next grade.'
           })));
         } else {
-          setStudents([
-            { id: '1', name: 'Aarav Sharma', roll: '101', class: selectedClass || 'Class 10', teacherRemark: 'Attentive and proactive in classroom assignments.', principalRemark: 'Commendable diligence and discipline.' },
-            { id: '2', name: 'Diya Patel', roll: '102', class: selectedClass || 'Class 10', teacherRemark: 'Excellent creativity and conceptual depth in English.', principalRemark: 'High-achieving student.' },
-            { id: '3', name: 'Rohan Gupta', roll: '103', class: selectedClass || 'Class 10', teacherRemark: 'Needs to dedicate extra practice time to algebra.', principalRemark: 'Shows consistent enthusiasm.' },
-            { id: '4', name: 'Ananya Verma', roll: '104', class: selectedClass || 'Class 10', teacherRemark: 'Outstanding presentation and teamwork skills.', principalRemark: 'An asset to the student body.' }
-          ]);
+          setStudents([]);
         }
       }
       setShowStudents(true);

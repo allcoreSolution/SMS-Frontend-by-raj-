@@ -54,85 +54,19 @@ const LeadManagement = () => {
     else setActiveTab('Lead Dashboard');
   }, [location.pathname]);
 
-  const DEFAULT_SEED_LEADS = [
-    {
-      _id: 'lead-1',
-      studentName: 'Aarav Sharma',
-      parentName: 'Vikram Sharma',
-      contactNumber: '+91 98112 23344',
-      email: 'vikram.sharma@gmail.com',
-      targetClass: 'Class XI',
-      source: 'Website',
-      status: 'Campus Visit',
-      stage: 'Campus Visit',
-      notes: 'Interested in PCM with Computer Science stream. Campus visit scheduled.',
-      createdAt: '2026-10-24T10:00:00.000Z'
-    },
-    {
-      _id: 'lead-2',
-      studentName: 'Ananya Patel',
-      parentName: 'Rajesh Patel',
-      contactNumber: '+91 98223 34455',
-      email: 'rajesh.patel@outlook.com',
-      targetClass: 'Class IX',
-      source: 'Referral',
-      status: 'Enrolled',
-      stage: 'Enrolled',
-      notes: 'Fee token deposited. Section allotment completed.',
-      createdAt: '2026-10-22T11:30:00.000Z'
-    },
-    {
-      _id: 'lead-3',
-      studentName: 'Rohan Gupta',
-      parentName: 'Sunil Gupta',
-      contactNumber: '+91 98334 45566',
-      email: 'sunil.gupta@yahoo.com',
-      targetClass: 'Class VI',
-      source: 'Social Media',
-      status: 'Application',
-      stage: 'Application',
-      notes: 'Entrance evaluation test cleared. Awaiting final interview.',
-      createdAt: '2026-10-20T14:15:00.000Z'
-    },
-    {
-      _id: 'lead-4',
-      studentName: 'Meera Iyer',
-      parentName: 'Karthik Iyer',
-      contactNumber: '+91 98445 56677',
-      email: 'karthik.iyer@gmail.com',
-      targetClass: 'Class I',
-      source: 'Walk-in',
-      status: 'Contacted',
-      stage: 'Contacted',
-      notes: 'Prospectus collected at front desk. Follow-up call completed.',
-      createdAt: '2026-10-18T16:00:00.000Z'
-    },
-    {
-      _id: 'lead-5',
-      studentName: 'Devansh Singh',
-      parentName: 'Ranveer Singh',
-      contactNumber: '+91 98556 67788',
-      email: 'ranveer.singh@gmail.com',
-      targetClass: 'Class XI',
-      source: 'Education Fair',
-      status: 'New Lead',
-      stage: 'New Lead',
-      notes: 'Commerce with Applied Maths inquiry.',
-      createdAt: '2026-10-27T09:45:00.000Z'
-    }
-  ];
+  const DEFAULT_SEED_LEADS = [];
 
   const DEFAULT_SEED_STATS = {
-    totalLeads: 28,
-    convertedLeads: 16,
-    conversionRate: '57.1%',
-    avgResponseTime: '1.5 hrs',
+    totalLeads: 0,
+    convertedLeads: 0,
+    conversionRate: '0%',
+    avgResponseTime: '0 hrs',
     byStage: {
-      'New Lead': 5,
-      'Contacted': 4,
-      'Campus Visit': 3,
-      'Application': 4,
-      'Enrolled': 12
+      'New Lead': 0,
+      'Contacted': 0,
+      'Campus Visit': 0,
+      'Application': 0,
+      'Enrolled': 0
     }
   };
 
@@ -146,7 +80,7 @@ const LeadManagement = () => {
       if (leadsRes?.data && leadsRes.data.length > 0) {
         setLeads(leadsRes.data);
       } else {
-        setLeads(DEFAULT_SEED_LEADS);
+        setLeads([]);
       }
       if (statsRes?.data) {
         setStats(statsRes.data);
@@ -154,8 +88,7 @@ const LeadManagement = () => {
         setStats(DEFAULT_SEED_STATS);
       }
     } catch (err) {
-      console.warn('Loading fallback seed leads:', err);
-      setLeads(DEFAULT_SEED_LEADS);
+      setLeads([]);
       setStats(DEFAULT_SEED_STATS);
     } finally {
       setLoading(false);

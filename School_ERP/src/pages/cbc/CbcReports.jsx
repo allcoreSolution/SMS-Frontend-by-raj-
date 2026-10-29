@@ -6,120 +6,11 @@ import {
 } from 'lucide-react';
 import CbcHeader from './CbcHeader';
 
-const SAMPLE_STUDENTS = [
-  {
-    id: 'std-1',
-    name: 'Aarav Sharma',
-    rollNo: '01',
-    admissionNo: 'ADM-2026-081',
-    upiId: 'UPI-KEN-992014',
-    classGrade: 'Grade 3',
-    section: 'A',
-    term: 'Term 2',
-    year: '2026',
-    attendance: '98%',
-    teacherRemarks: 'Aarav displays remarkable oral fluency, independent inquiry skills, and collaborative leadership.',
-    principalRemarks: 'Promising young scholar; recommended for advanced STEM extension challenges.',
-    outcomes: [
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Oral Presentation & Public Speaking', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Speaks with commanding confidence and vocabulary.' },
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Active Listening & Dialogue', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Engages thoughtfully with peers and synthesizes points.' },
-      { subject: 'English', strand: 'Reading Analysis', outcome: 'Fluency & Expressive Reading', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Reads grade-level passages accurately with good pace.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Place Value & Real-world Estimation', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Applies place values in budgeting and practical challenges.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Fractional Operations & Equivalence', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Performs fraction operations accurately.' },
-      { subject: 'Science', strand: 'Living Systems', outcome: 'Organism Adaptations & Biomes', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Constructed an innovative functional biome diorama.' }
-    ],
-    competencies: {
-      'Communication & Collaboration': 4,
-      'Critical Thinking & Problem Solving': 4,
-      'Imagination & Creativity': 4,
-      'Citizenship & Global Awareness': 3,
-      'Learning to Learn': 4,
-      'Self-Efficacy & Resilience': 3,
-      'Digital Literacy': 4
-    },
-    values: {
-      'Respect & Integrity': 'Consistently Exemplary',
-      'Teamwork & Empathy': 'Demonstrates Leadership',
-      'Responsibility': 'Highly Diligent & Punctual'
-    }
-  },
-  {
-    id: 'std-2',
-    name: 'Priya Patel',
-    rollNo: '02',
-    admissionNo: 'ADM-2026-082',
-    upiId: 'UPI-KEN-992015',
-    classGrade: 'Grade 3',
-    section: 'A',
-    term: 'Term 2',
-    year: '2026',
-    attendance: '96%',
-    teacherRemarks: 'Priya is exceptionally creative, diligent, and consistently exceeds benchmarks across all arts and sciences.',
-    principalRemarks: 'Outstanding holistic progress and positive classroom role model.',
-    outcomes: [
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Oral Presentation & Public Speaking', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Clear and audible articulation.' },
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Active Listening & Dialogue', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Very respectful and constructive group contributor.' },
-      { subject: 'English', strand: 'Reading Analysis', outcome: 'Fluency & Expressive Reading', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Reads with expressive character voices.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Place Value & Real-world Estimation', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Understands place values accurately.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Fractional Operations & Equivalence', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Computes fraction sums accurately.' },
-      { subject: 'Science', strand: 'Living Systems', outcome: 'Organism Adaptations & Biomes', rating: 4, label: 'Exceeding Expectations (EE)', remarks: 'Outstanding creativity with biological models.' }
-    ],
-    competencies: {
-      'Communication & Collaboration': 4,
-      'Critical Thinking & Problem Solving': 3,
-      'Imagination & Creativity': 4,
-      'Citizenship & Global Awareness': 4,
-      'Learning to Learn': 3,
-      'Self-Efficacy & Resilience': 4,
-      'Digital Literacy': 3
-    },
-    values: {
-      'Respect & Integrity': 'Exemplary',
-      'Teamwork & Empathy': 'Warm & Encouraging',
-      'Responsibility': 'Reliable & Caring'
-    }
-  },
-  {
-    id: 'std-3',
-    name: 'Rohan Gupta',
-    rollNo: '03',
-    admissionNo: 'ADM-2026-083',
-    upiId: 'UPI-KEN-992016',
-    classGrade: 'Grade 3',
-    section: 'A',
-    term: 'Term 2',
-    year: '2026',
-    attendance: '94%',
-    teacherRemarks: 'Rohan shows great interest in physical experiments. Continued practice in oral presentations will build confidence.',
-    principalRemarks: 'Steady academic progression; encourage reading habits during holidays.',
-    outcomes: [
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Oral Presentation & Public Speaking', rating: 2, label: 'Approaching Expectations (AE)', remarks: 'Hesitates occasionally; practice with eye contact.' },
-      { subject: 'English', strand: 'Listening & Speaking', outcome: 'Active Listening & Dialogue', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Follows conversations and follows instructions.' },
-      { subject: 'English', strand: 'Reading Analysis', outcome: 'Fluency & Expressive Reading', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Reads grade-level texts steadily.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Place Value & Real-world Estimation', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Computes correctly.' },
-      { subject: 'Mathematics', strand: 'Numbers & Computing', outcome: 'Fractional Operations & Equivalence', rating: 2, label: 'Approaching Expectations (AE)', remarks: 'Requires visual fraction tiles to solve problems.' },
-      { subject: 'Science', strand: 'Living Systems', outcome: 'Organism Adaptations & Biomes', rating: 3, label: 'Meeting Expectations (ME)', remarks: 'Explains biome adaptations well.' }
-    ],
-    competencies: {
-      'Communication & Collaboration': 2,
-      'Critical Thinking & Problem Solving': 3,
-      'Imagination & Creativity': 3,
-      'Citizenship & Global Awareness': 3,
-      'Learning to Learn': 2,
-      'Self-Efficacy & Resilience': 3,
-      'Digital Literacy': 3
-    },
-    values: {
-      'Respect & Integrity': 'Polite & Courteous',
-      'Teamwork & Empathy': 'Enjoys Cooperative Play',
-      'Responsibility': 'Punctual'
-    }
-  }
-];
+const SAMPLE_STUDENTS = [];
 
 const CbcReports = () => {
   const navigate = useNavigate();
-  const [selectedStudentId, setSelectedStudentId] = useState('std-1');
+  const [selectedStudentId, setSelectedStudentId] = useState('');
 
   const student = SAMPLE_STUDENTS.find(s => s.id === selectedStudentId) || SAMPLE_STUDENTS[0];
 
@@ -150,37 +41,47 @@ const CbcReports = () => {
 
       <div className="p-6 sm:p-8 w-full max-w-5xl mx-auto flex flex-col gap-6">
         
-        {/* Selector & Print Controls Toolbar (Hidden during print) */}
-        <div className="print:hidden bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <User className="w-5 h-5 text-emerald-600" />
-            <span className="text-xs font-bold text-slate-700">Select Learner:</span>
-            <select
-              value={selectedStudentId}
-              onChange={(e) => setSelectedStudentId(e.target.value)}
-              className="px-3 py-1.5 text-xs font-bold border border-slate-200 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-            >
-              {SAMPLE_STUDENTS.map(s => (
-                <option key={s.id} value={s.id}>
-                  {s.name} (Roll No: {s.rollNo} · {s.classGrade} - {s.section})
-                </option>
-              ))}
-            </select>
+        {SAMPLE_STUDENTS.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-slate-200/80 p-12 text-center text-slate-400">
+            <FileSpreadsheet className="w-12 h-12 mx-auto text-slate-300 mb-3" />
+            <h3 className="text-base font-bold text-slate-700">No CBC Learner Reports Available</h3>
+            <p className="text-xs text-slate-400 mt-1 max-w-md mx-auto">
+              Once CBC assessments and rubric ratings are recorded for students, their official competency portfolios and report cards will be viewable and printable here.
+            </p>
           </div>
+        ) : (
+          <>
+            {/* Selector & Print Controls Toolbar (Hidden during print) */}
+            <div className="print:hidden bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5 text-emerald-600" />
+                <span className="text-xs font-bold text-slate-700">Select Learner:</span>
+                <select
+                  value={selectedStudentId}
+                  onChange={(e) => setSelectedStudentId(e.target.value)}
+                  className="px-3 py-1.5 text-xs font-bold border border-slate-200 rounded-xl bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                >
+                  {SAMPLE_STUDENTS.map(s => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} (Roll No: {s.rollNo} · {s.classGrade} - {s.section})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2"
-            >
-              <Printer className="w-4 h-4" /> Print Official Report Card
-            </button>
-          </div>
-        </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handlePrint}
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center gap-2"
+                >
+                  <Printer className="w-4 h-4" /> Print Official Report Card
+                </button>
+              </div>
+            </div>
 
-        {/* OFFICIAL CBC REPORT CARD DOCUMENT (Print Ready) */}
-        <div className="bg-white rounded-2xl shadow-md border border-slate-200/90 p-8 sm:p-12 print:shadow-none print:border-none print:p-0 text-slate-850">
+            {/* OFFICIAL CBC REPORT CARD DOCUMENT (Print Ready) */}
+            <div className="bg-white rounded-2xl shadow-md border border-slate-200/90 p-8 sm:p-12 print:shadow-none print:border-none print:p-0 text-slate-850">
           
           {/* Institutional Header */}
           <div className="border-b-2 border-emerald-600 pb-6 mb-6 flex flex-col sm:flex-row justify-between items-center text-center sm:text-left gap-4">
@@ -325,8 +226,9 @@ const CbcReports = () => {
               </div>
             </div>
           </div>
-
-        </div>
+            </div>
+          </>
+        )}
 
       </div>
     </div>

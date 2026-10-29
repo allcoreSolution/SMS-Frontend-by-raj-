@@ -2,13 +2,7 @@ import React from 'react';
 import { FileDown, Calendar, RefreshCw, List, TrendingUp, AlertTriangle } from 'lucide-react';
 import Swal from 'sweetalert2';
 
-const mockAttendance = [
-  { id: 1, school: 'Green Valley Public School', studPresent: 420, studTotal: 450, staffPresent: 28, staffTotal: 30, presenceRaw: '93%', status: 'Good' },
-  { id: 2, school: 'City Central Academy', studPresent: 310, studTotal: 380, staffPresent: 22, staffTotal: 25, presenceRaw: '82%', status: 'Average' },
-  { id: 3, school: 'Sunrise International', studPresent: 510, studTotal: 520, staffPresent: 35, staffTotal: 36, presenceRaw: '98%', status: 'Excellent' },
-  { id: 4, school: 'Riverdale High', studPresent: 280, studTotal: 400, staffPresent: 18, staffTotal: 24, presenceRaw: '70%', status: 'Low' },
-  { id: 5, school: 'Oakwood School', studPresent: 190, studTotal: 200, staffPresent: 14, staffTotal: 15, presenceRaw: '95%', status: 'Good' },
-];
+const mockAttendance = [];
 
 export default function AttendanceTrends() {
   const handleExport = () => {
@@ -153,7 +147,11 @@ export default function AttendanceTrends() {
               </tr>
             </thead>
             <tbody>
-              {mockAttendance.map((row, index) => (
+              {mockAttendance.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-8 text-sm text-gray-400 font-medium">No institution attendance logs found</td>
+                </tr>
+              ) : mockAttendance.map((row, index) => (
                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white">
                   
                   <td className="px-5 py-4 text-[13px] text-gray-500 font-medium align-middle">

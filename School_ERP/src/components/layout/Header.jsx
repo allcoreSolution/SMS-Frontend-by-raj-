@@ -93,10 +93,7 @@ const Header = ({ toggleSidebar }) => {
     } catch (e) {}
   };
 
-  const [notifications, setNotifications] = useState([
-    { id: 'backup-1', title: 'Backup Completed', desc: 'Automatic database backup was successful', time: '10m ago', unread: false },
-    { id: 'exam-2', title: 'Term 1 Exam Schedule', desc: 'Exam datesheet published for Classes 6-12', time: '1h ago', unread: false }
-  ]);
+  const [notifications, setNotifications] = useState([]);
 
   // Fetch real notifications from backend API
   const fetchRealNotifications = async () => {
@@ -138,9 +135,7 @@ const Header = ({ toggleSidebar }) => {
         });
       }
 
-      if (items.length > 0) {
-        setNotifications(items);
-      }
+      setNotifications(items);
     } catch (err) {
       console.warn('Real notifications fetch fallback', err);
     }
@@ -358,8 +353,8 @@ const Header = ({ toggleSidebar }) => {
           </button>
           
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none">
-              ALL CORE SOLUTION
+            <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none" title={currentUserData?.tenant?.schoolName || currentUserData?.schoolName || 'ALL CORE SOLUTION'}>
+              {currentUserData?.tenant?.schoolName || currentUserData?.schoolName || localStorage.getItem('schoolName') || 'ALL CORE SOLUTION'}
             </span>
             
             {/* Command Center Pill - Desktop */}

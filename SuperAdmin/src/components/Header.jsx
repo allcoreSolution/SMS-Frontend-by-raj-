@@ -3,6 +3,8 @@ import { Menu, Settings, Globe, Bell, Search, ChevronDown, Sparkles, X, LogOut, 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
+import { tenantService } from '../api/tenantService';
+import { toArray } from '../utils/helpers';
 
 const allPages = [
   { label: 'Schools', path: '/schools' },
@@ -58,11 +60,68 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
     setSearchQuery('');
   };
 
-  const notifications = [
-    { title: 'New school registered', desc: 'Ali Public School joined', time: '5 min ago', dot: 'bg-blue-400' },
-    { title: 'Payment received', desc: '₹4,999 from Montessori School', time: '1 hour ago', dot: 'bg-green-400' },
-    { title: 'Server CPU alert', desc: 'CPU usage at 78%', time: '2 hours ago', dot: 'bg-red-400' },
-  ];
+  const [notifications, setNotifications] = useState([]);
+
+  const formatTimeAgo = (dateStr) => {
+    if (!dateStr) return 'Recently';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return `${days}d ago`;
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  const fetchRealNotifications = async () => {
+    try {
+      const [tenantsRes, ticketsRes] = await Promise.allSettled([
+        tenantService.getTenants(),
+        tenantService.getAllTickets()
+      ]);
+
+      const items = [];
+
+      // 1. Real registered schools
+      if (tenantsRes.status === 'fulfilled' && tenantsRes.value?.data) {
+        const schools = toArray(tenantsRes.value);
+        schools.forEach((t) => {
+          items.push({
+            id: `school-${t._id}`,
+            title: `School: ${t.schoolName}`,
+            desc: `${t.email || 'N/A'} • ${t.plan || 'Basic'} Plan • ${t.status || 'Active'}`,
+            time: formatTimeAgo(t.createdAt),
+            dot: t.status === 'Active' ? 'bg-emerald-500' : 'bg-orange-500',
+            link: '/schools'
+          });
+        });
+      }
+
+      // 2. Real support tickets
+      if (ticketsRes.status === 'fulfilled' && ticketsRes.value?.data && Array.isArray(ticketsRes.value.data)) {
+        ticketsRes.value.data.forEach((t) => {
+          items.push({
+            id: `ticket-${t._id}`,
+            title: `Ticket: ${t.title || 'Inquiry'}`,
+            desc: `${t.schoolId?.schoolName || 'School'} • Priority: ${t.priority || 'Normal'}`,
+            time: formatTimeAgo(t.createdAt),
+            dot: 'bg-indigo-500',
+            link: '/support'
+          });
+        });
+      }
+
+      setNotifications(items);
+    } catch (err) {
+      console.warn('SuperAdmin notifications fetch error:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchRealNotifications();
+  }, []);
 
   return (
     <header className={`h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 transition-all duration-300 ease-in-out z-20 shadow-xs ${sidebarOpen ? 'lg:left-64' : 'lg:left-0'}`}>
@@ -176,33 +235,54 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
         <div className="relative">
           <button
             onClick={() => setShowNotif(s => !s)}
-            className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors">
+            className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-slate-100 text-slate-500 hover:text-slate-800 transition-colors"
+            title="Platform Notifications"
+          >
             <Bell className="w-4 h-4" />
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white animate-pulse" />
+            {notifications.length > 0 && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-orange-500 rounded-full ring-2 ring-white animate-pulse" />
+            )}
           </button>
 
           {showNotif && (
             <div className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50 animate-scale-up">
               <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
                 <p className="text-xs font-bold text-slate-800 uppercase tracking-wider">Platform Alerts</p>
-                <span className="text-[10px] bg-orange-50 text-orange-600 font-bold px-2.5 py-0.5 rounded-full border border-orange-200">3 new</span>
+                <span className="text-[10px] bg-orange-50 text-orange-600 font-bold px-2.5 py-0.5 rounded-full border border-orange-200">
+                  {notifications.length} {notifications.length === 1 ? 'alert' : 'alerts'}
+                </span>
               </div>
-              <div className="divide-y divide-slate-100">
-                {notifications.map((n, i) => (
-                  <div key={i} className="px-4 py-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start gap-3">
-                    <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.dot}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-800">{n.title}</p>
-                      <p className="text-xs text-slate-500 truncate mt-0.5">{n.desc}</p>
-                      <p className="text-[10px] text-slate-400 mt-1">{n.time}</p>
-                    </div>
+              <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-6 text-center text-xs text-slate-400 font-medium">
+                    No new platform alerts
                   </div>
-                ))}
+                ) : (
+                  notifications.map((n, i) => (
+                    <div
+                      key={n.id || i}
+                      onClick={() => {
+                        setShowNotif(false);
+                        if (n.link) navigate(n.link);
+                      }}
+                      className="px-4 py-3 hover:bg-slate-50 cursor-pointer transition-colors flex items-start gap-3"
+                    >
+                      <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.dot}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-800">{n.title}</p>
+                        <p className="text-xs text-slate-500 truncate mt-0.5">{n.desc}</p>
+                        <p className="text-[10px] text-slate-400 mt-1">{n.time}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
               <div className="px-4 py-2.5 border-t border-slate-100 text-center bg-slate-50/50">
                 <button
-                  onClick={() => { setShowNotif(false); navigate('/notifications'); }}
-                  className="text-xs text-orange-600 font-bold hover:underline">View all notifications →</button>
+                  onClick={() => { setShowNotif(false); navigate('/schools'); }}
+                  className="text-xs text-orange-600 font-bold hover:underline cursor-pointer">
+                  Manage schools & alerts →
+                </button>
               </div>
             </div>
           )}

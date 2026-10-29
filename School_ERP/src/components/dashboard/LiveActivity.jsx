@@ -5,73 +5,7 @@ import { noticeService } from '../../api/noticeService';
 import { studentService } from '../../api/studentService';
 import { getTranslation } from '../../utils/translations';
 
-const fallbackActivities = [
-  {
-    id: 'f1',
-    type: 'Fees',
-    title: "Dileep Kachhap paid ₹4,000 fee",
-    time: "14h ago",
-    status: "Paid",
-    date: "Today",
-    timeString: "12:00 AM",
-    icon: Check,
-    bg: "bg-emerald-500",
-    statusColor: "text-emerald-700 bg-emerald-50",
-    timestamp: new Date(Date.now() - 14 * 3600 * 1000)
-  },
-  {
-    id: 'f2',
-    type: 'Fees',
-    title: "Rohan Pandey paid ₹40,000 fee",
-    time: "1d ago",
-    status: "Paid",
-    date: "Yesterday",
-    timeString: "12:00 AM",
-    icon: Check,
-    bg: "bg-emerald-500",
-    statusColor: "text-emerald-700 bg-emerald-50",
-    timestamp: new Date(Date.now() - 24 * 3600 * 1000)
-  },
-  {
-    id: 'f3',
-    type: 'Fees',
-    title: "Priya Malhotra paid ₹110,400 fee",
-    time: "1d ago",
-    status: "Paid",
-    date: "Yesterday",
-    timeString: "12:00 AM",
-    icon: Check,
-    bg: "bg-emerald-500",
-    statusColor: "text-emerald-700 bg-emerald-50",
-    timestamp: new Date(Date.now() - 28 * 3600 * 1000)
-  },
-  {
-    id: 'f4',
-    type: 'Notice',
-    title: "Notice — Term 1 Exam Schedule",
-    time: "2d ago",
-    status: "Notice",
-    date: new Date(Date.now() - 48 * 3600 * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
-    timeString: "10:30 AM",
-    icon: Megaphone,
-    bg: "bg-pink-600",
-    statusColor: "text-pink-700 bg-pink-50",
-    timestamp: new Date(Date.now() - 48 * 3600 * 1000)
-  },
-  {
-    id: 'f5',
-    type: 'Admission',
-    title: "Aarav Sharma — Admission Completed",
-    time: "3d ago",
-    status: "Admission",
-    date: new Date(Date.now() - 72 * 3600 * 1000).toLocaleDateString('en-US', { day: 'numeric', month: 'short' }),
-    timeString: "11:45 AM",
-    icon: UserPlus,
-    bg: "bg-teal-500",
-    statusColor: "text-teal-700 bg-teal-50",
-    timestamp: new Date(Date.now() - 72 * 3600 * 1000)
-  }
-];
+const fallbackActivities = [];
 
 const formatRelativeTime = (dateObj) => {
   if (!dateObj || isNaN(new Date(dateObj))) return 'Recent';
@@ -104,9 +38,10 @@ const formatShortTime = (dateObj) => {
 };
 
 const LiveActivity = () => {
+
   const [filter, setFilter] = useState('All');
   const [isExpanded, setIsExpanded] = useState(false);
-  const [activities, setActivities] = useState(fallbackActivities);
+  const [activities, setActivities] = useState([]);
   const [currentLang, setCurrentLang] = useState(() => {
     try {
       const saved = localStorage.getItem('app_language');
@@ -206,6 +141,8 @@ const LiveActivity = () => {
       if (liveItems.length > 0) {
         liveItems.sort((a, b) => b.timestamp - a.timestamp);
         setActivities(liveItems);
+      } else {
+        setActivities([]);
       }
     } catch (err) {
       console.warn("Live activity fallback", err);
@@ -312,8 +249,9 @@ const LiveActivity = () => {
             </div>
           ))
         ) : (
-          <div className="py-12 text-center text-xs text-gray-400">
-            {getTranslation('noModulesFound', currentLang)}
+          <div className="py-10 text-center text-xs text-gray-400 space-y-1">
+            <p className="font-semibold text-gray-600">No activity recorded for this school yet</p>
+            <p className="text-[11px] text-gray-400">Newly registered school — start by admitting students or adding staff.</p>
           </div>
         )}
       </div>

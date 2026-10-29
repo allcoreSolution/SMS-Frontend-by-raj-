@@ -9,109 +9,27 @@ import cbcService from '../../api/cbcService';
 
 const INITIAL_SUBJECTS = ['English', 'Mathematics', 'Integrated Science', 'Social Studies', 'Creative Arts'];
 
-const INITIAL_STRANDS = [
-  {
-    id: 'str-1',
-    subject: 'English',
-    strandName: 'Listening & Speaking',
-    subStrands: [
-      {
-        id: 'sub-1-1',
-        name: 'Oral Presentation & Public Speaking',
-        outcome: 'Learner presents ideas fluently with appropriate tone, volume, and engaging body language.',
-        lvl4: 'Speaks with commanding confidence, captivating modulation, and sophisticated vocabulary.',
-        lvl3: 'Speaks clearly with appropriate pace, audible volume, and eye contact.',
-        lvl2: 'Speaks with occasional hesitation, needing occasional teacher prompting.',
-        lvl1: 'Struggles to articulate ideas audibly without continuous one-on-one assistance.'
-      },
-      {
-        id: 'sub-1-2',
-        name: 'Active Listening & Constructive Dialogue',
-        outcome: 'Learner engages in collaborative conversations, builds upon peer perspectives, and poses relevant questions.',
-        lvl4: 'Demonstrates outstanding empathy and synthesizes multiple group ideas thoughtfully.',
-        lvl3: 'Listens attentively and contributes constructive responses in discussions.',
-        lvl2: 'Listens well but hesitates to participate without being directly addressed.',
-        lvl1: 'Frequently distracted and interrupts others during dialogues.'
-      }
-    ]
-  },
-  {
-    id: 'str-2',
-    subject: 'English',
-    strandName: 'Reading & Literature Analysis',
-    subStrands: [
-      {
-        id: 'sub-2-1',
-        name: 'Fluency & Expressive Reading',
-        outcome: 'Learner reads grade-appropriate literary texts smoothly with intonation and self-correction.',
-        lvl4: 'Reads expressively, adapts tone to character voices, and self-corrects instantly.',
-        lvl3: 'Reads grade-level passages accurately with good inflection and tempo.',
-        lvl2: 'Reads word-by-word with occasional pauses on multi-syllabic words.',
-        lvl1: 'Requires phonetic intervention and phonemic decoding assistance.'
-      },
-      {
-        id: 'sub-2-2',
-        name: 'Critical Inferences & Theme Evaluation',
-        outcome: 'Learner infers author intent, identifies themes, and cites textual evidence.',
-        lvl4: 'Analyzes subtle metaphors and draws profound real-world parallels.',
-        lvl3: 'Identifies central themes and provides supporting text citations.',
-        lvl2: 'Identifies explicit plot points but struggles with implied themes.',
-        lvl1: 'Cannot state the main idea without guided questioning.'
-      }
-    ]
-  },
-  {
-    id: 'str-3',
-    subject: 'Mathematics',
-    strandName: 'Numbers & Computational Thinking',
-    subStrands: [
-      {
-        id: 'sub-3-1',
-        name: 'Place Value & Real-world Estimation',
-        outcome: 'Learner decomposes whole numbers, models decimals, and applies rounding strategies.',
-        lvl4: 'Applies place value principles in financial literacy and complex multi-step problems.',
-        lvl3: 'Decomposes multi-digit numbers and rounds correctly to specified place values.',
-        lvl2: 'Requires physical base-ten blocks to understand decimal place values.',
-        lvl1: 'Struggles with place value ordering and zeroes in numbers.'
-      },
-      {
-        id: 'sub-3-2',
-        name: 'Fractional Operations & Equivalence',
-        outcome: 'Learner calculates operations with fractions and converts fractions to percentages.',
-        lvl4: 'Solves non-routine fractional word problems and justifies logic algebraically.',
-        lvl3: 'Performs operations on like and unlike fractions accurately.',
-        lvl2: 'Solves operations with visual fraction tiles or bar models.',
-        lvl1: 'Requires step-by-step guidance to find common denominators.'
-      }
-    ]
-  },
-  {
-    id: 'str-4',
-    subject: 'Integrated Science',
-    strandName: 'Living Things & Biological Systems',
-    subStrands: [
-      {
-        id: 'sub-4-1',
-        name: 'Organism Adaptations & Ecosystem Dynamics',
-        outcome: 'Learner investigates physiological adaptations of plants and animals across biomes.',
-        lvl4: 'Constructs innovative functional biome models showcasing trophic energy flow.',
-        lvl3: 'Classifies organisms and explains specific survival adaptations accurately.',
-        lvl2: 'Lists common organism traits but confuses adaptation mechanisms.',
-        lvl1: 'Cannot distinguish between structural and behavioral adaptations.'
-      }
-    ]
-  }
-];
+const INITIAL_STRANDS = [];
 
 const StrandsAndOutcomes = () => {
   const navigate = useNavigate();
   const [selectedSubject, setSelectedSubject] = useState('English');
   const [strands, setStrands] = useState(() => {
-    const saved = localStorage.getItem('cbc_strands');
-    return saved ? JSON.parse(saved) : INITIAL_STRANDS;
+    try {
+      const saved = localStorage.getItem('cbc_strands');
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.some(s => s.id === 'str-1' || s.id === 'str-2')) {
+        localStorage.removeItem('cbc_strands');
+        return [];
+      }
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      return [];
+    }
   });
 
-  const [expandedStrandId, setExpandedStrandId] = useState('str-1');
+  const [expandedStrandId, setExpandedStrandId] = useState(null);
   const [isAddStrandOpen, setIsAddStrandOpen] = useState(false);
   const [newStrandName, setNewStrandName] = useState('');
 

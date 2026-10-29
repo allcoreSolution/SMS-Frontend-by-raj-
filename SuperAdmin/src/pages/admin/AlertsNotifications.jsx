@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { Bell, Plus, Edit, Trash2, Send, X, Save, AlertTriangle } from 'lucide-react';
 
-const initAlerts = [
-  { id: 1, title: 'Server CPU High', message: 'CPU usage exceeded 80%', type: 'System', severity: 'High', sent: 'Sep 01, 10:15 AM', recipients: 'Super Admin' },
-  { id: 2, title: 'New School Registered', message: 'Ali Public School has registered', type: 'Platform', severity: 'Info', sent: 'Aug 31, 09:30 AM', recipients: 'All Admins' },
-  { id: 3, title: 'Payment Failed', message: 'Payment failed for Green Valley School', type: 'Billing', severity: 'Medium', sent: 'Aug 30, 02:45 PM', recipients: 'Finance Team' },
-  { id: 4, title: 'Backup Failed', message: 'Scheduled backup did not complete', type: 'System', severity: 'High', sent: 'Aug 29, 02:05 AM', recipients: 'Super Admin' },
-  { id: 5, title: 'Subscription Expiring', message: '12 schools expire in 7 days', type: 'Billing', severity: 'Medium', sent: 'Aug 28, 08:00 AM', recipients: 'Sales Team' },
-];
+const initAlerts = [];
 
 const initTemplates = [
   { id: 1, name: 'New School Welcome', trigger: 'On school registration', channel: 'Email + SMS', active: true },

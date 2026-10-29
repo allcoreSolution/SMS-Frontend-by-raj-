@@ -92,30 +92,29 @@ const Login = () => {
         navigate('/');
       }
     } catch (err) {
-      // Graceful offline demo fallback
-      const isTeacherCred = (formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com' || formData.identifier === 'amit.sharma@school.edu') && formData.password === 'admin@123';
-      const isStaffCred = (formData.identifier === 'staff@school.edu' || formData.identifier === 'admin@school.edu' || formData.identifier === 'EMP-101') && formData.password === 'admin@123';
+      const isTeacherCred = (formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
+      const isStaffCred = (formData.identifier === 'staff@school.edu' || formData.identifier === 'admin@school.edu') && formData.password === 'admin@123';
 
       if (isTeacherCred || isStaffCred || selectedRole) {
         const isStaffUser = selectedRole === 'staff' || isStaffCred;
         const demoUser = isStaffUser ? {
           _id: '6ac78a6d1125ffc6d7987bbb',
-          name: 'Rajesh Verma',
-          fullName: 'Rajesh Verma',
+          name: 'Staff Member',
+          fullName: 'Staff Member',
           email: formData.identifier || 'staff@school.edu',
           role: 'Staff',
-          designation: 'Senior Administrative Officer',
-          department: 'Administration & HR',
-          token: 'demo_staff_session_token_2026'
+          designation: 'Staff Faculty',
+          department: 'Administration',
+          token: 'staff_session_token'
         } : {
           _id: '6ac78a6d1125ffc6d7987aaa',
-          name: 'Amit Sharma',
-          fullName: 'Amit Sharma',
-          email: formData.identifier || 'amit.sharma@school.edu',
+          name: 'Teacher Faculty',
+          fullName: 'Teacher Faculty',
+          email: formData.identifier || 'ryadavy498@gmail.com',
           role: 'Teacher',
-          designation: 'Senior PGT Mathematics',
-          department: 'Science & Math',
-          token: 'demo_teacher_session_token_2026'
+          designation: 'Faculty',
+          department: 'Academics',
+          token: 'teacher_session_token'
         };
 
         localStorage.setItem('token', demoUser.token);
@@ -124,7 +123,7 @@ const Login = () => {
         Swal.fire({
           icon: 'success',
           title: `${demoUser.role} Access Granted`,
-          text: `Welcome ${demoUser.name} (${demoUser.designation})`,
+          text: `Welcome ${demoUser.name}`,
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
@@ -150,46 +149,14 @@ const Login = () => {
     }
   };
 
-  // 1-Click Instant Demo Login
+  // Quick Fill Login
   const quickDemoLogin = (role) => {
     handleSelectRole(role);
-    setTimeout(() => {
-      const isStaff = role === 'staff';
-      const demoUser = isStaff ? {
-        _id: '6ac78a6d1125ffc6d7987bbb',
-        name: 'Rajesh Verma',
-        fullName: 'Rajesh Verma',
-        email: 'staff@school.edu',
-        role: 'Staff',
-        designation: 'Senior Administrative Officer',
-        department: 'Administration & HR',
-        token: 'demo_staff_session_token_2026'
-      } : {
-        _id: '6ac78a6d1125ffc6d7987aaa',
-        name: 'Amit Sharma',
-        fullName: 'Amit Sharma',
-        email: 'ryadavy498@gmail.com',
-        role: 'Teacher',
-        designation: 'Senior PGT Mathematics',
-        department: 'Science & Math',
-        token: 'demo_teacher_session_token_2026'
-      };
-
-      localStorage.setItem('token', demoUser.token);
-      localStorage.setItem('user', JSON.stringify(demoUser));
-
-      Swal.fire({
-        icon: 'success',
-        title: `${demoUser.role} Login Successful`,
-        text: `Logged in as ${demoUser.name} (${demoUser.designation})`,
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1800
-      });
-
-      navigate('/');
-    }, 100);
+    if (role === 'teacher') {
+      setFormData({ identifier: 'ryadavy498@gmail.com', password: 'admin@123' });
+    } else {
+      setFormData({ identifier: 'staff@school.edu', password: 'admin@123' });
+    }
   };
 
   const handleForgotPassword = async () => {
@@ -211,13 +178,11 @@ const Login = () => {
           didOpen: () => Swal.showLoading()
         });
 
-        const res = await fetch('http://localhost:5050/api/auth/forgot-password', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: resetEmail })
-        }).then(r => r.json());
+        const res = await axiosInstance.post('/auth/forgot-password', {
+          email: resetEmail
+        }).then(r => r.data);
 
-        if (res.success) {
+        if (res?.success) {
           const { value: formValues } = await Swal.fire({
             title: 'Enter OTP & New Password',
             html: `
@@ -251,15 +216,11 @@ const Login = () => {
               didOpen: () => Swal.showLoading()
             });
 
-            const resetRes = await fetch('http://localhost:5050/api/auth/reset-password', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                email: resetEmail, 
-                otp: formValues.otp, 
-                newPassword: formValues.newPassword 
-              })
-            }).then(r => r.json());
+            const resetRes = await axiosInstance.post('/auth/reset-password', {
+              email: resetEmail, 
+              otp: formValues.otp, 
+              newPassword: formValues.newPassword 
+            }).then(r => r.data);
 
             if (resetRes.success) {
               Swal.fire({
@@ -550,8 +511,8 @@ const Login = () => {
                   </div>
                   <ArrowRight className="w-2.5 h-2.5 text-slate-300 group-hover:text-[#ff5c0a] transition-colors" />
                 </div>
-                <p className="text-[9.5px] font-bold text-slate-700 truncate">Amit Sharma</p>
-                <p className="text-[8.5px] text-slate-500 truncate">PGT Mathematics</p>
+                <p className="text-[9.5px] font-bold text-slate-700 truncate">ryadavy498@gmail.com</p>
+                <p className="text-[8.5px] text-slate-500 truncate">Teacher Portal</p>
               </button>
 
               {/* Staff Demo Card */}
@@ -571,8 +532,8 @@ const Login = () => {
                   </div>
                   <ArrowRight className="w-2.5 h-2.5 text-slate-300 group-hover:text-indigo-600 transition-colors" />
                 </div>
-                <p className="text-[9.5px] font-bold text-slate-700 truncate">Rajesh Verma</p>
-                <p className="text-[8.5px] text-slate-500 truncate">Admin Officer</p>
+                <p className="text-[9.5px] font-bold text-slate-700 truncate">staff@school.edu</p>
+                <p className="text-[8.5px] text-slate-500 truncate">Staff Portal</p>
               </button>
             </div>
           </div>

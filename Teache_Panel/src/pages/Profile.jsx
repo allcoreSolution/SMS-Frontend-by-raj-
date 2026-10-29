@@ -33,169 +33,66 @@ const Profile = () => {
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   const isStaff = storedUser.role === 'Staff';
 
-  // Real Profile State with Staff / Teacher Seed Data
+  // Real Profile State
   const [profileData, setProfileData] = useState(() => {
-    if (isStaff) {
-      return {
-        personalInfo: {
-          fullName: storedUser.fullName || storedUser.name || 'Rajesh Verma',
-          staffId: storedUser.staffId || storedUser.id || 'EMP-101',
-          biometricId: 'BIO-GATE-01',
-          role: 'Staff',
-          designation: storedUser.designation || 'Senior Administrative Officer',
-          department: storedUser.department || 'Administration & HR',
-          gender: 'Male',
-          dateOfBirth: '15/08/1988',
-          dateOfJoining: '01/07/2020',
-          email: storedUser.email || 'staff@school.edu',
-          phone: '+91 98101 23456',
-          maritalStatus: 'Married',
-          fathersName: 'Mahesh Verma',
-          mothersName: 'Kavita Verma',
-          qualification: 'MBA in HR & Institutional Admin, B.Com (Hons.)',
-          workExperience: '10+ Years in Institutional Administration & School Operations',
-          note: 'Head of office administration, staff rosters, campus procurement and educational board compliance filings.',
-          photo: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80'
-        },
-        employmentDetails: {
-          employeeCode: 'EMP-101',
-          employmentType: 'Permanent / Full-Time',
-          status: 'Active',
-          confirmationDate: '01/01/2021',
-          reportingManager: 'Dr. Alok Verma (Principal & Director)'
-        },
-        emergencyContact: {
-          contactName: 'Sunita Verma (Spouse)',
-          contactPhone: '+91 98765 43210',
-          bloodGroup: 'B+'
-        },
-        addressDetails: {
-          currentAddress: 'Flat 402, Royal Palms Residency, Civil Lines, Delhi - 110054',
-          permanentAddress: 'House 14, Tagore Garden, Model Town, Delhi - 110009'
-        },
-        bankDetails: {
-          accountTitle: 'Rajesh Verma',
-          bankName: 'HDFC Bank Ltd.',
-          branchName: 'Civil Lines Branch',
-          accountNumber: '50100492817291',
-          ifscCode: 'HDFC0001234'
-        },
-        socialMedia: {
-          facebook: 'https://facebook.com',
-          twitter: 'https://twitter.com',
-          linkedin: 'https://linkedin.com',
-          instagram: 'https://instagram.com'
-        },
-        payroll: {
-          basicSalary: '₹42,000.00',
-          hra: '₹10,080.00',
-          taAllowance: '₹5,000.00',
-          medicalAllowance: '₹3,000.00',
-          pfDeduction: '₹5,040.00',
-          tdsDeduction: '₹2,500.00',
-          netSalary: '₹54,200.00',
-          recentPayslips: [
-            { month: 'October 2026', gross: '₹78,080', deductions: '₹23,880', net: '₹54,200', date: '31/10/2026', status: 'Credited' },
-            { month: 'September 2026', gross: '₹78,080', deductions: '₹23,880', net: '₹54,200', date: '30/09/2026', status: 'Credited' },
-            { month: 'August 2026', gross: '₹78,080', deductions: '₹23,880', net: '₹54,200', date: '31/08/2026', status: 'Credited' }
-          ]
-        },
-        leaves: {
-          balances: [
-            { type: 'Casual Leave (CL)', total: 12, used: 3, remaining: 9 },
-            { type: 'Medical Leave (ML)', total: 10, used: 1, remaining: 9 },
-            { type: 'Earned Leave (EL)', total: 15, used: 5, remaining: 10 }
-          ],
-          history: [
-            { leaveType: 'Casual Leave', startDate: '12/10/2026', endDate: '13/10/2026', days: 2, reason: 'Family Function', status: 'Approved' },
-            { leaveType: 'Medical Leave', startDate: '04/09/2026', endDate: '05/09/2026', days: 2, reason: 'Viral Fever', status: 'Approved' }
-          ]
-        },
-        attendance: {
-          present: 22,
-          absent: 0,
-          late: 1,
-          halfDay: 0,
-          totalWorkingDays: 23,
-          percentage: '96.5%'
-        },
-        documents: [
-          { name: 'Official Appointment Letter', type: 'PDF Document', size: '1.4 MB', uploadDate: '01/07/2020' },
-          { name: 'Staff Identity Proof & Biometric Card', type: 'Scanned Card', size: '820 KB', uploadDate: '05/07/2020' },
-          { name: 'MBA Degree & Educational Certificates', type: 'PDF Bundle', size: '3.8 MB', uploadDate: '01/07/2020' },
-          { name: 'EPF & Bank Mandate Copy', type: 'PDF Document', size: '950 KB', uploadDate: '10/07/2020' }
-        ],
-        career: [
-          { title: 'Senior Administrative Officer', duration: 'Jul 2022 – Present', organization: 'School ERP Academy', role: 'Staff Operations Head' },
-          { title: 'Administrative Officer', duration: 'Jul 2020 – Jun 2022', organization: 'School ERP Academy', role: 'General Administration' }
-        ],
-        appraisals: [
-          { year: '2025-2026', rating: '4.8 / 5.0 (Outstanding)', remarks: 'Excellent operational leadership during annual accreditation and audit.' },
-          { year: '2024-2025', rating: '4.7 / 5.0 (Exceeds Expectations)', remarks: 'Streamlined staff duty roster and digitized leave processes.' }
-        ],
-        qrCode: '',
-        barcode: null
-      };
-    }
-
     return {
       personalInfo: {
-        fullName: storedUser.fullName || storedUser.username || 'Amit Sharma',
-        staffId: storedUser.id || 'STF-101',
-        biometricId: 'BIO-9821',
-        role: storedUser.role || 'Teacher',
-        designation: 'Senior PGT Mathematics',
-        department: 'Science & Math',
-        gender: 'Male',
-        dateOfBirth: '19/10/1990',
-        dateOfJoining: '14/06/2021',
-        email: storedUser.email || 'amit.sharma@school.edu',
-        phone: '9876543210',
-        maritalStatus: 'Married',
-        fathersName: 'Ramesh Sharma',
-        mothersName: 'Sunita Sharma',
-        qualification: 'M.Sc. Mathematics, B.Ed. (Gold Medalist)',
-        workExperience: '8+ Years Teaching Experience',
-        note: 'Specialist in Senior Secondary Calculus, Algebra and IIT-JEE Foundation',
-        photo: 'https://i.pravatar.cc/150?img=11'
+        fullName: storedUser.fullName || storedUser.name || storedUser.username || (isStaff ? 'Staff Member' : 'Teacher Faculty'),
+        staffId: storedUser.staffId || storedUser.id || storedUser._id || '',
+        biometricId: '',
+        role: storedUser.role || (isStaff ? 'Staff' : 'Teacher'),
+        designation: storedUser.designation || (isStaff ? 'Staff' : 'Teacher Faculty'),
+        department: storedUser.department || (isStaff ? 'Administration' : 'Academic'),
+        gender: '',
+        dateOfBirth: '',
+        dateOfJoining: '',
+        email: storedUser.email || '',
+        phone: storedUser.phone || '',
+        maritalStatus: '',
+        fathersName: '',
+        mothersName: '',
+        qualification: '',
+        workExperience: '',
+        note: '',
+        photo: ''
       },
       employmentDetails: {
-        employeeCode: 'EMP-101',
-        employmentType: 'Permanent / Full-Time',
+        employeeCode: storedUser.staffId || '',
+        employmentType: 'Full-Time',
         status: 'Active',
-        confirmationDate: '14/12/2021',
-        reportingManager: 'Dr. Alok Verma (Principal)'
+        confirmationDate: '',
+        reportingManager: ''
       },
       emergencyContact: {
-        contactName: 'Sunita Sharma (Mother)',
-        contactPhone: '9876543299',
-        bloodGroup: 'O+'
+        contactName: '',
+        contactPhone: '',
+        bloodGroup: ''
       },
       addressDetails: {
-        currentAddress: 'Flat 402, Royal Palms Residency, Civil Lines, Delhi - 110054',
-        permanentAddress: 'House 14, Tagore Garden, Model Town, Delhi - 110009'
+        currentAddress: '',
+        permanentAddress: ''
       },
       bankDetails: {
-        accountTitle: 'Amit Sharma',
-        bankName: 'HDFC Bank Ltd.',
-        branchName: 'Civil Lines Branch',
-        accountNumber: '50100492817291',
-        ifscCode: 'HDFC0001234'
+        accountTitle: storedUser.fullName || storedUser.name || '',
+        bankName: '',
+        branchName: '',
+        accountNumber: '',
+        ifscCode: ''
       },
       socialMedia: {
-        facebook: 'https://facebook.com',
-        twitter: 'https://twitter.com',
-        linkedin: 'https://linkedin.com',
-        instagram: 'https://instagram.com'
+        facebook: '',
+        twitter: '',
+        linkedin: '',
+        instagram: ''
       },
       payroll: {
-        basicSalary: '₹42,000.00',
-        hra: '₹10,500.00',
-        taAllowance: '₹2,500.00',
-        medicalAllowance: '₹2,000.00',
-        pfDeduction: '₹4,800.00',
-        tdsDeduction: '₹2,200.00',
-        netSalary: '₹50,000.00',
+        basicSalary: '₹0.00',
+        hra: '₹0.00',
+        taAllowance: '₹0.00',
+        medicalAllowance: '₹0.00',
+        pfDeduction: '₹0.00',
+        tdsDeduction: '₹0.00',
+        netSalary: '₹0.00',
         recentPayslips: []
       },
       leaves: {
@@ -203,12 +100,12 @@ const Profile = () => {
         history: []
       },
       attendance: {
-        present: 22,
-        absent: 1,
-        late: 1,
+        present: 0,
+        absent: 0,
+        late: 0,
         halfDay: 0,
-        totalWorkingDays: 24,
-        percentage: '92%'
+        totalWorkingDays: 0,
+        percentage: '0%'
       },
       documents: [],
       career: [],
@@ -221,18 +118,14 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      if (isStaff) {
-        setLoading(false);
-        return;
-      }
-      const res = await teacherService.getProfile({ staffId: storedUser.id || 'STF-101', email: storedUser.email });
+      const res = await teacherService.getProfile({ staffId: storedUser.id || storedUser.staffId, email: storedUser.email });
       if (res && res.success && res.data) {
         setProfileData(prev => ({
           ...prev,
           ...res.data,
           personalInfo: {
             ...prev.personalInfo,
-            ...res.data.personalInfo
+            ...(res.data.personalInfo || {})
           }
         }));
       }
@@ -250,7 +143,7 @@ const Profile = () => {
   const { personalInfo, employmentDetails, emergencyContact, addressDetails, bankDetails, socialMedia, payroll, leaves, attendance, documents, career, appraisals, qrCode } = profileData;
 
   // Real Code 128 barcode calculation
-  const barcodeResult = getCode128Bars(personalInfo.staffId || 'STF-101');
+  const barcodeResult = getCode128Bars(personalInfo.staffId || 'STAFF');
 
   // Open QR code preview modal
   const handleViewQRCode = () => {

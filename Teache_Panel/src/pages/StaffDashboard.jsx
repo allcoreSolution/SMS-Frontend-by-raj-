@@ -45,85 +45,33 @@ export default function StaffDashboard() {
       }
     } catch (_) {}
     return {
-      fullName: 'Rajesh Verma',
-      name: 'Rajesh Verma',
-      email: 'staff@school.edu',
+      fullName: 'Staff Member',
+      name: 'Staff Member',
+      email: '',
       role: 'Staff',
-      designation: 'Senior Administrative Officer',
-      department: 'Administration & HR',
-      staffId: 'EMP-101'
+      designation: 'Staff Faculty',
+      department: 'Staff Department',
+      staffId: ''
     };
   });
 
-  const staffName = staffUser.fullName || staffUser.name || 'Rajesh Verma';
-  const staffDesignation = staffUser.designation || 'Senior Administrative Officer';
-  const staffDept = staffUser.department || 'Administration & HR';
-  const staffId = staffUser.staffId || staffUser.empId || 'EMP-101';
+  const staffName = staffUser.fullName || staffUser.name || 'Staff Member';
+  const staffDesignation = staffUser.designation || 'Staff Faculty';
+  const staffDept = staffUser.department || 'Administration';
+  const staffId = staffUser.staffId || staffUser.empId || '';
 
   const handleDownloadPayslip = () => {
     Swal.fire({
-      title: '<strong>Institutional Payslip — October 2026</strong>',
+      title: '<strong>Institutional Payslip</strong>',
       html: `
-        <div style="text-align: left; font-size: 12px; line-height: 1.6; padding: 6px; font-family: system-ui, sans-serif;">
-          <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <h4 style="margin: 0; font-size: 15px; font-weight: bold; color: #1e1b4b;">SCHOOL ERP ACADEMY</h4>
-              <p style="margin: 2px 0; color: #6b7280; font-size: 11px;">Sector 4, Institutional Area, New Delhi</p>
-            </div>
-            <div style="text-align: right;">
-              <span style="background: #e0e7ff; color: #3730a3; padding: 3px 8px; font-weight: bold; font-size: 11px; border-radius: 4px;">SALARY SLIP</span>
-              <p style="margin: 2px 0; color: #4b5563; font-size: 10px;">October 2026</p>
-            </div>
-          </div>
-          <table style="width: 100%; font-size: 11px; margin-bottom: 10px;">
-            <tr><td style="color:#6b7280;">Employee Name:</td><td><strong>${staffName}</strong></td><td style="color:#6b7280;">Staff ID:</td><td><strong>${staffId}</strong></td></tr>
-            <tr><td style="color:#6b7280;">Designation:</td><td>${staffDesignation}</td><td style="color:#6b7280;">Department:</td><td>${staffDept}</td></tr>
-            <tr><td style="color:#6b7280;">Bank Account:</td><td>HDFC Bank (****7291)</td><td style="color:#6b7280;">Days Present:</td><td>22 / 23 Days</td></tr>
-          </table>
-          <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 12px; border: 1px solid #e5e7eb;">
-            <tr style="background: #f8fafc; font-weight: bold;">
-              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: left;">Earnings</th>
-              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: right;">Amount (₹)</th>
-              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: left;">Deductions</th>
-              <th style="padding: 6px; border: 1px solid #e5e7eb; text-align: right;">Amount (₹)</th>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Basic Pay</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">42,000.00</td>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">EPF Contribution</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">5,040.00</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Dearness (DA 50%)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">21,000.00</td>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Income Tax (TDS)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">2,500.00</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">House Rent Allowance (HRA)</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">10,080.00</td>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Salary Advance EMI</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">2,500.00</td>
-            </tr>
-            <tr>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Special Allowance</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">5,000.00</td>
-              <td style="padding: 4px 6px; border: 1px solid #e5e7eb;">Professional Tax</td><td style="padding: 4px 6px; border: 1px solid #e5e7eb; text-align: right;">200.00</td>
-            </tr>
-            <tr style="background: #faf5ff; font-weight: bold;">
-              <td style="padding: 6px; border: 1px solid #e5e7eb;">Gross Earnings</td><td style="padding: 6px; border: 1px solid #e5e7eb; text-align: right; color:#4f46e5;">₹78,080.00</td>
-              <td style="padding: 6px; border: 1px solid #e5e7eb;">Total Deductions</td><td style="padding: 6px; border: 1px solid #e5e7eb; text-align: right; color:#e11d48;">₹10,240.00</td>
-            </tr>
-          </table>
-          <div style="background: #ecfdf5; border: 1px solid #a7f3d0; padding: 8px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: bold; color: #065f46;">Net Disbursed Take-Home Salary:</span>
-            <span style="font-size: 16px; font-weight: 900; color: #047857;">₹54,200.00</span>
-          </div>
-          <p style="text-align: center; color: #9ca3af; font-size: 10px; margin-top: 10px;">Digitally signed & authorized by Directorate of Human Resources.</p>
+        <div style="text-align: center; padding: 20px; font-family: system-ui, sans-serif;">
+          <p style="font-size: 14px; color: #475569; font-weight: 500;">No generated payslip found for current cycle.</p>
+          <p style="font-size: 12px; color: #94a3b8; margin-top: 8px;">Please contact the Accounts & HR Department once monthly payroll is processed.</p>
         </div>
       `,
-      showCancelButton: true,
-      confirmButtonText: 'Print / Save PDF',
-      cancelButtonText: 'Close',
-      confirmButtonColor: '#4f46e5',
-      cancelButtonColor: '#6b7280'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.print();
-      }
+      icon: 'info',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#4f46e5'
     });
   };
 
@@ -132,9 +80,9 @@ export default function StaffDashboard() {
     {
       id: 'attendance',
       title: t('myAttendance', 'My Attendance'),
-      value: '96.5%',
-      subtitle: t('presentDays', '22 / 23 Days Present'),
-      badge: t('onTrack', 'On Track'),
+      value: '0%',
+      subtitle: t('presentDays', '0 / 0 Days Present'),
+      badge: t('onTrack', 'Normal'),
       badgeColor: 'bg-emerald-100 text-emerald-700',
       icon: Clock,
       iconBg: 'bg-gradient-to-tr from-emerald-600 to-teal-500',
@@ -143,8 +91,8 @@ export default function StaffDashboard() {
     {
       id: 'leave',
       title: t('leaveBalance', 'Leave Balance'),
-      value: '28 Days',
-      subtitle: t('leaveBreakdown', 'CL: 9 · ML: 9 · EL: 10'),
+      value: '0 Days',
+      subtitle: t('leaveBreakdown', 'CL: 0 · ML: 0 · EL: 0'),
       badge: t('available', 'Available'),
       badgeColor: 'bg-blue-100 text-blue-700',
       icon: Calendar,
@@ -154,10 +102,10 @@ export default function StaffDashboard() {
     {
       id: 'salary',
       title: t('currentSalary', 'Latest Net Salary'),
-      value: '₹54,200',
-      subtitle: t('disbursedBank', 'Disbursed to HDFC Bank'),
-      badge: t('credited', 'Credited'),
-      badgeColor: 'bg-purple-100 text-purple-700',
+      value: '₹0',
+      subtitle: t('disbursedBank', 'No recent payout'),
+      badge: t('credited', 'Pending'),
+      badgeColor: 'bg-slate-100 text-slate-700',
       icon: DollarSign,
       iconBg: 'bg-gradient-to-tr from-purple-600 to-violet-500',
       link: '/my-profile'
@@ -165,10 +113,10 @@ export default function StaffDashboard() {
     {
       id: 'loans',
       title: t('activeLoans', 'Active Advance / Loan'),
-      value: '₹15,000',
-      subtitle: t('monthlyEmi', 'EMI: ₹2,500/mo · 6 left'),
-      badge: t('inRepayment', 'Repayment Active'),
-      badgeColor: 'bg-amber-100 text-amber-700',
+      value: '₹0',
+      subtitle: t('monthlyEmi', 'No active loan'),
+      badge: t('inRepayment', 'No dues'),
+      badgeColor: 'bg-slate-100 text-slate-700',
       icon: CreditCard,
       iconBg: 'bg-gradient-to-tr from-amber-600 to-orange-500',
       link: '/loans'
@@ -193,7 +141,7 @@ export default function StaffDashboard() {
       color: 'text-purple-600 bg-purple-50 hover:border-purple-300',
       iconBg: 'bg-purple-100',
       path: '/loans',
-      badge: 'Active: ₹15k'
+      badge: 'Loans Desk'
     },
     {
       title: t('dutyTimetable', 'Staff Duty & Work Roster'),
@@ -202,7 +150,7 @@ export default function StaffDashboard() {
       color: 'text-indigo-600 bg-indigo-50 hover:border-indigo-300',
       iconBg: 'bg-indigo-100',
       path: '/timetable',
-      badge: '09:00 - 05:00'
+      badge: 'Roster'
     },
     {
       title: t('payslips', 'Payslip & Compensation'),
@@ -211,7 +159,7 @@ export default function StaffDashboard() {
       color: 'text-emerald-600 bg-emerald-50 hover:border-emerald-300',
       iconBg: 'bg-emerald-100',
       path: '/my-profile',
-      badge: 'Oct 2026'
+      badge: 'Payslips'
     },
     {
       title: t('healthRecords', 'Health & Medical Desk'),
@@ -220,7 +168,7 @@ export default function StaffDashboard() {
       color: 'text-rose-600 bg-rose-50 hover:border-rose-300',
       iconBg: 'bg-rose-100',
       path: '/health',
-      badge: 'Blood: B+'
+      badge: 'Health Desk'
     },
     {
       title: t('complaints', 'Grievances & Helpdesk'),
@@ -238,7 +186,7 @@ export default function StaffDashboard() {
       color: 'text-sky-600 bg-sky-50 hover:border-sky-300',
       iconBg: 'bg-sky-100',
       path: '/messages',
-      badge: '3 New'
+      badge: 'Notices'
     },
     {
       title: t('profileCard', 'Staff ID Card & Profile'),
@@ -247,116 +195,110 @@ export default function StaffDashboard() {
       color: 'text-teal-600 bg-teal-50 hover:border-teal-300',
       iconBg: 'bg-teal-100',
       path: '/my-profile',
-      badge: staffId
+      badge: staffId || 'Staff'
     }
   ];
 
-  // Weekly Punch Logs (Mock realistic biometric data)
-  const punchLogs = [
-    { day: 'Mon, 26 Oct', inTime: '08:58 AM', outTime: '04:30 PM', total: '7h 32m', status: 'Present' },
-    { day: 'Tue, 27 Oct', inTime: '08:55 AM', outTime: '04:32 PM', total: '7h 37m', status: 'Present' },
-    { day: 'Wed, 28 Oct', inTime: '08:52 AM', outTime: '04:30 PM', total: '7h 38m', status: 'Present' },
-    { day: 'Thu, 29 Oct', inTime: '08:56 AM', outTime: '04:35 PM', total: '7h 39m', status: 'Present' },
-    { day: 'Fri, 30 Oct', inTime: '08:54 AM', outTime: 'Active (On Duty)', total: 'In Progress', status: 'Active' }
-  ];
+  // Weekly Punch Logs
+  const punchLogs = [];
 
   return (
-    <div className="space-y-6 pb-12 animate-fade-in select-none">
+    <div className="space-y-3.5 sm:space-y-4.5 p-3 sm:p-4 lg:p-5 max-w-7xl mx-auto pb-12 animate-fade-in select-none">
 
       {/* ── 1. STAFF HERO BANNER ── */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 text-white p-6 sm:p-8 shadow-xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 text-white p-4 sm:p-5 shadow-lg">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-60 h-60 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-semibold text-slate-300">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[11px] font-semibold text-slate-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span>{t('staffPortal', 'Staff & Administration Portal')}</span>
               <span className="text-slate-400">·</span>
               <span className="text-amber-300 font-bold">{staffId}</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight text-white font-serif">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight text-white font-serif">
               {t('welcomeGreeting', 'Welcome back')}, <span className="bg-gradient-to-r from-indigo-300 to-amber-200 bg-clip-text text-transparent">{staffName}</span>!
             </h1>
 
-            <p className="text-slate-300 text-xs sm:text-sm font-medium max-w-2xl leading-relaxed">
+            <p className="text-slate-300 text-xs font-medium max-w-2xl leading-relaxed">
               {staffDesignation} &bull; <span className="text-white font-semibold">{staffDept}</span> &bull; {t('sessionLabel', 'Session 2026-2027')}
             </p>
 
-            <div className="flex flex-wrap items-center gap-2.5 pt-2">
-              <span className="text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3 py-1 rounded-xl font-bold flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                {t('punchInSuccess', 'Biometric In: 08:54 AM (On Time)')}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-[11px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2.5 py-0.5 rounded-lg font-bold flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                {t('punchInSuccess', 'Biometric Active')}
               </span>
-              <span className="text-xs bg-white/10 text-slate-200 px-3 py-1 rounded-xl font-medium">
-                {t('shiftTime', 'General Shift: 09:00 AM - 05:00 PM')}
+              <span className="text-[11px] bg-white/10 text-slate-200 px-2.5 py-0.5 rounded-lg font-medium">
+                {t('shiftTime', 'General Shift')}
               </span>
             </div>
           </div>
 
           {/* Quick Hero Actions */}
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
             <Link
               to="/leave"
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] hover:from-[#e55208] hover:to-[#ff6a19] text-white text-xs font-bold shadow-lg shadow-orange-500/25 flex items-center gap-2 transition-transform active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] hover:from-[#e55208] hover:to-[#ff6a19] text-white text-xs font-bold shadow-md shadow-orange-500/20 flex items-center gap-1.5 transition-transform active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3.5 h-3.5" />
               <span>{t('applyLeave', 'Apply Leave')}</span>
             </Link>
 
             <Link
               to="/loans"
-              className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-bold transition-all flex items-center gap-2 backdrop-blur-md active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white text-xs font-bold transition-all flex items-center gap-1.5 backdrop-blur-md active:scale-95"
             >
-              <CreditCard className="w-4 h-4 text-amber-300" />
+              <CreditCard className="w-3.5 h-3.5 text-amber-300" />
               <span>{t('loanDesk', 'Loans Desk')}</span>
             </Link>
 
             <button
               type="button"
               onClick={handleDownloadPayslip}
-              className="px-4 py-2.5 rounded-xl bg-white text-slate-900 hover:bg-slate-100 text-xs font-bold shadow-md transition-all flex items-center gap-2 active:scale-95 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-white text-slate-900 hover:bg-slate-100 text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer"
             >
-              <Download className="w-4 h-4 text-indigo-600" />
+              <Download className="w-3.5 h-3.5 text-indigo-600" />
               <span>{t('payslip', 'Payslip')}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* ── 2. KEY STAFF KPI METRICS ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* ── 2. KEY STAFF KPI METRICS (Sleek Compact Size) ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
         {stats.map((s) => {
           const Icon = s.icon;
           return (
             <div 
               key={s.id}
               onClick={() => navigate(s.link)}
-              className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between"
+              className="p-3 sm:p-3.5 rounded-xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs hover:-translate-y-0.5 transition-all cursor-pointer group flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-3">
-                <div className={`w-11 h-11 rounded-xl ${s.iconBg} flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform`}>
-                  <Icon className="w-5 h-5" />
+              <div className="flex items-center justify-between mb-2">
+                <div className={`w-8 h-8 rounded-lg ${s.iconBg} flex items-center justify-center text-white shadow-2xs group-hover:scale-105 transition-transform`}>
+                  <Icon className="w-4 h-4" />
                 </div>
-                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${s.badgeColor}`}>
+                <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${s.badgeColor}`}>
                   {s.badge}
                 </span>
               </div>
 
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">
                   {s.title}
                 </p>
-                <div className="flex items-baseline gap-2">
-                  <h3 className="text-2xl font-black text-slate-900 tracking-tight font-serif">
+                <div className="flex items-baseline gap-1.5">
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight font-serif">
                     {s.value}
                   </h3>
                 </div>
-                <p className="text-[11px] font-semibold text-slate-400 mt-1 flex items-center justify-between">
-                  <span>{s.subtitle}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-[#ff5c0a] group-hover:translate-x-0.5 transition-all" />
+                <p className="text-[10px] font-semibold text-slate-400 mt-0.5 flex items-center justify-between">
+                  <span className="truncate pr-1">{s.subtitle}</span>
+                  <ChevronRight className="w-3 h-3 text-slate-300 group-hover:text-[#ff5c0a] group-hover:translate-x-0.5 transition-all shrink-0" />
                 </p>
               </div>
             </div>
@@ -364,52 +306,52 @@ export default function StaffDashboard() {
         })}
       </div>
 
-      {/* ── 3. STAFF PRIMARY SERVICES GRID (8 TILES) ── */}
+      {/* ── 3. STAFF PRIMARY SERVICES GRID (8 TILES - Compact) ── */}
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <div>
-            <h2 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+            <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight">
               {t('staffServicesHeader', 'Core Staff Services & Work Hub')}
             </h2>
-            <p className="text-xs text-slate-500">
+            <p className="text-[11px] text-slate-500">
               {t('staffServicesSub', 'Quick access to employee administration, requests & benefits')}
             </p>
           </div>
-          <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg border border-indigo-100">
+          <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
             8 Modules
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
           {staffServices.map((srv, idx) => {
             const Icon = srv.icon;
             return (
               <div
                 key={idx}
                 onClick={() => navigate(srv.path)}
-                className={`p-4 rounded-2xl border border-slate-200 bg-white hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between`}
+                className={`p-2.5 sm:p-3 rounded-xl border border-slate-200/80 bg-white hover:border-indigo-400 hover:shadow-2xs transition-all cursor-pointer group flex flex-col justify-between`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className={`w-10 h-10 rounded-xl ${srv.iconBg} ${srv.color} flex items-center justify-center font-bold`}>
-                      <Icon className="w-5 h-5" />
+                  <div className="flex items-center justify-between mb-2">
+                    <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${srv.iconBg} ${srv.color} flex items-center justify-center font-bold`}>
+                      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     </div>
-                    <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                    <span className="text-[9px] font-bold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded-full group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
                       {srv.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+                  <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
                     {srv.title}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                  <p className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5 line-clamp-1 sm:line-clamp-2 leading-relaxed">
                     {srv.desc}
                   </p>
                 </div>
 
-                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600 group-hover:text-indigo-600">
+                <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-600 group-hover:text-indigo-600">
                   <span>{t('openModule', 'Open')}</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </div>
               </div>
             );
@@ -417,193 +359,193 @@ export default function StaffDashboard() {
         </div>
       </div>
 
-      {/* ── 3.5. OFFICE ADMINISTRATION & CERTIFICATION SERVICES HUB ── */}
-      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 sm:p-7 border border-indigo-800/40 shadow-xl text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-10 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* ── 3.5. OFFICE ADMINISTRATION & CERTIFICATION SERVICES HUB (Compact) ── */}
+      <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-4 sm:p-5 border border-indigo-800/40 shadow-lg text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-10 w-56 h-56 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         
-        <div className="relative z-10 space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+        <div className="relative z-10 space-y-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-white/10">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-[11px] font-bold mb-2">
-                <Sparkles className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 text-[10.5px] font-bold mb-1">
+                <Sparkles className="w-3 h-3" />
                 <span>{t('officeServicesHub', 'Office Services & Administration Hub')}</span>
                 <span>•</span>
                 <span className="text-white font-extrabold">{t('officialDesk', 'Official Certification Desk')}</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight font-serif">
+              <h2 className="text-base sm:text-xl font-black text-white tracking-tight font-serif">
                 {t('officeServicesTitle', 'Institutional Office Services & Certification')}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-slate-300 mt-0.5 max-w-2xl leading-relaxed">
                 {t('officeServicesDesc', 'Direct generation and issuance of Transfer Certificates (TC), Bonafide & Character Certificates, Admission Leads & Surveys.')}
               </p>
             </div>
             
             <Link
               to="/certificates"
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all self-start sm:self-auto active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-xs font-bold shadow-md shadow-cyan-500/20 flex items-center gap-1.5 transition-all self-start sm:self-auto active:scale-95"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5" />
               <span>{t('issueNewCert', 'Generate Certificate')}</span>
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5 pt-0.5">
             {/* Tile 1: Certificates & Documents */}
             <div
               onClick={() => navigate('/certificates')}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+              className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <Award className="w-5 h-5 text-cyan-400" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-400/30 text-cyan-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Award className="w-4 h-4 text-cyan-400" />
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">
                     TC / Bonafide
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition-colors">
+                <h3 className="text-xs sm:text-[13px] font-bold text-white group-hover:text-cyan-300 transition-colors">
                   {t('certificatesTitle', 'Certificates & Documents')}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
                   {t('certificatesDesc', 'Issue TC, Character, Bonafide, Merit & Sports certificates with QR verification.')}
                 </p>
               </div>
-              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-cyan-400">
+              <div className="pt-2 mt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-cyan-400">
                 <span>{t('generateNow', 'Issue Document')}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>
 
             {/* Tile 2: Admission Leads */}
             <div
               onClick={() => navigate('/lead-dashboard')}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-teal-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+              className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-teal-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 border border-teal-400/30 text-teal-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <Filter className="w-5 h-5 text-teal-400" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-teal-500/20 border border-teal-400/30 text-teal-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Filter className="w-4 h-4 text-teal-400" />
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-400/20 text-teal-300 border border-teal-400/30">
-                    5 Active Leads
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-teal-400/20 text-teal-300 border border-teal-400/30">
+                    Admissions
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-white group-hover:text-teal-300 transition-colors">
+                <h3 className="text-xs sm:text-[13px] font-bold text-white group-hover:text-teal-300 transition-colors">
                   {t('leadsTitle', 'Admissions & Inquiry Desk')}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
                   {t('leadsDesc', 'Manage incoming student admission inquiries, parent follow-ups and pipeline.')}
                 </p>
               </div>
-              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-teal-400">
+              <div className="pt-2 mt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-teal-400">
                 <span>{t('viewPipeline', 'Open Pipeline')}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>
 
             {/* Tile 3: Surveys & Feedback */}
             <div
               onClick={() => navigate('/my-surveys')}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+              className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <BarChart className="w-5 h-5 text-amber-400" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <BarChart className="w-4 h-4 text-amber-400" />
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                    2 Active Polls
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30">
+                    Feedback & Polls
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-white group-hover:text-amber-300 transition-colors">
+                <h3 className="text-xs sm:text-[13px] font-bold text-white group-hover:text-amber-300 transition-colors">
                   {t('surveysTitle', 'Institutional Surveys & Feedback')}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
                   {t('surveysDesc', 'Staff welfare feedback, workplace improvement polls and department audits.')}
                 </p>
               </div>
-              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-amber-400">
+              <div className="pt-2 mt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-amber-400">
                 <span>{t('participatePoll', 'Open Surveys')}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>
 
             {/* Tile 4: Apps Center */}
             <div
               onClick={() => navigate('/apps-center')}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
+              className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-400/50 backdrop-blur-md transition-all cursor-pointer group flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-400/30 text-orange-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
-                    <Grid className="w-5 h-5 text-orange-400" />
+                <div className="flex items-center justify-between mb-2">
+                  <div className="w-8 h-8 rounded-lg bg-orange-500/20 border border-orange-400/30 text-orange-300 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+                    <Grid className="w-4 h-4 text-orange-400" />
                   </div>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-400/20 text-orange-300 border border-orange-400/30">
+                  <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-orange-400/20 text-orange-300 border border-orange-400/30">
                     ERP Utilities
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-white group-hover:text-orange-300 transition-colors">
+                <h3 className="text-xs sm:text-[13px] font-bold text-white group-hover:text-orange-300 transition-colors">
                   {t('appsCenterTitle', 'School ERP Apps Center')}
                 </h3>
-                <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
+                <p className="text-[10px] sm:text-[10.5px] text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
                   {t('appsCenterDesc', 'Digital calculator, document scanner, institutional calendar & quick office tools.')}
                 </p>
               </div>
-              <div className="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold text-orange-400">
+              <div className="pt-2 mt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-orange-400">
                 <span>{t('launchApps', 'Explore Apps')}</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── 4. TWO-COLUMN INTERACTIVE DETAIL WIDGETS ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* ── 4. TWO-COLUMN INTERACTIVE DETAIL WIDGETS (Compact) ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
 
         {/* Left Column: Biometric Punch Log (2 cols on large screen) */}
-        <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-                <Clock className="w-5 h-5" />
+        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4.5 shadow-2xs space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
+                <Clock className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-slate-900">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
                   {t('biometricTitle', 'Biometric Punch Log & Working Hours')}
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-[10px] sm:text-[11px] text-slate-500">
                   {t('biometricSub', 'Verified RFID/Fingerprint punch records for current week')}
                 </p>
               </div>
             </div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+            <span className="text-[10.5px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
               Avg 7.6 hrs/day
             </span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-[11px]">
               <thead>
-                <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[10px]">
-                  <th className="py-2.5 px-3">Day / Date</th>
-                  <th className="py-2.5 px-3">Punch In</th>
-                  <th className="py-2.5 px-3">Punch Out</th>
-                  <th className="py-2.5 px-3">Duration</th>
-                  <th className="py-2.5 px-3 text-right">Status</th>
+                <tr className="border-b border-slate-100 text-slate-400 font-bold uppercase text-[9px]">
+                  <th className="py-1.5 px-2">Day / Date</th>
+                  <th className="py-1.5 px-2">Punch In</th>
+                  <th className="py-1.5 px-2">Punch Out</th>
+                  <th className="py-1.5 px-2">Duration</th>
+                  <th className="py-1.5 px-2 text-right">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {punchLogs.map((log, idx) => (
+                {punchLogs.length > 0 ? punchLogs.map((log, idx) => (
                   <tr key={idx} className="hover:bg-slate-50/70 transition-colors">
-                    <td className="py-3 px-3 font-bold text-slate-800">{log.day}</td>
-                    <td className="py-3 px-3 font-mono text-slate-600">{log.inTime}</td>
-                    <td className="py-3 px-3 font-mono text-slate-600">{log.outTime}</td>
-                    <td className="py-3 px-3 font-semibold text-slate-700">{log.total}</td>
-                    <td className="py-3 px-3 text-right">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                    <td className="py-2 px-2 font-bold text-slate-800">{log.day}</td>
+                    <td className="py-2 px-2 font-mono text-slate-600">{log.inTime}</td>
+                    <td className="py-2 px-2 font-mono text-slate-600">{log.outTime}</td>
+                    <td className="py-2 px-2 font-semibold text-slate-700">{log.total}</td>
+                    <td className="py-2 px-2 text-right">
+                      <span className={`px-1.5 py-0.5 rounded-full text-[9px] font-bold ${
                         log.status === 'Active' 
                           ? 'bg-amber-100 text-amber-700 animate-pulse' 
                           : 'bg-emerald-100 text-emerald-700'
@@ -612,12 +554,18 @@ export default function StaffDashboard() {
                       </span>
                     </td>
                   </tr>
-                ))}
+                )) : (
+                  <tr>
+                    <td colSpan="5" className="py-8 text-center text-slate-400 font-medium text-xs">
+                      No biometric punch records found for this period.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
 
-          <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100">
+          <div className="pt-1.5 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100">
             <span>Machine ID: <strong className="text-slate-700 font-mono">BIO-GATE-01</strong></span>
             <Link to="/timetable" className="text-indigo-600 font-bold hover:underline">
               {t('viewFullAttendanceHistory', 'View Monthly Attendance Sheet →')}
@@ -626,57 +574,49 @@ export default function StaffDashboard() {
         </div>
 
         {/* Right Column: Salary & Compensation Overview */}
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs flex flex-col justify-between space-y-4">
+        <div className="bg-white rounded-2xl border border-slate-200/80 p-3.5 sm:p-4.5 shadow-2xs flex flex-col justify-between space-y-3">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
-                  <DollarSign className="w-5 h-5" />
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center font-bold">
+                  <DollarSign className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900">
                     {t('compensationHeader', 'Salary & Pay Grade')}
                   </h3>
-                  <p className="text-xs text-slate-500">Pay Band PB-3 · Level 8</p>
+                  <p className="text-[10px] text-slate-500">Pay Band PB-3 · Level 8</p>
                 </div>
               </div>
-              <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full">
+              <span className="text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.5 rounded-full">
                 Disbursed
               </span>
             </div>
 
-            <div className="space-y-2.5 pt-3 text-xs">
-              <div className="flex justify-between py-1 border-b border-slate-50">
+            <div className="space-y-1.5 pt-2 text-[11px]">
+              <div className="flex justify-between py-0.5 border-b border-slate-50">
                 <span className="text-slate-500">Basic Pay:</span>
-                <span className="font-bold text-slate-800">₹42,000</span>
+                <span className="font-bold text-slate-800">₹0</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-50">
-                <span className="text-slate-500">Dearness Allowance (DA 50%):</span>
-                <span className="font-bold text-slate-800">₹21,000</span>
+              <div className="flex justify-between py-0.5 border-b border-slate-50">
+                <span className="text-slate-500">Allowances:</span>
+                <span className="font-bold text-slate-800">₹0</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-50">
-                <span className="text-slate-500">House Rent Allowance (HRA):</span>
-                <span className="font-bold text-slate-800">₹10,080</span>
-              </div>
-              <div className="flex justify-between py-1 border-b border-slate-50">
-                <span className="text-slate-500">Special Staff Allowance:</span>
-                <span className="font-bold text-slate-800">₹5,000</span>
-              </div>
-              <div className="flex justify-between py-1.5 border-b border-slate-100 font-bold text-slate-900">
+              <div className="flex justify-between py-1 border-b border-slate-100 font-bold text-slate-900">
                 <span>Gross Compensation:</span>
-                <span>₹78,080</span>
+                <span>₹0</span>
               </div>
-              <div className="flex justify-between py-1 text-rose-600">
-                <span>Deductions (EPF + Tax + EMI):</span>
-                <span>- ₹23,880</span>
+              <div className="flex justify-between py-0.5 text-slate-500">
+                <span>Deductions:</span>
+                <span>₹0</span>
               </div>
-              <div className="p-3 rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-100 flex items-center justify-between">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-purple-700 block">Take-Home Net Pay</span>
-                  <span className="text-xl font-black text-purple-950 font-serif">₹54,200</span>
+                  <span className="text-[9px] uppercase font-bold text-slate-500 block">Take-Home Net Pay</span>
+                  <span className="text-lg font-black text-slate-800 font-serif">₹0</span>
                 </div>
-                <span className="text-[10px] text-emerald-700 bg-emerald-100 font-bold px-2 py-1 rounded-lg">
-                  Direct Bank Credit
+                <span className="text-[9.5px] text-slate-500 bg-slate-200 font-bold px-1.5 py-0.5 rounded-md">
+                  No Active Payroll
                 </span>
               </div>
             </div>
@@ -685,9 +625,9 @@ export default function StaffDashboard() {
           <button
             type="button"
             onClick={handleDownloadPayslip}
-            className="w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+            className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 text-indigo-600" />
+            <Download className="w-3 h-3 text-indigo-600" />
             <span>Download Oct 2026 Payslip (PDF)</span>
           </button>
         </div>

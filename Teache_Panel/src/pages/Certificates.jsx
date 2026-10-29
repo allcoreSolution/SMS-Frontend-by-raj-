@@ -1126,43 +1126,44 @@ const Certificates = () => {
             </div>
 
             {/* ID Cards Sheet Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {(studentsList.length > 0 ? studentsList : [
-                { _id: '1', firstName: 'Aarav', lastName: 'Mehta', rollNo: '1001', admissionNo: 'DPA-1001' },
-                { _id: '2', firstName: 'Diya', lastName: 'Patel', rollNo: '1002', admissionNo: 'DPA-1002' },
-                { _id: '3', firstName: 'Kabir', lastName: 'Sharma', rollNo: '1005', admissionNo: 'DPA-1005' },
-                { _id: '4', firstName: 'Ananya', lastName: 'Verma', rollNo: '1008', admissionNo: 'DPA-1008' }
-              ]).map(st => (
-                <div 
-                  key={st._id}
-                  className="bg-white border-2 border-indigo-600 rounded-lg shadow-sm p-4 text-center flex flex-col items-center justify-between relative overflow-hidden"
-                  style={{ minHeight: '260px' }}
-                >
-                  <div className="w-full bg-indigo-700 text-white py-1 px-2 rounded-t -mt-4 -mx-4 mb-3">
-                    <h4 className="font-black text-[11px] tracking-wider">ALL CORE SOLUTIONS</h4>
-                    <p className="text-[8px] uppercase tracking-widest text-indigo-200">STUDENT IDENTITY CARD</p>
-                  </div>
+            {studentsList.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {studentsList.map(st => (
+                  <div 
+                    key={st._id}
+                    className="bg-white border-2 border-indigo-600 rounded-lg shadow-sm p-4 text-center flex flex-col items-center justify-between relative overflow-hidden"
+                    style={{ minHeight: '260px' }}
+                  >
+                    <div className="w-full bg-indigo-700 text-white py-1 px-2 rounded-t -mt-4 -mx-4 mb-3">
+                      <h4 className="font-black text-[11px] tracking-wider">ALL CORE SOLUTIONS</h4>
+                      <p className="text-[8px] uppercase tracking-widest text-indigo-200">STUDENT IDENTITY CARD</p>
+                    </div>
 
-                  {/* Photo avatar */}
-                  <div className="w-16 h-16 rounded-full bg-blue-50 border-2 border-indigo-400 flex items-center justify-center text-indigo-700 font-bold text-lg shadow-inner mb-2">
-                    {st.firstName?.charAt(0)}{st.lastName?.charAt(0)}
-                  </div>
+                    {/* Photo avatar */}
+                    <div className="w-16 h-16 rounded-full bg-blue-50 border-2 border-indigo-400 flex items-center justify-center text-indigo-700 font-bold text-lg shadow-inner mb-2">
+                      {st.firstName?.charAt(0)}{st.lastName?.charAt(0)}
+                    </div>
 
-                  <h3 className="font-bold text-gray-900 text-[13px]">{st.firstName} {st.lastName || ''}</h3>
-                  <p className="text-[11px] text-indigo-600 font-bold">{formData.className || 'Class X'} - {formData.sectionName || 'A'}</p>
-                  <p className="text-[10px] text-gray-500 font-mono">Roll: {st.rollNo || '15'} • Adm: {st.admissionNo || 'DPA-101'}</p>
+                    <h3 className="font-bold text-gray-900 text-[13px]">{st.firstName} {st.lastName || ''}</h3>
+                    <p className="text-[11px] text-indigo-600 font-bold">{formData.className || 'Class'} - {formData.sectionName || 'A'}</p>
+                    <p className="text-[10px] text-gray-500 font-mono">Roll: {st.rollNo || ''} • Adm: {st.admissionNo || ''}</p>
 
-                  <div className="mt-3 pt-2 border-t border-gray-100 w-full flex items-center justify-between text-[9px] text-gray-400 font-mono">
-                    <img 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=${st.admissionNo || 'DPA-101'}`}
-                      alt="QR"
-                      className="w-8 h-8 opacity-80"
-                    />
-                    <span className="text-[8px] font-bold text-gray-500">VALID: 2026-27</span>
+                    <div className="mt-3 pt-2 border-t border-gray-100 w-full flex items-center justify-between text-[9px] text-gray-400 font-mono">
+                      <img 
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=60x60&data=${st.admissionNo || 'STUDENT'}`}
+                        alt="QR"
+                        className="w-8 h-8 opacity-80"
+                      />
+                      <span className="text-[8px] font-bold text-gray-500">VALID: 2026-27</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border border-dashed border-gray-300 rounded-lg p-12 text-center text-gray-500 text-xs">
+                No students found in selected class and section. Please select a class with active students.
+              </div>
+            )}
           </div>
         )}
 

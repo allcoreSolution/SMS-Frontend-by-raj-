@@ -86,5 +86,23 @@ export const authService = {
     } catch {
       return null;
     }
+  },
+
+  forgotPassword: async (identifier) => {
+    try {
+      const response = await axios.post(`${API_BASE}/auth/forgot-password`, { email: identifier });
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  resetPassword: async (data) => {
+    try {
+      const response = await axios.post(`${API_BASE}/auth/reset-password`, data);
+      return response.data;
+    } catch (err) {
+      throw err;
+    }
   }
 };

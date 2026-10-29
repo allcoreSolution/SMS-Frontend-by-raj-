@@ -35,17 +35,17 @@ const PTM = () => {
   
   const [form, setForm] = useState({
     title: 'Parent-Teacher Meeting',
-    student: 'Aarav Sharma',
-    guardianName: 'Mr. Rajesh Sharma',
-    phone: '+91 98765 43210',
-    className: 'Class 10',
+    student: '',
+    guardianName: '',
+    phone: '',
+    className: '',
     meetingDate: new Date().toISOString().slice(0, 10),
     startTime: '10:00 AM',
     endTime: '10:30 AM',
     mode: 'In person',
-    venue: 'Room 204 (Main Academic Wing)',
+    venue: '',
     meetingLink: '',
-    description: 'Academic progress discussion and term exam review.'
+    description: ''
   });
 
   const [followupForm, setFollowupForm] = useState({
@@ -789,7 +789,7 @@ const PTM = () => {
                   type="text" 
                   value={followupForm.student} 
                   onChange={e => setFollowupForm({ ...followupForm, student: e.target.value })} 
-                  placeholder="e.g. Aarav Sharma"
+                  placeholder="Enter student name"
                   className="w-full border-2 border-gray-300 px-3 py-2 text-xs font-bold focus:border-rose-500 outline-none rounded-none bg-white"
                 />
               </div>

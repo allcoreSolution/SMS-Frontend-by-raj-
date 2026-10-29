@@ -31,10 +31,10 @@ const CbcDashboard = () => {
     fetchStats();
   }, []);
 
-  const strandsCount = stats?.strandsCount || 14;
-  const competenciesCount = stats?.competenciesCount || 7;
-  const assessmentsCount = stats?.assessmentsCount || 8;
-  const proficiencyRate = stats?.proficiencyRate || 88;
+  const strandsCount = stats?.strandsCount ?? 0;
+  const competenciesCount = stats?.competenciesCount ?? 0;
+  const assessmentsCount = stats?.assessmentsCount ?? 0;
+  const proficiencyRate = stats?.proficiencyRate ?? 0;
 
   return (
     <div className="flex flex-col h-full bg-[#f4f6f8] overflow-y-auto">

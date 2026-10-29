@@ -20,34 +20,36 @@ export default function Deliverables() {
       target: 'http://localhost:5176'
     },
     { 
-      title: 'Staff & Teacher Panel', 
-      sub: 'REACT 18 • PORT 5177', 
-      desc: 'Dedicated native web portal for teachers. Enables student attendance, mark entry, leave approvals, lesson planning and online exam question banks.', 
-      icon: '👩‍🏫',
-      target: 'http://localhost:5177'
-    },
-    { 
-      title: 'Accountant App (Android APK)', 
+      title: 'Staff & Teacher App (Android APK)', 
       sub: 'ANDROID • APK DOWNLOAD', 
-      desc: 'Specialized financial mobile app for fee collections, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
-      icon: '💰',
-      target: '/apk/Accountant.apk',
+      desc: 'Native Android mobile application for staff & teachers. Enables student attendance, mark entry, leave approvals, lesson planning, and direct mobile workflow.', 
+      icon: '👩‍🏫',
+      target: '/apk/Teacher.apk',
       isDownload: true
     },
     { 
-      title: 'Student & Parent App (Android APK)', 
-      sub: 'ANDROID • APK DOWNLOAD', 
-      desc: 'Native Android mobile application for parents & students. Allows instant fee payments, live CBT exam results, and biometric attendance records in Hindi and English.', 
+      title: 'Accountant & Fee Panel', 
+      sub: 'REACT 18 • PORT 5178', 
+      desc: 'Specialized financial web portal for collecting fees, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
+      icon: '💰',
+      target: 'http://localhost:5178',
+      isDownload: false
+    },
+    { 
+      title: 'Student & Parent App & Web', 
+      sub: 'PORT 5175 • ANDROID APK', 
+      desc: 'Native Android mobile application and web portal for parents & students. Instant fee payments, live CBT exam results, and attendance records in Hindi and English.', 
       icon: '📱',
       target: '/apk/Student_Parents.apk',
       isDownload: true
     },
     { 
-      title: 'Dedicated Driver GPS App', 
-      sub: 'FLUTTER • LIVE RADAR', 
-      desc: 'GPS-enabled driver portal to livestream bus locations to parents, manage fuel logs, track routed maintenance, and broadcast emergency alerts.', 
+      title: 'Dedicated Driver App (Android APK)', 
+      sub: 'ANDROID • APK DOWNLOAD', 
+      desc: 'GPS-enabled native Android APK to livestream bus locations to parents, manage student pickup roster, log fuel expenses, and broadcast emergency SOS alerts.', 
       icon: '🚌',
-      modal: 'gps'
+      target: '/apk/Driver.apk',
+      isDownload: true
     },
     { 
       title: 'Centralized API Gateway', 

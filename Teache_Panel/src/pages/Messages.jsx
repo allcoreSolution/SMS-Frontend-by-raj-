@@ -45,103 +45,10 @@ const Messages = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const DEFAULT_SEED_THREADS = [
-    {
-      threadId: 'th-1',
-      name: 'Dr. Alok Verma (Principal)',
-      participantName: 'Dr. Alok Verma (Principal & Director)',
-      role: 'Principal',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
-      lastMessage: 'Please submit the quarterly audit report and staff duty summaries by Friday 4 PM.',
-      lastMessageTime: '10:45 AM',
-      unreadCount: 1,
-      isGroup: false,
-      participants: [{ name: 'Dr. Alok Verma', phone: '919810011223' }]
-    },
-    {
-      threadId: 'th-2',
-      name: 'Accounts & HR Committee',
-      participantName: 'Accounts & HR Committee',
-      role: 'Administration',
-      avatar: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=120&auto=format&fit=crop&q=80',
-      lastMessage: 'October month salary disbursement has been successfully credited for all staff members.',
-      lastMessageTime: 'Yesterday',
-      unreadCount: 0,
-      isGroup: true,
-      participants: [{ name: 'Accounts Head', phone: '919810022334' }]
-    },
-    {
-      threadId: 'th-3',
-      name: 'Campus Security & Transport',
-      participantName: 'Campus Security & Transport',
-      role: 'Operations',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
-      lastMessage: 'Gate 2 biometric optical reader has been scheduled for firmware recalibration at 5 PM.',
-      lastMessageTime: '26 Oct',
-      unreadCount: 0,
-      isGroup: false,
-      participants: [{ name: 'Transport Officer', phone: '919810033445' }]
-    }
-  ];
+  const DEFAULT_SEED_THREADS = [];
+  const DEFAULT_SEED_MESSAGES = {};
 
-  const DEFAULT_SEED_MESSAGES = {
-    'th-1': [
-      {
-        _id: 'm-1',
-        sender: 'Dr. Alok Verma',
-        senderRole: 'Principal',
-        content: 'Good morning Rajesh. Have the state educational board compliance files been verified?',
-        isSelf: false,
-        time: '09:30 AM'
-      },
-      {
-        _id: 'm-2',
-        sender: 'You',
-        senderRole: 'Staff',
-        content: 'Yes Sir, Section A & B staff qualifications and biometric attendance logs are completely compiled and signed.',
-        isSelf: true,
-        time: '09:45 AM'
-      },
-      {
-        _id: 'm-3',
-        sender: 'Dr. Alok Verma',
-        senderRole: 'Principal',
-        content: 'Please submit the quarterly audit report and staff duty summaries by Friday 4 PM.',
-        isSelf: false,
-        time: '10:45 AM'
-      }
-    ],
-    'th-2': [
-      {
-        _id: 'm-4',
-        sender: 'Accounts Officer',
-        senderRole: 'Administration',
-        content: 'All PF deductions and HDFC bank advice files have been signed.',
-        isSelf: false,
-        time: '02:10 PM'
-      },
-      {
-        _id: 'm-5',
-        sender: 'Accounts & HR Committee',
-        senderRole: 'Administration',
-        content: 'October month salary disbursement has been successfully credited for all staff members.',
-        isSelf: false,
-        time: '04:30 PM'
-      }
-    ],
-    'th-3': [
-      {
-        _id: 'm-6',
-        sender: 'Campus Security',
-        senderRole: 'Operations',
-        content: 'Gate 2 biometric optical reader has been scheduled for firmware recalibration at 5 PM.',
-        isSelf: false,
-        time: '11:20 AM'
-      }
-    ]
-  };
-
-  // Load Threads from MongoDB with seed fallback
+  // Load Threads from MongoDB
   const loadThreads = async (selectThreadId = null) => {
     setLoadingThreads(true);
     try {
@@ -155,19 +62,18 @@ const Messages = () => {
           setActiveThread(res.data[0]);
         }
       } else {
-        setThreads(DEFAULT_SEED_THREADS);
-        if (!activeThread) setActiveThread(DEFAULT_SEED_THREADS[0]);
+        setThreads([]);
+        setActiveThread(null);
       }
     } catch (err) {
-      console.warn('Loading fallback seed threads:', err);
-      setThreads(DEFAULT_SEED_THREADS);
-      if (!activeThread) setActiveThread(DEFAULT_SEED_THREADS[0]);
+      setThreads([]);
+      setActiveThread(null);
     } finally {
       setLoadingThreads(false);
     }
   };
 
-  // Load Messages for Active Thread with seed fallback
+  // Load Messages for Active Thread
   const loadMessages = async (threadId) => {
     if (!threadId) return;
     setLoadingMessages(true);
@@ -177,13 +83,10 @@ const Messages = () => {
         setMessages(res.data);
         setTimeout(scrollToBottom, 50);
       } else {
-        setMessages(DEFAULT_SEED_MESSAGES[threadId] || []);
-        setTimeout(scrollToBottom, 50);
+        setMessages([]);
       }
     } catch (err) {
-      console.warn('Loading fallback seed messages:', err);
-      setMessages(DEFAULT_SEED_MESSAGES[threadId] || []);
-      setTimeout(scrollToBottom, 50);
+      setMessages([]);
     } finally {
       setLoadingMessages(false);
     }
@@ -223,9 +126,10 @@ const Messages = () => {
 
     if (!token) return;
 
-    const socketUrl = import.meta.env.VITE_API_URL 
-      ? import.meta.env.VITE_API_URL.replace(/\/api\/?$/, '') 
-      : 'http://localhost:5050';
+    const baseApi = (typeof window !== 'undefined' && (window.__ERP_API_BASE_URL__ || localStorage.getItem('api_override_url')))
+      || import.meta.env.VITE_API_URL 
+      || 'http://localhost:5050/api';
+    const socketUrl = baseApi.replace(/\/api\/?$/, '');
 
     const socket = io(socketUrl, {
       auth: { token },

@@ -77,17 +77,13 @@ export default function AssetOverviewTab({
     { name: 'Disposed / Retired', value: statusCounts.Disposed || disposedCount || 0, color: '#94a3b8' }
   ].filter(d => d.value > 0);
 
-  // Fallback if empty
+  // Real category data or empty
   const chartCategoryData = categoryBreakdown.length > 0 ? categoryBreakdown.map(c => ({
     name: c.name.length > 15 ? c.name.substring(0, 14) + '...' : c.name,
     originalCost: c.cost || 0,
     currentValue: c.value || 0,
     count: c.count || 0
-  })) : [
-    { name: 'IT Equipment', originalCost: 450000, currentValue: 360000, count: 6 },
-    { name: 'Smart Class & AV', originalCost: 320000, currentValue: 270000, count: 4 },
-    { name: 'Lab Apparatus', originalCost: 180000, currentValue: 150000, count: 3 }
-  ];
+  })) : [];
 
   return (
     <div className="space-y-6">

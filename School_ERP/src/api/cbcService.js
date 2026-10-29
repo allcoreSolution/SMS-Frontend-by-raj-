@@ -11,12 +11,12 @@ export const cbcService = {
       return {
         success: true,
         data: {
-          strandsCount: 12,
-          assessmentsCount: 8,
-          competenciesCount: 7,
-          totalScoresRecorded: 24,
-          proficiencyRate: 88,
-          rubricBreakdown: { exceeding: 8, meeting: 13, approaching: 3, below: 0 }
+          strandsCount: 0,
+          assessmentsCount: 0,
+          competenciesCount: 0,
+          totalScoresRecorded: 0,
+          proficiencyRate: 0,
+          rubricBreakdown: { exceeding: 0, meeting: 0, approaching: 0, below: 0 }
         }
       };
     }

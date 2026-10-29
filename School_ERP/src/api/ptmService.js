@@ -3,217 +3,28 @@ import axiosInstance from './axios';
 const STORAGE_KEY_MEETINGS = 'school_erp_ptm_meetings';
 const STORAGE_KEY_FOLLOWUPS = 'school_erp_ptm_followups';
 
-// Initial realistic default mock data
-const DEFAULT_STUDENTS = [
-  { id: 'std_1', name: 'Kiara Kapoor', roll: 'YISADM-072 / 12', className: 'Class IV / A', guardianName: 'Sanjay Kapoor', phone: '9876500143', slot: '09:00 - 09:15 AM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Excellent grasp of science concepts. Shows great enthusiasm in classroom activities.', tags: ['Top Performer', 'Good Conduct'], followUpNeeded: false },
-  { id: 'std_2', name: 'Vivaan Prakash', roll: 'YISADM-073 / 13', className: 'Class IV / A', guardianName: 'Ramesh Prakash', phone: '9876500145', slot: '09:15 - 09:30 AM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Needs more focus in mathematics multiplication tables. Regular homework submission is appreciated.', tags: ['Needs Math Help'], followUpNeeded: true },
-  { id: 'std_3', name: 'Kriti Garg', roll: 'YISADM-074 / 14', className: 'Class IV / A', guardianName: 'Vikram Garg', phone: '9876500147', slot: '09:30 - 09:45 AM', notified: 'Sent (WhatsApp)', attendance: 'Absent', remarks: 'Guardian informed via call; will schedule makeup slot next week.', tags: ['Guardian Notified'], followUpNeeded: true },
-  { id: 'std_4', name: 'Ananya Kaur', roll: 'YISADM-075 / 15', className: 'Class IV / A', guardianName: 'Harpreet Singh', phone: '9876500149', slot: '09:45 - 10:00 AM', notified: 'Sent (SMS)', attendance: 'Present', remarks: 'Active participant in arts and languages. Consistent attendance record.', tags: ['Active Participant'], followUpNeeded: false },
-  { id: 'std_5', name: 'Diya Nath', roll: 'YISADM-076 / 16', className: 'Class IV / A', guardianName: 'Alok Nath', phone: '9876500151', slot: '10:00 - 10:15 AM', notified: 'Sent (WhatsApp)', attendance: 'Pending', remarks: '', tags: [], followUpNeeded: false },
-  { id: 'std_6', name: 'Advik Jha', roll: 'YISADM-077 / 17', className: 'Class IV / A', guardianName: 'Manoj Jha', phone: '9876500153', slot: '10:15 - 10:30 AM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Very attentive during lectures. Parent requested additional reading material.', tags: ['Enthusiastic Reader'], followUpNeeded: false },
-  { id: 'std_7', name: 'Myra Menon', roll: 'YISADM-078 / 18', className: 'Class IV / A', guardianName: 'Gopal Menon', phone: '9876500155', slot: '10:30 - 10:45 AM', notified: 'Sent (SMS)', attendance: 'Pending', remarks: '', tags: [], followUpNeeded: false },
-  { id: 'std_8', name: 'Kabir Dubey', roll: 'YISADM-079 / 19', className: 'Class IV / A', guardianName: 'Sudhir Dubey', phone: '9876500157', slot: '10:45 - 11:00 AM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Good improvement in cursive handwriting. Recommended participation in debate competition.', tags: ['Good Progress'], followUpNeeded: false },
-  { id: 'std_9', name: 'Navya Sinha', roll: 'YISADM-080 / 20', className: 'Class IV / A', guardianName: 'Pradeep Sinha', phone: '9876500159', slot: '11:00 - 11:15 AM', notified: 'Pending', attendance: 'Pending', remarks: '', tags: [], followUpNeeded: false },
-  { id: 'std_10', name: 'Ansh Bose', roll: 'YISADM-081 / 1', className: 'Class IV / A', guardianName: 'Tanmoy Bose', phone: '9876500161', slot: '11:15 - 11:30 AM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Exceptional sports engagement. Keep encouraging balance with science prep.', tags: ['Sports Star'], followUpNeeded: false },
-  { id: 'std_11', name: 'Neha Sheikh', roll: 'YISADM-082 / 2', className: 'Class IV / A', guardianName: 'Farooq Sheikh', phone: '9876500163', slot: '11:30 - 11:45 AM', notified: 'Sent (SMS)', attendance: 'Absent', remarks: 'Parent was travelling out of station. Online notes sent over portal.', tags: ['Leave Approved'], followUpNeeded: false },
-  { id: 'std_12', name: 'Ishaan Khatri', roll: 'YISADM-083 / 3', className: 'Class IV / A', guardianName: 'Rohit Khatri', phone: '9876500165', slot: '11:45 - 12:00 PM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Showing steady progress in social studies. Polite and helpful.', tags: ['Helpful Student'], followUpNeeded: false },
-  { id: 'std_13', name: 'Nitya Rana', roll: 'YISADM-084 / 4', className: 'Class IV / A', guardianName: 'Birendra Rana', phone: '9876500167', slot: '12:00 - 12:15 PM', notified: 'Sent (WhatsApp)', attendance: 'Pending', remarks: '', tags: [], followUpNeeded: false },
-  { id: 'std_14', name: 'Aarav Sharma', roll: 'YISADM-085 / 5', className: 'Class IV / A', guardianName: 'Devendra Sharma', phone: '9876500169', slot: '12:15 - 12:30 PM', notified: 'Sent (WhatsApp)', attendance: 'Present', remarks: 'Strong logic in Computer Science. Advised to participate in robotics club.', tags: ['Tech Prodigy'], followUpNeeded: false },
-  { id: 'std_15', name: 'Saanvi Patel', roll: 'YISADM-086 / 6', className: 'Class IV / A', guardianName: 'Kirit Patel', phone: '9876500171', slot: '12:30 - 12:45 PM', notified: 'Pending', attendance: 'Pending', remarks: '', tags: [], followUpNeeded: false },
-];
+// Initial realistic default mock data (empty for real data mode)
+const DEFAULT_STUDENTS = [];
 
-const DEFAULT_MEETINGS = [
-  {
-    id: 'ptm-1',
-    title: 'Term 1 Parent-Teacher Meeting',
-    meetingDate: '2026-09-03',
-    startTime: '09:00 AM',
-    endTime: '01:30 PM',
-    mode: 'In person',
-    scope: 'Whole school',
-    className: 'All Classes',
-    sectionName: 'All Sections',
-    venue: 'Main School Auditorium & Senior Wing',
-    meetingLink: '',
-    description: 'Comprehensive term-end progress discussion, academic evaluation reports distribution and co-curricular feedback.',
-    status: 'Scheduled',
-    invitedCount: 283,
-    roster: [...DEFAULT_STUDENTS],
-  },
-  {
-    id: 'ptm-2',
-    title: 'Exam Performance Discussion',
-    meetingDate: '2026-08-21',
-    startTime: '10:00 AM',
-    endTime: '01:00 PM',
-    mode: 'In person',
-    scope: 'Specific class',
-    className: 'Class II',
-    sectionName: 'Section A',
-    venue: 'Primary Wing - Room 204',
-    meetingLink: '',
-    description: 'Review of Unit Assessment 1 answer scripts and personalized counseling for students needing foundational reinforcement.',
-    status: 'Scheduled',
-    invitedCount: 20,
-    roster: DEFAULT_STUDENTS.slice(0, 8),
-  },
-  {
-    id: 'ptm-3',
-    title: 'Pre-Exam Strategy & Counseling',
-    meetingDate: '2026-08-13',
-    startTime: '09:00 AM',
-    endTime: '01:00 PM',
-    mode: 'In person',
-    scope: 'Whole school',
-    className: 'All Classes',
-    sectionName: 'All Sections',
-    venue: 'Classrooms / Respective Sections',
-    meetingLink: '',
-    description: 'Detailed briefing on exam preparation, syllabus coverage, timetable review, and mental wellness guidance.',
-    status: 'Scheduled',
-    invitedCount: 280,
-    roster: DEFAULT_STUDENTS.slice(0, 10),
-  },
-  {
-    id: 'ptm-4',
-    title: 'URGENT - Virtual Academic Review',
-    meetingDate: '2026-07-22',
-    startTime: '10:30 AM',
-    endTime: '11:45 AM',
-    mode: 'Online',
-    scope: 'Whole school',
-    className: 'All Classes',
-    sectionName: 'All Sections',
-    venue: 'Online Meeting',
-    meetingLink: 'https://meet.google.com/ptm-urgent-syn',
-    description: 'Emergency sync regarding curriculum amendments and upcoming board guidelines updates.',
-    status: 'Scheduled',
-    invitedCount: 283,
-    roster: DEFAULT_STUDENTS.slice(0, 12),
-  },
-  {
-    id: 'ptm-5',
-    title: 'Annual Whole-School PTM & Exhibition',
-    meetingDate: '2026-06-25',
-    startTime: '08:00 AM',
-    endTime: '02:00 PM',
-    mode: 'In person',
-    scope: 'Whole school',
-    className: 'All Classes',
-    sectionName: 'All Sections',
-    venue: 'Main Campus Sports Complex & Library',
-    meetingLink: '',
-    description: 'Annual gathering celebrating student science exhibitions, art displays, and overall scholastic milestones.',
-    status: 'Completed',
-    invitedCount: 15,
-    roster: DEFAULT_STUDENTS.map(s => ({ ...s, attendance: s.id === 'std_3' ? 'Absent' : 'Present' })),
-  },
-  {
-    id: 'ptm-6',
-    title: 'Mid-Term Progress Meeting',
-    meetingDate: '2026-06-11',
-    startTime: '09:30 AM',
-    endTime: '12:30 PM',
-    mode: 'Hybrid',
-    scope: 'Specific class',
-    className: 'Nursery',
-    sectionName: 'Section B',
-    venue: 'Junior Wing Activity Hall',
-    meetingLink: 'https://zoom.us/j/9871234567',
-    description: 'Early childhood milestones evaluation, fine motor skills observation, and nutritional guidance.',
-    status: 'Completed',
-    invitedCount: 12,
-    roster: DEFAULT_STUDENTS.slice(0, 12).map((s, idx) => ({ ...s, attendance: idx < 8 ? 'Present' : (idx < 10 ? 'Absent' : 'Pending') })),
-  },
-  {
-    id: 'ptm-7',
-    title: 'Quick Sync (Draft Notice)',
-    meetingDate: '2026-07-04',
-    startTime: '11:00 AM',
-    endTime: '12:00 PM',
-    mode: 'Online',
-    scope: 'Specific class',
-    className: 'Nursery',
-    sectionName: 'Section A',
-    venue: 'Online Video Call',
-    meetingLink: 'https://meet.google.com/nur-sync-2026',
-    description: 'Preliminary planning draft for upcoming monsoon session parent advisory committee.',
-    status: 'Draft',
-    invitedCount: 0,
-    roster: [],
-  }
-];
+const DEFAULT_MEETINGS = [];
 
-const DEFAULT_FOLLOWUPS = [
-  {
-    id: 'fol-1',
-    student: 'Ishaan Gupta',
-    meetingId: 'ptm-1',
-    meeting: 'Term 1 Parent-Teacher Meeting',
-    actionPlan: 'Weekly progress check with class teacher on Mathematics fundamentals & weekly quiz.',
-    assignee: 'Rajesh Kumar (Math)',
-    due: '2026-06-16',
-    priority: 'High',
-    status: 'Done'
-  },
-  {
-    id: 'fol-2',
-    student: 'Atharv Kumar',
-    meetingId: 'ptm-1',
-    meeting: 'Term 1 Parent-Teacher Meeting',
-    actionPlan: 'Daily 30-min reading practice at home with guardian verification signature in school diary.',
-    assignee: 'Rajesh Kumar (English)',
-    due: '2026-06-20',
-    priority: 'Medium',
-    status: 'Open'
-  },
-  {
-    id: 'fol-3',
-    student: 'Vivaan Prakash',
-    meetingId: 'ptm-2',
-    meeting: 'Exam Performance Discussion',
-    actionPlan: 'One-on-one remedial session twice weekly for multiplication tables and word problems.',
-    assignee: 'Sunita Sharma',
-    due: '2026-08-30',
-    priority: 'High',
-    status: 'In Progress'
-  },
-  {
-    id: 'fol-4',
-    student: 'Kriti Garg',
-    meetingId: 'ptm-1',
-    meeting: 'Term 1 Parent-Teacher Meeting',
-    actionPlan: 'Conduct virtual makeup parent consultation regarding science lab reports.',
-    assignee: 'Anita Verma',
-    due: '2026-09-10',
-    priority: 'Medium',
-    status: 'Open'
-  },
-  {
-    id: 'fol-5',
-    student: 'Advik Jha',
-    meetingId: 'ptm-6',
-    meeting: 'Mid-Term Progress Meeting',
-    actionPlan: 'Provide advanced reading lists and library pass for encyclopedia borrowing.',
-    assignee: 'Priya Nambiar',
-    due: '2026-06-28',
-    priority: 'Low',
-    status: 'Done'
-  }
-];
+const DEFAULT_FOLLOWUPS = [];
 
 // LocalStorage helpers
 function getLocalMeetings() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_MEETINGS);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY_MEETINGS, JSON.stringify(DEFAULT_MEETINGS));
-      return DEFAULT_MEETINGS;
+      return [];
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_MEETINGS;
+    // Ignore legacy dummy items
+    if (Array.isArray(parsed)) {
+      return parsed.filter(m => !m.id?.startsWith('ptm-') || m._id);
+    }
+    return [];
   } catch (e) {
-    return DEFAULT_MEETINGS;
+    return [];
   }
 }
 
@@ -229,13 +40,15 @@ function getLocalFollowUps() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_FOLLOWUPS);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY_FOLLOWUPS, JSON.stringify(DEFAULT_FOLLOWUPS));
-      return DEFAULT_FOLLOWUPS;
+      return [];
     }
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_FOLLOWUPS;
+    if (Array.isArray(parsed)) {
+      return parsed.filter(f => !f.id?.startsWith('fol-'));
+    }
+    return [];
   } catch (e) {
-    return DEFAULT_FOLLOWUPS;
+    return [];
   }
 }
 

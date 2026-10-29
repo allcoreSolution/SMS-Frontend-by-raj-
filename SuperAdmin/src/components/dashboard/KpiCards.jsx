@@ -128,8 +128,8 @@ const KpiCards = () => {
       iconBg: '#0284c7',
       iconColor: '#ffffff',
       glowColor: '#0284c7',
-      trend: '100% Active',
-      spark: genSpark(10, 5),
+      trend: stats.totalSchools > 0 ? `${Math.round((stats.activeSchools / stats.totalSchools) * 100)}% Active` : null,
+      spark: stats.totalSchools > 0 ? genSpark(10, 5) : [{ v: 0 }, { v: 0 }, { v: 0 }, { v: 0 }],
     },
     {
       title: 'Active Accounts',
@@ -140,7 +140,7 @@ const KpiCards = () => {
       iconColor: '#ffffff',
       glowColor: '#10b981',
       isLive: true,
-      spark: genSpark(20, 8),
+      spark: stats.activeSchools > 0 ? genSpark(20, 8) : [{ v: 0 }, { v: 0 }, { v: 0 }, { v: 0 }],
     },
     {
       title: 'Current Revenue',
@@ -150,8 +150,8 @@ const KpiCards = () => {
       iconBg: '#f59e0b',
       iconColor: '#ffffff',
       glowColor: '#f59e0b',
-      trend: '1133% MTD',
-      spark: genSpark(100, 30),
+      trend: stats.totalRevenue > 0 ? '+0% MTD' : null,
+      spark: stats.totalRevenue > 0 ? genSpark(100, 30) : [{ v: 0 }, { v: 0 }, { v: 0 }, { v: 0 }],
     },
     {
       title: 'Total Students',
@@ -161,8 +161,8 @@ const KpiCards = () => {
       iconBg: '#8b5cf6',
       iconColor: '#ffffff',
       glowColor: '#8b5cf6',
-      trend: 'Enrolled',
-      spark: genSpark(50, 15),
+      trend: stats.totalStudents > 0 ? 'Enrolled' : null,
+      spark: stats.totalStudents > 0 ? genSpark(50, 15) : [{ v: 0 }, { v: 0 }, { v: 0 }, { v: 0 }],
     },
     {
       title: 'Active Sessions',

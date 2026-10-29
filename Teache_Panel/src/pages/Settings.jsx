@@ -38,13 +38,14 @@ const Settings = () => {
     confirmPassword: ''
   });
 
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   // Profile Data
   const [profile, setProfile] = useState({
-    fullName: 'Amit Sharma',
-    email: 'amit.sharma@school.edu',
-    phone: '9876543210',
-    designation: 'Senior PGT Mathematics',
-    department: 'Science & Math'
+    fullName: storedUser.fullName || storedUser.name || '',
+    email: storedUser.email || '',
+    phone: storedUser.phone || '',
+    designation: storedUser.designation || '',
+    department: storedUser.department || ''
   });
 
   // Load preferences and profile from backend
@@ -60,11 +61,11 @@ const Settings = () => {
         if (profRes?.data?.personalInfo) {
           const info = profRes.data.personalInfo;
           setProfile({
-            fullName: info.fullName || 'Amit Sharma',
-            email: info.email || 'amit.sharma@school.edu',
-            phone: info.phone || '9876543210',
-            designation: info.designation || 'Senior PGT Mathematics',
-            department: info.department || 'Science & Math'
+            fullName: info.fullName || storedUser.fullName || storedUser.name || '',
+            email: info.email || storedUser.email || '',
+            phone: info.phone || storedUser.phone || '',
+            designation: info.designation || storedUser.designation || '',
+            department: info.department || storedUser.department || ''
           });
         }
 

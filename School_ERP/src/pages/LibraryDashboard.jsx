@@ -226,17 +226,7 @@ export default function LibraryDashboard({ initialTab = 'Overview' }) {
         console.warn('Student fetch fallback:', err);
       }
 
-      // If no students yet, provide fallback members
-      if (allMembers.length === 0) {
-        allMembers = [
-          { id: 'MEM-STU-01', name: 'Aarav Sharma', type: 'Student', subtitle: 'Adm: 2026-101 (Class X-A)', phone: '9812345678' },
-          { id: 'MEM-STU-02', name: 'Diya Patel', type: 'Student', subtitle: 'Adm: 2026-102 (Class XI-B)', phone: '9823456789' },
-          { id: 'MEM-STU-03', name: 'Rohan Gupta', type: 'Student', subtitle: 'Adm: 2026-103 (Class IX-A)', phone: '9834567890' },
-          { id: 'MEM-TCH-01', name: 'Dr. Rajesh Verma', type: 'Staff', subtitle: 'Faculty: Science & Physics', phone: '9845678901' },
-          { id: 'MEM-TCH-02', name: 'Mrs. Sunita Rao', type: 'Staff', subtitle: 'Faculty: Mathematics', phone: '9856789012' }
-        ];
-      }
-
+      // Set members list (empty if no students/staff yet)
       setMembers(allMembers);
     } catch (e) {
       console.error(e);
