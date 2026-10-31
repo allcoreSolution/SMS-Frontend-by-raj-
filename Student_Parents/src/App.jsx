@@ -101,26 +101,41 @@ export default function App() {
     }
   };
 
+  const hasAuth = () => {
+    try {
+      const token = localStorage.getItem('parent_token') || localStorage.getItem('token');
+      const user = localStorage.getItem('parent_user');
+      return !!(token || user);
+    } catch (e) {
+      return false;
+    }
+  };
+
   return (
     <LanguageProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
-          <Route path="/index.html" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
+          <Route path="/index.html" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
           <Route path="/login" element={<Login />} />
           {pages.map(({ path, El }) => (
             <Route
               key={path}
               path={path}
               element={
-                <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
-                  <ErrorBoundary>
-                    <El activeChild={activeChild} setActiveChild={setActiveChild} />
-                  </ErrorBoundary>
-                </Layout>
+                hasAuth() ? (
+                  <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
+                    <ErrorBoundary>
+                      <El activeChild={activeChild} setActiveChild={setActiveChild} />
+                    </ErrorBoundary>
+                  </Layout>
+                ) : (
+                  <Navigate to="/login" replace />
+                )
               }
             />
           ))}
+          <Route path="*" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

@@ -2,6 +2,13 @@ import axiosInstance from './axios';
 import branchLocalDb from './branchLocalDb';
 
 const normalizeBranch = (b, index = 0) => {
+  const students = Number(b.students) || 0;
+  const staff = Number(b.staff) || 0;
+  const classes = Number(b.classes) || 0;
+  const attendance = b.attendance || '0%';
+  const collectedRaw = Number(b.collectedRaw) || 0;
+  const collected = b.collected ? String(b.collected).replace(/Ã[^0-9A-Za-z\s,.]+/g, '₹') : (collectedRaw > 0 ? ('₹' + collectedRaw.toLocaleString('en-IN')) : '₹0');
+
   return {
     id: b.id || b._id || `br_${index + 1}`,
     _id: b._id || b.id || `br_${index + 1}`,
@@ -11,19 +18,19 @@ const normalizeBranch = (b, index = 0) => {
     phone: b.phone || b.contactPhone || '+91 98765 00000',
     address: b.address || 'Central City Campus',
     principal: b.principal || b.principalName || 'Principal',
-    plan: b.plan || b.subscriptionPlan || 'Enterprise Plan',
-    students: Number(b.students) || 850,
-    staff: Number(b.staff) || 54,
-    classes: Number(b.classes) || 16,
-    attendance: b.attendance || '93.5%',
-    collected: b.collected || '₹8,50,000',
-    collectedRaw: Number(b.collectedRaw) || 850000,
-    rows: b.rows || '12,500',
-    reg: b.reg || (b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '15 Jan, 2024'),
-    sub: b.sub || 'Yearly',
-    renews: b.renews || 'Annual',
+    plan: b.plan || b.subscriptionPlan || 'Basic Plan',
+    students,
+    staff,
+    classes,
+    attendance,
+    collected,
+    collectedRaw,
+    rows: b.rows || '0',
+    reg: b.reg || (b.createdAt ? new Date(b.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'),
+    sub: b.sub || '',
+    renews: b.renews || '—',
     status: b.status || (b.isActive === false ? 'Inactive' : 'Active'),
-    domain: b.domain || `${(b.code || b.branchCode || 'branch').toLowerCase()}.schoolerp.com`
+    domain: b.domain || `${(b.code || b.branchCode || 'branch').toLowerCase().replace(/[^a-z0-9]/g, '')}.schoolerp.com`
   };
 };
 

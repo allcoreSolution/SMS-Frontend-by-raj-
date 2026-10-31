@@ -634,19 +634,19 @@ const Sidebar = ({ isCollapsed }) => {
                           toggleMenu(item.name);
                         }
                       }}
-                      className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-2.5 text-[13.5px] transition-all duration-200 rounded-lg mx-1 group cursor-pointer ${
+                      className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3.5 py-2.5 text-[13.5px] transition-all duration-200 rounded-lg mx-1 group cursor-pointer ${
                         isActiveGroup && !isCollapsed 
                           ? 'bg-slate-800/80 text-white font-medium' 
                           : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
                       }`}
                       title={isCollapsed ? getTranslation(item.name, currentLang) : undefined}
                     >
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-[18px] h-[18px] transition-colors ${isActiveGroup ? 'text-[#ff5c0a]' : 'text-slate-400 group-hover:text-slate-200'}`} />
-                        {!isCollapsed && <span className="font-medium text-[13px]">{getTranslation(item.name, currentLang)}</span>}
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <item.icon className={`w-[18px] h-[18px] shrink-0 transition-colors ${isActiveGroup ? 'text-[#ff5c0a]' : 'text-slate-400 group-hover:text-slate-200'}`} />
+                        {!isCollapsed && <span className="font-medium text-[13px] whitespace-nowrap truncate">{getTranslation(item.name, currentLang)}</span>}
                       </div>
                       {!isCollapsed && (
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isActiveGroup ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-500'}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 shrink-0 ml-1.5 transition-transform duration-300 ${isActiveGroup ? 'rotate-180 text-[#ff5c0a]' : 'text-slate-500'}`} />
                       )}
                     </button>
                     {/* Dropdown Items */}
@@ -699,7 +699,7 @@ const Sidebar = ({ isCollapsed }) => {
                   <NavLink 
                     to={item.path}
                     className={({ isActive }) => 
-                      `flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-4 py-2 text-[13.5px] rounded-lg mx-1 transition-all duration-150 ${
+                      `flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} px-3.5 py-2 text-[13.5px] rounded-lg mx-1 transition-all duration-150 ${
                         isActive 
                           ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-semibold shadow-md shadow-orange-500/20' 
                           : 'text-slate-300 hover:text-white hover:bg-slate-800/50'
@@ -707,9 +707,9 @@ const Sidebar = ({ isCollapsed }) => {
                     }
                   >
                     {({ isActive }) => (
-                      <div className="flex items-center gap-3">
-                        <item.icon className={`w-[18px] h-[18px] ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                        {!isCollapsed && <span className="font-medium text-[13px]">{getTranslation(item.name, currentLang)}</span>}
+                      <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <item.icon className={`w-[18px] h-[18px] shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                        {!isCollapsed && <span className="font-medium text-[13px] whitespace-nowrap truncate">{getTranslation(item.name, currentLang)}</span>}
                       </div>
                     )}
                   </NavLink>
@@ -726,7 +726,7 @@ const Sidebar = ({ isCollapsed }) => {
   const filteredMainNav = filterItems(mainNav);
 
   return (
-    <aside className={`${isCollapsed ? 'w-20' : 'w-[245px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
+    <aside className={`${isCollapsed ? 'w-20' : 'w-[268px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
       {/* Brand & Logo Area */}
       <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-5'} py-4 sticky top-0 bg-[#131927]/95 backdrop-blur-md z-20 border-b border-[#1e2638] min-h-[64px]`}>
         <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/20">
@@ -794,7 +794,7 @@ const Sidebar = ({ isCollapsed }) => {
                       to={item.path}
                       end={item.path === '/'}
                       className={({ isActive }) => 
-                        `flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
+                        `flex items-center ${isCollapsed ? 'justify-center' : 'gap-2.5 px-3.5'} py-2 text-[13px] rounded-lg transition-all duration-150 ${
                           isActive
                             ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-semibold shadow-md shadow-orange-500/20' 
                             : 'text-slate-300 hover:text-white hover:bg-slate-800/50'

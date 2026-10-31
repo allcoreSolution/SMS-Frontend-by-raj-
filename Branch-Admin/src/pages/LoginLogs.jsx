@@ -173,8 +173,8 @@ const LoginLogs = () => {
           stroke="#f43f5e"
           iconBg="linear-gradient(135deg, #fb7185, #f43f5e)"
           iconColor="#ffffff"
-          spark={[12, 16, 20, 24, 28, 30, 32]}
-          badge="Live Trace"
+          spark={[0, 0, 0, 0]}
+          badge={filteredLogs.length > 0 ? 'Live Trace' : 'Idle'}
         />
         <KpiCard 
           title="Admin Logins"
@@ -185,8 +185,8 @@ const LoginLogs = () => {
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[2, 3, 4, 3, 5, 4, 6]}
-          badge="Elevated"
+          spark={[0, 0, 0, 0]}
+          badge={filteredLogs.filter(l => l.role?.includes('Admin')).length > 0 ? 'Elevated' : 'None'}
         />
         <KpiCard 
           title="Teacher & Staff"
@@ -197,8 +197,8 @@ const LoginLogs = () => {
           stroke="#3b82f6"
           iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
           iconColor="#ffffff"
-          spark={[8, 10, 12, 14, 15, 18, 20]}
-          badge="Faculty"
+          spark={[0, 0, 0, 0]}
+          badge={filteredLogs.filter(l => l.role?.includes('Teacher') || l.role?.includes('Staff')).length > 0 ? 'Faculty' : 'None'}
         />
         <KpiCard 
           title="Security Health"
@@ -209,7 +209,7 @@ const LoginLogs = () => {
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[100, 100, 100, 100, 100, 100, 100]}
+          spark={[0, 0, 0, 0]}
           badge="Guarded"
         />
       </div>

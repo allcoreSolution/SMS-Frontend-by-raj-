@@ -7,39 +7,13 @@ import {
 import { parentService } from '../../api/parentService';
 import { useLanguage } from '../../context/LanguageContext';
 
-const defaultSubjectsEn = [
-  { name: 'Mathematics', code: 'MATH-10', marks: 92, max: 100, grade: 'A+', color: '#2563EB', remarks: 'Outstanding analytical skills' },
-  { name: 'General Science', code: 'SCI-10', marks: 89, max: 100, grade: 'A', color: '#10B981', remarks: 'Excellent lab report and theory' },
-  { name: 'Social Studies', code: 'SST-10', marks: 86, max: 100, grade: 'A', color: '#14B8A6', remarks: 'Good grasp of geography and history' },
-  { name: 'English Literature', code: 'ENG-10', marks: 91, max: 100, grade: 'A+', color: '#8B5CF6', remarks: 'High vocabulary and essay quality' },
-  { name: 'Computer Applications', code: 'CS-10', marks: 95, max: 100, grade: 'A+', color: '#EC4899', remarks: 'Top score in programming practical' },
-  { name: 'Hindi Language', code: 'HIN-10', marks: 78, max: 100, grade: 'B+', color: '#F59E0B', remarks: 'Good, work on grammar rules' }
-];
+const defaultSubjectsEn = [];
 
-const defaultSubjectsHi = [
-  { name: 'गणित (Mathematics)', code: 'MATH-10', marks: 92, max: 100, grade: 'A+', color: '#2563EB', remarks: 'उत्कृष्ट विश्लेषणात्मक कौशल' },
-  { name: 'सामान्य विज्ञान (General Science)', code: 'SCI-10', marks: 89, max: 100, grade: 'A', color: '#10B981', remarks: 'प्रयोगशाला रिपोर्ट एवं थ्योरी में उत्कृष्ट' },
-  { name: 'सामाजिक अध्ययन (Social Studies)', code: 'SST-10', marks: 86, max: 100, grade: 'A', color: '#14B8A6', remarks: 'भूगोल एवं इतिहास की उत्तम समझ' },
-  { name: 'अंग्रेजी साहित्य (English Literature)', code: 'ENG-10', marks: 91, max: 100, grade: 'A+', color: '#8B5CF6', remarks: 'उत्कृष्ट शब्दावली एवं निबंध लेखन' },
-  { name: 'कंप्यूटर अनुप्रयोग (Computer Applications)', code: 'CS-10', marks: 95, max: 100, grade: 'A+', color: '#EC4899', remarks: 'प्रोग्रामिंग प्रैक्टिकल में शीर्ष अंक' },
-  { name: 'हिन्दी भाषा (Hindi Language)', code: 'HIN-10', marks: 78, max: 100, grade: 'B+', color: '#F59E0B', remarks: 'अच्छा प्रयास, व्याकरण नियमों पर अभ्यास करें' }
-];
+const defaultSubjectsHi = [];
 
-const upcomingDatesheetEn = [
-  { subject: 'Science (Theory & Lab)', date: '10 Sep 2026', time: '09:00 AM – 12:00 PM', room: 'Hall A (Ground Floor)', syllabus: 'Chapters 1 to 6' },
-  { subject: 'Mathematics', date: '12 Sep 2026', time: '09:00 AM – 12:00 PM', room: 'Hall A (Ground Floor)', syllabus: 'Units 1 to 5: Algebra & Trig' },
-  { subject: 'Social Science', date: '15 Sep 2026', time: '09:00 AM – 12:00 PM', room: 'Room 204', syllabus: 'History Ch 1-3, Civics Ch 1-2' },
-  { subject: 'English Communicative', date: '17 Sep 2026', time: '09:00 AM – 12:00 PM', room: 'Room 204', syllabus: 'Reading, Grammar, Literature Section' },
-  { subject: 'Computer Applications', date: '19 Sep 2026', time: '09:00 AM – 11:30 AM', room: 'Computer Lab 2', syllabus: 'HTML, CSS, Cyber Ethics' }
-];
+const upcomingDatesheetEn = [];
 
-const upcomingDatesheetHi = [
-  { subject: 'विज्ञान (सैद्धांतिक एवं प्रायोगिक)', date: '10 सित 2026', time: 'प्रातः 09:00 – दोपहर 12:00', room: 'हॉल A (भूतल)', syllabus: 'अध्याय 1 से 6' },
-  { subject: 'गणित', date: '12 सित 2026', time: 'प्रातः 09:00 – दोपहर 12:00', room: 'हॉल A (भूतल)', syllabus: 'इकाई 1 से 5: बीजगणित एवं त्रिकोणमिति' },
-  { subject: 'सामाजिक विज्ञान', date: '15 सित 2026', time: 'प्रातः 09:00 – दोपहर 12:00', room: 'कमरा संख्या 204', syllabus: 'इतिहास अ. 1-3, नागरिक शास्त्र अ. 1-2' },
-  { subject: 'अंग्रेजी संप्रेषण', date: '17 सित 2026', time: 'प्रातः 09:00 – दोपहर 12:00', room: 'कमरा संख्या 204', syllabus: 'वाचन, व्याकरण एवं साहित्य खंड' },
-  { subject: 'कंप्यूटर अनुप्रयोग', date: '19 सित 2026', time: 'प्रातः 09:00 – पूर्वाह्न 11:30', room: 'कंप्यूटर लैब 2', syllabus: 'HTML, CSS, साइबर नैतिकता' }
-];
+const upcomingDatesheetHi = [];
 
 export default function Exams({ activeChild }) {
   const { currentLang } = useLanguage();
@@ -74,10 +48,10 @@ export default function Exams({ activeChild }) {
     loadExamData();
   }, [activeChild]);
 
-  const studentName = studentInfo?.name || (currentLang === 'hi' ? 'शिवम यादव' : 'Shivam');
-  const studentClass = studentInfo?.class || (currentLang === 'hi' ? 'कक्षा 10 - C (कला वर्ग)' : 'Class 10 - C (Arts)');
-  const rollNo = studentInfo?.rollNumber || studentInfo?.roll || 'Roll 22';
-  const admn = studentInfo?.admissionNo || studentInfo?.admn || '8400563229';
+  const studentName = studentInfo?.name || ('—');
+  const studentClass = studentInfo?.class || ('—');
+  const rollNo = studentInfo?.rollNumber || studentInfo?.roll || '—';
+  const admn = studentInfo?.admissionNo || studentInfo?.admn || '—';
 
   return (
     <div className="w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen bg-[#F8FAFF] pb-28 font-sans select-none">

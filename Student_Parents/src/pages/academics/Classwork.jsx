@@ -5,48 +5,7 @@ import {
 } from 'lucide-react';
 import { parentService } from '../../api/parentService';
 
-const defaultClasswork = [
-  {
-    id: 'cw-1',
-    period: 'Period 1 (08:30 – 09:20 AM)',
-    subject: 'Mathematics',
-    teacher: 'Mr. Sharma',
-    topic: 'Trigonometric Identities — Proofs & Applications',
-    notes: 'Covered Example 8 to 14 from NCERT Chapter 8. Emphasized sin²θ + cos²θ = 1 identity transformations.',
-    homeworkGiven: 'Exercise 8.4 questions 1 to 10 in register.',
-    date: 'Today (27 Aug 2026)'
-  },
-  {
-    id: 'cw-2',
-    period: 'Period 2 (09:20 – 10:10 AM)',
-    subject: 'Science (Biology)',
-    teacher: 'Mr. Verma',
-    topic: 'Human Digestive System — Organs & Secretions',
-    notes: 'Interactive smartboard session on peristalsis, stomach acid functions, and small intestine villi absorption.',
-    homeworkGiven: 'Draw labeled diagram of Human Digestive System.',
-    date: 'Today (27 Aug 2026)'
-  },
-  {
-    id: 'cw-3',
-    period: 'Period 3 (10:10 – 11:00 AM)',
-    subject: 'Social Science (History)',
-    teacher: 'Mr. Gupta',
-    topic: 'Nationalism in India — Non-Cooperation Movement',
-    notes: 'Class discussion on Nagpur session 1920, boycott of foreign cloth, and peasant struggles in Awadh.',
-    homeworkGiven: 'Write short notes on Chauri Chaura incident.',
-    date: 'Today (27 Aug 2026)'
-  },
-  {
-    id: 'cw-4',
-    period: 'Period 5 (11:30 – 12:20 PM)',
-    subject: 'English Literature',
-    teacher: 'Mrs. Johnson',
-    topic: 'Poem — "The Road Not Taken" Analysis',
-    notes: 'Stanza-by-stanza rhyme scheme (ABAAB) and metaphorical dilemma of decision making in life.',
-    homeworkGiven: 'Summarize the central idea in 150 words.',
-    date: 'Today (27 Aug 2026)'
-  }
-];
+const defaultClasswork = [];
 
 export default function Classwork() {
   const [classworkList, setClassworkList] = useState(defaultClasswork);
@@ -85,12 +44,12 @@ export default function Classwork() {
           Classroom Diary Log
         </span>
         <h2 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight mt-1.5">
-          Class 10 - Section C Daily Schedule
+          Daily Schedule
         </h2>
         <div className="mt-3 flex items-center gap-3 text-xs text-blue-100 font-medium">
-          <span>📅 Today: 27 Aug 2026</span>
+          <span>📅 Today</span>
           <span>•</span>
-          <span>✅ 4 Periods Logged</span>
+          <span>✅ Periods Logged</span>
           <span>•</span>
           <span>📝 Homework Assigned</span>
         </div>

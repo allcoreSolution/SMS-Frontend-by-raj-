@@ -28,7 +28,7 @@ export default function HRDashboard() {
       activeLoans: 0,
       totalLoanBalance: 0,
       monthlyPayrollEstimate: 0,
-      attendanceRate: '95%'
+      attendanceRate: '0%'
     },
     deptChart: [],
     leaveStatusData: [],
@@ -144,7 +144,11 @@ export default function HRDashboard() {
             </div>
             <div>
               <div className="text-lg font-black text-emerald-600">
-                ₹{((stats.monthlyPayrollEstimate || 0) / 1000).toFixed(0)}k
+                {stats.monthlyPayrollEstimate > 0 
+                  ? (stats.monthlyPayrollEstimate >= 100000 
+                      ? `₹${(stats.monthlyPayrollEstimate / 100000).toFixed(2)}L` 
+                      : `₹${(stats.monthlyPayrollEstimate / 1000).toFixed(0)}k`)
+                  : '₹0'}
               </div>
               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Monthly Payroll</div>
             </div>
@@ -179,7 +183,7 @@ export default function HRDashboard() {
             </div>
 
             <div className="h-64 w-full">
-              {deptChart && deptChart.length > 0 ? (
+              {deptChart && deptChart.some(d => d.staffCount > 0) ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={deptChart} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
@@ -198,8 +202,9 @@ export default function HRDashboard() {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full flex items-center justify-center text-xs text-slate-400">
-                  Loading department analytics...
+                <div className="h-full flex flex-col items-center justify-center text-xs text-slate-400 gap-1.5">
+                  <Building className="w-8 h-8 text-slate-300" />
+                  <span>No staff assigned to departments yet</span>
                 </div>
               )}
             </div>

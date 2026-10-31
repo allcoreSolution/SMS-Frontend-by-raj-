@@ -449,7 +449,7 @@ const seed = {
       activeSessions: [
         { id: 'sess_1', device: 'Windows 11 (Google Chrome v124)', ip: '192.168.1.104', location: 'New Delhi, India', current: true, loginTime: '2026-10-12 09:15 AM' },
         { id: 'sess_2', device: 'iPad Pro (Mobile Safari)', ip: '103.21.58.42', location: 'Noida, UP, India', current: false, loginTime: '2026-10-11 04:30 PM' },
-        { id: 'sess_3', device: 'Accountant Desktop - Counter 2 (Firefox)', ip: '192.168.1.118', location: 'Campus Intranet', current: false, loginTime: '2026-10-09 11:20 AM' },
+        { id: 'sess_3', device: 'Accountant Desktop - Counter 2 (Firefox)', ip: '192.168.1.208', location: 'Campus Intranet', current: false, loginTime: '2026-10-09 11:20 AM' },
       ],
     },
     database: {

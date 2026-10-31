@@ -42,53 +42,7 @@ const TYPE_HI = {
 };
 
 // Default weekly schedule matching Screenshot 4
-const defaultWeeklySchedule = {
-  'Mon': [
-    { time: '08:30 – 09:20 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
-    { time: '09:20 – 10:10 AM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
-    { time: '10:10 – 11:00 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Practical', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
-    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
-    { time: '11:30 – 12:20 PM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
-    { time: '12:20 – 01:10 PM', subject: 'Computer Science', teacher: 'Mr. Das', room: 'Lab 1', type: 'Lab', barColor: 'bg-[#EC4899]', badgeBg: 'bg-pink-50 text-pink-700' }
-  ],
-  'Tue': [
-    { time: '08:30 – 09:20 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
-    { time: '09:20 – 10:10 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
-    { time: '10:10 – 11:00 AM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
-    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
-    { time: '11:30 – 12:20 PM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
-    { time: '12:20 – 01:10 PM', subject: 'Physical Ed.', teacher: 'Mr. Singh', room: 'Ground 1', type: 'Sports', barColor: 'bg-[#06B6D4]', badgeBg: 'bg-cyan-50 text-cyan-700' }
-  ],
-  'Wed': [
-    { time: '08:30 – 09:20 AM', subject: 'Hindi', teacher: 'Mrs. Singh', room: 'Room 19', type: 'Lecture', barColor: 'bg-[#EF4444]', badgeBg: 'bg-red-50 text-red-700' },
-    { time: '09:20 – 10:10 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
-    { time: '10:10 – 11:00 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
-    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
-    { time: '11:30 – 12:20 PM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
-    { time: '12:20 – 01:10 PM', subject: 'Art & Craft', teacher: 'Ms. Lily', room: 'Studio 3', type: 'Activity', barColor: 'bg-[#F59E0B]', badgeBg: 'bg-amber-50 text-amber-700' }
-  ],
-  'Thu': [
-    { time: '08:30 – 09:20 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
-    { time: '09:20 – 10:10 AM', subject: 'Computer Science', teacher: 'Mr. Das', room: 'Lab 1', type: 'Lab', barColor: 'bg-[#EC4899]', badgeBg: 'bg-pink-50 text-pink-700' },
-    { time: '10:10 – 11:00 AM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
-    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
-    { time: '11:30 – 12:20 PM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Practical', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
-    { time: '12:20 – 01:10 PM', subject: 'Hindi', teacher: 'Mrs. Singh', room: 'Room 19', type: 'Lecture', barColor: 'bg-[#EF4444]', badgeBg: 'bg-red-50 text-red-700' }
-  ],
-  'Fri': [
-    { time: '08:30 – 09:20 AM', subject: 'Social Science', teacher: 'Mr. Gupta', room: 'Room 05', type: 'Lecture', barColor: 'bg-[#14B8A6]', badgeBg: 'bg-teal-50 text-teal-700' },
-    { time: '09:20 – 10:10 AM', subject: 'Science', teacher: 'Mr. Verma', room: 'Lab 2', type: 'Lecture', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' },
-    { time: '10:10 – 11:00 AM', subject: 'Mathematics', teacher: 'Mr. Sharma', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#2563EB]', badgeBg: 'bg-blue-50 text-blue-700' },
-    { isBreak: true, time: '11:00 – 11:30 AM', subject: 'Recess Break', teacher: '-', room: 'Cafeteria' },
-    { time: '11:30 – 12:20 PM', subject: 'English', teacher: 'Mrs. Johnson', room: 'Room 15', type: 'Lecture', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
-    { time: '12:20 – 01:10 PM', subject: 'General Knowledge', teacher: 'Mr. Rai', room: 'Room 12', type: 'Lecture', barColor: 'bg-[#3B82F6]', badgeBg: 'bg-blue-50 text-blue-700' }
-  ],
-  'Sat': [
-    { time: '08:30 – 09:20 AM', subject: 'Club Activities', teacher: 'Staff', room: 'Activity Hall', type: 'Club', barColor: 'bg-[#8B5CF6]', badgeBg: 'bg-purple-50 text-purple-700' },
-    { time: '09:20 – 10:10 AM', subject: 'Sports & Games', teacher: 'Mr. Singh', room: 'Playground', type: 'Sports', barColor: 'bg-[#06B6D4]', badgeBg: 'bg-cyan-50 text-cyan-700' },
-    { time: '10:10 – 11:00 AM', subject: 'Remedial Class', teacher: 'Faculty', room: 'Room 10', type: 'Tutorial', barColor: 'bg-[#10B981]', badgeBg: 'bg-emerald-50 text-emerald-700' }
-  ]
-};
+const defaultWeeklySchedule = {};
 
 export default function Timetable({ activeChild }) {
   const navigate = useNavigate();
@@ -115,10 +69,10 @@ export default function Timetable({ activeChild }) {
     loadTimetable();
   }, [activeChild]);
 
-  const studentName = studentInfo?.name || 'Rahul Sharma';
-  const studentClass = studentInfo?.class || 'Class 10 - Section A';
-  const rollNumber = studentInfo?.rollNumber || studentInfo?.roll || 'Roll No. 22';
-  const session = studentInfo?.academicSession || 'Session 2024-25';
+  const studentName = studentInfo?.name || '—';
+  const studentClass = studentInfo?.class || '—';
+  const rollNumber = studentInfo?.rollNumber || studentInfo?.roll || '—';
+  const session = studentInfo?.academicSession || '—';
 
   const periods = defaultWeeklySchedule[selectedDay] || [];
 

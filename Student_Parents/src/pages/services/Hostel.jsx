@@ -49,10 +49,10 @@ export default function Hostel({ activeChild }) {
     passType: 'Weekend Home Visit',
     departureDate: '',
     returnDate: '',
-    destination: 'Dwarka Sector 12, New Delhi (Home)',
-    guardianName: 'Rajesh Kumar Gupta (Father)',
-    guardianPhone: '+91 98765 10000',
-    reason: 'Family weekend visit'
+    destination: '',
+    guardianName: '',
+    guardianPhone: '',
+    reason: ''
   });
   const [submittingPass, setSubmittingPass] = useState(false);
   const [passSuccess, setPassSuccess] = useState(null);

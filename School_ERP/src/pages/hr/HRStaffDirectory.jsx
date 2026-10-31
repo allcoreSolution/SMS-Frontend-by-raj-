@@ -231,8 +231,17 @@ export default function HRStaffDirectory() {
                       </td>
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 font-black flex items-center justify-center text-xs shadow-xs">
-                            {staff.fullName ? staff.fullName.charAt(0) : 'S'}
+                          <div className="w-9 h-9 rounded-xl bg-purple-100 text-purple-700 font-black flex items-center justify-center text-xs shadow-xs overflow-hidden">
+                            {staff.photo ? (
+                              <img 
+                                src={staff.photo.startsWith('http') || staff.photo.startsWith('data:') ? staff.photo : `http://localhost:5050/${staff.photo.replace(/^\/+/, '')}`} 
+                                alt={staff.fullName} 
+                                className="w-full h-full object-cover" 
+                                onError={(e) => { e.target.style.display = 'none'; }}
+                              />
+                            ) : (
+                              staff.fullName ? staff.fullName.charAt(0) : 'S'
+                            )}
                           </div>
                           <div>
                             <div className="font-bold text-slate-800 group-hover:text-purple-700 transition-colors">

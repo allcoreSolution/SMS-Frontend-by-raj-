@@ -17,15 +17,21 @@ const getMediaUrl = (photoPath) => {
   if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
   const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
     || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
-    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.11:5050');
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.20:5050');
   const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
   return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
 };
 
 const defaultChildren = [
-  { id: '1', name: 'Kabir Singh',   class: 'Nursery (A)',   avatar: 'K' },
-  { id: '2', name: 'Shlok Verma',  class: 'Class III (B)', avatar: 'S' },
-  { id: '3', name: 'Rajesh Singh', class: 'Class II (A)',  avatar: 'R' },
+  {
+    id: 'YIS-2024-101',
+    _id: 'YIS-2024-101',
+    name: 'Student',
+    class: 'Class I',
+    admn: 'YIS-2024-101',
+    roll: '1',
+    avatar: 'S'
+  }
 ];
 
 // All screens & modules index for fast spotlight search
@@ -326,7 +332,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   }, [currentUser]);
 
   const parentName = isStudent 
-    ? (currentUser?.name || 'Aarav Sharma')
+    ? (currentUser?.name || 'Student')
     : (currentUser?.name || guardianProfile?.name || 'Parent Account');
   const parentInitials = parentName
     ? parentName
@@ -335,7 +341,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         .map(w => w[0].toUpperCase())
         .slice(0, 2)
         .join('')
-    : (isStudent ? 'AS' : 'PA');
+    : (isStudent ? 'ST' : 'PA');
 
   const navSectionsConfig = useMemo(() => getNavSectionsConfig(isStudent), [isStudent]);
 
@@ -465,7 +471,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       return {
         id: studentSelfId || '6acdc7d06660441df4764319',
         _id: studentSelfId || '6acdc7d06660441df4764319',
-        name: currentUser?.name || 'Aarav Sharma',
+        name: currentUser?.name || 'Student',
         class: currentUser?.class || 'Class I (A)',
         admn: currentUser?.username || 'YIS-2024-101',
         roll: '9',
@@ -642,10 +648,10 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-[12px] font-semibold text-gray-200 block truncate">
-                      {currentLang === 'hi' ? 'मेरा खाता' : 'My Account'}: {current.name.split(' ')[0]}
+                      {currentLang === 'hi' ? 'मेरा खाता' : 'My Account'}: {current?.name ? current.name.split(' ')[0] : 'Account'}
                     </span>
                     <span className="text-[9.5px] text-blue-300/80 block truncate">
-                      {current.class} &bull; {currentLang === 'hi' ? 'विद्यार्थी' : 'Student'}
+                      {current?.class || ''} &bull; {currentLang === 'hi' ? 'विद्यार्थी' : 'Student'}
                     </span>
                   </div>
                 </div>
@@ -662,10 +668,10 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                     </div>
                     <div className="flex-1 min-w-0">
                       <span className="text-[12px] font-semibold text-gray-200 block truncate">
-                        {getT('viewingChild', currentLang)}: {current.name.split(' ')[0]}
+                        {getT('viewingChild', currentLang)}: {current?.name ? current.name.split(' ')[0] : 'Child'}
                       </span>
                       <span className="text-[9.5px] text-pink-300/80 block truncate">
-                        {current.class}
+                        {current?.class || ''}
                       </span>
                     </div>
                     <ChevronDown className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${childOpen ? 'rotate-180' : ''}`} />
@@ -1148,7 +1154,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                     </div>
                     <div className="flex flex-col min-w-0">
                       <span className="font-extrabold text-slate-900 text-sm leading-tight truncate">
-                        {isStudent ? (current?.name || currentUser?.name || 'Aarav Sharma') : parentName}
+                        {isStudent ? (current?.name || currentUser?.name || 'Student') : parentName}
                       </span>
                       <span className={`text-[11px] font-bold mt-0.5 truncate ${isStudent ? 'text-blue-600' : 'text-emerald-700'}`}>
                         {isStudent 

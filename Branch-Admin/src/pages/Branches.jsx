@@ -33,8 +33,8 @@ const Branches = () => {
     address: '',
     plan: 'Enterprise Plan',
     sub: 'Yearly',
-    students: 500,
-    staff: 35,
+    students: 0,
+    staff: 0,
     status: 'Active'
   };
   const [formData, setFormData] = useState(initialFormState);
@@ -154,9 +154,9 @@ const Branches = () => {
       code,
       collected: '₹0.00',
       collectedRaw: 0,
-      attendance: '95.0%',
-      rows: '1,000',
-      renews: '12 Oct, 2027',
+      attendance: '0%',
+      rows: '0',
+      renews: '—',
       domain: `${code.toLowerCase()}.schoolerp.com`
     };
 
@@ -324,8 +324,8 @@ const Branches = () => {
           stroke="#3b82f6"
           iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
           iconColor="#ffffff"
-          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
-          badge="+8.4% YoY"
+          spark={[0, 0, 0, 0]}
+          badge={totalStudents > 0 ? "+8.4% YoY" : "0 Enrolled"}
         />
         <KpiCard 
           title="Faculty & Staff"
@@ -337,8 +337,8 @@ const Branches = () => {
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[120, 145, 170, 190, 205, 218]}
-          badge="Full Roster"
+          spark={[0, 0, 0, 0]}
+          badge={totalStaff > 0 ? "Full Roster" : "0 Staff"}
         />
       </div>
 

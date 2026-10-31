@@ -151,8 +151,8 @@ const SchoolsUsage = () => {
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
-          badge="Capacity: 85%"
+          spark={[0, 0, 0, 0]}
+          badge="Real Time"
         />
         <KpiCard 
           title="Staff Quota Seats"
@@ -163,7 +163,7 @@ const SchoolsUsage = () => {
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[120, 145, 170, 190, 205, 218]}
+          spark={[0, 0, 0, 0]}
           badge="Allocated"
         />
         <KpiCard 

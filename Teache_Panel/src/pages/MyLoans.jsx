@@ -118,9 +118,9 @@ const MyLoans = () => {
   const DEFAULT_SEED_LEAVES = [];
 
   const DEFAULT_SEED_BALANCES = [
-    { type: 'Casual Leave (CL)', total: 12, used: 0, remaining: 12 },
-    { type: 'Medical Leave (ML)', total: 10, used: 0, remaining: 10 },
-    { type: 'Earned Leave (EL)', total: 15, used: 0, remaining: 15 }
+    { type: 'Casual Leave (CL)', total: 0, used: 0, remaining: 0 },
+    { type: 'Medical Leave (ML)', total: 0, used: 0, remaining: 0 },
+    { type: 'Earned Leave (EL)', total: 0, used: 0, remaining: 0 }
   ];
 
   const DEFAULT_SEED_ATTENDANCE = {

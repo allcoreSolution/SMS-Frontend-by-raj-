@@ -10,6 +10,7 @@ import KpiCard from '../components/common/KpiCard';
 
 const Payments = () => {
   const [payments, setPayments] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,13 +21,13 @@ const Payments = () => {
   const [selectedReceipt, setSelectedReceipt] = useState(null);
 
   // Form State
-  const initialForm = {
-    name: 'Yug International School',
+    const initialForm = {
+    name: '',
     plan: 'Enterprise Plan',
-    amount: '₹50,000.00',
+    amount: '',
     method: 'Razorpay',
-    transId: 'TXN_' + Math.floor(100000 + Math.random() * 900000),
-    proof: 'UTR-' + Math.floor(10000000 + Math.random() * 90000000),
+    transId: '',
+    proof: '',
     status: 'Paid'
   };
   const [formData, setFormData] = useState(initialForm);
@@ -186,27 +187,27 @@ const Payments = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard 
           title="Revenue Realized"
-          value={`₹${(totalPaid / 100000).toFixed(2)} Lakhs`}
+          value={totalPaid > 0 ? `₹${(totalPaid / 100000).toFixed(2)} Lakhs` : '₹0.00'}
           subText="Settled across all branches"
           icon={DollarSign}
           glowColor="#10b981"
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[25, 30, 28, 35, 42, 48, 52]}
-          badge="100% Realized"
+          spark={[0, 0, 0, 0]}
+          badge={totalPaid > 0 ? '100% Realized' : 'Zero Collections'}
         />
         <KpiCard 
           title="Pending Settlements"
-          value={`₹${(pendingAmount / 1000).toFixed(1)}k`}
+          value={pendingAmount > 0 ? `₹${(pendingAmount / 1000).toFixed(1)}k` : '₹0.00'}
           subText="Awaiting gateway / UTR verify"
           icon={Clock}
           glowColor="#f59e0b"
           stroke="#f59e0b"
           iconBg="linear-gradient(135deg, #fbbf24, #f59e0b)"
           iconColor="#ffffff"
-          spark={[12, 15, 10, 18, 14, 16, 20]}
-          badge="In Verification"
+          spark={[0, 0, 0, 0]}
+          badge={pendingAmount > 0 ? 'In Verification' : 'Settled'}
         />
         <KpiCard 
           title="Paid Invoices"
@@ -218,7 +219,7 @@ const Payments = () => {
           stroke="#3b82f6"
           iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
           iconColor="#ffffff"
-          spark={[10, 14, 18, 22, 25, 28, 30]}
+          spark={[0, 0, 0, 0]}
           badge="Verified"
         />
         <KpiCard 
@@ -230,7 +231,7 @@ const Payments = () => {
           stroke="#ef4444"
           iconBg="linear-gradient(135deg, #f87171, #ef4444)"
           iconColor="#ffffff"
-          spark={[4, 2, 1, 3, 2, 1, 0]}
+          spark={[0, 0, 0, 0]}
           badge="Action Req."
         />
       </div>
@@ -338,7 +339,7 @@ const Payments = () => {
                   <td colSpan="9" className="py-12 text-center text-gray-500">
                     <CreditCard className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                     <p className="text-base font-semibold text-gray-700">No payment records found</p>
-                    <p className="text-xs text-gray-400 mt-1">Try modifying your search or filter tab.</p>
+                    <p className="text-xs text-gray-400 mt-1">Click "+ Record Payment" above to record a new subscription billing receipt.</p>
                   </td>
                 </tr>
               ) : (
@@ -487,7 +488,7 @@ const Payments = () => {
                   required
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Yug International School"
+                  placeholder="e.g. Ram International School" list="branches-datalist"
                   className="w-full px-3.5 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
                 />
               </div>
@@ -585,7 +586,12 @@ const Payments = () => {
                   Save & Log Payment
                 </button>
               </div>
-            </form>
+              <datalist id="branches-datalist">
+      {branches.map((b, idx) => (
+        <option key={b.id || idx} value={b.name} />
+      ))}
+    </datalist>
+  </form>
           </div>
         </div>
       )}

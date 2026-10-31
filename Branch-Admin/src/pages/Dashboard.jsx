@@ -16,9 +16,9 @@ const BranchCard = ({ branch = {} }) => {
   const status = branch.status || 'Active';
   const students = Number(branch.students || 0);
   const staff = Number(branch.staff || 0);
-  const attendance = branch.attendance || '92%';
-  const collected = branch.collected || '₹0';
-  const renews = branch.renews || 'Annual';
+  const attendance = branch.attendance || '—';
+  const collected = String(branch.collected || '₹0').replace(/Ã¢â‚¬Â|Ã¢â‚¬/g, '₹');
+  const renews = branch.renews || '—';
 
   return (
     <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-5 font-sans group hover:shadow-md hover:border-orange-500/30 transition-all duration-300 flex flex-col justify-between">
@@ -83,21 +83,9 @@ const Dashboard = () => {
   });
   const [stats, setStats] = useState(() => {
     try {
-      return branchLocalDb.getDashboardStats() || {
-        branchesCount: 4,
-        activeBranches: 4,
-        totalStudents: 3840,
-        totalStaff: 250,
-        totalCollected: '₹35.66 Lakhs'
-      };
+      return branchLocalDb.getDashboardStats() || { branchesCount: 0, activeBranches: 0, totalStudents: 0, totalStaff: 0, totalCollected: '₹0' };
     } catch (_) {
-      return {
-        branchesCount: 4,
-        activeBranches: 4,
-        totalStudents: 3840,
-        totalStaff: 250,
-        totalCollected: '₹35.66 Lakhs'
-      };
+      return { branchesCount: 0, activeBranches: 0, totalStudents: 0, totalStaff: 0, totalCollected: '₹0' };
     }
   });
   const [recentLeads, setRecentLeads] = useState([]);
@@ -204,7 +192,7 @@ const Dashboard = () => {
           stroke="#3b82f6"
           iconBg="linear-gradient(135deg, #60a5fa, #3b82f6)"
           iconColor="#ffffff"
-          spark={[2, 3, 3, 4, 4, 4, 4]}
+          spark={[0, 0, 0, 0]}
           badge="Live Synced"
         />
         <KpiCard 
@@ -217,44 +205,44 @@ const Dashboard = () => {
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[3, 3, 4, 4, 4, 4, 4]}
+          spark={[0, 0, 0, 0]}
           badge="Healthy"
         />
         <KpiCard 
           title="Total Students" 
-          value={Number(stats.totalStudents || 3840).toLocaleString('en-IN')} 
+          value={Number(stats.totalStudents || 0).toLocaleString('en-IN')} 
           subText={`Across ${branches.length} linked campuses`}
           icon={BookOpen} 
           glowColor="#ec4899"
           stroke="#ec4899"
           iconBg="linear-gradient(135deg, #f472b6, #ec4899)"
           iconColor="#ffffff"
-          spark={[1200, 1800, 2400, 3100, 3800, 4200, 4478]}
-          badge="+8.4% YoY"
+          spark={[0, 0, 0, 0]}
+          badge={Number(stats.totalStudents || 0) > 0 ? "+8.4% YoY" : "0 Enrolled"}
         />
         <KpiCard 
           title="Faculty & Staff" 
-          value={Number(stats.totalStaff || 250).toLocaleString('en-IN')} 
+          value={Number(stats.totalStaff || 0).toLocaleString('en-IN')} 
           subText="Teaching & Administration"
           icon={Contact} 
           glowColor="#8b5cf6"
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[120, 145, 170, 190, 205, 218, 250]}
-          badge="Roster"
+          spark={[0, 0, 0, 0]}
+          badge={Number(stats.totalStaff || 0) > 0 ? "Active Roster" : "0 Staff"}
         />
         <KpiCard 
           title="Fee Collected (MTD)" 
-          value={stats.totalCollected || '₹35.66 Lakhs'} 
+          value={cleanCurrency(branches.reduce((s, b) => s + (Number(b.collectedRaw) || 0), 0))} 
           subText="Fees, Labs & Transport"
           icon={CreditCard} 
           glowColor="#f59e0b"
           stroke="#f59e0b"
           iconBg="linear-gradient(135deg, #fbbf24, #f59e0b)"
           iconColor="#ffffff"
-          spark={[10, 15, 18, 22, 28, 32, 35.6]}
-          badge="+14.2% MoM"
+          spark={[0, 0, 0, 0]}
+          badge={stats.totalCollected && stats.totalCollected !== "₹0" ? "+14.2% MoM" : "0 Collected"}
         />
       </div>
 
@@ -325,11 +313,11 @@ const Dashboard = () => {
                         {Number(b.staff || 0).toLocaleString()}
                       </td>
                       <td className="py-3 text-center pr-4">
-                        <span className="font-bold text-gray-800">{b.attendance || '92%'}</span>
+                        <span className="font-bold text-gray-800">{b.attendance || '—'}</span>
                         <div className="w-16 bg-gray-100 rounded-full h-1.5 mx-auto mt-1 overflow-hidden">
                           <div 
                             className="bg-emerald-500 h-1.5 rounded-full" 
-                            style={{ width: b.attendance || '90%' }} 
+                            style={{ width: parseFloat(b.attendance)||0+'%' }} 
                           />
                         </div>
                       </td>

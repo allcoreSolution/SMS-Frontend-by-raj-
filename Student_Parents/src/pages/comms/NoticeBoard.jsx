@@ -6,95 +6,13 @@ import {
 import { parentService } from '../../api/parentService';
 import { useLanguage } from '../../context/LanguageContext';
 
-const defaultNoticesEn = [
-  {
-    id: 'n1',
-    title: 'Mid-Term Examination Date Sheet Released! Click to view.',
-    category: 'Examinations',
-    priority: 'Urgent',
-    date: '24 Aug 2026',
-    publisher: 'Office of the Controller of Examinations',
-    body: 'The comprehensive examination schedule for Mid-Term Exams commencing 10th September 2026 has been finalized. All students must report to their assigned examination rooms by 08:30 AM in full school uniform with ID cards.',
-    attachment: 'Mid_Term_DateSheet_2026.pdf'
-  },
-  {
-    id: 'n2',
-    title: 'Inter-School Science & Technology Fair 2026',
-    category: 'Events',
-    priority: 'Important',
-    date: '20 Aug 2026',
-    publisher: 'Department of Science & Innovation',
-    body: 'Students of classes 8th to 12th are invited to submit their science project abstracts for the upcoming State Level Innovation Expo. Registration closes on 30th August.',
-    attachment: 'Science_Fair_Guidelines.pdf'
-  },
-  {
-    id: 'n3',
-    title: 'Independence Day Celebrations & Flag Hoisting Protocol',
-    category: 'Holidays',
-    priority: 'General',
-    date: '12 Aug 2026',
-    publisher: 'Principal Dr. Anita Saxena',
-    body: 'Students, staff, and parents are cordially invited to celebrate the 80th Independence Day on the campus grounds. Reporting time is 07:45 AM.',
-    attachment: null
-  },
-  {
-    id: 'n4',
-    title: 'Parent-Teacher Meeting (PTM) Schedule for Term 1',
-    category: 'Academics',
-    priority: 'Important',
-    date: '05 Aug 2026',
-    publisher: 'Academic Dean',
-    body: 'Parent-Teacher interaction slots have been uploaded. Parents can book 1-on-1 counseling slots with class teachers through the student portal.',
-    attachment: 'PTM_TimeSlots.pdf'
-  }
-];
+const defaultNoticesEn = [];
 
-const defaultNoticesHi = [
-  {
-    id: 'n1',
-    title: 'सत्र-मध्य परीक्षा समय सारणी (डेट शीट) जारी! देखने के लिए क्लिक करें।',
-    category: 'Examinations',
-    priority: 'Urgent',
-    date: '24 अग 2026',
-    publisher: 'परीक्षा नियंत्रक कार्यालय',
-    body: '10 सितंबर 2026 से प्रारंभ होने वाली अर्धवार्षिक परीक्षाओं की समय सारणी घोषित कर दी गई है। सभी विद्यार्थियों को प्रातः 08:30 बजे तक पूर्ण स्कूल ड्रेस एवं पहचान पत्र के साथ परीक्षा कक्ष में उपस्थित होना अनिवार्य है।',
-    attachment: 'Mid_Term_DateSheet_2026.pdf'
-  },
-  {
-    id: 'n2',
-    title: 'अन्तर-विद्यालय विज्ञान एवं प्रौद्योगिकी मेला 2026',
-    category: 'Events',
-    priority: 'Important',
-    date: '20 अग 2026',
-    publisher: 'विज्ञान एवं नवाचार विभाग',
-    body: 'कक्षा 8वीं से 12वीं तक के छात्रों को राज्य स्तरीय नवाचार प्रदर्शनी हेतु विज्ञान प्रोजेक्ट का विवरण जमा करने के लिए आमंत्रित किया जाता है। पंजीकरण 30 अगस्त को बंद होगा।',
-    attachment: 'Science_Fair_Guidelines.pdf'
-  },
-  {
-    id: 'n3',
-    title: 'स्वतंत्रता दिवस समारोह एवं ध्वजारोहण कार्यक्रम',
-    category: 'Holidays',
-    priority: 'General',
-    date: '12 अग 2026',
-    publisher: 'प्राचार्या डॉ. अनिता सक्सेना',
-    body: 'सभी विद्यार्थियों, अभिभावकों एवं शिक्षकों को 80वें स्वतंत्रता दिवस के पावन अवसर पर स्कूल परिसर में आमंत्रित किया जाता है। उपस्थिति का समय प्रातः 07:45 बजे है।',
-    attachment: null
-  },
-  {
-    id: 'n4',
-    title: 'प्रथम सत्र हेतु अभिभावक-शिक्षक बैठक (PTM) समय सारणी',
-    category: 'Academics',
-    priority: 'Important',
-    date: '05 अग 2026',
-    publisher: 'शैक्षणिक अधिष्ठाता (डीन)',
-    body: 'कक्षाध्यापक के साथ विचार-विमर्श हेतु स्लॉट पोर्टल पर उपलब्ध हैं। अभिभावक छात्र पोर्टल के माध्यम से 1-on-1 संवाद समय आरक्षित कर सकते हैं।',
-    attachment: 'PTM_TimeSlots.pdf'
-  }
-];
+const defaultNoticesHi = [];
 
 export default function NoticeBoard() {
   const { currentLang } = useLanguage();
-  const [notices, setNotices] = useState(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
+  const [notices, setNotices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
@@ -124,11 +42,11 @@ export default function NoticeBoard() {
           attachment: item.attachment || null
         })));
       } else {
-        setNotices(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
+        setNotices([]);
       }
     } catch (err) {
       console.warn('Notice fetch:', err);
-      setNotices(currentLang === 'hi' ? defaultNoticesHi : defaultNoticesEn);
+      setNotices([]);
     } finally {
       setLoading(false);
     }

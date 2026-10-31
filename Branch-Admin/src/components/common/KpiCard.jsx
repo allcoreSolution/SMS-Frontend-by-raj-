@@ -11,7 +11,7 @@ export const KpiCard = ({
   stroke = '#3b82f6', 
   iconBg = 'linear-gradient(135deg, #60a5fa, #3b82f6)', 
   iconColor = '#ffffff', 
-  spark = [{ v: 10 }, { v: 15 }, { v: 12 }, { v: 18 }, { v: 22 }, { v: 20 }, { v: 25 }],
+  spark = [{ v: 0 }, { v: 0 }, { v: 0 }, { v: 0 }],
   badge 
 }) => {
   // Ensure spark data is an array of objects with 'v' key

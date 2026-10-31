@@ -23,6 +23,9 @@ axiosInstance.interceptors.request.use((config) => {
   if (schoolId) {
     config.headers['x-tenant-id'] = schoolId;
   }
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
   
   return config;
 }, (error) => {

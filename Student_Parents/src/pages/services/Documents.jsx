@@ -190,7 +190,7 @@ export default function Documents({ activeChild }) {
 
     try {
       setRequestingCert(true);
-      const studentName = docData?.student?.name || 'Aarav Sharma';
+      const studentName = docData?.student?.name || '—';
       const payload = {
         ...certRequestForm,
         studentName
@@ -230,8 +230,8 @@ export default function Documents({ activeChild }) {
       `ALL CORE SOLUTIONS - OFFICIAL VERIFIED DOCUMENT ARCHIVE\n\n` +
       `Document Title: ${doc.documentName || doc.templateTitle}\n` +
       `Category: ${doc.category || doc.certificateType}\n` +
-      `Student Name: ${docData?.student?.name || 'Aarav Sharma'}\n` +
-      `Admission No: ${docData?.student?.admissionNo || 'YIS-2024-101'}\n` +
+      `Student Name: ${docData?.student?.name || '—'}\n` +
+      `Admission No: ${docData?.student?.admissionNo || '—'}\n` +
       `Status: VERIFIED & SEALED BY SCHOOL ADMINISTRATION\n` +
       `Date: ${new Date().toLocaleDateString('en-GB')}\n\n` +
       (doc.renderedContent || doc.remarks || 'Official student archival document.')
@@ -247,13 +247,7 @@ export default function Documents({ activeChild }) {
     URL.revokeObjectURL(url);
   };
 
-  const student = docData?.student || {
-    name: 'Aarav Sharma',
-    admissionNo: 'YIS-2024-101',
-    className: 'Class I (A)',
-    fatherName: 'Rajesh Kumar Gupta',
-    photo: 'https://images.unsplash.com/photo-1544717305-2782549b5136?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80'
-  };
+  const student = docData?.student || { name: "—", admissionNo: "—", className: "—", fatherName: "—", photo: null };
 
   const documents = docData?.documents || [];
   const certificates = docData?.certificates || [];

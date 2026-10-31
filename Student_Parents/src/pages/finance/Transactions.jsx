@@ -115,8 +115,8 @@ export default function Transactions({ activeChild }) {
     setTimeout(() => setCopiedText(false), 2000);
   };
 
-  const studentName = studentInfo?.name || 'Aarav Sharma';
-  const studentClass = studentInfo?.class || 'Class I (A)';
+  const studentName = studentInfo?.name || '—';
+  const studentClass = studentInfo?.class || '—';
 
   return (
     <div className="p-3 sm:p-5 max-w-[1240px] mx-auto space-y-5 min-h-screen pb-24 bg-slate-50">

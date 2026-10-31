@@ -26,7 +26,7 @@ const IncomeExpense = () => {
 
   // Compute school financial accounts
   const accounts = branches.map((b, i) => {
-    const rawIncome = b.collectedRaw || 500000;
+    const rawIncome = b.collectedRaw || 0;
     const feeCol = rawIncome * 0.92;
     const otherInc = rawIncome * 0.08;
     const totalInc = rawIncome;
@@ -59,19 +59,19 @@ const IncomeExpense = () => {
   const totalExpense = filteredAccounts.reduce((sum, a) => sum + a.expenseRaw, 0);
   const netSurplus = totalIncome - totalExpense;
 
-  const chartData = [
-    { name: 'Apr', income: Math.round(totalIncome * 0.08), expense: Math.round(totalExpense * 0.07) },
-    { name: 'May', income: Math.round(totalIncome * 0.06), expense: Math.round(totalExpense * 0.07) },
-    { name: 'Jun', income: Math.round(totalIncome * 0.12), expense: Math.round(totalExpense * 0.09) },
-    { name: 'Jul', income: Math.round(totalIncome * 0.15), expense: Math.round(totalExpense * 0.10) },
-    { name: 'Aug', income: Math.round(totalIncome * 0.10), expense: Math.round(totalExpense * 0.08) },
-    { name: 'Sep', income: Math.round(totalIncome * 0.09), expense: Math.round(totalExpense * 0.08) },
-    { name: 'Oct', income: Math.round(totalIncome * 0.07), expense: Math.round(totalExpense * 0.06) },
-    { name: 'Nov', income: Math.round(totalIncome * 0.08), expense: Math.round(totalExpense * 0.08) },
-    { name: 'Dec', income: Math.round(totalIncome * 0.05), expense: Math.round(totalExpense * 0.07) },
-    { name: 'Jan', income: Math.round(totalIncome * 0.09), expense: Math.round(totalExpense * 0.09) },
-    { name: 'Feb', income: Math.round(totalIncome * 0.06), expense: Math.round(totalExpense * 0.10) },
-    { name: 'Mar', income: Math.round(totalIncome * 0.05), expense: Math.round(totalExpense * 0.11) },
+    const chartData = [
+    { name: 'Apr', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'May', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Jun', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Jul', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Aug', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Sep', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Oct', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Nov', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Dec', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Jan', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Feb', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
+    { name: 'Mar', income: Math.round(totalIncome / 12), expense: Math.round(totalExpense / 12) },
   ];
 
   const handleExportCsv = () => {
@@ -208,38 +208,38 @@ const IncomeExpense = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard 
           title="Gross Revenue"
-          value={`₹${(totalIncome / 100000).toFixed(2)}L`}
+          value={totalIncome > 0 ? `₹${(totalIncome / 100000).toFixed(2)}L` : "₹0"}
           subText="Fees & auxiliary receipts"
           icon={TrendingUp}
           glowColor="#0891b2"
           stroke="#0891b2"
           iconBg="linear-gradient(135deg, #06b6d4, #0891b2)"
           iconColor="#ffffff"
-          spark={[30, 35, 42, 45, 50, 55, 60]}
+          spark={[0,0,0,0]}
           badge="Gross"
         />
         <KpiCard 
           title="Operating Expenses"
-          value={`₹${(totalExpense / 100000).toFixed(2)}L`}
+          value={totalExpense > 0 ? `₹${(totalExpense / 100000).toFixed(2)}L` : "₹0"}
           subText="Salaries, utilities & supplies"
           icon={TrendingDown}
           glowColor="#ef4444"
           stroke="#ef4444"
           iconBg="linear-gradient(135deg, #f87171, #ef4444)"
           iconColor="#ffffff"
-          spark={[22, 25, 28, 27, 30, 32, 34]}
+          spark={[0,0,0,0]}
           badge="Opex"
         />
         <KpiCard 
           title="Net Operating Surplus"
-          value={`₹${(netSurplus / 100000).toFixed(2)}L`}
+          value={netSurplus > 0 ? `₹${(netSurplus / 100000).toFixed(2)}L` : "₹0"}
           subText="Positive net EBITDA margin"
           icon={Scale}
           glowColor="#10b981"
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[8, 10, 14, 18, 20, 23, 26]}
+          spark={[0,0,0,0]}
           badge="EBITDA"
         />
         <KpiCard 
@@ -252,7 +252,7 @@ const IncomeExpense = () => {
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[2, 3, 3, 4, 4, 4, 4]}
+          spark={[0,0,0,0]}
           badge="Reconciled"
         />
       </div>

@@ -50,6 +50,7 @@ export default function App() {
             <Routes>
               {/* Public Routes */}
               <Route path="/login" element={<Login />} />
+              <Route path="/index.html" element={<Navigate to="/dashboard" replace />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
 
               {/* Protected Driver Portal Layout */}

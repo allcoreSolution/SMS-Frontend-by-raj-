@@ -68,19 +68,19 @@ export default function Profile({ activeChild }) {
 
   // Edit form state with exact fields from user screenshot
   const [editForm, setEditForm] = useState({
-    studentPhone: '8400563229',
-    studentEmail: 'jijays768@gmail.com',
+    studentPhone: '',
+    studentEmail: '',
     religion: 'Hinduism',
     category: 'General',
     nationality: 'Indian',
-    address: '123, Green Street, Jaipur, RJ',
+    address: '',
     bloodGroup: 'A+',
-    house: 'Red Phoenix',
+    house: '',
     allergies: 'None Reported',
-    fatherName: 'Rajesh Kumar Gupta',
-    fatherPhone: '9876510011',
-    motherName: 'Ms. Rani',
-    motherPhone: '9811220000'
+    fatherName: '',
+    fatherPhone: '',
+    motherName: '',
+    motherPhone: ''
   });
 
   // Password change state
@@ -91,112 +91,7 @@ export default function Profile({ activeChild }) {
   const [passwordMsg, setPasswordMsg] = useState(null);
 
   // Documents list matching Screenshot 2 exactly
-  const [documentsList, setDocumentsList] = useState([
-    {
-      id: 'doc-1',
-      title: 'Aadhaar Card',
-      subtitle: 'Government issued identity card',
-      status: 'Verified',
-      uploadedDate: '12 Jan 2023',
-      color: 'blue',
-      icon: FileBadge,
-      iconBg: 'bg-blue-100 text-blue-600',
-      eyeBg: 'bg-blue-50 text-blue-600 hover:bg-blue-100',
-      fileNumber: 'AADHAAR-8400-5632',
-      fileSize: '1.4 MB PDF'
-    },
-    {
-      id: 'doc-2',
-      title: 'Birth Certificate',
-      subtitle: 'Municipal Corporation issued document',
-      status: 'Verified',
-      uploadedDate: '12 Jan 2023',
-      color: 'green',
-      icon: Award,
-      iconBg: 'bg-emerald-100 text-emerald-600',
-      eyeBg: 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100',
-      fileNumber: 'MCD-BC-2014-998',
-      fileSize: '890 KB PDF'
-    },
-    {
-      id: 'doc-3',
-      title: 'Previous Marksheet',
-      subtitle: 'Class 9 Annual Exam Marksheet',
-      status: 'Verified',
-      uploadedDate: '15 Jan 2023',
-      color: 'purple',
-      icon: Star,
-      iconBg: 'bg-purple-100 text-purple-600',
-      eyeBg: 'bg-purple-50 text-purple-600 hover:bg-purple-100',
-      fileNumber: 'CBSE-MS-CLASS9-A',
-      fileSize: '2.1 MB PDF'
-    },
-    {
-      id: 'doc-4',
-      title: 'Passport Size Photo',
-      subtitle: '3.5 cm × 4.5 cm standard size',
-      status: 'Verified',
-      uploadedDate: '12 Jan 2023',
-      color: 'orange',
-      icon: User,
-      iconBg: 'bg-amber-100 text-amber-600',
-      eyeBg: 'bg-amber-50 text-amber-600 hover:bg-amber-100',
-      fileNumber: 'PHOTO-STUDENT-2024',
-      fileSize: '420 KB JPG'
-    },
-    {
-      id: 'doc-5',
-      title: 'Transfer Certificate',
-      subtitle: 'From previous school, duly attested',
-      status: 'Verified',
-      uploadedDate: '18 Jan 2023',
-      color: 'rose',
-      icon: FileText,
-      iconBg: 'bg-rose-100 text-rose-600',
-      eyeBg: 'bg-rose-50 text-rose-600 hover:bg-rose-100',
-      fileNumber: 'TC-YIS-DELHI-004',
-      fileSize: '1.2 MB PDF'
-    },
-    {
-      id: 'doc-6',
-      title: 'Migration Certificate',
-      subtitle: 'State Education Board Certificate',
-      status: 'Verified',
-      uploadedDate: '20 Jan 2023',
-      color: 'indigo',
-      icon: Landmark,
-      iconBg: 'bg-indigo-100 text-indigo-600',
-      eyeBg: 'bg-indigo-50 text-indigo-600 hover:bg-indigo-100',
-      fileNumber: 'MIG-CBSE-99120',
-      fileSize: '950 KB PDF'
-    },
-    {
-      id: 'doc-7',
-      title: 'Medical Fitness Certificate',
-      subtitle: 'Authorized physician health certificate',
-      status: 'Pending',
-      uploadedDate: '24 Oct 2026',
-      color: 'amber',
-      icon: HeartPulse,
-      iconBg: 'bg-amber-100 text-amber-700',
-      eyeBg: 'bg-amber-50 text-amber-700 hover:bg-amber-100',
-      fileNumber: 'MED-FIT-CLINIC-01',
-      fileSize: '780 KB PDF'
-    },
-    {
-      id: 'doc-8',
-      title: 'Income / Caste Certificate',
-      subtitle: 'Revenue department attested document',
-      status: 'Missing',
-      uploadedDate: 'Action Required',
-      color: 'gray',
-      icon: AlertCircle,
-      iconBg: 'bg-slate-200 text-slate-600',
-      eyeBg: 'bg-slate-100 text-slate-600 hover:bg-slate-200',
-      fileNumber: 'NOT_UPLOADED',
-      fileSize: 'Missing'
-    }
-  ]);
+  const [documentsList, setDocumentsList] = useState([]);
 
   // Upload modal form
   const [newDocName, setNewDocName] = useState('');
@@ -230,7 +125,7 @@ export default function Profile({ activeChild }) {
   const parentUserName = parentData?.name || (() => {
     try {
       const stored = localStorage.getItem('parent_user');
-      return stored ? JSON.parse(stored).name : 'Vikram Chauhan';
+      return stored ? JSON.parse(stored).name : 'Parent';
     } catch (e) {
       return 'Vikram Chauhan';
     }
@@ -274,19 +169,19 @@ export default function Profile({ activeChild }) {
         const p = res.data.parent || {};
 
         setEditForm({
-          studentPhone: s.studentPhone || s.phone || '8400563229',
-          studentEmail: s.studentEmail || s.email || 'jijays768@gmail.com',
+          studentPhone: s.studentPhone || s.phone || '',
+          studentEmail: s.studentEmail || s.email || '',
           religion: s.religion || 'Hinduism',
           category: s.category || 'General',
           nationality: s.nationality || 'Indian',
-          address: s.address || p.address || '123, Green Street, Jaipur, RJ',
+          address: s.address || p.address || '',
           bloodGroup: s.bloodGroup || 'A+',
-          house: s.house || 'Red Phoenix',
+          house: s.house || '',
           allergies: s.allergies || 'None Reported',
-          fatherName: s.fatherName || p.name || 'Rajesh Kumar Gupta',
-          fatherPhone: s.fatherPhone || p.phone || '9876510011',
-          motherName: s.motherName || 'Ms. Rani',
-          motherPhone: s.motherPhone || '9811220000'
+          fatherName: s.fatherName || p.name || '',
+          fatherPhone: s.fatherPhone || p.phone || '',
+          motherName: s.motherName || '',
+          motherPhone: s.motherPhone || ''
         });
       }
     } catch (err) {
@@ -300,36 +195,45 @@ export default function Profile({ activeChild }) {
     loadProfile();
   }, [activeChild]);
 
-  // Derived student object with live fields
+  // Safe user fallback from localStorage
+  const storedUserObj = (() => {
+    try {
+      return JSON.parse(localStorage.getItem('parent_user') || localStorage.getItem('user') || '{}');
+    } catch (_) {
+      return {};
+    }
+  })();
+
+  // Derived student object with live fields and graceful fallbacks
   const student = {
-    id: studentData?._id || studentData?.id || activeChild || '6acdc7d06660441df4764319',
-    name: studentData?.name || `${studentData?.firstName || 'Aarav'} ${studentData?.lastName || 'Sharma'}`.trim(),
-    firstName: studentData?.firstName || 'Aarav',
-    lastName: studentData?.lastName || 'Sharma',
-    class: studentData?.class || 'Class I (A)',
-    className: studentData?.className || 'Class I',
+    id: studentData?._id || studentData?.id || activeChild || storedUserObj?.studentId || storedUserObj?._id || '',
+    name: studentData?.name || `${studentData?.firstName || ''} ${studentData?.lastName || ''}`.trim() || storedUserObj?.name || storedUserObj?.fullName || 'Student',
+    firstName: studentData?.firstName || storedUserObj?.firstName || '',
+    lastName: studentData?.lastName || storedUserObj?.lastName || '',
+    class: studentData?.class || studentData?.className || storedUserObj?.class || 'Class I (A)',
+    className: studentData?.className || storedUserObj?.class || 'Class I',
     sectionName: studentData?.sectionName || 'A',
-    admn: studentData?.admn || studentData?.admissionNo || 'YIS-2024-101',
+    admn: studentData?.admn || studentData?.admissionNo || storedUserObj?.username || storedUserObj?.admissionNo || 'YIS-2024-101',
     roll: studentData?.roll || studentData?.rollNo || '9',
     session: studentData?.academicSession || '2024-25',
-    dob: studentData?.dob || '15 Aug 2014',
+    dob: studentData?.dob || '15/08/2012',
     gender: studentData?.gender || 'Male',
-    religion: editForm.religion || 'Hinduism',
-    category: editForm.category || 'General',
-    nationality: editForm.nationality || 'Indian',
+    religion: editForm.religion || studentData?.religion || 'Hinduism',
+    category: editForm.category || studentData?.category || 'General',
+    nationality: editForm.nationality || studentData?.nationality || 'Indian',
     bloodGroup: editForm.bloodGroup || studentData?.bloodGroup || 'A+',
-    email: studentData?.studentEmail || studentData?.email || editForm.studentEmail || 'aarav.sharma@yis.edu',
-    phone: studentData?.studentPhone || studentData?.phone || editForm.studentPhone || '9876543218',
-    address: editForm.address || studentData?.address || 'Plot 42, Green Park Avenue, New Delhi',
-    fatherName: editForm.fatherName || studentData?.fatherName || 'Rajesh Kumar Gupta',
-    fatherPhone: editForm.fatherPhone || studentData?.fatherPhone || '9876543218',
-    motherName: editForm.motherName || studentData?.motherName || 'Ms. Rani',
-    motherPhone: editForm.motherPhone || studentData?.motherPhone || '9811220000',
-    house: editForm.house || studentData?.house || 'Red Phoenix',
+    email: studentData?.studentEmail || studentData?.email || editForm.studentEmail || storedUserObj?.email || '',
+    phone: studentData?.studentPhone || studentData?.phone || editForm.studentPhone || storedUserObj?.phone || '',
+    address: editForm.address || studentData?.address || storedUserObj?.address || '',
+    fatherName: editForm.fatherName || studentData?.fatherName || parentData?.name || '',
+    fatherPhone: editForm.fatherPhone || studentData?.fatherPhone || parentData?.phone || '',
+    motherName: editForm.motherName || studentData?.motherName || '',
+    motherPhone: editForm.motherPhone || studentData?.motherPhone || '',
+    house: editForm.house || studentData?.house || 'Tagore',
     photo: studentData?.photo || studentData?.studentPhoto || null,
     attendanceRate: '94.8%',
     board: 'CBSE Senior Secondary',
-    emergencyContact: `${editForm.fatherName} (${editForm.fatherPhone})`
+    emergencyContact: editForm.fatherName ? `${editForm.fatherName} (${editForm.fatherPhone || ''})` : 'N/A'
   };
 
   // Handle Photo Upload

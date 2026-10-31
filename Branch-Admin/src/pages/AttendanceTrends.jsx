@@ -24,17 +24,12 @@ const AttendanceTrends = () => {
     }
   }, []);
 
+  const avgPresence = branches.length > 0 ? (branches.reduce((s,b) => s + (parseFloat(b.attendance) || 0), 0) / branches.length) : 0;
   const chartData = [
-    { name: '15 Sep', presence: 92.4 },
-    { name: '18 Sep', presence: 94.1 },
-    { name: '21 Sep', presence: 89.6 },
-    { name: '24 Sep', presence: 93.8 },
-    { name: '27 Sep', presence: 91.2 },
-    { name: '30 Sep', presence: 95.0 },
-    { name: '03 Oct', presence: 93.4 },
-    { name: '06 Oct', presence: 92.8 },
-    { name: '09 Oct', presence: 94.6 },
-    { name: '12 Oct', presence: 93.5 }
+    { name: 'Week 1', presence: avgPresence },
+    { name: 'Week 2', presence: avgPresence },
+    { name: 'Week 3', presence: avgPresence },
+    { name: 'Week 4', presence: avgPresence }
   ];
 
   // Table items mapped from branches
@@ -129,51 +124,51 @@ const AttendanceTrends = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard 
           title="Network Presence"
-          value="93.1%"
-          subText="30-day cross-campus average"
+          value={branches.length > 0 ? (branches.reduce((s,b) => s+(parseFloat(b.attendance)||0),0)/branches.length).toFixed(1)+"%" : "0.0%"}
+          subText="Cross-campus attendance rate"
           isLive={true}
           icon={Activity}
           glowColor="#0891b2"
           stroke="#0891b2"
           iconBg="linear-gradient(135deg, #06b6d4, #0891b2)"
           iconColor="#ffffff"
-          spark={[88, 90, 92, 91, 94, 93, 95]}
+          spark={[0, 0, 0, 0]}
           badge="Live Register"
         />
         <KpiCard 
           title="Students Present"
-          value="4,168"
-          subText="Out of 4,478 enrolled students"
+          value={branches.reduce((s,b)=>s+Math.round(((parseFloat(b.attendance)||0)/100)*(Number(b.students)||0)),0).toLocaleString()||"0"}
+          subText={`Out of ${branches.reduce((s,b)=>s+(Number(b.students)||0),0).toLocaleString()} enrolled students`}
           icon={Users}
           glowColor="#10b981"
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[3900, 4000, 4100, 4080, 4150, 4168]}
-          badge="93.1% Present"
+          spark={[0, 0, 0, 0]}
+          badge="Present"
         />
         <KpiCard 
           title="Faculty on Duty"
-          value="242"
-          subText="Out of 250 registered faculty"
+          value={String(branches.reduce((s,b)=>s+(Number(b.staff)||0),0)||"0")}
+          subText={`Out of ${branches.reduce((s,b)=>s+(Number(b.staff)||0),0)} registered faculty`}
           icon={CheckCircle2}
           glowColor="#8b5cf6"
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[235, 238, 240, 241, 242, 242]}
-          badge="96.8% Turnout"
+          spark={[0, 0, 0, 0]}
+          badge="Present"
         />
         <KpiCard 
           title="Campuses Active"
-          value={String(branches.length || 4)}
+          value={String(branches.length)}
           subText="Biometric & digital sync active"
           icon={Building2}
           glowColor="#f97316"
           stroke="#f97316"
           iconBg="linear-gradient(135deg, #fb923c, #f97316)"
           iconColor="#ffffff"
-          spark={[3, 3, 4, 4, 4, 4, 4]}
+          spark={[0, 0, 0, 0]}
           badge="100% Synced"
         />
       </div>
@@ -185,7 +180,7 @@ const AttendanceTrends = () => {
             <Activity className="w-4 h-4 text-cyan-600" /> 30-Day Platform Active Presence Trajectory
           </div>
           <span className="text-xs font-bold text-cyan-700 bg-cyan-50 px-2.5 py-1 rounded-full border border-cyan-200">
-            Average: 93.1% Presence
+            Average: {branches.length>0?(branches.reduce((s,b)=>s+(parseFloat(b.attendance)||0),0)/branches.length).toFixed(1):"—"}% Presence
           </span>
         </div>
         

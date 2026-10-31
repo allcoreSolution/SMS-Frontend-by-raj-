@@ -16,7 +16,7 @@ const getMediaUrl = (photoPath) => {
   if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
   const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
     || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
-    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.11:5050');
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.20:5050');
   const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
   return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
 };
@@ -312,17 +312,17 @@ export default function Dashboard({ activeChild, setActiveChild }) {
 
   // Dynamic student identity from backend
   const student = {
-    name: dashboardData?.student?.name || 'Aarav Sharma',
-    class: dashboardData?.student?.class || 'Class I (A)',
+    name: dashboardData?.student?.name || '—',
+    class: dashboardData?.student?.class || '—',
     photo: dashboardData?.student?.photo || null,
-    admn: dashboardData?.student?.admn || dashboardData?.student?.admissionNo || 'YIS-2024-101',
-    roll: dashboardData?.student?.roll || dashboardData?.student?.rollNo || '1',
-    session: dashboardData?.student?.academicSession || '2024-25',
-    dob: dashboardData?.student?.dob || '15 Oct 2014',
-    bloodGroup: dashboardData?.student?.bloodGroup || 'A+',
+    admn: dashboardData?.student?.admn || dashboardData?.student?.admissionNo || '—',
+    roll: dashboardData?.student?.roll || dashboardData?.student?.rollNo || '—',
+    session: dashboardData?.student?.academicSession || '—',
+    dob: dashboardData?.student?.dob || '—',
+    bloodGroup: dashboardData?.student?.bloodGroup || '—',
     attendanceToday: dashboardData?.attendance?.today || (currentLang === 'hi' ? 'उपस्थित' : 'Present'),
     attendanceRate: dashboardData?.attendance?.rate || '94%',
-    attendanceStreak: '14 Days'
+    attendanceStreak: dashboardData?.attendance?.streak || null
   };
 
   // Fees details from backend
@@ -330,33 +330,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
   const feeStatus = dashboardData?.fees?.status || (currentLang === 'hi' ? 'पूर्ण चुकता' : 'All Clear');
 
   // Notices from backend or fallback
-  const defaultNotices = currentLang === 'hi' ? [
-    {
-      id: '1',
-      title: 'इंटर-स्कूल साइंस व रोबोटिक्स ओलंपियाड 2026',
-      date: '22 अक्टूबर 2026 को प्रकाशित',
-      body: 'मुख्य विज्ञान सभागार में राज्य स्तरीय विज्ञान प्रदर्शनी और नवाचार प्रतियोगिता। सभी छात्र कल तक अपने मॉडल अवश्य पंजीकृत कराएं।'
-    },
-    {
-      id: '2',
-      title: 'दीपावली एवं शरद कालीन अवकाश सूचना',
-      date: '20 अक्टूबर 2026 को प्रकाशित',
-      body: 'स्कूल में 29 अक्टूबर से दीपावली व शरदकालीन अवकाश रहेगा। नियमित शीतकालीन समय सारणी के साथ परिसर पुनः खुलेगा।'
-    }
-  ] : [
-    {
-      id: '1',
-      title: 'Inter-School Science & Robotics Olympiad 2026',
-      date: 'Published on 22 Oct, 2026',
-      body: 'State-level science exposition and innovation displays scheduled at Main Science Auditorium. Students must register models by tomorrow.'
-    },
-    {
-      id: '2',
-      title: 'Diwali & Autumn Festival Break Schedule',
-      date: 'Published on 20 Oct, 2026',
-      body: 'School will observe Autumn & Diwali vacation from October 29th. Campus will reopen with regular winter class timings.'
-    }
-  ];
+  const defaultNotices = [];
 
   const notices = (dashboardData?.notices && dashboardData.notices.length > 0)
     ? dashboardData.notices.map(n => {
@@ -400,8 +374,8 @@ export default function Dashboard({ activeChild, setActiveChild }) {
           </h1>
           <p className="text-xs text-slate-500 font-medium">
             {isStudent
-              ? (currentLang === 'hi' ? 'एसीएस स्मार्ट कैंपस में आपका स्वागत है • रियल-टाइम एकेडमिक हब' : 'Welcome to ACS Smart Campus • Real-time Academic & Attendance Hub')
-              : (currentLang === 'hi' ? 'एसीएस अभिभावक पोर्टल में आपका स्वागत है • रियल-टाइम वार्ड एकेडमिक व मॉनिटरिंग डेस्क' : 'Welcome to ACS Parent Portal • Real-time Student Academic & Monitoring Desk')
+              ? (currentLang === 'hi' ? 'स्मार्ट कैंपस में आपका स्वागत है • रियल-टाइम एकेडमिक हब' : 'Welcome to Student Portal • Real-time Academic & Attendance Hub')
+              : (currentLang === 'hi' ? 'अभिभावक पोर्टल में आपका स्वागत है • रियल-टाइम वार्ड एकेडमिक व मॉनिटरिंग डेस्क' : 'Welcome to Parent Portal • Real-time Student Academic & Monitoring Desk')
             }
           </p>
         </div>
@@ -558,9 +532,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               <Megaphone className="w-3 h-3 stroke-[2.2] shrink-0" />
             </div>
             <p className="text-[10.5px] sm:text-xs font-bold text-[#1E3A8A] truncate flex-1 min-w-0 leading-tight">
-              {currentLang === 'hi' 
-                ? 'सूचना: इंटर-स्कूल साइंस व रोबोटिक्स ओलंपियाड 2026 डेट शीट जारी!' 
-                : 'Notice: Inter-School Science & Robotics Olympiad 2026 Date Sheet Released!'}
+              {notices.length > 0 ? notices[0].title : (currentLang === 'hi' ? 'कोई नई सूचना नहीं है' : 'No new notices at this time')}
             </p>
             <ChevronRight className="w-3.5 h-3.5 text-[#2563EB] group-hover:translate-x-0.5 transition-transform shrink-0" />
           </div>
@@ -576,16 +548,14 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between gap-1">
                 <h4 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight font-serif truncate">
-                  ACS Smart Campus
+                  {dashboardData?.school?.name || (currentLang === 'hi' ? 'विद्यालय' : 'School')}
                 </h4>
                 <span className="shrink-0 bg-[#10B981]/15 text-[#10B981] font-bold text-[8.5px] px-1.5 py-0.2 rounded-full border border-[#10B981]/25">
                   {currentLang === 'hi' ? 'सीबीएसई संबद्ध' : 'CBSE Affiliated'}
                 </span>
               </div>
               <p className="text-[9.5px] sm:text-[10.5px] text-slate-500 truncate mt-0.2">
-                {currentLang === 'hi'
-                  ? 'स्थापना 2004 • ज्ञान, सत्यनिष्ठा और उत्कृष्टता • हेल्पलाइन: +91 141 2780123'
-                  : 'Estd. 2004 • Knowledge, Integrity & Excellence • Helpline: +91 141 2780123'}
+                {dashboardData?.school?.tagline || (currentLang === 'hi' ? 'ज्ञान, सत्यनिष्ठा और उत्कृष्टता' : 'Knowledge, Integrity & Excellence')}
               </p>
             </div>
           </div>
@@ -655,7 +625,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                   <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0 stroke-[2.5]" />
                 </div>
                 <p className="text-[9.5px] text-slate-400 font-medium mt-0.2">
-                  {currentLang === 'hi' ? 'सत्यापित आरएफआईडी प्रवेश • 08:25 AM' : 'Verified RFID Entry • 08:25 AM'}
+                  {dashboardData?.attendance?.inTime ? (currentLang === 'hi' ? `प्रवेश • ${dashboardData.attendance.inTime}` : `Entry • ${dashboardData.attendance.inTime}`) : (currentLang === 'hi' ? 'दैनिक उपस्थिति' : 'Daily Attendance')}
                 </p>
               </div>
 
@@ -708,7 +678,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
-                  {currentLang === 'hi' ? '2 लंबित' : '2 Pending'}
+                  {dashboardData?.homeworkCount !== undefined ? `${dashboardData.homeworkCount} ${currentLang === 'hi' ? 'लंबित' : 'Pending'}` : '—'}
                 </p>
                 <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
                   {currentLang === 'hi' ? 'गृहकार्य' : 'Homework'}
@@ -726,7 +696,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
-                  {currentLang === 'hi' ? '1 लंबित' : '1 Pending'}
+                  {dashboardData?.classworkCount !== undefined ? `${dashboardData.classworkCount} ${currentLang === 'hi' ? 'लंबित' : 'Pending'}` : '—'}
                 </p>
                 <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
                   {currentLang === 'hi' ? 'कक्षा कार्य' : 'Classwork'}
@@ -762,7 +732,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               </div>
               <div className="min-w-0">
                 <p className="text-[11px] sm:text-xs font-black text-slate-900 leading-tight truncate">
-                  {currentLang === 'hi' ? '3 आगामी' : '3 Upcoming'}
+                  {dashboardData?.examsCount !== undefined ? `${dashboardData.examsCount} ${currentLang === 'hi' ? 'आगामी' : 'Upcoming'}` : '—'}
                 </p>
                 <p className="text-[8.5px] sm:text-[9.5px] font-medium text-slate-500 truncate">
                   {currentLang === 'hi' ? 'परीक्षाएं' : 'Exams'}
@@ -930,7 +900,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <School className="w-5 h-5 text-amber-300 shrink-0" />
-                <h3 className="text-base font-black font-serif">ACS Smart Campus</h3>
+                <h3 className="text-base font-black font-serif">{dashboardData?.school?.name || (currentLang === 'hi' ? 'विद्यालय' : 'School')}</h3>
               </div>
               <button
                 onClick={() => setShowSchoolModal(false)}
@@ -946,15 +916,15 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'प्रधानाचार्य:' : 'Principal:'}</span>
-                <span className="font-bold text-slate-900">{currentLang === 'hi' ? 'डॉ. अनीता सक्सेना (पीएच.डी.)' : 'Dr. Anita Saxena (Ph.D.)'}</span>
+                <span className="font-bold text-slate-900">{dashboardData?.school?.principal || '—'}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'हेल्पलाइन नंबर:' : 'Hotline Helpline:'}</span>
-                <span className="font-bold text-blue-600">+91 141 2780123</span>
+                <span className="font-bold text-blue-600">{dashboardData?.school?.phone || '—'}</span>
               </div>
               <div className="flex justify-between py-1.5 border-b border-slate-100">
                 <span className="text-slate-500 font-medium">{currentLang === 'hi' ? 'कैंपस का स्थान:' : 'Campus Location:'}</span>
-                <span className="font-bold text-slate-900 text-right">{currentLang === 'hi' ? 'जयपुर, राजस्थान' : 'Jaipur, Rajasthan'}</span>
+                <span className="font-bold text-slate-900 text-right">{dashboardData?.school?.address || '—'}</span>
               </div>
             </div>
           </div>
@@ -1022,7 +992,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 <X className="w-3.5 h-3.5" />
               </button>
               <h4 className="text-xs font-black font-serif tracking-wider uppercase">
-                ACS Smart Campus
+                {dashboardData?.school?.name || (currentLang === 'hi' ? 'विद्यालय' : 'School')}
               </h4>
               <p className="text-[8px] text-blue-200 font-bold uppercase tracking-widest mt-0.5">
                 {currentLang === 'hi' ? 'आधिकारिक विद्यार्थी पहचान पत्र' : 'Official Student Identity Card'}

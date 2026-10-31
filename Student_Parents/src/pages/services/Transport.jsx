@@ -46,7 +46,7 @@ export default function Transport({ activeChild }) {
   const [issueModalOpen, setIssueModalOpen] = useState(false);
   const [issueForm, setIssueForm] = useState({
     issueType: 'Bus Delay / ETA Inquiry',
-    phone: '+91 98765 10000',
+    phone: '',
     description: ''
   });
   const [submittingIssue, setSubmittingIssue] = useState(false);

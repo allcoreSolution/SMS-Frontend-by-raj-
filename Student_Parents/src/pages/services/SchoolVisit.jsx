@@ -83,8 +83,8 @@ export default function SchoolVisit({ activeChild }) {
         if (res.data.student) {
           setAppointmentForm((prev) => ({
             ...prev,
-            visitorName: `${res.data.student.fatherName || 'Rajesh Kumar Gupta'} (Father)`,
-            phone: res.data.student.phone || '+91 98765 10000'
+            visitorName: res.data.student.fatherName ? `${res.data.student.fatherName} (Father)` : '',
+            phone: res.data.student.phone || ''
           }));
         }
       } else {
@@ -201,13 +201,7 @@ export default function SchoolVisit({ activeChild }) {
     }
   };
 
-  const student = visitData?.student || {
-    name: 'Aarav Sharma',
-    admissionNo: 'YIS-2024-101',
-    className: 'Class I (A)',
-    fatherName: 'Rajesh Kumar Gupta',
-    phone: '+91 98765 10000'
-  };
+  const student = visitData?.student || { name: "—", admissionNo: "—", className: "—", fatherName: "—", phone: "—" };
 
   const walkIns = visitData?.walkIns || [];
   const appointments = visitData?.appointments || [];

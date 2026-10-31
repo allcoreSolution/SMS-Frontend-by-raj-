@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   User, Phone, Mail, MapPin, Calendar, Briefcase, Building2,
   CreditCard, Link, Shield, QrCode, BarChart2, ChevronRight,
@@ -26,6 +26,38 @@ const SectionTitle = ({ icon: Icon, title, color = 'text-orange-500' }) => (
 const tabs = ['Profile', 'Payroll', 'Leaves', 'Attendance', 'Documents', 'Career', 'Appraisals'];
 
 const Profile = () => {
+  const fileInputRef = useRef(null);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result;
+      if (base64) {
+        setProfileData(prev => ({
+          ...prev,
+          personalInfo: { ...prev.personalInfo, photo: base64 }
+        }));
+        try {
+          const u = JSON.parse(localStorage.getItem('user') || '{}');
+          u.photo = base64;
+          u.avatar = base64;
+          localStorage.setItem('user', JSON.stringify(u));
+          window.dispatchEvent(new Event('storage'));
+        } catch (_) {}
+        Swal.fire({
+          icon: 'success',
+          title: 'Profile Photo Updated',
+          text: 'Your profile photo has been updated successfully.',
+          timer: 1500,
+          showConfirmButton: false
+        });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const [activeTab, setActiveTab] = useState('Profile');
   const [loading, setLoading] = useState(true);
 
@@ -126,7 +158,42 @@ const Profile = () => {
           personalInfo: {
             ...prev.personalInfo,
             ...(res.data.personalInfo || {})
-          }
+          },
+          employmentDetails: {
+            ...prev.employmentDetails,
+            ...(res.data.employmentDetails || {})
+          },
+          emergencyContact: {
+            ...prev.emergencyContact,
+            ...(res.data.emergencyContact || {})
+          },
+          addressDetails: {
+            ...prev.addressDetails,
+            ...(res.data.addressDetails || {})
+          },
+          bankDetails: {
+            ...prev.bankDetails,
+            ...(res.data.bankDetails || {})
+          },
+          socialMedia: {
+            ...prev.socialMedia,
+            ...(res.data.socialMedia || {})
+          },
+          payroll: {
+            ...prev.payroll,
+            ...(res.data.payroll || {})
+          },
+          leaves: {
+            ...prev.leaves,
+            ...(res.data.leaves || {})
+          },
+          attendance: {
+            ...prev.attendance,
+            ...(res.data.attendance || {})
+          },
+          documents: Array.isArray(res.data.documents) ? res.data.documents : (prev.documents || []),
+          career: Array.isArray(res.data.career) ? res.data.career : (prev.career || []),
+          appraisals: Array.isArray(res.data.appraisals) ? res.data.appraisals : (prev.appraisals || [])
         }));
       }
     } catch (e) {
@@ -140,10 +207,24 @@ const Profile = () => {
     fetchProfile();
   }, []);
 
-  const { personalInfo, employmentDetails, emergencyContact, addressDetails, bankDetails, socialMedia, payroll, leaves, attendance, documents, career, appraisals, qrCode } = profileData;
+  const {
+    personalInfo = {},
+    employmentDetails = {},
+    emergencyContact = {},
+    addressDetails = {},
+    bankDetails = {},
+    socialMedia = {},
+    payroll = {},
+    leaves = {},
+    attendance = {},
+    documents = [],
+    career = [],
+    appraisals = [],
+    qrCode = ''
+  } = profileData || {};
 
   // Real Code 128 barcode calculation
-  const barcodeResult = getCode128Bars(personalInfo.staffId || 'STAFF');
+  const barcodeResult = getCode128Bars(personalInfo?.staffId || 'STAFF') || { bars: [], totalWidth: 200, height: 50 };
 
   // Open QR code preview modal
   const handleViewQRCode = () => {
@@ -432,11 +513,32 @@ const Profile = () => {
           <div className="w-full lg:w-[280px] flex-shrink-0 space-y-4">
             {/* Photo + Name Card */}
             <div className="bg-white border border-gray-200 shadow-sm text-center p-6">
-              <div className="w-28 h-28 rounded-full bg-gray-100 mx-auto border-4 border-white shadow-md overflow-hidden mb-4">
-                <img
-                  src={personalInfo.photo || "https://i.pravatar.cc/150?img=11"}
-                  alt={personalInfo.fullName}
-                  className="w-full h-full object-cover"
+              <div className="relative w-28 h-28 mx-auto mb-4">
+                <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-white text-3xl font-black relative select-none">
+                  {personalInfo?.photo ? (
+                    <img
+                      src={personalInfo.photo}
+                      alt=""
+                      className="w-full h-full object-cover absolute inset-0 z-10"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  ) : null}
+                  <span className="uppercase">{(personalInfo?.fullName || 'Staff').trim().charAt(0)}</span>
+                </div>
+                <button 
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg border-2 border-white cursor-pointer transition-transform active:scale-95"
+                  title="Upload / Change Profile Photo"
+                >
+                  <Camera className="w-4 h-4" />
+                </button>
+                <input 
+                  type="file" 
+                  ref={fileInputRef} 
+                  onChange={handlePhotoUpload} 
+                  accept="image/*" 
+                  className="hidden" 
                 />
               </div>
               <h2 className="text-lg font-bold text-gray-800">{personalInfo.fullName}</h2>
@@ -485,7 +587,7 @@ const Profile = () => {
               <div className="flex flex-col items-center">
                 {/* Real mathematically encoded Code 128 barcode SVG */}
                 <svg viewBox={`0 0 ${barcodeResult.totalWidth} ${barcodeResult.height}`} className="w-full h-14 bg-white" preserveAspectRatio="none">
-                  {barcodeResult.bars.map((b, idx) => (
+                  {(barcodeResult?.bars || []).map((b, idx) => (
                     <rect
                       key={idx}
                       x={b.x}
@@ -656,7 +758,7 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(payroll.recentPayslips?.length > 0 ? payroll.recentPayslips : [
+                        {(Array.isArray(payroll?.recentPayslips) && payroll.recentPayslips.length > 0 ? payroll.recentPayslips : [
                           { month: 'September, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
                           { month: 'August, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
                           { month: 'July, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
@@ -691,10 +793,10 @@ const Profile = () => {
                 <div>
                   <SectionTitle icon={Calendar} title="Leave Balance" />
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                    {(leaves.balances?.length > 0 ? leaves.balances : [
-                      { type: 'Casual Leave', total: 12, used: 3, remaining: 9, color: 'blue' },
-                      { type: 'Medical Leave', total: 10, used: 1, remaining: 9, color: 'green' },
-                      { type: 'Earned Leave', total: 15, used: 4, remaining: 11, color: 'indigo' },
+                    {(Array.isArray(leaves?.balances) && leaves.balances.length > 0 ? leaves.balances : [
+                      { type: 'Casual Leave', total: 0, used: 0, remaining: 0, color: 'blue' },
+                      { type: 'Medical Leave', total: 0, used: 0, remaining: 0, color: 'green' },
+                      { type: 'Earned Leave', total: 0, used: 0, remaining: 0, color: 'indigo' },
                       { type: 'Unpaid Leave', total: 0, used: 0, remaining: 0, color: 'red' },
                     ]).map(({ type, total, used, remaining, color }) => (
                       <div key={type} className={`bg-${color}-50 border border-${color}-200 p-4`}>
@@ -717,11 +819,7 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(leaves.history?.length > 0 ? leaves.history : [
-                          { type: 'Casual Leave', from: '04 Oct 2026', to: '05 Oct 2026', days: 2, status: 'Approved', stClass: 'bg-green-100 text-green-700' },
-                          { type: 'Medical Leave', from: '15 Sep 2026', to: '15 Sep 2026', days: 1, status: 'Approved', stClass: 'bg-green-100 text-green-700' },
-                          { type: 'Casual Leave', from: '01 Aug 2026', to: '01 Aug 2026', days: 1, status: 'Approved', stClass: 'bg-green-100 text-green-700' },
-                        ]).map((r, i) => (
+                        {(Array.isArray(leaves?.history) && leaves.history.length > 0 ? leaves.history : []).map((r, i) => (
                           <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
                             <td className="px-4 py-3 text-gray-700 font-medium">{r.type}</td>
                             <td className="px-4 py-3 text-gray-600">{r.from}</td>
@@ -804,7 +902,7 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(documents.length > 0 ? documents : [
+                        {(Array.isArray(documents) && documents.length > 0 ? documents : [
                           { name: 'Aadhaar Card', status: 'Uploaded', date: '15 Jun 2021' },
                           { name: 'PAN Card', status: 'Uploaded', date: '15 Jun 2021' },
                           { name: 'Degree Certificate (M.Sc. & B.Ed.)', status: 'Uploaded', date: '20 Jun 2021' },
@@ -840,7 +938,7 @@ const Profile = () => {
                 <div>
                   <SectionTitle icon={Briefcase} title="Career Timeline" />
                   <div className="space-y-4">
-                    {(career.length > 0 ? career : [
+                    {(Array.isArray(career) && career.length > 0 ? career : [
                       { year: '2023 - Present', role: 'Senior PGT Mathematics', org: 'ALL CORE SOLUTION', dept: 'Mathematics Department', type: 'Full Time' },
                       { year: '2019 - 2023', role: 'TGT Science & Mathematics', org: 'Apex International Academy', dept: 'Secondary Wing', type: 'Full Time' },
                       { year: '2016 - 2019', role: 'Assistant Lecturer', org: 'Kendriya Vidyalaya', dept: 'Mathematics Wing', type: 'Full Time' },
@@ -873,7 +971,7 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(appraisals.length > 0 ? appraisals : [
+                        {(Array.isArray(appraisals) && appraisals.length > 0 ? appraisals : [
                           { year: '2025-26', rating: '4.8 / 5', inc: '₹5,000', status: 'Completed' },
                           { year: '2024-25', rating: '4.6 / 5', inc: '₹4,500', status: 'Completed' },
                           { year: '2026-27', rating: 'Outstanding', inc: 'Annual Review', status: 'In Progress' },

@@ -19,9 +19,9 @@ const Templates = () => {
 
   // Sample customizable variables for live preview
   const [previewVars, setPreviewVars] = useState({
-    schoolName: 'Yug International School',
+    schoolName: 'Ram International School',
     studentName: 'Aarav Sharma',
-    admNo: 'YUG-2026-0842',
+    admNo: 'BR-2026-0842',
     className: 'Class X - Section A',
     session: '2026 - 2027',
     date: '12 Oct, 2026',

@@ -19,5 +19,10 @@ export const academicService = {
   createClass: async (classData) => {
     const response = await axiosInstance.post('/academics/classes', classData);
     return response.data;
+  },
+
+  createSection: async (sectionData) => {
+    const response = await axiosInstance.post('/academics/sections', sectionData);
+    return response.data;
   }
 };

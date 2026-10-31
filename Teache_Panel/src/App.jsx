@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import Dashboard from './pages/Dashboard';
@@ -64,12 +64,12 @@ const Layout = ({ children }) => {
       <Sidebar />
       <div className="flex-1 flex flex-col h-screen overflow-hidden min-w-0 w-full relative">
         <Header />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg flex flex-col justify-between pb-16 lg:pb-0">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f9fafb] theme-app-bg flex flex-col justify-between pb-20 lg:pb-0 min-w-0 w-full">
           <div className="flex-1">
             {children}
           </div>
           {/* Main Portal Bottom Footer */}
-          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center mb-16 lg:mb-0">
+          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center w-full">
             <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
               &copy; 2026 School ERP
             </p>
@@ -107,6 +107,11 @@ function App() {
           
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Layout><Dashboard /></Layout>} />
+            <Route path="/index.html" element={<Navigate to="/" replace />} />
+            <Route path="/teacher/index.html" element={<Navigate to="/" replace />} />
+            <Route path="/teacher" element={<Navigate to="/" replace />} />
+            <Route path="/dashboard" element={<Navigate to="/" replace />} />
+            <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="/my-profile" element={<Layout><Profile /></Layout>} />
             <Route path="/settings" element={<Layout><Settings /></Layout>} />
             <Route path="/loans" element={<Layout><MyLoans /></Layout>} />
@@ -163,7 +168,21 @@ function App() {
             <Route path="/hpc-dashboard" element={<Layout><HolisticProgress /></Layout>} />
             <Route path="/hpc-activities" element={<Layout><HolisticProgress /></Layout>} />
             <Route path="/progress-cards" element={<Layout><HolisticProgress /></Layout>} />
-            <Route path="*" element={<Layout><Placeholder /></Layout>} />
+            
+            <Route path="/leads" element={<Layout><LeadManagement /></Layout>} />
+            <Route path="/lead" element={<Layout><LeadManagement /></Layout>} />
+            <Route path="/attendance" element={<Layout><StudentAttendance /></Layout>} />
+            <Route path="/exams" element={<Layout><ManageOfflineExams /></Layout>} />
+            <Route path="/exam" element={<Layout><ManageOfflineExams /></Layout>} />
+            <Route path="/homework" element={<Layout><Assignments /></Layout>} />
+            <Route path="/profile" element={<Layout><Profile /></Layout>} />
+            <Route path="/notice-board" element={<Layout><Messages /></Layout>} />
+            <Route path="/notices" element={<Layout><Messages /></Layout>} />
+            <Route path="/notifications" element={<Layout><Messages /></Layout>} />
+            <Route path="/admit-card" element={<Layout><AdmitCards /></Layout>} />
+            <Route path="/marks" element={<Layout><EnterMarks /></Layout>} />
+            <Route path="/hpc" element={<Layout><HolisticProgress /></Layout>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
       </BrowserRouter>

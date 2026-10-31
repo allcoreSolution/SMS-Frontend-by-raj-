@@ -19,17 +19,9 @@ export default function FeePayments({ activeChild }) {
   const [paying, setPaying] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(null);
 
-  const [totals, setTotals] = useState({
-    assigned: 45000,
-    paid: 36500,
-    due: 8500
-  });
+  const [totals, setTotals] = useState({ assigned: 0, paid: 0, due: 0 });
 
-  const [invoices, setInvoices] = useState([
-    { id: 'INV-2024-001', title: 'Quarter 1 Academic Fee', titleHi: 'प्रथम तिमाही शैक्षणिक शुल्क', amount: 15000, paidAmount: 15000, status: 'Paid', statusHi: 'जमा (Paid)', date: '10 Apr 2024', mode: 'Online UPI' },
-    { id: 'INV-2024-002', title: 'Quarter 2 Academic Fee + Transport', titleHi: 'द्वितीय तिमाही शैक्षणिक शुल्क + बस परिवहन', amount: 21500, paidAmount: 21500, status: 'Paid', statusHi: 'जमा (Paid)', date: '12 Jul 2024', mode: 'NetBanking' },
-    { id: 'INV-2024-003', title: 'Quarter 3 Academic Fee & Lab Charges', titleHi: 'तृतीय तिमाही शैक्षणिक शुल्क एवं प्रयोगशाला प्रभार', amount: 8500, paidAmount: 0, status: 'Pending', statusHi: 'बकाया (Pending)', date: '15 Sep 2024', mode: 'Due' },
-  ]);
+  const [invoices, setInvoices] = useState([]);
 
   const loadFees = async () => {
     try {

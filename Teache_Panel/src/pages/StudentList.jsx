@@ -3,7 +3,7 @@ import {
   Users, Search, Eye, Phone, Mail, MapPin,
   Filter, Download, X, ChevronUp, ChevronDown,
   UserCheck, UserX, BookOpen, Calendar, Loader2,
-  Plus, Trash2, CheckCircle, RefreshCw, UserPlus, Sparkles
+  Plus, Trash2, CheckCircle, RefreshCw, UserPlus, Sparkles, Lock, EyeOff
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -39,10 +39,12 @@ const StudentList = () => {
   // Add Student Modal State
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [newStudent, setNewStudent] = useState({
     aparId: `ADM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
     admissionNo: '',
     rollNo: '01',
+    password: 'Student@123',
     firstName: '',
     lastName: '',
     gender: 'Male',
@@ -178,6 +180,68 @@ const StudentList = () => {
       });
   }, [students, search, classF, sectionF, statusF, sortKey, sortDir]);
 
+  // Quick Add New Class
+  const handleAddNewClass = async () => {
+    const { value: className } = await Swal.fire({
+      title: 'Add New Class',
+      text: 'Enter class title (e.g. Class IX, Class X, Nursery, UKG):',
+      input: 'text',
+      inputPlaceholder: 'e.g. Class IX',
+      showCancelButton: true,
+      confirmButtonText: 'Add Class',
+      confirmButtonColor: '#ff5c0a',
+      inputValidator: (val) => {
+        if (!val || !val.trim()) return 'Please enter class name';
+      }
+    });
+
+    if (className) {
+      try {
+        Swal.fire({ title: 'Creating Class...', didOpen: () => Swal.showLoading() });
+        const cleanName = className.trim();
+        const res = await academicService.createClass({ className: cleanName });
+        const createdObj = res?.data || { _id: 'cls_' + Date.now(), className: cleanName };
+        setRawClasses(prev => [...prev, createdObj]);
+        setClasses(prev => [...new Set([...prev, cleanName])]);
+        setNewStudent(prev => ({ ...prev, className: cleanName }));
+        Swal.fire({ icon: 'success', title: 'Class Created!', text: `${cleanName} has been created and assigned.`, timer: 1500, showConfirmButton: false });
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || err.message });
+      }
+    }
+  };
+
+  // Quick Add New Section
+  const handleAddNewSection = async () => {
+    const { value: sectionName } = await Swal.fire({
+      title: 'Add New Section',
+      text: 'Enter section name or symbol (e.g. D, E, Lotus, Rose):',
+      input: 'text',
+      inputPlaceholder: 'e.g. D',
+      showCancelButton: true,
+      confirmButtonText: 'Add Section',
+      confirmButtonColor: '#ff5c0a',
+      inputValidator: (val) => {
+        if (!val || !val.trim()) return 'Please enter section name';
+      }
+    });
+
+    if (sectionName) {
+      try {
+        Swal.fire({ title: 'Creating Section...', didOpen: () => Swal.showLoading() });
+        const cleanSec = sectionName.trim().toUpperCase();
+        const res = await academicService.createSection({ sectionName: cleanSec });
+        const createdSecObj = res?.data || { _id: 'sec_' + Date.now(), sectionName: cleanSec };
+        setRawSections(prev => [...prev, createdSecObj]);
+        setSections(prev => [...new Set([...prev, cleanSec])]);
+        setNewStudent(prev => ({ ...prev, sectionName: cleanSec }));
+        Swal.fire({ icon: 'success', title: 'Section Created!', text: `Section ${cleanSec} has been created and assigned.`, timer: 1500, showConfirmButton: false });
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || err.message });
+      }
+    }
+  };
+
   // Handle Add Student Submit
   const handleAddStudentSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -218,6 +282,7 @@ const StudentList = () => {
         aparId: `ADM-2026-${Math.floor(1000 + Math.random() * 9000)}`,
         admissionNo: '',
         rollNo: '01',
+        password: 'Student@123',
         firstName: '',
         lastName: '',
         gender: 'Male',
@@ -625,10 +690,10 @@ const StudentList = () => {
             <form onSubmit={handleAddStudentSubmit}>
               <div className="p-6 max-h-[75vh] overflow-y-auto space-y-5">
                 
-                {/* 1. Admission IDs */}
+                {/* 1. Admission IDs & Portal Credentials */}
                 <div>
-                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">1. Identification & Admission</h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">1. Identification &amp; Portal Credentials</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                     <div>
                       <div className="flex justify-between items-center mb-1">
                         <label className="text-xs font-semibold text-gray-700">APAR / Admission No *</label>
@@ -645,7 +710,7 @@ const StudentList = () => {
                         required
                         value={newStudent.aparId}
                         onChange={e => setNewStudent({ ...newStudent, aparId: e.target.value })}
-                        className="w-full text-xs px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-[#ff5c0a]"
+                        className="w-full text-xs px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-[#ff5c0a] font-medium"
                       />
                     </div>
                     <div>
@@ -658,8 +723,49 @@ const StudentList = () => {
                         className="w-full text-xs px-3 py-2 border border-gray-200 rounded-xl outline-none focus:border-[#ff5c0a]"
                       />
                     </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Student Portal Password Field */}
                     <div>
-                      <label className="text-xs font-semibold text-gray-700 block mb-1">Status</label>
+                      <div className="flex justify-between items-center mb-1">
+                        <label className="text-xs font-semibold text-gray-700 flex items-center gap-1">
+                          <Lock className="w-3.5 h-3.5 text-orange-500" />
+                          <span>Student Login Password *</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const rand = 'Stu@' + Math.floor(1000 + Math.random() * 9000);
+                            setNewStudent(p => ({ ...p, password: rand }));
+                          }}
+                          className="text-[10px] text-orange-600 hover:underline flex items-center gap-0.5 cursor-pointer font-bold"
+                        >
+                          <Sparkles className="w-2.5 h-2.5" /> Auto Pass
+                        </button>
+                      </div>
+                      <div className="relative">
+                        <input 
+                          type={showPassword ? 'text' : 'password'}
+                          required
+                          value={newStudent.password}
+                          onChange={e => setNewStudent({ ...newStudent, password: e.target.value })}
+                          placeholder="e.g. Student@123"
+                          className="w-full text-xs px-3 py-2 pr-8 border border-gray-200 rounded-xl outline-none focus:border-[#ff5c0a] font-mono bg-orange-50/20"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer"
+                        >
+                          {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                      <p className="text-[10px] text-gray-400 mt-0.5">Password for student to sign into portal/app</p>
+                    </div>
+
+                    <div>
+                      <label className="text-xs font-semibold text-gray-700 block mb-1">Student Status</label>
                       <select 
                         value={newStudent.status}
                         onChange={e => setNewStudent({ ...newStudent, status: e.target.value })}
@@ -743,7 +849,16 @@ const StudentList = () => {
                   <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">3. Academic Class & Section</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="text-xs font-semibold text-gray-700 block mb-1">Assign Class *</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-semibold text-gray-700">Assign Class *</label>
+                        <button
+                          type="button"
+                          onClick={handleAddNewClass}
+                          className="text-[10.5px] text-[#ff5c0a] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" /> Add Class
+                        </button>
+                      </div>
                       <select 
                         value={newStudent.className}
                         onChange={e => setNewStudent({ ...newStudent, className: e.target.value })}
@@ -755,7 +870,16 @@ const StudentList = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="text-xs font-semibold text-gray-700 block mb-1">Section</label>
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-semibold text-gray-700">Section *</label>
+                        <button
+                          type="button"
+                          onClick={handleAddNewSection}
+                          className="text-[10.5px] text-[#ff5c0a] hover:underline flex items-center gap-0.5 font-bold cursor-pointer"
+                        >
+                          <Plus className="w-3 h-3" /> Add Section
+                        </button>
+                      </div>
                       <select 
                         value={newStudent.sectionName}
                         onChange={e => setNewStudent({ ...newStudent, sectionName: e.target.value })}

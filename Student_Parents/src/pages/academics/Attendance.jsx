@@ -19,25 +19,9 @@ const MONTHS_HI = [
   'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'
 ];
 
-const defaultDailyLogs = [
-  { date: '27 Aug, Tue', inTime: '08:25 AM', outTime: '02:30 PM', status: 'Present', periods: '7/7', mode: 'RFID Smart Gate' },
-  { date: '26 Aug, Mon', inTime: '08:24 AM', outTime: '02:30 PM', status: 'Present', periods: '7/7', mode: 'RFID Smart Gate' },
-  { date: '25 Aug, Sun', inTime: '--:--', outTime: '--:--', status: 'Holiday', periods: '0/7', mode: 'Sunday' },
-  { date: '24 Aug, Sat', inTime: '08:20 AM', outTime: '02:30 PM', status: 'Present', periods: '6/6', mode: 'RFID Smart Gate' },
-  { date: '23 Aug, Fri', inTime: '08:42 AM', outTime: '02:30 PM', status: 'Late', periods: '6/7', mode: 'Late Pass Issued' },
-  { date: '22 Aug, Thu', inTime: '08:25 AM', outTime: '02:30 PM', status: 'Present', periods: '7/7', mode: 'RFID Smart Gate' },
-  { date: '21 Aug, Wed', inTime: '--:--', outTime: '--:--', status: 'Leave', periods: '0/7', mode: 'Medical Leave Approved' },
-  { date: '20 Aug, Tue', inTime: '08:22 AM', outTime: '02:30 PM', status: 'Present', periods: '7/7', mode: 'RFID Smart Gate' }
-];
+const defaultDailyLogs = [];
 
-const subjectAnalytics = [
-  { subject: 'Mathematics', present: 48, total: 52, pct: 92.3, teacher: 'Mr. Sharma', color: '#2563EB' },
-  { subject: 'Science', present: 46, total: 50, pct: 92.0, teacher: 'Mr. Verma', color: '#10B981' },
-  { subject: 'Social Science', present: 49, total: 50, pct: 98.0, teacher: 'Mr. Gupta', color: '#14B8A6' },
-  { subject: 'English', present: 44, total: 46, pct: 95.6, teacher: 'Mrs. Johnson', color: '#8B5CF6' },
-  { subject: 'Computer Science', present: 40, total: 48, pct: 83.3, teacher: 'Mr. Das', color: '#EC4899' },
-  { subject: 'Physical Education', present: 25, total: 26, pct: 96.1, teacher: 'Mr. Singh', color: '#06B6D4' }
-];
+const subjectAnalytics = [];
 
 export default function Attendance({ activeChild }) {
   const { currentLang } = useLanguage();
@@ -82,9 +66,7 @@ export default function Attendance({ activeChild }) {
             <p className="text-xs font-semibold text-white/80">
               {currentLang === 'hi' ? 'कुल उपस्थिति प्रतिशत' : 'Overall Attendance'}
             </p>
-            <h2 className="text-3xl sm:text-4xl font-black font-serif text-white tracking-tight mt-0.5">
-              92.4%
-            </h2>
+            <h2 className="text-3xl sm:text-4xl font-black font-serif text-white tracking-tight mt-0.5">{loading ? "..." : "—"}</h2>
             <div className="flex items-center gap-1.5 mt-1.5 text-blue-100 text-[11px] font-semibold">
               <ShieldCheck className="w-4 h-4 text-emerald-300" />
               <span>{currentLang === 'hi' ? 'आरएफआईडी बायोमेट्रिक स्कैनर सक्रिय' : 'RFID Biometric Scanner Active'}</span>
@@ -114,9 +96,7 @@ export default function Attendance({ activeChild }) {
                 fill="transparent"
               />
             </svg>
-            <span className="absolute font-serif font-black text-white text-base">
-              92%
-            </span>
+            <span className="absolute font-serif font-black text-white text-base">—</span>
           </div>
         </div>
 
@@ -124,19 +104,19 @@ export default function Attendance({ activeChild }) {
         <div className="mt-4 bg-black/20 backdrop-blur-xs rounded-2xl p-3 border border-white/15 grid grid-cols-4 gap-2 text-center text-xs relative z-10">
           <div>
             <p className="text-[10px] text-white/70">{currentLang === 'hi' ? 'उपस्थित' : 'Present'}</p>
-            <p className="text-sm font-black text-emerald-300">48</p>
+            <p className="text-sm font-black text-emerald-300">—</p>
           </div>
           <div>
             <p className="text-[10px] text-white/70">{currentLang === 'hi' ? 'अनुपस्थित' : 'Absent'}</p>
-            <p className="text-sm font-black text-red-300">02</p>
+            <p className="text-sm font-black text-red-300">—</p>
           </div>
           <div>
             <p className="text-[10px] text-white/70">{currentLang === 'hi' ? 'अवकाश' : 'Leaves'}</p>
-            <p className="text-sm font-black text-amber-300">02</p>
+            <p className="text-sm font-black text-amber-300">—</p>
           </div>
           <div>
             <p className="text-[10px] text-white/70">{currentLang === 'hi' ? 'कुल दिन' : 'Total Days'}</p>
-            <p className="text-sm font-black text-white">52</p>
+            <p className="text-sm font-black text-white">—</p>
           </div>
         </div>
 
@@ -258,10 +238,7 @@ export default function Attendance({ activeChild }) {
             {Array.from({ length: daysInMonth }).map((_, i) => {
               const day = i + 1;
               const isSun = (firstDay + i) % 7 === 0;
-              const isAbsent = day === 12;
-              const isLeave = day === 21;
-              const isLate = day === 23;
-              const isPresent = !isSun && !isAbsent && !isLeave && !isLate;
+              const isAbsent = false; const isLeave = false; const isLate = false; const isPresent = false;
 
               return (
                 <div

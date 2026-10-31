@@ -395,7 +395,7 @@ const Header = () => {
             <ChevronDown className="w-3 h-3 text-gray-400" />
           </button>
           {activeMenu === 'session' && (
-            <div className="absolute right-0 top-full mt-2 w-36 bg-white border border-slate-200 shadow-xl rounded-2xl py-1.5 z-50 theme-card">
+            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-36 bg-white border border-slate-200 shadow-xl rounded-2xl py-1.5 z-50 theme-card">
               <div className="px-3.5 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('session', 'Session')}</div>
               {['2026-2027', '2025-2026', '2024-2025'].map(s => (
                 <div 
@@ -424,7 +424,7 @@ const Header = () => {
             <ChevronDown className="w-3 h-3 text-gray-400" />
           </button>
           {activeMenu === 'lang' && (
-            <div className="absolute right-0 top-full mt-2 w-64 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 theme-card overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-64 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 theme-card overflow-hidden animate-in fade-in zoom-in-95 duration-100">
               <div className="px-3.5 py-1.5 border-b border-gray-100 flex items-center justify-between">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('selectLanguage', 'Select Language')}</span>
                 <span className="text-[10px] text-[#ff5c0a] font-bold">2 Languages</span>
@@ -466,7 +466,7 @@ const Header = () => {
           {activeMenu === 'search' && (
             <div 
               onClick={(e) => e.stopPropagation()} 
-              className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-white border border-slate-200 shadow-2xl rounded-2xl z-50 overflow-hidden theme-card animate-in fade-in zoom-in-95 duration-150"
+              className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-96 bg-white border border-slate-200 shadow-2xl rounded-2xl z-50 overflow-hidden theme-card animate-in fade-in zoom-in-95 duration-150"
             >
               <div className="flex items-center px-3.5 py-2.5 border-b border-gray-100 bg-slate-50/70">
                 <Search className="w-4 h-4 text-orange-500 mr-2 flex-shrink-0" />
@@ -538,7 +538,7 @@ const Header = () => {
             <Plus className="w-4 h-4" />
           </button>
           {activeMenu === 'add' && (
-            <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-slate-200 shadow-xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100">
+            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-56 bg-white border border-slate-200 shadow-xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100">
               <div className="px-3.5 py-1.5 border-b border-gray-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider">{t('quickActions', 'Quick Actions')}</div>
               <div onClick={() => { navigate('/students?add=true'); setActiveMenu(null); }} className="px-3.5 py-2 text-xs hover:bg-orange-50 hover:text-[#ff5c0a] cursor-pointer flex items-center gap-2.5 text-gray-700 font-medium">
                 <Users className="w-3.5 h-3.5 text-blue-500"/> {t('addStudent', 'Add Student')}
@@ -572,7 +572,7 @@ const Header = () => {
           </button>
 
           {activeMenu === 'notify' && (
-            <div className="absolute right-0 top-full mt-2 w-80 sm:w-88 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 overflow-hidden theme-card animate-in fade-in duration-100">
+            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-80 md:w-88 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 overflow-hidden theme-card animate-in fade-in duration-100">
               <div className="px-4 py-2.5 border-b border-gray-100 flex justify-between items-center bg-slate-50/70">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-gray-800">{t('notifications', 'Notifications')}</span>
@@ -685,15 +685,20 @@ const Header = () => {
             onClick={(e) => toggle(e, 'profile')} 
             className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform"
           >
-            <div className="w-8 h-8 rounded-xl overflow-hidden border border-slate-200 shadow-2xs">
-              <img 
-                src={profile.avatar} 
-                alt={profile.name} 
-                className="w-full h-full object-cover" 
-                onError={(e) => {
-                  e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
-                }}
-              />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs flex items-center justify-center bg-gradient-to-tr from-orange-500 via-amber-500 to-rose-500 text-white font-extrabold text-xs select-none shrink-0 relative">
+              {profile?.avatar ? (
+                <img 
+                  src={profile.avatar} 
+                  alt="" 
+                  className="w-full h-full object-cover absolute inset-0 z-10" 
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
+                />
+              ) : null}
+              <span className="pointer-events-none uppercase">
+                {(profile?.name || 'Staff').trim().charAt(0)}
+              </span>
             </div>
             <div className="hidden xl:flex flex-col text-left">
               <span className="text-xs font-bold text-gray-800 leading-tight truncate max-w-[110px]">{profile.name}</span>
@@ -703,10 +708,10 @@ const Header = () => {
           </div>
 
           {activeMenu === 'profile' && (
-            <div className="absolute right-0 top-full mt-2 w-56 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100">
+            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-56 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100">
               <div className="px-4 py-2.5 border-b border-gray-100 bg-slate-50/70">
-                <p className="text-xs font-bold text-gray-800 truncate">{profile.name}</p>
-                <p className="text-[10px] text-gray-500 truncate">{profile.designation}</p>
+                <p className="text-xs font-bold text-gray-800 truncate">{profile?.name || "Teacher"}</p>
+                <p className="text-[10px] text-gray-500 truncate">{profile?.designation || "Faculty"}</p>
               </div>
 
               {/* Quick Role Switch in Menu */}
@@ -716,7 +721,7 @@ const Header = () => {
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                  <span>Switch to {profile.role === 'Staff' ? 'Teacher' : 'Staff'}</span>
+                  <span>Switch to {profile?.role === 'Staff' ? 'Teacher' : 'Staff'}</span>
                 </div>
                 <span className="text-[9.5px] bg-indigo-100 px-1.5 py-0.5 rounded text-indigo-700">Toggle</span>
               </div>

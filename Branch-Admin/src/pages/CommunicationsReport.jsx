@@ -16,58 +16,7 @@ const CommunicationsReport = () => {
   const [viewingMessage, setViewingMessage] = useState(null);
 
   // Communications dataset
-  const [messages, setMessages] = useState([
-    {
-      id: 'MSG-9801',
-      date: '12 Oct, 2026 10:45 AM',
-      school: 'Yug International School',
-      channel: 'WHATSAPP',
-      recipient: '+91 98765 12345 (Mr. Rakesh Sharma)',
-      status: 'DELIVERED',
-      reason: 'Term 1 Report Card Published Notification',
-      payload: 'Dear Parent, Term 1 report card for Aarav Sharma (Class X-A) is now published. Please download from the parent portal.'
-    },
-    {
-      id: 'MSG-9802',
-      date: '12 Oct, 2026 09:30 AM',
-      school: 'SSVP 3.0 Central Academy',
-      channel: 'SMS',
-      recipient: '+91 98111 54321 (Mrs. Kavita Singh)',
-      status: 'DELIVERED',
-      reason: 'Fee Due Reminder: ₹5,000 for October',
-      payload: 'SSVP Alert: Monthly tuition fee for Rahul Singh is due on 15 Oct. Pay online at ssvp.schoolerp.com.'
-    },
-    {
-      id: 'MSG-9803',
-      date: '11 Oct, 2026 04:15 PM',
-      school: 'Risma High School',
-      channel: 'EMAIL',
-      recipient: 'parents@rismahigh.org (Broadcast: 540 recipients)',
-      status: 'DELIVERED',
-      reason: 'Annual Sports Day Circular & Consent Form',
-      payload: 'Dear Parents, Risma High School cordially invites you to the Annual Athletic Meet 2026. Please return signed consent forms.'
-    },
-    {
-      id: 'MSG-9804',
-      date: '11 Oct, 2026 02:00 PM',
-      school: 'Cloudwave International School',
-      channel: 'FCM PUSH',
-      recipient: 'App Token: user_device_cw_8921',
-      status: 'DELIVERED',
-      reason: 'Emergency Bus Route Delay (Route 4)',
-      payload: 'Bus #4 is running 15 minutes behind schedule due to highway maintenance. Live GPS tracking is active.'
-    },
-    {
-      id: 'MSG-9805',
-      date: '10 Oct, 2026 11:20 AM',
-      school: 'Aksya World School',
-      channel: 'SMS',
-      recipient: '+91 98234 56789',
-      status: 'FAILED',
-      reason: 'Attendance Alert: Absent without leave',
-      payload: 'Student was marked absent in Period 1 today without prior notification.'
-    }
-  ]);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     try {
@@ -157,8 +106,8 @@ const CommunicationsReport = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard 
           title="Total Dispatched"
-          value="1,746"
-          subText="98.4% Delivered successfully"
+          value={String(filtered.length)}
+          subText="Delivered dispatches"
           isLive={true}
           icon={Send}
           glowColor="#3b82f6"
@@ -170,7 +119,7 @@ const CommunicationsReport = () => {
         />
         <KpiCard 
           title="WhatsApp & SMS"
-          value="1,024"
+          value={String(filtered.filter(m => m.channel === "WHATSAPP" || m.channel === "SMS").length)}
           subText="Direct parent instant alerts"
           icon={MessageSquare}
           glowColor="#10b981"
@@ -182,7 +131,7 @@ const CommunicationsReport = () => {
         />
         <KpiCard 
           title="Email Broadcasts"
-          value="540"
+          value={String(filtered.filter(m => m.channel === "EMAIL").length)}
           subText="Circulars, fees & notices"
           icon={Mail}
           glowColor="#8b5cf6"
@@ -303,7 +252,14 @@ const CommunicationsReport = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-[13px]">
-              {filtered.map((row, i) => (
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="py-12 text-center text-gray-500">
+                    <Send className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+                    No communication dispatch logs found.
+                  </td>
+                </tr>
+              ) : filtered.map((row, i) => (
                 <tr key={i} className="hover:bg-blue-50/20 transition-colors">
                   <td className="py-3.5 px-3.5 text-gray-600 text-xs whitespace-nowrap">{row.date}</td>
                   

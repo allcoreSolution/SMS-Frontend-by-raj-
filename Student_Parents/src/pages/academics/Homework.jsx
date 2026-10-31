@@ -13,64 +13,7 @@ const FILTERS = [
   { key: 'Checked', en: 'Checked', hi: 'जांचा गया' }
 ];
 
-const defaultHomeworkList = [
-  {
-    id: 'hw-1',
-    subject: 'Mathematics',
-    status: 'Pending',
-    title: 'Trigonometric Identities Exercise 8.4',
-    description: 'Solve all questions from 1 to 10 in your homework register.',
-    dueDate: '25 May 2024',
-    uploadedFile: null,
-    remarks: null,
-    teacherName: 'Amit Sharma',
-    maxMarks: 20,
-    marks: null,
-    teacherAttachment: 'Math_Worksheet_Addition_Ch4.pdf'
-  },
-  {
-    id: 'hw-2',
-    subject: 'Science',
-    status: 'Submitted',
-    title: 'Life Processes Diagram Sheet',
-    description: 'Draw neat labeled diagram of Human Digestive System.',
-    dueDate: '24 May 2024',
-    uploadedFile: 'digestive_system_diagram.pdf',
-    remarks: 'Good work! Very clean drawing.',
-    teacherName: 'Priya Singh',
-    maxMarks: 15,
-    marks: null,
-    teacherAttachment: 'Science_Plant_Anatomy_Diagram.pdf'
-  },
-  {
-    id: 'hw-3',
-    subject: 'English',
-    status: 'Checked',
-    title: 'Essay on Environmental Conservation',
-    description: 'Write a 300-word essay highlighting sustainable waste management and renewable energy.',
-    dueDate: '20 May 2024',
-    uploadedFile: 'english_essay_kabir.pdf',
-    remarks: 'Excellent vocabulary and clear structure. Grade: A+',
-    teacherName: 'Amit Sharma',
-    maxMarks: 20,
-    marks: 19,
-    teacherAttachment: null
-  },
-  {
-    id: 'hw-4',
-    subject: 'Social Science',
-    status: 'Pending',
-    title: 'Indian Nationalism Timeline Chart',
-    description: 'Create a chronological timeline of key events from 1915 to 1947.',
-    dueDate: '28 May 2024',
-    uploadedFile: null,
-    remarks: null,
-    teacherName: 'Priya Singh',
-    maxMarks: 20,
-    marks: null,
-    teacherAttachment: null
-  }
-];
+const defaultHomeworkList = [];
 
 export default function Homework({ activeChild }) {
   const { currentLang } = useLanguage();
@@ -128,7 +71,7 @@ export default function Homework({ activeChild }) {
           }
 
           // Format due date safely
-          let formattedDueDate = '25 May 2024';
+          let formattedDueDate = '—';
           if (item.dueDate) {
             try {
               const d = new Date(item.dueDate);
@@ -151,10 +94,10 @@ export default function Homework({ activeChild }) {
           // Teacher evaluation remarks
           const remarks = item.mySubmission?.teacherRemarks 
             || item.remarks 
-            || (status === 'Checked' ? 'Good effort! Assignment evaluated by teacher.' : null);
+            || (null);
 
           // Evaluated marks
-          const evaluatedMarks = item.mySubmission?.evaluatedMarks ?? (status === 'Checked' ? 18 : null);
+          const evaluatedMarks = item.mySubmission?.evaluatedMarks ?? (null);
 
           return {
             id: item._id || item.id || `hw-${Math.random()}`,
@@ -202,8 +145,8 @@ export default function Homework({ activeChild }) {
     try {
       const storedUser = localStorage.getItem('parent_user');
       const user = storedUser ? JSON.parse(storedUser) : null;
-      const sId = activeChild || user?.studentId || user?._id || '6acdc7d06660441df4764319';
-      const sName = user?.name || user?.fullName || 'Aarav Sharma';
+      const sId = activeChild || user?.studentId || user?._id;
+      const sName = user?.name || user?.fullName || 'Student';
 
       await parentService.submitHomework({
         homeworkId: submitModalHw.id,

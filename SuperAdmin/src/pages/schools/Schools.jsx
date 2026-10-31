@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Building2, Plus, Search, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, AlertTriangle, Mail, Info, ChevronDown } from 'lucide-react';
+import { Building2, Plus, Search, Eye, Edit, Trash2, CheckCircle, XCircle, Clock, X, Save, AlertTriangle, Mail, Info, ChevronDown, Key, Copy, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { initSchools } from '../../data/schoolsData';
+// schoolsData import removed â€” no dummy data
 import { tenantService } from '../../api/tenantService';
 import Swal from 'sweetalert2';
 import { toArray } from '../../utils/helpers';
@@ -18,11 +18,11 @@ const StatusBadge = ({ status }) => {
 const Field = ({ label, value }) => (
   <div>
     <p className="text-xs text-gray-400 font-semibold mb-0.5">{label}</p>
-    <p className="text-sm text-gray-800 font-medium">{value || '—'}</p>
+    <p className="text-sm text-gray-800 font-medium">{value || 'â€”'}</p>
   </div>
 );
 
-const emptyForm = { name: '', email: '', phone: '', city: '', state: '', address: '', website: '', plan: 'Basic', status: 'Active', adminName: '', established: '', students: 0 };
+const emptyForm = { name: '', email: '', phone: '', city: '', state: '', address: '', website: '', plan: 'Basic', status: 'Active', adminName: '', adminEmail: '', adminPassword: '', established: '', students: 0 };
 
 const InputField = ({ label, name, value, onChange, type = 'text', options }) => (
   <div>
@@ -67,15 +67,16 @@ export default function Schools() {
         name: t.schoolName,
         email: t.email,
         phone: t.phone || 'N/A',
-        city: 'India', // Usually part of Tenant logic, hardcoded for now
-        state: 'N/A',
+        city: t.city || 'N/A',
+        state: t.state || 'N/A',
         address: t.address || 'N/A',
-        website: 'N/A',
+        website: t.website || 'N/A',
         plan: t.plan + ' Plan',
         status: t.status,
-        adminName: 'Admin',
-        established: '2026',
-        students: 0,
+        adminName: t.adminName || 'Admin',
+        established: t.established || '',
+        students: t.studentsCount || 0,
+        subscriptionEnd: t.subscriptionEnd ? new Date(t.subscriptionEnd).toLocaleDateString('en-IN') : null,
         joined: new Date(t.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
       }));
       setSchools(mappedSchools); // Removing initSchools fallback so it correctly displays empty DB!
@@ -233,11 +234,7 @@ export default function Schools() {
             </thead>
             <tbody>
               {filtered.map((school, i) => {
-                const plans = ['Enterprise Plan', 'Basic Plan', 'Trial Plan', 'Growth Plan', 'Starter Plan'];
-                const displayPlan = plans[i % plans.length];
-                const dbRows = [12793, 11028, 4819, 2393, 2189][i % 5];
-                const subs = ['26 Feb 2027', '08 Oct 2027', '19 Sep 2030', '24 May 2027', '27 Apr 2027'][i % 5];
-                return (
+                                return (
                   <tr key={school.id} className="hover:bg-slate-50 transition-colors bg-white group border-b border-slate-200">
                     <td className="px-3 py-2.5 text-slate-500 text-[13px] font-medium align-middle w-12 border-x border-slate-200 bg-slate-50/50 text-center">
                       <span className="truncate max-w-[50px] inline-block" title={school.id}>{typeof school.id === 'number' ? school.id : school.id.substring(0, 5)}...</span>
@@ -249,19 +246,19 @@ export default function Schools() {
                       </div>
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200">
-                      <span className="text-slate-700 text-[13px] font-medium whitespace-nowrap">{displayPlan}</span>
+                      <span className="text-slate-700 text-[13px] font-medium whitespace-nowrap">{school.plan || "—"}</span>
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200 text-center">
                       <StatusBadge status={school.status} />
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200 font-mono text-slate-700 text-[13px] text-right bg-slate-50/30">
-                      {dbRows.toLocaleString()}
+                      {"—"}
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200 text-slate-600 text-[13px] whitespace-nowrap">
                       {school.joined.replace(',', '')}
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200 text-slate-600 text-[13px] whitespace-nowrap">
-                      {subs}
+                      {school.subscriptionEnd || "—"}
                     </td>
                     <td className="px-3 py-2.5 align-middle border-x border-slate-200 text-center bg-slate-50/50">
                       <div className="flex items-center justify-center gap-3">
@@ -394,3 +391,5 @@ export default function Schools() {
     </div>
   );
 }
+
+

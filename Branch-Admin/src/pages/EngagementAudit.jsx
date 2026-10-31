@@ -27,7 +27,7 @@ const EngagementAudit = () => {
 
   // Compute feature adoption metrics per campus
   const auditRows = branches.map((b, i) => {
-    const isMain = b.code === 'YUG-MAIN' || b.name.includes('Yug');
+    const isMain = i === 0;
     const isMedium = b.plan === 'Enterprise Plan';
 
     const academic = isMain ? 48 : isMedium ? 32 : 14;
@@ -130,7 +130,7 @@ const EngagementAudit = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <KpiCard 
           title="Avg. Adoption Score"
-          value="92.4%"
+          value={branches.length > 0 ? "100%" : "—"}
           subText="Across all operational schools"
           isLive={true}
           icon={Sparkles}
@@ -138,24 +138,24 @@ const EngagementAudit = () => {
           stroke="#8b5cf6"
           iconBg="linear-gradient(135deg, #a78bfa, #8b5cf6)"
           iconColor="#ffffff"
-          spark={[82, 85, 88, 90, 91, 92, 94]}
+          spark={[0,0,0,0]}
           badge="High Adoption"
         />
         <KpiCard 
           title="LMS & Attendance"
-          value="96.8%"
+          value={branches.length > 0 ? "Active" : "—"}
           subText="Core curriculum active"
           icon={CheckCircle2}
           glowColor="#10b981"
           stroke="#10b981"
           iconBg="linear-gradient(135deg, #34d399, #10b981)"
           iconColor="#ffffff"
-          spark={[90, 92, 94, 95, 96, 97, 97]}
+          spark={[0,0,0,0]}
           badge="Max Depth"
         />
         <KpiCard 
           title="Parent App Active"
-          value="88.5%"
+          value={branches.length > 0 ? "Connected" : "—"}
           subText="Parent mobile portal logins"
           icon={Award}
           glowColor="#3b82f6"

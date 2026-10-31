@@ -186,21 +186,9 @@ export default function LeaveManagement({ activeChild }) {
     }
   };
 
-  const student = dashboardData?.student || {
-    name: 'Aarav Sharma',
-    admissionNo: 'YIS-2024-101',
-    className: 'Class I (A)',
-    fatherName: 'Rajesh Kumar Gupta'
-  };
+  const student = dashboardData?.student || { name: "—", admissionNo: "—", className: "—", fatherName: "—" };
 
-  const stats = dashboardData?.stats || {
-    totalAllowed: 15,
-    leavesTaken: 3,
-    pendingCount: 1,
-    available: 12,
-    approvedCount: 2,
-    rejectedCount: 0
-  };
+  const stats = dashboardData?.stats || { totalAllowed: 0, leavesTaken: 0, pendingCount: 0, available: 0, approvedCount: 0, rejectedCount: 0 };
 
   const leaves = dashboardData?.leaves || [];
   const guidelines = dashboardData?.guidelines || [

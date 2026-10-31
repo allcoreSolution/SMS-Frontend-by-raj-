@@ -8,9 +8,9 @@ import Swal from 'sweetalert2';
 import { leaveService } from '../api/leaveService';
 
 const leaveBalance = [
-  { type: 'Casual Leave', total: 12, used: 0, color: 'blue' },
-  { type: 'Medical Leave', total: 10, used: 0, color: 'green' },
-  { type: 'Earned Leave', total: 15, used: 0, color: 'indigo' },
+  { type: 'Casual Leave', total: 0, used: 0, color: 'blue' },
+  { type: 'Medical Leave', total: 0, used: 0, color: 'green' },
+  { type: 'Earned Leave', total: 0, used: 0, color: 'indigo' },
 ];
 
 const statusStyle = {
@@ -48,7 +48,7 @@ const ApplyLeave = () => {
   const fetchLeaves = async () => {
     try {
       setLoading(true);
-      const res = await leaveService.getLeaveApplications();
+      const res = await leaveService.getLeaveApplications({ applicantType: 'Staff' });
       if(res && res.success && Array.isArray(res.data)) {
         setHistory(res.data);
       } else {
@@ -150,10 +150,10 @@ const ApplyLeave = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto bg-gray-100 theme-app-bg">
+    <div className="flex-1 min-w-0 w-full max-w-full overflow-y-auto bg-gray-100 theme-app-bg">
       {/* Header */}
-      <div className="bg-white border-b border-gray-300 px-6 py-4">
-        <div className="flex items-center justify-between">
+      <div className="bg-white border-b border-gray-300 px-4 sm:px-6 py-3 sm:py-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 bg-pink-600 text-white rounded-none flex items-center justify-center shadow-sm">
               <CalendarDays className="w-5 h-5" />
@@ -172,17 +172,17 @@ const ApplyLeave = () => {
         </div>
       </div>
 
-      <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <div className="p-3 sm:p-6 max-w-7xl mx-auto space-y-4 sm:space-y-6 min-w-0 w-full max-w-full">
 
         {/* Leave Balance Cards */}
         <div>
           <h2 className="text-[13px] font-black text-gray-800 uppercase tracking-widest mb-2.5">Leave Balance — 2026–27</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {leaveBalance.map(({ type, total, used, color }) => {
               const remaining = total - used;
-              const pct = Math.round((used / total) * 100);
+              const pct = total > 0 ? Math.round((used / total) * 100) : 0;
               return (
-                <div key={type} className="bg-white border-2 border-gray-300 shadow-sm px-4 py-3 rounded-none flex flex-col justify-between">
+                <div key={type} className="bg-white border border-gray-200 shadow-sm p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-shadow">
                   <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{type}</p>
                   <div className="flex items-baseline gap-2 mb-1.5">
                      <p className={`text-3xl font-black text-${color}-600 leading-none`}>{remaining}</p>
@@ -200,27 +200,27 @@ const ApplyLeave = () => {
         </div>
 
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           {[
             { label: 'Total Applied', val: history.length, icon: FileText, color: 'text-gray-600 bg-gray-100 border-gray-300' },
             { label: 'Approved',      val: history.filter(h => h.status === 'Approved').length, icon: CheckCircle, color: 'text-green-600 bg-green-50 border-green-300' },
             { label: 'Pending Wait',       val: history.filter(h => h.status === 'Pending').length,  icon: Clock, color: 'text-yellow-600 bg-yellow-50 border-yellow-300' },
           ].map(({ label, val, icon: Icon, color }) => (
-            <div key={label} className="bg-white border-2 border-gray-300 shadow-sm p-4 rounded-none flex items-center gap-4">
-              <div className={`w-12 h-12 flex items-center justify-center flex-shrink-0 border-2 rounded-none ${color}`}>
+            <div key={label} className="bg-white border border-gray-200 shadow-sm p-2.5 sm:p-4 rounded-xl flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3.5">
+              <div className={`w-9 h-9 sm:w-11 sm:h-11 flex items-center justify-center flex-shrink-0 rounded-xl ${color}`}>
                 <Icon className="w-6 h-6" />
               </div>
               <div>
-                <p className="text-[26px] font-black text-gray-800 leading-none">{val}</p>
-                <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mt-1">{label}</p>
+                <p className="text-xl sm:text-2xl font-black text-gray-800 leading-none">{val}</p>
+                <p className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider mt-1 truncate">{label}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Leave History Table */}
-        <div className="bg-white border-2 border-gray-300 shadow-sm rounded-none">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300 flex-wrap gap-3 bg-gray-50">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl min-w-0 w-full max-w-full overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-300 gap-2.5 bg-gray-50">
             <h2 className="text-[15px] font-black text-gray-800 uppercase tracking-tight">Leave Application History</h2>
             <div className="flex items-center gap-2">
               {['All', 'Pending', 'Approved', 'Rejected'].map(s => (
@@ -231,8 +231,8 @@ const ApplyLeave = () => {
               ))}
             </div>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse border border-gray-300">
+          <div className="overflow-x-auto w-full">
+            <table className="w-full text-sm border-collapse min-w-[720px]">
               <thead>
                 <tr className="bg-gray-100 border-b border-gray-300">
                   {['#', 'Leave Type', 'From', 'To', 'Days', 'Reason', 'Applied On', 'Status', 'Actions'].map((h, i) => (
@@ -270,7 +270,17 @@ const ApplyLeave = () => {
                   );
                 })}
                 {filtered.length === 0 && !loading && (
-                  <tr><td colSpan={9} className="text-center py-12 font-bold text-gray-400 border border-gray-300 bg-gray-50">No leave applications found.</td></tr>
+                  <tr>
+                    <td colSpan={9} className="text-center py-8 bg-white">
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="w-12 h-12 rounded-2xl bg-pink-50 border border-pink-100 flex items-center justify-center text-pink-600 mb-3">
+                          <CalendarDays className="w-6 h-6" />
+                        </div>
+                        <p className="text-sm font-bold text-gray-800">No leave applications found</p>
+                        <p className="text-xs text-gray-500 mt-1">You have not submitted any leave requests yet.</p>
+                      </div>
+                    </td>
+                  </tr>
                 )}
               </tbody>
             </table>

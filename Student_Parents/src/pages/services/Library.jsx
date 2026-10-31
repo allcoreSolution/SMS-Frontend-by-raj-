@@ -108,7 +108,7 @@ export default function Library({ activeChild }) {
       setRefreshing(true);
       const res = await parentService.reserveBook({
         bookId: book._id,
-        studentName: `${libraryData?.student?.name || 'Aarav Sharma'} (${libraryData?.student?.className || 'Class I-A'})`
+        studentName: `${libraryData?.student?.name || 'Student'} (${libraryData?.student?.className || '—'})`
       });
       if (res?.success) {
         setNotification({ type: 'success', message: res.message });
@@ -135,7 +135,7 @@ export default function Library({ activeChild }) {
         title: requestForm.title,
         author: requestForm.author,
         category: requestForm.category,
-        studentName: `${libraryData?.student?.name || 'Aarav Sharma'} (${libraryData?.student?.className || 'Class I-A'})`,
+        studentName: `${libraryData?.student?.name || 'Student'} (${libraryData?.student?.className || '—'})`,
         notes: requestForm.notes
       });
       if (res?.success) {

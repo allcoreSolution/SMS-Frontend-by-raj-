@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 // Resolve current PC LAN IP for physical device connection
-const CURRENT_LAN_IP = '192.168.1.8';
+const CURRENT_LAN_IP = '192.168.1.20';
 
 // Migrate any stale cached IP (e.g. .11 or .12) in localStorage
 if (typeof window !== 'undefined' && window.localStorage) {
   try {
     const cached = localStorage.getItem('api_base_url');
-    if (cached && (cached.includes('192.168.1.11') || cached.includes('192.168.1.12'))) {
+    if (cached && (cached.includes('192.168.1.20') || cached.includes('192.168.1.20'))) {
       localStorage.setItem('api_base_url', `http://${CURRENT_LAN_IP}:5050/api`);
     }
   } catch (e) {
