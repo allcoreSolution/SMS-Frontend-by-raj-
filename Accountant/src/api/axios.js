@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const defaultHost = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'app.schoolerp' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? window.location.hostname : '192.168.1.20';
+const defaultHost = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'app.schoolerp' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? window.location.hostname : '192.168.1.5';
 
 // Migrate stale IP addresses in localStorage
 if (typeof window !== 'undefined' && window.localStorage) {
   try {
     const cachedUrl = localStorage.getItem('api_server_url') || localStorage.getItem('api_base_url');
-    if (cachedUrl && (cachedUrl.includes('192.168.1.20') || cachedUrl.includes('192.168.1.20'))) {
+    if (cachedUrl && (cachedUrl.includes('192.168.1.5') || cachedUrl.includes('192.168.1.5'))) {
       const freshUrl = `http://${defaultHost}:5050/api`;
       localStorage.setItem('api_server_url', freshUrl);
       localStorage.setItem('api_base_url', freshUrl);

@@ -4,7 +4,8 @@ import axios from 'axios';
 export const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     if (window.__ERP_API_BASE_URL__) return window.__ERP_API_BASE_URL__;
-    const override = localStorage.getItem('api_override_url');
+    if (window.__API_BASE_URL__) return window.__API_BASE_URL__;
+    const override = localStorage.getItem('api_override_url') || localStorage.getItem('api_base_url');
     if (override) return override;
   }
   return import.meta.env.VITE_API_URL || 'http://localhost:5050/api';

@@ -24,6 +24,26 @@ const Header = () => {
   const { currentLang, changeLanguage, languages, supportedLanguages, t } = useLanguage();
   const { toggleSidebar } = useSidebar();
 
+  // Dynamic School Info State
+  const [schoolInfo, setSchoolInfo] = useState(() => {
+    try {
+      const storedSchool = localStorage.getItem('school_info');
+      if (storedSchool) {
+        const parsed = JSON.parse(storedSchool);
+        if (parsed?.name) return parsed;
+      }
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        if (u.school?.name) return u.school;
+        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+      }
+      const rawSchoolName = localStorage.getItem('schoolName');
+      if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+    } catch (_) {}
+    return { name: 'School ERP', logo: null, shortName: '' };
+  });
+
   // Profile State (Teacher or Staff)
   const [profile, setProfile] = useState(() => {
     try {
@@ -131,6 +151,14 @@ const Header = () => {
         } catch (_) {}
       }
       const res = await teacherService.getProfile();
+      if (res?.data) {
+        if (res.data.school || res.data.schoolName) {
+          const resolved = res.data.school || { name: res.data.schoolName, logo: res.data.schoolLogo, shortName: res.data.schoolShortName };
+          setSchoolInfo(resolved);
+          localStorage.setItem('school_info', JSON.stringify(resolved));
+          localStorage.setItem('schoolName', resolved.name || '');
+        }
+      }
       if (res?.data?.personalInfo) {
         const info = res.data.personalInfo;
         const validName = info.fullName && info.fullName !== 'Amit Sharma' && info.fullName !== 'Faculty Member' ? info.fullName : null;
@@ -366,18 +394,31 @@ const Header = () => {
           <Menu className="w-5 h-5" />
         </button>
 
-        <span className="text-[14px] font-bold text-gray-800 tracking-tight hidden sm:block theme-text">
-          ALL CORE SOLUTION
-        </span>
+        {/* Dynamic School Name & Logo */}
+        <div className="flex items-center gap-2">
+          {schoolInfo?.logo && (
+            <img 
+              src={schoolInfo.logo} 
+              alt={schoolInfo?.name || 'School'} 
+              className="w-5 h-5 object-contain rounded"
+            />
+          )}
+          <span 
+            className="text-[13px] sm:text-[14px] font-extrabold text-gray-800 tracking-tight hidden sm:inline-block theme-text max-w-[200px] md:max-w-[280px] truncate"
+            title={schoolInfo?.name || 'School ERP'}
+          >
+            {schoolInfo?.name || 'School ERP'}
+          </span>
+        </div>
         
         {/* Command Center Button */}
         <button 
           onClick={(e) => toggle(e, 'commandCenter')}
-          className="hidden md:flex items-center gap-1.5 px-3 py-1.5 border border-orange-200 bg-orange-50/80 rounded-xl text-xs font-semibold text-orange-600 ml-2 hover:bg-orange-100 transition-colors shadow-xs cursor-pointer"
+          className="hidden md:flex items-center gap-1 px-2.5 py-1 border border-orange-200/80 bg-orange-50/70 hover:bg-orange-100/90 rounded-lg text-[11px] font-semibold text-orange-600 ml-2 transition-all shadow-2xs cursor-pointer"
         >
-          <Palette className="w-3.5 h-3.5 text-[#ff5c0a]" />
+          <Palette className="w-2.5 h-2.5 text-[#ff5c0a]" />
           <span>{t('commandCenter', 'Command Center')}</span>
-          <span className="bg-[#ff5c0a] text-white text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1">{t('themePreview', 'Preview')}</span>
+          <span className="bg-[#ff5c0a] text-white text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-wider font-bold ml-1 leading-none">{t('themePreview', 'Preview')}</span>
         </button>
       </div>
       

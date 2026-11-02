@@ -208,7 +208,8 @@ export default function LibraryDashboard({ initialTab = 'Overview' }) {
       // Add student members
       try {
         const token = localStorage.getItem('token');
-        const stRes = await fetch('http://localhost:5050/api/students?limit=25', {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+        const stRes = await fetch(`${apiUrl}/students?limit=25`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {}
         }).then(r => r.json());
         if (stRes?.data && Array.isArray(stRes.data)) {

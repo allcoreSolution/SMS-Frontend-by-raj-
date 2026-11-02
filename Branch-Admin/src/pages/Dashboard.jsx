@@ -10,6 +10,16 @@ import { branchAdminService } from '../api/branchAdminService';
 import branchLocalDb from '../api/branchLocalDb';
 import KpiCard from '../components/common/KpiCard';
 
+const cleanCurrency = (val) => {
+  if (val === null || val === undefined || val === '') return '₹0';
+  if (typeof val === 'number') {
+    return `₹${val.toLocaleString('en-IN')}`;
+  }
+  const cleanStr = String(val).replace(/[^\d.-]/g, '');
+  const num = parseFloat(cleanStr);
+  if (isNaN(num)) return String(val).replace(/Ã¢â‚¬Â|Ã¢â‚¬/g, '₹');
+  return `₹${num.toLocaleString('en-IN')}`;
+};
 
 const BranchCard = ({ branch = {} }) => {
   const name = branch.name || branch.branchName || 'Campus Branch';
@@ -234,7 +244,7 @@ const Dashboard = () => {
         />
         <KpiCard 
           title="Fee Collected (MTD)" 
-          value={cleanCurrency(branches.reduce((s, b) => s + (Number(b.collectedRaw) || 0), 0))} 
+          value={cleanCurrency(branches.reduce((s, b) => s + (Number(b.collectedRaw) || 0), 0) || stats.totalCollectedRaw || stats.totalCollected || 0)} 
           subText="Fees, Labs & Transport"
           icon={CreditCard} 
           glowColor="#f59e0b"

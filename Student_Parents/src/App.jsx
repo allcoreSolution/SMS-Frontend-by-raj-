@@ -124,11 +124,11 @@ export default function App() {
               path={path}
               element={
                 hasAuth() ? (
-                  <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
-                    <ErrorBoundary>
+                  <ErrorBoundary>
+                    <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
                       <El activeChild={activeChild} setActiveChild={setActiveChild} />
-                    </ErrorBoundary>
-                  </Layout>
+                    </Layout>
+                  </ErrorBoundary>
                 ) : (
                   <Navigate to="/login" replace />
                 )

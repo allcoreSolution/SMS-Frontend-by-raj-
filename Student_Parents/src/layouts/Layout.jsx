@@ -323,6 +323,22 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   });
 
   const [guardianProfile, setGuardianProfile] = useState(null);
+  const [schoolInfo, setSchoolInfo] = useState(() => {
+    try {
+      const stored = localStorage.getItem('portal_school_info');
+      if (stored) return JSON.parse(stored);
+      const user = localStorage.getItem('parent_user');
+      if (user) {
+        const u = JSON.parse(user);
+        if (u.school) return u.school;
+      }
+    } catch (e) {}
+    return {
+      name: 'ACS-SCHOOL',
+      shortName: 'Smart Campus',
+      logo: null
+    };
+  });
 
   const isStudent = useMemo(() => {
     if (!currentUser) return false;
@@ -424,6 +440,12 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           if (res.data.parent) {
             setGuardianProfile(res.data.parent);
           }
+          if (res.data.school) {
+            setSchoolInfo(res.data.school);
+            try {
+              localStorage.setItem('portal_school_info', JSON.stringify(res.data.school));
+            } catch (e) {}
+          }
         }
       } catch (err) {
         console.warn('Could not load dynamic portal children in Layout:', err);
@@ -448,6 +470,8 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       setActiveChild(studentSelfId);
     }
   }, [isStudent, studentSelfId, activeChild, setActiveChild]);
+
+
 
   const handleSelectLanguage = (langCode) => {
     setLanguage(langCode);
@@ -480,6 +504,23 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     }
     return childrenList.find(c => (c.id === activeChild || c._id === activeChild)) || childrenList[0] || defaultChildren[0];
   }, [isStudent, childrenList, activeChild, studentSelfId, currentUser]);
+
+  // Dynamically update school logo and name when switching students / wards
+  useEffect(() => {
+    if (current?.school) {
+      setSchoolInfo(current.school);
+      try {
+        localStorage.setItem('portal_school_info', JSON.stringify(current.school));
+      } catch (e) {}
+    } else if (current?.schoolName) {
+      setSchoolInfo(prev => ({
+        ...prev,
+        name: current.schoolName,
+        logo: current.schoolLogo || prev?.logo,
+        shortName: current.schoolShortName || prev?.shortName || 'Smart Campus'
+      }));
+    }
+  }, [current]);
   const activeLanguageObj = currentLanguageObj || LANGUAGES.find(l => l.code === currentLang) || LANGUAGES[0];
 
   return (
@@ -503,21 +544,46 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         `}
       >
 
-        {/* Logo: ACS-SCHOOL */}
-        {/* Brand Header (Static Display Emblem & Name) */}
-        <div className="flex items-center justify-between px-4 py-3.5 flex-shrink-0 border-b border-[#1e222b] select-none">
-          <div className="flex items-center gap-2.5 pointer-events-none">
-            {/* ACS Official School Logo Emblem */}
-            <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/30 border border-blue-400/30 overflow-hidden">
-              <GraduationCap className="w-5 h-5 text-white drop-shadow-sm" strokeWidth={2.4} />
-              <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-amber-400 rounded-full border-2 border-[#272b35]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-white text-[15px] tracking-wider uppercase leading-tight font-serif">
-                ACS-SCHOOL
+        {/* Dynamic School Brand Header */}
+        <div className="flex items-center justify-between px-3.5 py-3.5 flex-shrink-0 border-b border-[#1e222b] select-none">
+          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+            {/* School Logo with Image and Fallback Monogram */}
+            {schoolInfo?.logo ? (
+              <div className="relative w-8 h-8 rounded-xl bg-white p-0.5 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/20 border border-white/20 overflow-hidden">
+                <img
+                  src={getMediaUrl(schoolInfo.logo)}
+                  alt={schoolInfo.name}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="hidden w-full h-full rounded-lg bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 items-center justify-center">
+                  <GraduationCap className="w-4 h-4 text-white" strokeWidth={2.4} />
+                </div>
+              </div>
+            ) : (
+              <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/30 border border-blue-400/30 overflow-hidden">
+                <span className="font-black text-white text-xs tracking-wider uppercase font-serif">
+                  {(schoolInfo?.name || 'S').trim().charAt(0).toUpperCase()}
+                </span>
+                <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-amber-400 rounded-full border-2 border-[#272b35]" />
+              </div>
+            )}
+
+            <div className="flex flex-col min-w-0 flex-1 pr-1">
+              <span 
+                className="font-black text-white text-[13px] tracking-wide uppercase leading-tight font-serif truncate"
+                title={schoolInfo?.name || 'School ERP'}
+              >
+                {schoolInfo?.name || 'School ERP'}
               </span>
-              <span className="text-[9px] font-bold text-blue-300 tracking-widest uppercase leading-none">
-                Smart Campus
+              <span 
+                className="text-[9px] font-bold text-blue-300 tracking-wider uppercase leading-none truncate mt-0.5"
+                title={schoolInfo?.shortName || 'Smart Campus'}
+              >
+                {schoolInfo?.shortName || 'Smart Campus'}
               </span>
             </div>
           </div>
@@ -529,7 +595,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
               e.stopPropagation();
               setSideOpen(false);
             }}
-            className="lg:hidden p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer"
+            className="lg:hidden p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer shrink-0"
             title="Close Drawer"
           >
             <X className="w-5 h-5" />
@@ -814,22 +880,37 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
               <Menu className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
             </button>
             
-            <div className="flex items-center gap-1 sm:gap-2 select-none min-w-0">
-              <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg ${isStudent ? 'bg-blue-600/10 text-[#2563EB]' : 'bg-emerald-600/10 text-emerald-600'} flex items-center justify-center shrink-0 shadow-2xs group-hover:opacity-90 transition-colors`}>
-                {isStudent ? (
-                  <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
-                ) : (
-                  <Users className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
-                )}
+            <div className="flex items-center gap-1.5 sm:gap-2.5 select-none min-w-0">
+              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${isStudent ? 'bg-blue-600/10 text-[#2563EB]' : 'bg-emerald-600/10 text-emerald-600'} flex items-center justify-center shrink-0 shadow-2xs overflow-hidden border border-slate-200/50`}>
+                {schoolInfo?.logo ? (
+                  <img
+                    src={getMediaUrl(schoolInfo.logo)}
+                    alt={schoolInfo.name}
+                    className="w-full h-full object-contain p-0.5"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                      if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                ) : null}
+                <div className={`${schoolInfo?.logo ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>
+                  {isStudent ? (
+                    <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+                  ) : (
+                    <Users className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
+                  )}
+                </div>
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[65px] xs:max-w-[110px] sm:max-w-none">
-                  {isStudent 
+                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[130px] xs:max-w-[190px] sm:max-w-[320px]" title={schoolInfo?.name}>
+                  {schoolInfo?.name || (isStudent 
                     ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal')
-                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल' : 'Parent Portal')}
+                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल' : 'Parent Portal'))}
                 </span>
                 <span className={`text-[8.5px] font-bold tracking-widest uppercase hidden sm:block ${isStudent ? 'text-blue-600' : 'text-emerald-600'}`}>
-                  {isStudent ? (currentLang === 'hi' ? 'स्मार्ट कैम्पस' : 'Smart Campus') : (currentLang === 'hi' ? 'पैरेंट डेस्क' : 'Parent Desk')}
+                  {isStudent 
+                    ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल • स्मार्ट कैम्पस' : `${schoolInfo?.shortName || 'Smart Campus'} • Student Portal`) 
+                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल • पैरेंट डेस्क' : `${schoolInfo?.shortName || 'Smart Campus'} • Parent Portal`)}
                 </span>
               </div>
             </div>

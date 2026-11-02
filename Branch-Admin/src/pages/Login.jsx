@@ -6,6 +6,8 @@ import {
 import Swal from 'sweetalert2';
 import { authService } from '../api/authService';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState('admin@branch.com');
   const [password, setPassword] = useState('admin@123');
@@ -61,7 +63,7 @@ const Login = ({ onLogin }) => {
           didOpen: () => Swal.showLoading()
         });
 
-        const res = await fetch('http://localhost:5050/api/auth/forgot-password', {
+        const res = await fetch(`${API_URL}/auth/forgot-password`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: resetEmail })
@@ -101,7 +103,7 @@ const Login = ({ onLogin }) => {
               didOpen: () => Swal.showLoading()
             });
 
-            const resetRes = await fetch('http://localhost:5050/api/auth/reset-password', {
+            const resetRes = await fetch(`${API_URL}/auth/reset-password`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ 

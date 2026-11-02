@@ -405,7 +405,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             <div className="flex items-center gap-2.5 sm:gap-3.5 relative z-10">
               {/* Avatar with Online Status Dot (NEVER CLIPPED) */}
               <div className="relative shrink-0">
-                <div className="w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
+                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
                   <img 
                     src={getMediaUrl(student.photo) || '/kabir_singh.png'} 
                     alt={student.name}

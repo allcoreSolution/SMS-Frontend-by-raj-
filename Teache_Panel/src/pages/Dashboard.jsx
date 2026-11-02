@@ -253,6 +253,26 @@ const TeacherDashboardView = () => {
     return 'Faculty Member';
   });
 
+  // Dynamic School Name State
+  const [schoolName, setSchoolName] = useState(() => {
+    try {
+      const storedSchool = localStorage.getItem('school_info');
+      if (storedSchool) {
+        const parsed = JSON.parse(storedSchool);
+        if (parsed?.name) return parsed.name;
+      }
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const u = JSON.parse(storedUser);
+        if (u.schoolName) return u.schoolName;
+        if (u.school?.name) return u.school.name;
+      }
+      const rawSchool = localStorage.getItem('schoolName');
+      if (rawSchool) return rawSchool;
+    } catch (_) {}
+    return 'School ERP';
+  });
+
   // Real Backend Data State
   const [stats, setStats] = useState({
     students: 0,
@@ -297,6 +317,14 @@ const TeacherDashboardView = () => {
       const res = await teacherService.getDashboardData();
       if (res && res.success && res.data) {
         const d = res.data;
+        if (d.schoolName || d.school?.name) {
+          const sName = d.schoolName || d.school.name;
+          setSchoolName(sName);
+          localStorage.setItem('schoolName', sName);
+          if (d.school) {
+            localStorage.setItem('school_info', JSON.stringify(d.school));
+          }
+        }
         if (d.stats) {
           setStats({
             students: d.stats.students ?? 0,
@@ -385,7 +413,7 @@ const TeacherDashboardView = () => {
             {/* Header */}
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">{getTimeGreeting()}, {teacherName} 👋</h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{t("Here's what's happening at ALL CORE SOLUTION today — ", "Here's what's happening at ALL CORE SOLUTION today — ")} {new Date().toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{t("Here's what's happening at", "Here's what's happening at")} <span className="font-semibold text-gray-700">{schoolName}</span> {t("today —", "today —")} {new Date().toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
             </div>
             
             {/* Layout Pattern 1: Analytics / Reversed Hub displays Hub at top */}
