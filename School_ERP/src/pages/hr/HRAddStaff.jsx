@@ -402,6 +402,12 @@ export default function HRAddStaff() {
       // 2. Prepare Staff Payload using FormData for multipart photo upload
       const dataPayload = new FormData();
       Object.keys(formData).forEach(key => {
+        if (key === 'reportingManager') {
+          if (formData[key] && typeof formData[key] === 'string' && formData[key].trim() !== '') {
+            dataPayload.append(key, formData[key].trim());
+          }
+          return;
+        }
         if (['bankDetails', 'statutoryIds', 'socialMedia', 'additionalInfo'].includes(key)) {
           dataPayload.append(key, JSON.stringify(formData[key]));
         } else if (formData[key] !== undefined && formData[key] !== null) {
