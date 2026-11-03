@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { ExternalLink, Bot, Sparkles } from 'lucide-react';
 
 export default function AIFeature() {
@@ -20,7 +21,7 @@ export default function AIFeature() {
 
           <div className="mb-6">
             <a
-              href="http://localhost:5175/ai-assistant"
+              href={`${PORTAL_URLS.student}/ai-assistant`}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 text-gray-900 font-black text-xs uppercase tracking-wider border-[2px] border-gray-900 shadow-[3px_3px_0_0_#111827] hover:bg-amber-300 transition-colors"
@@ -59,7 +60,7 @@ export default function AIFeature() {
           <div className="absolute inset-0 bg-gray-900 translate-x-3 translate-y-3 transition-transform duration-300 group-hover:translate-x-5 group-hover:translate-y-5" />
           
           <a
-            href="http://localhost:5175/ai-assistant"
+            href={`${PORTAL_URLS.student}/ai-assistant`}
             target="_blank"
             rel="noreferrer"
             className="relative bg-white border-[2px] border-gray-900 p-2 sm:p-4 flex flex-col h-[400px] sm:h-[450px] cursor-pointer block"

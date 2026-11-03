@@ -36,25 +36,15 @@ const FeeTypes = () => {
   const fetchTypes = async () => {
     try {
       setLoading(true);
-      let res = await accountantService.getFeeTypes();
-      if (res.success && Array.isArray(res.data)) {
-        if (res.data.length === 0) {
-          const defaultTypes = [
-            { feeType: 'Tuition Fee', feeCode: 'TF', description: 'Monthly academic tuition charges' },
-            { feeType: 'Transport Fee', feeCode: 'TR', description: 'School bus transport facility' },
-            { feeType: 'Library Fee', feeCode: 'LB', description: 'Annual library books & digital access' },
-            { feeType: 'Exam & Assessment Fee', feeCode: 'EX', description: 'Term exam stationery & assessment evaluation' },
-            { feeType: 'Science & Computer Lab Fee', feeCode: 'LAB', description: 'Practical lab materials & equipment usage' },
-          ];
-          for (const item of defaultTypes) {
-            await accountantService.addFeeType(item);
-          }
-          res = await accountantService.getFeeTypes();
-        }
+      const res = await accountantService.getFeeTypes();
+      if (res && res.success && Array.isArray(res.data)) {
         setTypesData(res.data || []);
+      } else {
+        setTypesData([]);
       }
     } catch (error) {
       console.error('Error fetching fee types:', error);
+      setTypesData([]);
     } finally {
       setLoading(false);
     }

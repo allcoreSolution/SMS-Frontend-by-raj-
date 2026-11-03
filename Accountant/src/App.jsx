@@ -34,7 +34,7 @@ const AuthGate = () => {
 
 function App() {
   return (
-    <Router>
+    <Router basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* Root & Android WebView launch paths */}
         <Route path="/" element={<AuthGate />} />

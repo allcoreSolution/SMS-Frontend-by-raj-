@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { useModal } from '../../context/ModalContext';
 import { ExternalLink, Sparkles, Play } from 'lucide-react';
 
@@ -84,11 +85,11 @@ export default function Hero() {
            
            {/* Clickable Web Panel Preview */}
            <a 
-              href="http://localhost:5176" 
+              href={PORTAL_URLS.admin} 
               target="_blank" 
               rel="noreferrer"
               className="relative w-full h-full bg-slate-50 border-2 border-gray-900 p-3 lg:p-4 flex flex-col overflow-hidden cursor-pointer"
-              title="Click to launch School Admin ERP on http://localhost:5176"
+              title="Click to launch School Admin ERP"
            >
               <div className="w-full flex items-center justify-between pb-3 mb-3 border-b-2 border-gray-900">
                  <div className="flex items-center gap-1.5">
@@ -151,11 +152,11 @@ export default function Hero() {
            {/* Floating Badge for Teacher Panel & Teacher APK */}
            <div className="absolute -top-4 -right-2 sm:-right-4 z-20 flex flex-col gap-1">
              <a
-                href="http://localhost:5177"
+                href={PORTAL_URLS.teacher}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] px-3 py-1.5 flex items-center gap-2 hover:bg-amber-100 transition-all hover:scale-105 cursor-pointer"
-                title="Click to launch Teacher Panel on http://localhost:5177"
+                title="Click to launch Teacher Panel"
              >
                 <span className="text-base">👩‍🏫</span>
                 <div className="text-left">
@@ -176,11 +177,11 @@ export default function Hero() {
            {/* Floating Badge for Accountant Panel :5178 & Driver APK */}
            <div className="absolute -bottom-4 right-4 sm:right-6 z-20 flex flex-col gap-1">
              <a
-                href="http://localhost:5178"
+                href={PORTAL_URLS.accountant}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-white border-2 border-gray-900 shadow-[3px_3px_0_0_#111827] px-3 py-1.5 flex items-center gap-2 hover:bg-teal-100 transition-all hover:scale-105 cursor-pointer"
-                title="Launch Accountant Panel on http://localhost:5178"
+                title="Launch Accountant Panel"
              >
                 <span className="text-base">💼</span>
                 <div className="text-left">

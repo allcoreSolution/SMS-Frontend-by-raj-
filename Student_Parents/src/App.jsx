@@ -113,7 +113,7 @@ export default function App() {
 
   return (
     <LanguageProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           <Route path="/" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
           <Route path="/index.html" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />

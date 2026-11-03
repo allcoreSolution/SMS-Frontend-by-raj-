@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { useModal } from '../../context/ModalContext';
 import { ExternalLink, Play, Radio, Sparkles } from 'lucide-react';
 
@@ -13,7 +14,7 @@ export default function Ecosystem() {
       icon: '👑', 
       tag: 'Port 5179 • SuperAdmin', 
       actionType: 'url',
-      actionTarget: 'http://localhost:5179',
+      actionTarget: PORTAL_URLS.superAdmin,
       btnText: 'Open SuperAdmin :5179 ↗'
     },
     { 
@@ -23,7 +24,7 @@ export default function Ecosystem() {
       icon: '🏫', 
       tag: 'Port 5176 • School_ERP', 
       actionType: 'url',
-      actionTarget: 'http://localhost:5176',
+      actionTarget: PORTAL_URLS.admin,
       btnText: 'Open School ERP :5176 ↗'
     },
     { 
@@ -53,7 +54,7 @@ export default function Ecosystem() {
       icon: '💰', 
       tag: 'Port 5178 • Accountant', 
       actionType: 'url',
-      actionTarget: 'http://localhost:5178',
+      actionTarget: PORTAL_URLS.accountant,
       btnText: 'Open Accountant Panel :5178 ↗'
     },
     { 

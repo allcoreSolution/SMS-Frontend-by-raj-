@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { useModal } from '../../context/ModalContext';
 
 export default function Deliverables() {
@@ -10,14 +11,14 @@ export default function Deliverables() {
       sub: 'REACT 18 • PORT 5179', 
       desc: 'Centralized mega-dashboard to onboard unlimited schools, manage platform licenses, track global analytics, and handle super-admin communications.', 
       icon: '👑',
-      target: 'http://localhost:5179'
+      target: PORTAL_URLS.superAdmin
     },
     { 
       title: 'School ERP Web Panel', 
       sub: 'REACT 18 • PORT 5176', 
       desc: 'The core administrative portal assigned to each school tenant. Manages HR, Academics, Admissions, and 30+ sophisticated sub-modules out of the box.', 
       icon: '🏫',
-      target: 'http://localhost:5176'
+      target: PORTAL_URLS.admin
     },
     { 
       title: 'Staff & Teacher App (Android APK)', 
@@ -32,7 +33,7 @@ export default function Deliverables() {
       sub: 'REACT 18 • PORT 5178', 
       desc: 'Specialized financial web portal for collecting fees, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
       icon: '💰',
-      target: 'http://localhost:5178',
+      target: PORTAL_URLS.accountant,
       isDownload: false
     },
     { 

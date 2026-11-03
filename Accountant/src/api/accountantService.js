@@ -392,7 +392,7 @@ export const accountantService = {
       days,
       halfDay: Boolean(data.halfDay),
       reason: data.reason || '',
-      applicantName: data.applicantName || 'Rajesh Kumar (Accountant)',
+      applicantName: data.applicantName || 'Accountant',
       status: data.status || 'Pending',
       appliedOn: data.appliedOn || new Date().toISOString().slice(0, 10),
       contact: data.contact || '',
@@ -453,7 +453,7 @@ export const accountantService = {
     const remaining = data.remaining !== undefined && data.remaining !== '' ? Number(data.remaining) : Math.max(0, amount - paidAmount);
     const item = localDb.create('loans', {
       type: data.type || 'Personal Loan',
-      applicantName: data.applicantName || 'Rajesh Kumar (Accountant)',
+      applicantName: data.applicantName || 'Accountant',
       amount,
       tenureMonths,
       duration: `${tenureMonths} Months`,

@@ -14,19 +14,19 @@ import { accountantService } from '../api/accountantService';
 import Swal from 'sweetalert2';
 
 const defaultProfileData = {
-  name: 'Rajesh Kumar',
-  staffId: 'STF-003',
+  name: 'Accountant',
+  staffId: '',
   role: 'Accountant',
   designation: 'Senior Accountant & Ledger Specialist',
   department: 'Finance & Accounts',
   basicSalary: '35000',
   dateOfJoining: '2020-06-15',
-  email: 'accountant@allcoresolution.com',
-  phone: '9876501234',
+  email: '',
+  phone: '',
   address: '12, Green Park Avenue, South Extension, New Delhi - 110016',
   permanentAddress: 'H.No 45, Civil Lines, Jaipur, Rajasthan - 302006',
   bio: 'Experienced school accountant with 6+ years managing institutional budgets, automated fee billing, audit reconciliations, and staff payrolls.',
-  avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+  avatar: '',
   gender: 'Male',
   dob: '1990-08-14',
   maritalStatus: 'Married',
@@ -156,7 +156,7 @@ const Profile = () => {
         'ORG:ALL CORE SOLUTION;Finance',
         `TEL;TYPE=WORK,VOICE:${profile.phone || ''}`,
         `EMAIL:${profile.email || ''}`,
-        `NOTE:Staff ID: ${profile.staffId || 'STF-003'} | Role: ${profile.role || ''} | Dept: ${profile.department || ''}`,
+        `NOTE:Staff ID: ${profile.staffId || ''} | Role: ${profile.role || ''} | Dept: ${profile.department || ''}`,
         'END:VCARD'
       ].join('\n');
     }
@@ -164,7 +164,7 @@ const Profile = () => {
     return [
       `--- ALL CORE SOLUTION STAFF VERIFICATION ---`,
       `Name: ${profile.name || 'Staff Member'}`,
-      `Staff ID: ${profile.staffId || 'STF-003'}`,
+      `Staff ID: ${profile.staffId || ''}`,
       `Role: ${profile.role || 'Accountant'}`,
       `Designation: ${profile.designation || 'Staff'}`,
       `Department: ${profile.department || 'Finance'}`,
@@ -181,7 +181,7 @@ const Profile = () => {
 
   // Render Barcode
   useEffect(() => {
-    const codeVal = (profile.staffId || 'STF-003').trim();
+    const codeVal = (profile.staffId || '').trim();
 
     if (barcodeSvgRef.current && codeVal) {
       try {
@@ -293,7 +293,7 @@ const Profile = () => {
   const handleDownloadBarcode = () => {
     const canvas = document.createElement('canvas');
     try {
-      JsBarcode(canvas, profile.staffId || 'STF-003', {
+      JsBarcode(canvas, profile.staffId || '', {
         format: 'CODE128',
         width: 2.5,
         height: 70,

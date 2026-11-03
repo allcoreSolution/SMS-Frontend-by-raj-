@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { Link } from 'react-router-dom';
 import { useModal } from '../../context/ModalContext';
 import { ExternalLink, Phone, Mail, Shield, Sparkles, Download } from 'lucide-react';
@@ -93,19 +94,19 @@ export default function FooterLanding() {
             {/* Live Dedicated Panels Links */}
             <div className="flex flex-col gap-2.5">
                <h4 className="text-amber-400 font-black uppercase tracking-widest text-xs mb-1">Live Dedicated Panels</h4>
-               <a href="http://localhost:5177" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-amber-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.teacher} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-amber-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>Teacher & Staff Panel (:5177)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="http://localhost:5178" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.accountant} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>Accountant & Fee Panel (:5178)</span>
                  <ExternalLink className="w-3 h-3 text-emerald-400" />
                </a>
-               <a href="http://localhost:5176" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.admin} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>School Admin ERP (:5176)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
-               <a href="http://localhost:5175" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.student} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>Student & Parent Portal (:5175)</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
@@ -121,11 +122,11 @@ export default function FooterLanding() {
                  <span>Download Driver APK (Android)</span>
                  <Download className="w-3 h-3 text-emerald-400" />
                </a>
-               <a href="http://localhost:5179" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.superAdmin} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>SuperAdmin SaaS (:5179)</span>
                  <ExternalLink className="w-3 h-3 text-blue-400" />
                </a>
-               <a href="http://localhost:5174" target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
+               <a href={PORTAL_URLS.branch} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
                  <span>Branch Admin Network (:5174)</span>
                  <ExternalLink className="w-3 h-3 text-purple-400" />
                </a>

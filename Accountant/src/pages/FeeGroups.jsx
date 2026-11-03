@@ -35,78 +35,18 @@ const FeeGroups = () => {
   const [form, setForm] = useState({ name: '', amount: '', description: '' });
   const [editForm, setEditForm] = useState({ id: '', name: '', amount: '', description: '' });
 
-  const defaultSeed = [
-    { 
-      id: 'fg1', 
-      _id: 'fg1',
-      name: 'Class 1 Fees', 
-      code: 'C1', 
-      description: 'Fee structure for Class 1 Primary Section', 
-      amount: 15000, 
-      total: 15000, 
-      details: [
-        { name: 'Tuition Fee', amount: 10500, due: '10th of Month', demand: 'Monthly' },
-        { name: 'Activity / Dev Fee', amount: 4500, due: 'Term End', demand: 'Quarterly' }
-      ] 
-    },
-    { 
-      id: 'fg2', 
-      _id: 'fg2',
-      name: 'Class 2 Fees', 
-      code: 'C2', 
-      description: 'Fee structure for Class 2 Primary Section', 
-      amount: 16000, 
-      total: 16000, 
-      details: [
-        { name: 'Tuition Fee', amount: 11000, due: '10th of Month', demand: 'Monthly' },
-        { name: 'Activity & Lab Fee', amount: 5000, due: 'Term End', demand: 'Quarterly' }
-      ] 
-    },
-    { 
-      id: 'fg3', 
-      _id: 'fg3',
-      name: 'Class 10 Fees', 
-      code: 'C10', 
-      description: 'Board Exam & Secondary Academic Fee Structure', 
-      amount: 25000, 
-      total: 25000, 
-      details: [
-        { name: 'Tuition Fee', amount: 18000, due: '10th of Month', demand: 'Monthly' },
-        { name: 'Science Lab & Board Exam Fee', amount: 7000, due: 'Term End', demand: 'Half Yearly' }
-      ] 
-    },
-    { 
-      id: 'fg4', 
-      _id: 'fg4',
-      name: 'Transport & Bus Fee', 
-      code: 'BUS', 
-      description: 'Standard City Route School Bus Transportation Package', 
-      amount: 12000, 
-      total: 12000, 
-      details: [
-        { name: 'Transport Route Fee', amount: 12000, due: 'Term Start', demand: 'Quarterly' }
-      ] 
-    },
-  ];
-
   const fetchGroups = async () => {
     try {
       setLoading(true);
       const res = await accountantService.getFeeGroups();
-      if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+      if (res && res.success && Array.isArray(res.data)) {
         setGroupsData(res.data);
       } else {
-        // Fallback default groups so data is never empty
-        setGroupsData(defaultSeed);
-        try {
-          for (const item of defaultSeed) {
-            await accountantService.addFeeGroup(item);
-          }
-        } catch (_) {}
+        setGroupsData([]);
       }
     } catch (error) {
       console.error('Error fetching fee groups:', error);
-      setGroupsData(defaultSeed);
+      setGroupsData([]);
     } finally {
       setLoading(false);
     }

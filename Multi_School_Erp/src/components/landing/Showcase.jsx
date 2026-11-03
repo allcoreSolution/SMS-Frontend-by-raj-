@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { ExternalLink, CheckCircle, Sparkles, Download } from 'lucide-react';
 
 export default function Showcase() {
@@ -8,7 +9,7 @@ export default function Showcase() {
       port: ':5176',
       badge: 'Admin ERP',
       badgeColor: 'bg-amber-400 text-gray-900',
-      url: 'http://localhost:5176',
+      url: PORTAL_URLS.admin,
       desc: 'Central school administration with Student Admissions, HR Staff Directory, Dynamic Datesheets, and QR Gate ingress.',
       stats: [
         { label: 'Campus Status', val: 'Active • 1,485 Enrolled' },
@@ -36,7 +37,7 @@ export default function Showcase() {
       port: ':5178',
       badge: 'Accountant Panel',
       badgeColor: 'bg-teal-400 text-gray-900',
-      url: 'http://localhost:5178',
+      url: PORTAL_URLS.accountant,
       isDownload: false,
       desc: 'Specialized finance web portal: Instant Fee Invoicing, Defaulter reminders, Fee Group allocation, Income & Expense vouchers, and Cash Ledgers.',
       stats: [

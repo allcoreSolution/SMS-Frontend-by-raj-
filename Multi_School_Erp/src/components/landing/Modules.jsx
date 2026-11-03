@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { useModal } from '../../context/ModalContext';
 import { ExternalLink } from 'lucide-react';
 
@@ -6,45 +7,45 @@ export default function Modules() {
   const { openModal } = useModal();
 
   const modules = [
-    { title: 'Student Information', label: 'CORE', type: 'core', icon: '👤', url: 'http://localhost:5176' },
-    { title: 'Academics', label: 'CORE', type: 'core', icon: '📚', url: 'http://localhost:5176' },
-    { title: 'Fees Collection', label: 'CORE', type: 'core', icon: '💰', url: 'http://localhost:5178/fees/collect' },
-    { title: 'Human Resource', label: 'CORE', type: 'core', icon: '👥', url: 'http://localhost:5176/hr/staff-directory' },
-    { title: 'Offline Exams / Marks Entry', label: 'CORE', type: 'core', icon: '📝', url: 'http://localhost:5177/enter-marks' },
-    { title: 'Certificates', label: 'CORE', type: 'core', icon: '📜', url: 'http://localhost:5176' },
-    { title: 'ID Card Designer', label: 'CORE', type: 'core', icon: '🪪', url: 'http://localhost:5176' },
+    { title: 'Student Information', label: 'CORE', type: 'core', icon: '👤', url: PORTAL_URLS.admin },
+    { title: 'Academics', label: 'CORE', type: 'core', icon: '📚', url: PORTAL_URLS.admin },
+    { title: 'Fees Collection', label: 'CORE', type: 'core', icon: '💰', url: `${PORTAL_URLS.accountant}/collect-fees` },
+    { title: 'Human Resource', label: 'CORE', type: 'core', icon: '👥', url: `${PORTAL_URLS.admin}/hr/staff-directory` },
+    { title: 'Offline Exams / Marks Entry', label: 'CORE', type: 'core', icon: '📝', url: `${PORTAL_URLS.teacher}/enter-marks` },
+    { title: 'Certificates', label: 'CORE', type: 'core', icon: '📜', url: PORTAL_URLS.admin },
+    { title: 'ID Card Designer', label: 'CORE', type: 'core', icon: '🪪', url: PORTAL_URLS.admin },
     
     { title: 'CCTV Live View', label: 'NEW', type: 'new', icon: '📹', modal: 'hardware' },
-    { title: 'Parent–Teacher Chat', label: 'NEW', type: 'new', icon: '💬', url: 'http://localhost:5175/whatsapp' },
-    { title: 'Surveys & Feedback', label: 'NEW', type: 'new', icon: '📊', url: 'http://localhost:5175/notice-board' },
-    { title: 'Engagement & Creatives', label: 'NEW', type: 'new', icon: '🎨', url: 'http://localhost:5174/templates' },
-    { title: 'Compliance & Governance', label: 'NEW', type: 'new', icon: '🛡️', url: 'http://localhost:5174/reports/login-logs' },
-    { title: 'Online Exams Pro (CBT)', label: 'NEW', type: 'new', icon: '💻', url: 'http://localhost:5175/online-exams' },
-    { title: 'Admission CRM', label: 'NEW', type: 'new', icon: '🎯', url: 'http://localhost:5176' },
-    { title: 'School Website Builder', label: 'NEW', type: 'new', icon: '🌐', url: 'http://localhost:5174/templates' },
-    { title: 'Live Classes', label: 'NEW', type: 'new', icon: '🎥', url: 'http://localhost:5175/live-classes' },
+    { title: 'Parent–Teacher Chat', label: 'NEW', type: 'new', icon: '💬', url: `${PORTAL_URLS.student}/whatsapp` },
+    { title: 'Surveys & Feedback', label: 'NEW', type: 'new', icon: '📊', url: `${PORTAL_URLS.student}/notice-board` },
+    { title: 'Engagement & Creatives', label: 'NEW', type: 'new', icon: '🎨', url: `${PORTAL_URLS.branch}/templates` },
+    { title: 'Compliance & Governance', label: 'NEW', type: 'new', icon: '🛡️', url: `${PORTAL_URLS.branch}/reports/login-logs` },
+    { title: 'Online Exams Pro (CBT)', label: 'NEW', type: 'new', icon: '💻', url: `${PORTAL_URLS.student}/online-exams` },
+    { title: 'Admission CRM', label: 'NEW', type: 'new', icon: '🎯', url: PORTAL_URLS.admin },
+    { title: 'School Website Builder', label: 'NEW', type: 'new', icon: '🌐', url: `${PORTAL_URLS.branch}/templates` },
+    { title: 'Live Classes', label: 'NEW', type: 'new', icon: '🎥', url: `${PORTAL_URLS.student}/live-classes` },
     { title: 'Biometric 2-Way Sync', label: 'NEW', type: 'new', icon: '🖐️', modal: 'hardware' },
     
-    { title: 'Homework & Classwork', type: 'standard', icon: '✏️', url: 'http://localhost:5177/classwork' },
-    { title: 'Library Management', type: 'standard', icon: '📖', url: 'http://localhost:5175/library' },
-    { title: 'Transport', type: 'standard', icon: '🚌', url: 'http://localhost:5175/transport' },
-    { title: 'Hostel', type: 'standard', icon: '🏠', url: 'http://localhost:5175/hostel' },
-    { title: 'Inventory', type: 'standard', icon: '📦', url: 'http://localhost:5178/accounts/expense' },
-    { title: 'Asset Management', type: 'standard', icon: '🖨️', url: 'http://localhost:5178/accounts/expense' },
-    { title: 'AI Assistant', type: 'standard', icon: '🤖', url: 'http://localhost:5175/ai-assistant' },
-    { title: 'Knowledge Base', type: 'standard', icon: '🧠', url: 'http://localhost:5175/study-center' },
-    { title: 'Study Center', type: 'standard', icon: '🎓', url: 'http://localhost:5175/study-center' },
-    { title: 'Accounts & Finance', type: 'standard', icon: '📈', url: 'http://localhost:5178/accounts/dashboard' },
-    { title: 'Front Office', type: 'standard', icon: '🏦', url: 'http://localhost:5176' },
-    { title: 'Communications', type: 'standard', icon: '📧', url: 'http://localhost:5175/sms' },
-    { title: 'Teacher Leave Management', type: 'standard', icon: '📋', url: 'http://localhost:5177/leave' },
-    { title: 'Health Records', type: 'standard', icon: '🩺', url: 'http://localhost:5175/health-records' },
+    { title: 'Homework & Classwork', type: 'standard', icon: '✏️', url: `${PORTAL_URLS.teacher}/classwork` },
+    { title: 'Library Management', type: 'standard', icon: '📖', url: `${PORTAL_URLS.student}/library` },
+    { title: 'Transport', type: 'standard', icon: '🚌', url: `${PORTAL_URLS.student}/transport` },
+    { title: 'Hostel', type: 'standard', icon: '🏠', url: `${PORTAL_URLS.student}/hostel` },
+    { title: 'Inventory', type: 'standard', icon: '📦', url: `${PORTAL_URLS.accountant}/accounts/expense` },
+    { title: 'Asset Management', type: 'standard', icon: '🖨️', url: `${PORTAL_URLS.accountant}/accounts/expense` },
+    { title: 'AI Assistant', type: 'standard', icon: '🤖', url: `${PORTAL_URLS.student}/ai-assistant` },
+    { title: 'Knowledge Base', type: 'standard', icon: '🧠', url: `${PORTAL_URLS.student}/study-center` },
+    { title: 'Study Center', type: 'standard', icon: '🎓', url: `${PORTAL_URLS.student}/study-center` },
+    { title: 'Accounts & Finance', type: 'standard', icon: '📈', url: `${PORTAL_URLS.accountant}/accounts/dashboard` },
+    { title: 'Front Office', type: 'standard', icon: '🏦', url: PORTAL_URLS.admin },
+    { title: 'Communications', type: 'standard', icon: '📧', url: `${PORTAL_URLS.student}/sms` },
+    { title: 'Teacher Leave Management', type: 'standard', icon: '📋', url: `${PORTAL_URLS.teacher}/leave` },
+    { title: 'Health Records', type: 'standard', icon: '🩺', url: `${PORTAL_URLS.student}/health-records` },
     { title: 'Apps Center', type: 'standard', icon: '📱', modal: 'portals' },
-    { title: 'Parent-Teacher Meetings', type: 'standard', icon: '🤝', url: 'http://localhost:5177/ptm' },
-    { title: 'Lesson Planner', type: 'standard', icon: '📐', url: 'http://localhost:5177/lesson-planner' },
-    { title: 'Digital Evaluation', type: 'standard', icon: '✅', url: 'http://localhost:5177/online-exams' },
-    { title: 'QR Code Attendance', type: 'standard', icon: '📲', url: 'http://localhost:5177/student-attendance' },
-    { title: 'Assessment & Marks', type: 'standard', icon: '📊', url: 'http://localhost:5177/enter-marks' }
+    { title: 'Parent-Teacher Meetings', type: 'standard', icon: '🤝', url: `${PORTAL_URLS.teacher}/ptm` },
+    { title: 'Lesson Planner', type: 'standard', icon: '📐', url: `${PORTAL_URLS.teacher}/lesson-planner` },
+    { title: 'Digital Evaluation', type: 'standard', icon: '✅', url: `${PORTAL_URLS.teacher}/online-exams` },
+    { title: 'QR Code Attendance', type: 'standard', icon: '📲', url: `${PORTAL_URLS.teacher}/student-attendance` },
+    { title: 'Assessment & Marks', type: 'standard', icon: '📊', url: `${PORTAL_URLS.teacher}/enter-marks` }
   ];
 
   const handleModuleClick = (mod) => {

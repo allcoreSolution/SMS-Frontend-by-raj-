@@ -36,7 +36,7 @@ const Loans = () => {
   // Form states
   const [applyForm, setApplyForm] = useState({
     type: 'Personal Loan',
-    applicantName: 'Rajesh Kumar (Accountant)',
+    applicantName: 'Accountant',
     amount: '',
     duration: '12',
     date: new Date().toISOString().split('T')[0],
@@ -143,7 +143,7 @@ const Loans = () => {
         setShowApplyModal(false);
         setApplyForm({
           type: 'Personal Loan',
-          applicantName: 'Rajesh Kumar (Accountant)',
+          applicantName: 'Accountant',
           amount: '',
           duration: '12',
           date: new Date().toISOString().split('T')[0],

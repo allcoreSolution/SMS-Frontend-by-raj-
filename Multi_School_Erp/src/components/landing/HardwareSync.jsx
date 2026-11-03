@@ -1,4 +1,5 @@
 import React from 'react';
+import { PORTAL_URLS } from '../../config/portals';
 import { useModal } from '../../context/ModalContext';
 import { Cpu, Terminal, ExternalLink, Zap } from 'lucide-react';
 
@@ -97,7 +98,7 @@ export default function HardwareSync() {
             </button>
 
             <a
-              href="http://localhost:5175/school-visit"
+              href={`${PORTAL_URLS.student}/school-visit`}
               target="_blank"
               rel="noreferrer"
               className="px-4 py-2.5 bg-white text-gray-800 font-bold text-xs uppercase tracking-wider border-[2px] border-gray-900 hover:bg-gray-100 transition-colors flex items-center gap-1.5"

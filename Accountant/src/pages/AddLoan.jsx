@@ -8,7 +8,7 @@ const AddLoan = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     type: 'Personal Loan',
-    applicantName: 'Rajesh Kumar (Accountant)',
+    applicantName: 'Accountant',
     amount: '',
     duration: '12',
     date: new Date().toISOString().split('T')[0],

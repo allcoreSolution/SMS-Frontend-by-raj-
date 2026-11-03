@@ -6,8 +6,8 @@ import { authService } from '../api/authService';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState('accountant@allcoresolution.com');
-  const [password, setPassword] = useState('admin@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -246,13 +246,7 @@ const Login = () => {
             >
               {loading ? 'Authenticating...' : <><span className="mr-1">Sign In to Dashboard</span> <LogIn className="w-[18px] h-[18px]" /></>}
             </button>
-            <div className="mt-5 bg-blue-50 border border-blue-200 rounded-[3px] p-3 text-center">
-              <p className="text-[11px] font-bold text-blue-800 mb-1 uppercase tracking-wider">Demo Credentials</p>
-              <div className="flex justify-center items-center gap-4 text-[13px] text-blue-700 font-mono font-semibold">
-                <span>Email: accountant@allcoresolution.com</span>
-                <span>Pass: admin@123</span>
-              </div>
-            </div>
+            
           </form>
 
           <div className="mt-6 text-center">

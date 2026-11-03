@@ -7,8 +7,9 @@ import {
   Briefcase, DollarSign, BookOpen, GraduationCap, LayoutDashboard, Download
 } from 'lucide-react';
 import axios from 'axios';
+import { PORTAL_URLS } from '../config/portals';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+const API_BASE = PORTAL_URLS.api;
 
 export default function PortalModal() {
   const { modalState, closeModal, openModal } = useModal();
@@ -256,7 +257,7 @@ export default function PortalModal() {
 
           <div className="hidden md:flex items-center gap-2 text-[11px] font-bold text-gray-500">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>API: http://localhost:5050</span>
+            <span>API: {PORTAL_URLS.api}</span>
           </div>
         </div>
 
@@ -316,7 +317,7 @@ export default function PortalModal() {
                       <span>Download Teacher APK (Android) ⬇</span>
                     </a>
                     <a 
-                      href="http://localhost:5177" 
+                      href={PORTAL_URLS.teacher} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-indigo-50 text-indigo-900 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-indigo-900 hover:bg-indigo-100 transition-colors flex items-center justify-center gap-1 shadow-[1px_1px_0_0_#111827]"
@@ -325,13 +326,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5177/student-attendance" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.teacher}/student-attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Attendance ↗
                       </a>
-                      <a href="http://localhost:5177/enter-marks" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.teacher}/enter-marks`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Marks Entry ↗
                       </a>
-                      <a href="http://localhost:5177/leave" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.teacher}/leave`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Leave Apply ↗
                       </a>
                     </div>
@@ -361,7 +362,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5178" 
+                      href={PORTAL_URLS.accountant} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-teal-700 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -370,13 +371,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5178/accounts/dashboard" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.accountant}/accounts/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Dashboard ↗
                       </a>
-                      <a href="http://localhost:5178/collect-fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.accountant}/collect-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Collect Fees ↗
                       </a>
-                      <a href="http://localhost:5178/search-due-fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.accountant}/search-due-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Due Fees ↗
                       </a>
                     </div>
@@ -406,7 +407,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5176" 
+                      href={PORTAL_URLS.admin} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-blue-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-blue-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -415,13 +416,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5176/finance/dashboard" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.admin}/finance/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Finance ↗
                       </a>
-                      <a href="http://localhost:5176/hr/dashboard" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.admin}/hr/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         HR Portal ↗
                       </a>
-                      <a href="http://localhost:5176/attendance/qr" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.admin}/attendance/qr`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         QR Gate ↗
                       </a>
                     </div>
@@ -451,7 +452,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5179" 
+                      href={PORTAL_URLS.superAdmin} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-purple-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-purple-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -460,13 +461,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5179/schools" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.superAdmin}/schools`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Schools ↗
                       </a>
-                      <a href="http://localhost:5179/plans" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.superAdmin}/plans`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         SaaS Plans ↗
                       </a>
-                      <a href="http://localhost:5179/server" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.superAdmin}/server`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Server ↗
                       </a>
                     </div>
@@ -496,7 +497,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5174" 
+                      href={PORTAL_URLS.branch} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-amber-500 text-gray-900 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -505,13 +506,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5174/branches" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.branch}/branches`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Branches ↗
                       </a>
-                      <a href="http://localhost:5174/payments" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.branch}/payments`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Payments ↗
                       </a>
-                      <a href="http://localhost:5174/templates" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.branch}/templates`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Templates ↗
                       </a>
                     </div>
@@ -541,7 +542,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5175" 
+                      href={PORTAL_URLS.student} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-emerald-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -558,13 +559,13 @@ export default function PortalModal() {
                       <span>Download Student & Parent APK (Android)</span>
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5175/fees" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.student}/fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Fees ↗
                       </a>
-                      <a href="http://localhost:5175/attendance" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.student}/attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Attendance ↗
                       </a>
-                      <a href="http://localhost:5175/online-exams" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.student}/online-exams`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         CBT Exams ↗
                       </a>
                     </div>
@@ -594,7 +595,7 @@ export default function PortalModal() {
                   </div>
                   <div className="space-y-1.5">
                     <a 
-                      href="http://localhost:5180" 
+                      href={PORTAL_URLS.driver} 
                       target="_blank" 
                       rel="noreferrer"
                       className="w-full bg-amber-500 text-gray-950 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
@@ -603,13 +604,13 @@ export default function PortalModal() {
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href="http://localhost:5180/trips" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.driver}/trips`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Trips ↗
                       </a>
-                      <a href="http://localhost:5180/live-tracking" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.driver}/live-tracking`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Live GPS ↗
                       </a>
-                      <a href="http://localhost:5180/boarding" target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.driver}/boarding`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
                         Boarding ↗
                       </a>
                     </div>

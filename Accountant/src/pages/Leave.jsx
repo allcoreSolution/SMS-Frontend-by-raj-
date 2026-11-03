@@ -114,7 +114,7 @@ const Leave = () => {
         halfDay: applyForm.halfDay,
         reason: applyForm.reason.trim(),
         contact: applyForm.contact.trim(),
-        applicantName: 'Rajesh Kumar (Accountant)',
+        applicantName: 'Accountant',
         status: 'Pending',
       });
 

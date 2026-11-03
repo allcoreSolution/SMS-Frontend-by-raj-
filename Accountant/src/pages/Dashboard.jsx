@@ -222,40 +222,7 @@ const Dashboard = () => {
   const [chartType, setChartType] = useState('bar'); // bar | area
   
   // Notice board slider state
-  const [notices, setNotices] = useState([
-    { 
-      id: 'n1', 
-      title: 'Q3 Tuition Fee Clearance Notice', 
-      text: 'Dear Parents & Guardians, please ensure all Q3 term fees are cleared before October 15th to avoid late fine surcharges.', 
-      date: 'Oct 10, 2026', 
-      tag: 'Finance Notice',
-      color: 'bg-emerald-500'
-    },
-    { 
-      id: 'n2', 
-      title: 'Mid-Term Examinations Timetable', 
-      text: 'Mid-term examinations for classes 6 to 10 commence from October 15th. Admit cards will be issued from the accounts clearance counter.', 
-      date: 'Oct 08, 2026', 
-      tag: 'Academic',
-      color: 'bg-blue-500'
-    },
-    { 
-      id: 'n3', 
-      title: 'Diwali Festival Advance & Staff Bonus', 
-      text: 'Teaching and administrative staff can now submit advance loan requisitions via the HR Loans module before October 20th.', 
-      date: 'Oct 05, 2026', 
-      tag: 'Staff Welfare',
-      color: 'bg-purple-500'
-    },
-    { 
-      id: 'n4', 
-      title: 'Campus Maintenance & Lab Upgrades', 
-      text: 'Physics and Chemistry laboratories will undergo scheduled equipment servicing this Saturday. Classes are rescheduled to Auditorium B.', 
-      date: 'Oct 02, 2026', 
-      tag: 'Operations',
-      color: 'bg-amber-500'
-    },
-  ]);
+  const [notices, setNotices] = useState([]);
   const [currentNoticeIdx, setCurrentNoticeIdx] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const [noticeViewMode, setNoticeViewMode] = useState('slider'); // slider | list
@@ -264,12 +231,10 @@ const Dashboard = () => {
 
   // Profile info
   const [profile, setProfile] = useState({
-    name: 'Rajesh Kumar',
-    role: 'Accountant',
-    staffId: 'STF-003',
+    name: 'Accountant', role: 'Accountant', staffId: '',
     department: 'Finance & Accounts',
     basicSalary: '35000',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80'
+    avatar: ''
   });
 
   const [stats, setStats] = useState({

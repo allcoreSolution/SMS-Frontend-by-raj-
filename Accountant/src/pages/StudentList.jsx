@@ -926,7 +926,7 @@ const StudentList = () => {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Aarav Sharma"
+                    placeholder="Search student name..."
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="w-full px-3 py-2 border border-gray-300 rounded text-[13px] focus:border-[#3c8dbc] outline-none"

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { PORTAL_URLS } from '../config/portals';
 import Navbar from '../components/Navbar';
 import FooterLanding from '../components/landing/FooterLanding';
 import { useModal } from '../context/ModalContext';
@@ -9,45 +10,45 @@ export default function ModulesPage() {
   const { openModal } = useModal();
 
   const allModules = [
-    { title: 'Student Information', label: 'CORE', category: 'Core', icon: '👤', desc: 'Manage student records, demographics & history.', url: 'http://localhost:5176' },
-    { title: 'Academics', label: 'CORE', category: 'Core', icon: '📚', desc: 'Classes, sections, subjects and syllabuses.', url: 'http://localhost:5176' },
-    { title: 'Fees Collection', label: 'CORE', category: 'Finance', icon: '💰', desc: 'Instant fee collection counter, receipts, dues.', url: 'http://localhost:5178/fees/collect' },
-    { title: 'Human Resource', label: 'CORE', category: 'Staff', icon: '👥', desc: 'Staff directory, designations, payroll records.', url: 'http://localhost:5176/hr/staff-directory' },
-    { title: 'Offline Exams & Marks Entry', label: 'CORE', category: 'Academic', icon: '📝', desc: 'Teacher marks entry, grading, marksheets.', url: 'http://localhost:5177/enter-marks' },
-    { title: 'Certificates', label: 'CORE', category: 'Core', icon: '📜', desc: 'Generate ID cards and custom certificates.', url: 'http://localhost:5176' },
-    { title: 'ID Card Designer', label: 'CORE', category: 'Core', icon: '🪪', desc: 'Drag-and-drop ID card printing system.', url: 'http://localhost:5176' },
+    { title: 'Student Information', label: 'CORE', category: 'Core', icon: '👤', desc: 'Manage student records, demographics & history.', url: PORTAL_URLS.admin },
+    { title: 'Academics', label: 'CORE', category: 'Core', icon: '📚', desc: 'Classes, sections, subjects and syllabuses.', url: PORTAL_URLS.admin },
+    { title: 'Fees Collection', label: 'CORE', category: 'Finance', icon: '💰', desc: 'Instant fee collection counter, receipts, dues.', url: `${PORTAL_URLS.accountant}/collect-fees` },
+    { title: 'Human Resource', label: 'CORE', category: 'Staff', icon: '👥', desc: 'Staff directory, designations, payroll records.', url: `${PORTAL_URLS.admin}/hr/staff-directory` },
+    { title: 'Offline Exams & Marks Entry', label: 'CORE', category: 'Academic', icon: '📝', desc: 'Teacher marks entry, grading, marksheets.', url: `${PORTAL_URLS.teacher}/enter-marks` },
+    { title: 'Certificates', label: 'CORE', category: 'Core', icon: '📜', desc: 'Generate ID cards and custom certificates.', url: PORTAL_URLS.admin },
+    { title: 'ID Card Designer', label: 'CORE', category: 'Core', icon: '🪪', desc: 'Drag-and-drop ID card printing system.', url: PORTAL_URLS.admin },
     
     { title: 'CCTV Live View', label: 'NEW', category: 'Add-on', icon: '📹', desc: 'Embed NVR feeds for admin monitoring.', modal: 'hardware' },
-    { title: 'Parent–Teacher Chat', label: 'NEW', category: 'Comms', icon: '💬', desc: 'WhatsApp-style internal messaging.', url: 'http://localhost:5175/whatsapp' },
-    { title: 'Surveys & Feedback', label: 'NEW', category: 'Comms', icon: '📊', desc: 'Collect feedback from parents & staff.', url: 'http://localhost:5175/notice-board' },
-    { title: 'Engagement & Creatives', label: 'NEW', category: 'Add-on', icon: '🎨', desc: 'Social media post maker integration.', url: 'http://localhost:5174/templates' },
-    { title: 'Compliance & Governance', label: 'NEW', category: 'Staff', icon: '🛡️', desc: 'Store statutory documents safely.', url: 'http://localhost:5174/reports/login-logs' },
-    { title: 'Online Exams Pro (CBT)', label: 'NEW', category: 'Academic', icon: '💻', desc: 'Computer based testing with anti-cheat.', url: 'http://localhost:5175/online-exams' },
-    { title: 'Admission CRM', label: 'NEW', category: 'Core', icon: '🎯', desc: 'Lead tracking and funnel management.', url: 'http://localhost:5176' },
-    { title: 'School Website Builder', label: 'NEW', category: 'Add-on', icon: '🌐', desc: 'CMS to generate front-facing websites.', url: 'http://localhost:5174/templates' },
-    { title: 'Live Classes', label: 'NEW', category: 'Academic', icon: '🎥', desc: 'Zoom & Google Meet integration.', url: 'http://localhost:5175/live-classes' },
+    { title: 'Parent–Teacher Chat', label: 'NEW', category: 'Comms', icon: '💬', desc: 'WhatsApp-style internal messaging.', url: `${PORTAL_URLS.student}/whatsapp` },
+    { title: 'Surveys & Feedback', label: 'NEW', category: 'Comms', icon: '📊', desc: 'Collect feedback from parents & staff.', url: `${PORTAL_URLS.student}/notice-board` },
+    { title: 'Engagement & Creatives', label: 'NEW', category: 'Add-on', icon: '🎨', desc: 'Social media post maker integration.', url: `${PORTAL_URLS.branch}/templates` },
+    { title: 'Compliance & Governance', label: 'NEW', category: 'Staff', icon: '🛡️', desc: 'Store statutory documents safely.', url: `${PORTAL_URLS.branch}/reports/login-logs` },
+    { title: 'Online Exams Pro (CBT)', label: 'NEW', category: 'Academic', icon: '💻', desc: 'Computer based testing with anti-cheat.', url: `${PORTAL_URLS.student}/online-exams` },
+    { title: 'Admission CRM', label: 'NEW', category: 'Core', icon: '🎯', desc: 'Lead tracking and funnel management.', url: PORTAL_URLS.admin },
+    { title: 'School Website Builder', label: 'NEW', category: 'Add-on', icon: '🌐', desc: 'CMS to generate front-facing websites.', url: `${PORTAL_URLS.branch}/templates` },
+    { title: 'Live Classes', label: 'NEW', category: 'Academic', icon: '🎥', desc: 'Zoom & Google Meet integration.', url: `${PORTAL_URLS.student}/live-classes` },
     { title: 'Biometric 2-Way Sync', label: 'NEW', category: 'Staff', icon: '🖐️', desc: 'Real-time ZKTeco/eSSL cloud push.', modal: 'hardware' },
     
-    { title: 'Homework & Classwork', category: 'Academic', icon: '✏️', desc: 'Teacher classwork assignment & evaluations.', url: 'http://localhost:5177/classwork' },
-    { title: 'Library Management', category: 'Core', icon: '📖', desc: 'Book issues, returns, barcode scanning.', url: 'http://localhost:5175/library' },
-    { title: 'Transport', category: 'Core', icon: '🚌', desc: 'Routes, vehicle tracking via driver app.', url: 'http://localhost:5175/transport' },
-    { title: 'Hostel', category: 'Core', icon: '🏠', desc: 'Room allocation and hostel fee tracking.', url: 'http://localhost:5175/hostel' },
-    { title: 'Inventory', category: 'Finance', icon: '📦', desc: 'Stock management, purchase and expense logs.', url: 'http://localhost:5178/accounts/expense' },
-    { title: 'Asset Management', category: 'Finance', icon: '🖨️', desc: 'Track school assets, laptops, and vouchers.', url: 'http://localhost:5178/accounts/expense' },
-    { title: 'AI Assistant', category: 'Add-on', icon: '🤖', desc: 'Intelligent multi-lingual school assistance.', url: 'http://localhost:5175/ai-assistant' },
-    { title: 'Knowledge Base', category: 'Comms', icon: '🧠', desc: 'Articles for parent self-service portal.', url: 'http://localhost:5175/study-center' },
-    { title: 'Study Center', category: 'Academic', icon: '🎓', desc: 'Share PDFs, Videos, and notes instantly.', url: 'http://localhost:5175/study-center' },
-    { title: 'Accounts & Finance', category: 'Finance', icon: '📈', desc: 'Income, Expense, and comprehensive ledgers.', url: 'http://localhost:5178/accounts/dashboard' },
-    { title: 'Front Office', category: 'Core', icon: '🏦', desc: 'Visitor log, postal dispatch, call logs.', url: 'http://localhost:5176' },
-    { title: 'Communications', category: 'Comms', icon: '📧', desc: 'Email, SMS, and Push notification center.', url: 'http://localhost:5175/sms' },
-    { title: 'Teacher Leave Apply', category: 'Staff', icon: '📋', desc: 'Teacher leave application and leave status.', url: 'http://localhost:5177/leave' },
-    { title: 'Health Records', category: 'Staff', icon: '🩺', desc: 'Track student medical history & allergies.', url: 'http://localhost:5175/health-records' },
+    { title: 'Homework & Classwork', category: 'Academic', icon: '✏️', desc: 'Teacher classwork assignment & evaluations.', url: `${PORTAL_URLS.teacher}/classwork` },
+    { title: 'Library Management', category: 'Core', icon: '📖', desc: 'Book issues, returns, barcode scanning.', url: `${PORTAL_URLS.student}/library` },
+    { title: 'Transport', category: 'Core', icon: '🚌', desc: 'Routes, vehicle tracking via driver app.', url: `${PORTAL_URLS.student}/transport` },
+    { title: 'Hostel', category: 'Core', icon: '🏠', desc: 'Room allocation and hostel fee tracking.', url: `${PORTAL_URLS.student}/hostel` },
+    { title: 'Inventory', category: 'Finance', icon: '📦', desc: 'Stock management, purchase and expense logs.', url: `${PORTAL_URLS.accountant}/accounts/expense` },
+    { title: 'Asset Management', category: 'Finance', icon: '🖨️', desc: 'Track school assets, laptops, and vouchers.', url: `${PORTAL_URLS.accountant}/accounts/expense` },
+    { title: 'AI Assistant', category: 'Add-on', icon: '🤖', desc: 'Intelligent multi-lingual school assistance.', url: `${PORTAL_URLS.student}/ai-assistant` },
+    { title: 'Knowledge Base', category: 'Comms', icon: '🧠', desc: 'Articles for parent self-service portal.', url: `${PORTAL_URLS.student}/study-center` },
+    { title: 'Study Center', category: 'Academic', icon: '🎓', desc: 'Share PDFs, Videos, and notes instantly.', url: `${PORTAL_URLS.student}/study-center` },
+    { title: 'Accounts & Finance', category: 'Finance', icon: '📈', desc: 'Income, Expense, and comprehensive ledgers.', url: `${PORTAL_URLS.accountant}/accounts/dashboard` },
+    { title: 'Front Office', category: 'Core', icon: '🏦', desc: 'Visitor log, postal dispatch, call logs.', url: PORTAL_URLS.admin },
+    { title: 'Communications', category: 'Comms', icon: '📧', desc: 'Email, SMS, and Push notification center.', url: `${PORTAL_URLS.student}/sms` },
+    { title: 'Teacher Leave Apply', category: 'Staff', icon: '📋', desc: 'Teacher leave application and leave status.', url: `${PORTAL_URLS.teacher}/leave` },
+    { title: 'Health Records', category: 'Staff', icon: '🩺', desc: 'Track student medical history & allergies.', url: `${PORTAL_URLS.student}/health-records` },
     { title: 'Apps Center', category: 'Add-on', icon: '📱', desc: 'Manage API keys and mobile app configs.', modal: 'portals' },
-    { title: 'Parent-Teacher Meetings', category: 'Comms', icon: '🤝', desc: 'Schedule PTM slots via teacher portal.', url: 'http://localhost:5177/ptm' },
-    { title: 'Lesson Planner', category: 'Academic', icon: '📐', desc: 'Teacher syllabus tracking & daily logs.', url: 'http://localhost:5177/lesson-planner' },
-    { title: 'Digital Evaluation', category: 'Academic', icon: '✅', desc: 'Teacher online CBT evaluation & question bank.', url: 'http://localhost:5177/online-exams' },
-    { title: 'QR Code Attendance', category: 'Core', icon: '📲', desc: 'Teacher fast student attendance marking.', url: 'http://localhost:5177/student-attendance' },
-    { title: 'Assessment & Marks', category: 'Academic', icon: '📊', desc: 'Consolidated marks entry and grade cards.', url: 'http://localhost:5177/enter-marks' }
+    { title: 'Parent-Teacher Meetings', category: 'Comms', icon: '🤝', desc: 'Schedule PTM slots via teacher portal.', url: `${PORTAL_URLS.teacher}/ptm` },
+    { title: 'Lesson Planner', category: 'Academic', icon: '📐', desc: 'Teacher syllabus tracking & daily logs.', url: `${PORTAL_URLS.teacher}/lesson-planner` },
+    { title: 'Digital Evaluation', category: 'Academic', icon: '✅', desc: 'Teacher online CBT evaluation & question bank.', url: `${PORTAL_URLS.teacher}/online-exams` },
+    { title: 'QR Code Attendance', category: 'Core', icon: '📲', desc: 'Teacher fast student attendance marking.', url: `${PORTAL_URLS.teacher}/student-attendance` },
+    { title: 'Assessment & Marks', category: 'Academic', icon: '📊', desc: 'Consolidated marks entry and grade cards.', url: `${PORTAL_URLS.teacher}/enter-marks` }
   ];
 
   const categories = ['All', 'Core', 'Academic', 'Finance', 'Staff', 'Comms', 'Add-on'];

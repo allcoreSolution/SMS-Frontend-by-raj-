@@ -26,7 +26,7 @@ export const authService = {
           name: userData.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : (userData.username || 'Accountant'),
           email: userData.email,
           role: typeof userData.role === 'object' ? userData.role?.name : userData.role || 'Accountant',
-          staffId: userData.staffId || 'STF-003',
+          staffId: userData.staffId || '',
           tenant: userData.tenant,
         };
 
@@ -52,10 +52,10 @@ export const authService = {
           const profile = localDb.getProfile();
           const user = {
             token: 'offline-token-' + Date.now(),
-            name: profile.name || 'Rajesh Kumar',
+            name: profile.name || 'Accountant',
             email: profile.email || DEMO_EMAIL,
             role: profile.role || 'Accountant',
-            staffId: profile.staffId || 'STF-003',
+            staffId: profile.staffId || '',
           };
           localStorage.setItem('accountant_token', user.token);
           localStorage.setItem('accountant_user', JSON.stringify(user));
@@ -77,10 +77,10 @@ export const authService = {
       const profile = localDb.getProfile();
       const user = {
         token: 'offline-token-' + Date.now(),
-        name: profile.name || 'Rajesh Kumar',
+        name: profile.name || 'Accountant',
         email: profile.email || DEMO_EMAIL,
         role: profile.role || 'Accountant',
-        staffId: profile.staffId || 'STF-003',
+        staffId: profile.staffId || '',
       };
       localStorage.setItem('accountant_token', user.token);
       localStorage.setItem('accountant_user', JSON.stringify(user));
