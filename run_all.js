@@ -3,6 +3,14 @@ const { spawn, execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+// Auto-detect Production / Cloud Hosting (Render, Railway, Heroku, VPS)
+if (process.env.RENDER || process.env.PORT || process.env.NODE_ENV === 'production') {
+  console.log('⚡ Production / Render environment detected!');
+  console.log('🚀 Starting unified MultiSchool ERP HTTP production server on PORT ' + (process.env.PORT || 5173) + '...');
+  require('./server.js');
+  return;
+}
+
 const panels = [
   { name: 'MultiSchool Landing Web', dir: 'Multi_School_Erp', port: 5173, color: '\x1b[32m' },
   { name: 'Branch Admin Network', dir: 'Branch-Admin', port: 5174, color: '\x1b[33m' },

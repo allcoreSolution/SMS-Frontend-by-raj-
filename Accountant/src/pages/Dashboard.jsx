@@ -1032,8 +1032,8 @@ const Dashboard = () => {
                       🏦
                     </div>
                     <div>
-                      <p className="text-[12px] font-bold text-gray-800">SBI Fee Current A/c</p>
-                      <p className="text-[10px] text-gray-400">A/c: •••• 4892</p>
+                      <p className="text-[12px] font-bold text-gray-800">Operational Bank A/c (SBI)</p>
+                      <p className="text-[10px] text-gray-400">A/c: •••• 7862</p>
                     </div>
                   </div>
                   <span className="text-[13px] font-mono font-bold text-[#3c8dbc]">₹0</span>
@@ -1045,8 +1045,8 @@ const Dashboard = () => {
                       🏛️
                     </div>
                     <div>
-                      <p className="text-[12px] font-bold text-gray-800">HDFC Development A/c</p>
-                      <p className="text-[10px] text-gray-400">A/c: •••• 1045</p>
+                      <p className="text-[12px] font-bold text-gray-800">Institutional Reserve A/c</p>
+                      <p className="text-[10px] text-gray-400">Central Treasury</p>
                     </div>
                   </div>
                   <span className="text-[13px] font-mono font-bold text-gray-900">₹0</span>

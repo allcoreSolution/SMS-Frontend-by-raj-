@@ -10,18 +10,18 @@ const PREFIX = 'acc_';
 (function clearLegacyDemoData() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    const isCleaned = localStorage.getItem('acc_demo_cleaned_v2');
+    const isCleaned = localStorage.getItem('acc_demo_cleaned_v3');
     if (!isCleaned) {
       const collectionsToClear = [
         'incomes', 'expenses', 'students', 'collections',
         'feeGroups', 'feeTypes', 'incomeHeads', 'expenseHeads',
-        'calendarEvents', 'leaves', 'loans', 'leads', 'leadSources', 'notificationsList'
+        'calendarEvents', 'leaves', 'loans', 'leads', 'leadSources', 'notificationsList', 'payslips', 'attendanceLogs'
       ];
       collectionsToClear.forEach(col => {
         localStorage.removeItem(PREFIX + col);
         localStorage.setItem(PREFIX + col, JSON.stringify([]));
       });
-      localStorage.setItem('acc_demo_cleaned_v2', 'true');
+      localStorage.setItem('acc_demo_cleaned_v3', 'true');
     }
   } catch (_) {}
 })();
@@ -51,6 +51,8 @@ const seed = {
   },
   calendarEvents: [],
   leaves: [],
+  payslips: [],
+  attendanceLogs: [],
   loans: [],
   leadSources: [],
   leads: [],

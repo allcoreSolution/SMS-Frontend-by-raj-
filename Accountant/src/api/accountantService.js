@@ -466,7 +466,50 @@ export const accountantService = {
   },
 
   // ── Leaves ─────────────────────────────────────────────────
-  getLeaves: async () => ok(localDb.getAll('leaves')),
+  // ── Payroll / Payslips ─────────────────────────────────────
+  getPayslips: async (staffId) => {
+    try {
+      if (staffId) {
+        const res = await axiosInstance.get(`/payroll?staffId=${staffId}`).catch(() => null);
+        if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          return ok(res.data.data);
+        }
+      }
+    } catch (_) {}
+    return ok(localDb.getAll('payslips'));
+  },
+
+  // ── Attendance Logs ────────────────────────────────────────
+  getAttendanceLogs: async (staffId) => {
+    try {
+      if (staffId) {
+        const res = await axiosInstance.get(`/attendance/qr-scan-logs?staffId=${staffId}`).catch(() => null);
+        if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          return ok(res.data.data);
+        }
+      }
+    } catch (_) {}
+    return ok(localDb.getAll('attendanceLogs'));
+  },
+  recordAttendancePunch: async (punchData) => {
+    try {
+      await axiosInstance.post('/attendance/qr-scan', punchData).catch(() => null);
+    } catch (_) {}
+    const created = localDb.create('attendanceLogs', punchData);
+    return ok(created);
+  },
+
+  getLeaves: async (staffId) => {
+    try {
+      if (staffId) {
+        const res = await axiosInstance.get(`/leaves?staffId=${staffId}`).catch(() => null);
+        if (res?.data?.data && Array.isArray(res.data.data) && res.data.data.length > 0) {
+          return ok(res.data.data);
+        }
+      }
+    } catch (_) {}
+    return ok(localDb.getAll('leaves'));
+  },
   getLeaveById: async (id) => {
     const item = localDb.getById('leaves', id);
     return item ? ok(item) : fail('Leave not found');

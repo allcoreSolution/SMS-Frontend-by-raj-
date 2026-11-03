@@ -168,7 +168,7 @@ const StudentList = () => {
       dob: s.dob || '2010-01-01',
       address: s.address || '',
       due: Number(s.due || 0),
-      totalFee: Number(s.totalFee || 25000),
+      totalFee: Number(s.totalFee || 0),
       admissionDate: s.admissionDate || '2026-04-10',
       status: s.status || 'Active',
     });
@@ -197,7 +197,7 @@ const StudentList = () => {
       const payload = {
         ...form,
         due: Number(form.due || 0),
-        totalFee: Number(form.totalFee || 25000),
+        totalFee: Number(form.totalFee || 0),
       };
 
       if (modalMode === 'edit' && editId) {
@@ -599,7 +599,7 @@ const StudentList = () => {
               <tbody className="divide-y divide-gray-100">
                 {paginatedStudents.map((s, idx) => {
                   const dueVal = Number(s.due || 0);
-                  const totalVal = Number(s.totalFee || 25000);
+                  const totalVal = Number(s.totalFee || 0);
                   const paidVal = Math.max(0, totalVal - dueVal);
                   const paidPct = Math.min(100, Math.round((paidVal / totalVal) * 100));
                   const serialNo = (currentPage - 1) * pageSize + idx + 1;
@@ -1154,7 +1154,7 @@ const StudentList = () => {
                 <div className="text-right">
                   <div className="text-[11px] font-bold text-gray-500 uppercase">Annual Fee Package</div>
                   <div className="text-[15px] font-bold text-gray-800 mt-0.5">
-                    ₹ {(selectedStudent.totalFee || 25000).toLocaleString('en-IN')}
+                    ₹ {(selectedStudent.totalFee || 0).toLocaleString('en-IN')}
                   </div>
                 </div>
               </div>
