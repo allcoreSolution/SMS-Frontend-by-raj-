@@ -24,7 +24,7 @@ const Dashboard = () => {
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
   return (
-    <div className="px-4 md:px-6 py-4 w-full">
+    <div className="px-3 sm:px-4 md:px-6 py-3 sm:py-4 w-full max-w-full overflow-x-hidden min-w-0">
       {/* Top Welcome Section */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
@@ -84,14 +84,14 @@ const Dashboard = () => {
       <KpiCards />
 
       {/* Main Grid & Sidebar Area */}
-      <div className="flex flex-col xl:flex-row gap-4 mb-6">
+      <div className="flex flex-col xl:flex-row gap-4 mb-6 w-full max-w-full min-w-0">
         {/* Left Side: Platform Hub */}
-        <div className="flex-1 w-full xl:w-[75%]">
+        <div className="flex-1 w-full xl:w-[75%] min-w-0">
           <PlatformHub />
         </div>
 
         {/* Right Side: Live Activity */}
-        <div className="w-full xl:w-[25%] xl:max-w-sm">
+        <div className="w-full xl:w-[25%] xl:max-w-sm min-w-0">
           <LiveActivity />
         </div>
       </div>

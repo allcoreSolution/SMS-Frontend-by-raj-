@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   PieChart, Pie, Cell
@@ -10,26 +10,26 @@ import { toArray } from '../../utils/helpers';
 const bgColors = ['bg-blue-500', 'bg-pink-500', 'bg-orange-500', 'bg-teal-500', 'bg-purple-500'];
 
 const WidgetCard = ({ title, subtitle, actionText, onAction, children, icon: Icon }) => (
-  <div className="bg-white rounded-2xl border border-slate-200/80 p-5 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow">
-    <div className="flex justify-between items-start mb-4">
-      <div className="flex items-center gap-2.5">
-        {Icon && <Icon className="w-4 h-4 text-orange-500" />}
-        <div>
-          <h3 className="text-[13px] font-bold text-slate-800">{title}</h3>
-          {subtitle && <p className="text-[11px] font-medium text-slate-400 mt-0.5">{subtitle}</p>}
+  <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow min-w-0 w-full overflow-hidden">
+    <div className="flex justify-between items-start mb-4 gap-2">
+      <div className="flex items-center gap-2.5 min-w-0">
+        {Icon && <Icon className="w-4 h-4 text-orange-500 shrink-0" />}
+        <div className="min-w-0">
+          <h3 className="text-[13px] font-bold text-slate-800 truncate">{title}</h3>
+          {subtitle && <p className="text-[11px] font-medium text-slate-400 mt-0.5 truncate">{subtitle}</p>}
         </div>
       </div>
       {actionText && (
         <button
           onClick={onAction}
-          className="text-[11px] font-bold text-[#ff5c0a] bg-orange-50 px-3 py-1 rounded-full flex items-center justify-center border border-orange-100 hover:bg-orange-100 transition-colors">
+          className="text-[11px] font-bold text-[#ff5c0a] bg-orange-50 px-3 py-1 rounded-full flex items-center justify-center border border-orange-100 hover:bg-orange-100 transition-colors shrink-0 cursor-pointer">
           {actionText === 'View all' ? (
-            <span className="flex items-center gap-1.5">{actionText} <span className="w-3.5 h-3.5 bg-white rounded-full flex items-center justify-center text-[9px] shadow-xs">â†—</span></span>
+            <span className="flex items-center gap-1.5">{actionText} <span className="w-3.5 h-3.5 bg-white rounded-full flex items-center justify-center text-[9px] shadow-xs">↗</span></span>
           ) : actionText}
         </button>
       )}
     </div>
-    <div className="flex-1 flex flex-col min-h-0">{children}</div>
+    <div className="flex-1 flex flex-col min-h-0 w-full overflow-hidden">{children}</div>
   </div>
 );
 
@@ -63,13 +63,13 @@ const BottomWidgets = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-6 mb-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 mt-6 mb-12 w-full max-w-full">
       
       {/* ROW 1 */}
       {/* Revenue Overview */}
-      <div className="col-span-1">
-        <WidgetCard title="Revenue Overview" subtitle={`Subscriptions â€” last 6 months Â· lifetime â‚¹0`}>
-          <div className="h-[240px] w-full mt-4 -ml-2">
+      <div className="col-span-1 min-w-0">
+        <WidgetCard title="Revenue Overview" subtitle="Subscriptions — last 6 months · lifetime ₹0">
+          <div className="h-[240px] w-full mt-4 -ml-2 min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                 <defs>
@@ -80,7 +80,7 @@ const BottomWidgets = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} tickFormatter={(val) => `â‚¹${val/1000}k`} dx={-10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
                 <RechartsTooltip contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
                 <Area type="monotone" dataKey="value" stroke="#ff5c0a" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" dot={{ r: 4, fill: '#fff', stroke: '#ff5c0a', strokeWidth: 2 }} activeDot={{ r: 6, strokeWidth: 0, fill: '#ff5c0a' }} />
               </AreaChart>
@@ -90,9 +90,9 @@ const BottomWidgets = () => {
       </div>
 
       {/* Subscription Profile */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="Subscription Profile" subtitle="Active vs Inactive schools">
-          <div className="flex items-center gap-6 mt-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mt-4">
             {/* Chart */}
             <div className="h-28 w-28 relative flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -118,7 +118,7 @@ const BottomWidgets = () => {
             </div>
             
             {/* Legend */}
-            <div className="flex flex-col gap-3 w-full">
+            <div className="flex flex-col gap-3 w-full min-w-0">
               <div className="flex items-center justify-between text-[11px] font-semibold">
                 <div className="flex items-center gap-2"><div className="w-2.5 h-2.5 rounded-full bg-green-500"></div><span className="text-slate-500">Active</span></div>
                 <span className="text-slate-800 font-bold">{activeCount}</span>
@@ -157,22 +157,22 @@ const BottomWidgets = () => {
       </div>
 
       {/* Pending Orders */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="Pending Orders" subtitle="Awaiting verification" actionText="View all" onAction={() => navigate('/schools')}>
           <div className="flex flex-col mt-2">
             {pendingSchools.length === 0 ? <p className="text-xs text-gray-400 text-center py-6">No pending orders</p> : pendingSchools.map((s, i) => (
               <div key={i} className="flex items-center justify-between group py-2.5 px-2 hover:bg-slate-50/80 rounded-xl transition-all border-b border-slate-50 last:border-0 relative">
-                <div className="flex items-center gap-3">
-                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white text-[11px] font-extrabold shadow-sm ${bgColors[i % bgColors.length]}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                   <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-white text-[11px] font-extrabold shadow-sm shrink-0 ${bgColors[i % bgColors.length]}`}>
                     {s.schoolName.substring(0,2).toUpperCase()}
                   </div>
-                  <div>
-                    <p className="text-[12px] font-bold text-slate-800 leading-tight">{s.schoolName}</p>
+                  <div className="min-w-0">
+                    <p className="text-[12px] font-bold text-slate-800 leading-tight truncate">{s.schoolName}</p>
                     <p className="text-[10px] font-medium text-slate-400 mt-0.5 truncate max-w-[140px]">{s.plan} Plan</p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-[13px] font-bold text-slate-800 font-mono">â‚¹â€”</p>
+                <div className="text-right shrink-0">
+                  <p className="text-[13px] font-bold text-slate-800 font-mono">₹—</p>
                   <p className="text-[9px] uppercase tracking-wider font-bold text-orange-600 bg-orange-50 inline-block px-2 py-0.5 rounded-full border border-orange-200 mt-1">Pending</p>
                 </div>
               </div>
@@ -183,21 +183,21 @@ const BottomWidgets = () => {
 
       {/* ROW 2 */}
       {/* Largest Schools */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="Largest Schools" subtitle="By user count" actionText="View all" onAction={() => navigate('/schools')}>
           <div className="flex flex-col mt-2">
             {largestSchools.length === 0 ? <p className="text-xs text-gray-400 text-center py-6">No data</p> : largestSchools.map((s, i) => (
               <div key={i} className="flex items-center justify-between group py-2 px-2 hover:bg-slate-50/80 rounded-xl transition-all border-b border-slate-50 last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl shadow-sm flex items-center justify-center text-white text-[11px] font-extrabold flex-shrink-0 ${bgColors[i % bgColors.length]}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-8 h-8 rounded-xl shadow-sm flex items-center justify-center text-white text-[11px] font-extrabold shrink-0 ${bgColors[i % bgColors.length]}`}>
                     {s.schoolName.substring(0,2).toUpperCase()}
                   </div>
-                  <div className="truncate pr-2">
+                  <div className="truncate pr-2 min-w-0">
                     <p className="text-[12px] font-bold text-slate-800 truncate uppercase leading-tight">{s.schoolName}</p>
                     <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">{s.email || 'N/A'}</p>
                   </div>
                 </div>
-                <div className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 flex-shrink-0">
+                <div className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 shrink-0">
                   {s.studentsCount || 0} users
                 </div>
               </div>
@@ -207,21 +207,21 @@ const BottomWidgets = () => {
       </div>
 
       {/* New Registrations */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="New Registrations" subtitle="Latest schools to join" actionText="View all" onAction={() => navigate('/schools')}>
           <div className="flex flex-col mt-2">
             {latestSchools.length === 0 ? <p className="text-xs text-gray-400 text-center py-6">No data</p> : latestSchools.map((s, i) => (
               <div key={i} className="flex items-center justify-between group py-2 px-2 hover:bg-slate-50/80 rounded-xl transition-all border-b border-slate-50 last:border-0">
-                <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 rounded-xl shadow-sm flex items-center justify-center text-white text-[11px] font-extrabold flex-shrink-0 ${bgColors[(i+2) % bgColors.length]}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`w-8 h-8 rounded-xl shadow-sm flex items-center justify-center text-white text-[11px] font-extrabold shrink-0 ${bgColors[(i+2) % bgColors.length]}`}>
                     {s.schoolName.substring(0,2).toUpperCase()}
                   </div>
-                  <div className="truncate pr-2">
+                  <div className="truncate pr-2 min-w-0">
                     <p className="text-[12px] font-bold text-slate-800 truncate capitalize leading-tight">{s.schoolName}</p>
                     <p className="text-[10px] font-medium text-slate-400 truncate mt-0.5">{s.email}</p>
                   </div>
                 </div>
-                <div className="text-right flex-shrink-0">
+                <div className="text-right shrink-0">
                   <p className="text-[11px] font-bold text-slate-600">{new Date(s.createdAt).toLocaleDateString()}</p>
                   <p className="text-[9px] text-[#ff5c0a] uppercase tracking-wider font-bold bg-orange-50 border border-orange-100 inline-block px-2 py-0.5 rounded-full mt-1">New</p>
                 </div>
@@ -232,7 +232,7 @@ const BottomWidgets = () => {
       </div>
       
       {/* Expiring Soon */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="Expiring Soon" subtitle="Renewals coming up" actionText="View all" onAction={() => navigate('/schools')}>
           <div className="flex flex-col mt-2">
             <p className="text-xs text-gray-400 text-center py-6">No renewals soon</p>
@@ -242,25 +242,25 @@ const BottomWidgets = () => {
 
       {/* ROW 3 */}
       {/* System Health */}
-      <div className="col-span-1">
+      <div className="col-span-1 min-w-0">
         <WidgetCard title="System Health" subtitle="multischoolv2" actionText="Health Center" onAction={() => navigate('/server')}>
           <div className="flex flex-col justify-between h-full gap-3.5 mt-2">
              {/* Status Blocks */}
-             <div className="grid grid-cols-3 gap-2.5 pb-1 mb-1">
-               <div className="relative border border-emerald-200 bg-emerald-50/50 p-2.5 rounded-xl shadow-xs">
+             <div className="grid grid-cols-3 gap-2 sm:gap-2.5 pb-1 mb-1">
+               <div className="relative border border-emerald-200 bg-emerald-50/50 p-2 sm:p-2.5 rounded-xl shadow-xs text-center min-w-0">
                  <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 rounded-t-xl"></div>
-                 <p className="text-[11px] font-bold text-emerald-700 flex items-center justify-center gap-1.5 mt-0.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ONLINE</p>
-                 <p className="text-[9px] font-bold text-emerald-600/70 mt-1 uppercase tracking-wider text-center">Database</p>
+                 <p className="text-[10px] sm:text-[11px] font-bold text-emerald-700 flex items-center justify-center gap-1 mt-0.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> ONLINE</p>
+                 <p className="text-[8.5px] sm:text-[9px] font-bold text-emerald-600/70 mt-1 uppercase tracking-wider text-center truncate">Database</p>
                </div>
-               <div className="relative border border-slate-200 bg-white p-2.5 rounded-xl shadow-xs">
+               <div className="relative border border-slate-200 bg-white p-2 sm:p-2.5 rounded-xl shadow-xs text-center min-w-0">
                  <div className="absolute top-0 left-0 w-full h-1 bg-slate-800 rounded-t-xl"></div>
-                 <p className="text-[12px] font-bold text-slate-800 text-center mt-0.5">—</p>
-                 <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-wider text-center">DB Size</p>
+                 <p className="text-[11px] sm:text-[12px] font-bold text-slate-800 text-center mt-0.5">—</p>
+                 <p className="text-[8.5px] sm:text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-wider text-center truncate">DB Size</p>
                </div>
-               <div className="relative border border-emerald-200 bg-emerald-50/50 p-2.5 rounded-xl shadow-xs">
+               <div className="relative border border-emerald-200 bg-emerald-50/50 p-2 sm:p-2.5 rounded-xl shadow-xs text-center min-w-0">
                  <div className="absolute top-0 left-0 w-full h-1 bg-emerald-500 rounded-t-xl"></div>
-                 <p className="text-[11px] font-bold text-emerald-700 text-center mt-0.5">Optimal</p>
-                 <p className="text-[9px] font-bold text-emerald-600/70 mt-1 uppercase tracking-wider text-center">Load</p>
+                 <p className="text-[10px] sm:text-[11px] font-bold text-emerald-700 text-center mt-0.5 truncate">Optimal</p>
+                 <p className="text-[8.5px] sm:text-[9px] font-bold text-emerald-600/70 mt-1 uppercase tracking-wider text-center truncate">Load</p>
                </div>
             </div>
             
@@ -295,7 +295,7 @@ const BottomWidgets = () => {
       </div>
       
       {/* Application Errors */}
-      <div className="col-span-2">
+      <div className="col-span-1 md:col-span-2 xl:col-span-2 min-w-0">
         <WidgetCard title="Application Errors" subtitle="Latest from the log" actionText="Open logs" onAction={() => {}}>
            <div className="flex flex-col gap-3 mt-4 overflow-y-auto pr-2 max-h-[300px] mb-2" style={{ scrollbarWidth: 'thin' }}>
               <p className="text-xs text-gray-400 text-center py-6">No errors in log</p>
@@ -308,4 +308,3 @@ const BottomWidgets = () => {
 };
 
 export default BottomWidgets;
-

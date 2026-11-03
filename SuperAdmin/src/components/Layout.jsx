@@ -56,14 +56,14 @@ const Layout = ({ children }) => {
       />
 
       {/* Content wrapper with smooth responsive margin transition */}
-      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
+      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out w-full max-w-full min-w-0 ${sidebarOpen ? 'lg:ml-64' : 'lg:ml-0'}`}>
         <Header 
           onMenuClick={handleToggle} 
           sidebarOpen={sidebarOpen}
         />
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8fafc] pt-16 flex flex-col justify-between">
-          <div className="flex-1">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#f8fafc] pt-16 flex flex-col justify-between w-full max-w-full min-w-0">
+          <div className="flex-1 w-full max-w-full min-w-0">
             {children}
           </div>
           {/* Main Portal Bottom Footer */}
