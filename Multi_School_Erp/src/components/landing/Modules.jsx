@@ -57,14 +57,14 @@ export default function Modules() {
   };
 
   return (
-    <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-12 w-full border-t-[3px] border-gray-900 overflow-hidden bg-white/50 bg-grid-pattern relative">
+    <section className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 lg:px-12 w-full border-t-[3px] border-gray-900 overflow-hidden bg-white/50 bg-grid-pattern relative">
       
       {/* Clean Header Block */}
-      <div className="relative z-10 text-center mb-8 flex flex-col items-center max-w-4xl mx-auto py-3 px-4 sm:py-4 sm:px-8">
-        <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[8px] sm:text-[9px] px-2.5 py-1 mb-2 rounded-full shadow-sm">
+      <div className="relative z-10 text-center mb-6 sm:mb-8 flex flex-col items-center max-w-4xl mx-auto py-2 sm:py-4 px-2 sm:px-8">
+        <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[7.5px] sm:text-[9px] px-2.5 py-1 mb-2 rounded-full shadow-sm">
           38 COMPREHENSIVE MODULES • CLICK ANY TO OPEN
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-gray-900 leading-[1.1] tracking-tighter mb-1.5">
+        <h2 className="text-xl sm:text-3xl font-black text-gray-900 leading-[1.15] tracking-tighter mb-1.5">
           Every module a school needs. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-700">All live & clickable.</span>
         </h2>
         <p className="text-gray-600 font-bold leading-relaxed text-[11px] sm:text-[13px] max-w-2xl mx-auto">
@@ -72,8 +72,8 @@ export default function Modules() {
         </p>
       </div>
 
-      {/* 38 Module Massive Horizontal Grid */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 lg:gap-4 mb-20 max-w-[1400px] mx-auto">
+      {/* 38 Module Grid */}
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3 lg:gap-4 mb-14 sm:mb-20 max-w-[1400px] mx-auto">
         {modules.map((mod, i) => {
           
           let cardTheme = "bg-white border border-gray-200 shadow-sm";
@@ -96,19 +96,19 @@ export default function Modules() {
             >
               {/* Horizontal Pill Card */}
               <div 
-                className={`relative p-3 px-4 rounded-xl transition-all h-full flex items-center justify-between gap-3 hover:-translate-y-1 hover:shadow-md hover:border-gray-900 ${cardTheme}`}
+                className={`relative p-2.5 sm:p-3 px-3 sm:px-4 rounded-xl transition-all h-full flex items-center justify-between gap-2.5 hover:-translate-y-1 hover:shadow-md hover:border-gray-900 ${cardTheme}`}
               >
-                <div className="flex items-center gap-3.5 flex-1 min-w-0">
-                   <div className="text-2xl rounded-md group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out flex-shrink-0">
+                <div className="flex items-center gap-2.5 sm:gap-3.5 flex-1 min-w-0">
+                   <div className="text-xl sm:text-2xl rounded-md group-hover:rotate-[360deg] transition-transform duration-700 ease-in-out flex-shrink-0">
                      {mod.icon}
                    </div>
-                   <h3 className="font-bold text-gray-900 text-[12px] sm:text-[13px] leading-tight tracking-tight flex-1 truncate group-hover:text-amber-600">
+                   <h3 className="font-bold text-gray-900 text-[11.5px] sm:text-[13px] leading-tight tracking-tight flex-1 truncate group-hover:text-amber-600">
                      {mod.title}
                    </h3>
                 </div>
                 <div className="flex items-center gap-1.5 flex-shrink-0">
                   {mod.label && (
-                     <span className={`font-bold uppercase tracking-widest text-[8px] sm:text-[9px] px-2 py-0.5 rounded whitespace-nowrap ${labelTheme}`}>
+                     <span className={`font-bold uppercase tracking-widest text-[7.5px] sm:text-[9px] px-1.5 sm:px-2 py-0.5 rounded whitespace-nowrap ${labelTheme}`}>
                        {mod.label}
                      </span>
                   )}
@@ -121,9 +121,9 @@ export default function Modules() {
       </div>
 
       {/* Embedded Sub-Features Banner */}
-      <div className="relative z-10 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm">
-         <div className="flex items-center gap-3">
-           <div className="bg-emerald-50 rounded-full w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-lg sm:text-xl text-emerald-500">
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 bg-white border border-gray-200 rounded-2xl p-3.5 sm:p-5 shadow-sm">
+         <div className="flex items-center gap-2.5 sm:gap-3">
+           <div className="bg-emerald-50 rounded-full w-9 h-9 sm:w-12 sm:h-12 flex-shrink-0 flex items-center justify-center text-base sm:text-xl text-emerald-500">
              ⚡
            </div>
            <p className="text-xs sm:text-[13px] font-[500] text-gray-600 leading-snug">
@@ -133,7 +133,7 @@ export default function Modules() {
 
          <button
            onClick={() => openModal('portals')}
-           className="px-4 py-2 bg-gray-900 text-white font-black text-xs uppercase tracking-wider rounded-lg hover:bg-amber-500 hover:text-gray-900 transition-colors whitespace-nowrap"
+           className="w-full sm:w-auto px-4 py-2 bg-gray-900 text-white font-black text-xs uppercase tracking-wider rounded-lg hover:bg-amber-500 hover:text-gray-900 transition-colors whitespace-nowrap cursor-pointer text-center"
          >
            Open All Portals Hub ↗
          </button>

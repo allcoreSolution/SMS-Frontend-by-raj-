@@ -58,7 +58,7 @@ export default function Home() {
         }
       `}</style>
       
-      <main className="mt-20">
+      <main className="mt-[72px] sm:mt-20">
          <Hero />
          <Deliverables />
          <Ecosystem />

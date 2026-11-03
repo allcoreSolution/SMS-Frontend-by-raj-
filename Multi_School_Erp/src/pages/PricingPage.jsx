@@ -11,7 +11,7 @@ export default function PricingPage() {
     <div className="min-h-screen bg-[#fdfdfd] overflow-hidden">
       <Navbar />
       
-      <main className="mt-[80px] bg-[#111827]">
+      <main className="mt-[72px] sm:mt-[80px] bg-[#111827]">
         {/* Header Section */}
         <section className="py-8 lg:py-10 px-4 w-full border-b-[2px] border-gray-900 bg-gray-950 relative overflow-hidden">
            <div className="absolute inset-0 bg-grid-pattern opacity-20" />
