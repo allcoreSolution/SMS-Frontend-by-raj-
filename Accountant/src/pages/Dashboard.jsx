@@ -233,7 +233,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState({
     name: 'Accountant', role: 'Accountant', staffId: '',
     department: 'Finance & Accounts',
-    basicSalary: '35000',
+    basicSalary: '0',
     avatar: ''
   });
 
@@ -255,12 +255,7 @@ const Dashboard = () => {
   const [isCollecting, setIsCollecting] = useState(false);
 
   // Financial Deadlines state
-  const [deadlines, setDeadlines] = useState([
-    { id: 'd1', title: 'State Power & Electricity Substation Bill', amount: 18450, dueDate: 'Oct 15, 2026', type: 'Utility', status: 'Pending', color: 'text-amber-700 bg-amber-50 border-amber-200' },
-    { id: 'd2', title: 'Mid-Term Exam Fees Clearance Window', amount: 35000, dueDate: 'Oct 16, 2026', type: 'Fee Due', status: 'In Progress', color: 'text-blue-700 bg-blue-50 border-blue-200' },
-    { id: 'd3', title: 'Staff EPF & ESI Statutory Compliance Deposit', amount: 48200, dueDate: 'Oct 18, 2026', type: 'Statutory', status: 'Scheduled', color: 'text-purple-700 bg-purple-50 border-purple-200' },
-    { id: 'd4', title: 'School Bus Fleet Diesel Billing (IOCL Refuel)', amount: 32000, dueDate: 'Oct 22, 2026', type: 'Transport', status: 'Pending', color: 'text-rose-700 bg-rose-50 border-rose-200' },
-  ]);
+  const [deadlines, setDeadlines] = useState([]);
 
   const selectedStudent = useMemo(() => {
     return Array.isArray(studentsList) ? studentsList.find(s => s && ((s.id || s._id) === selectedStudentId)) || null : null;
@@ -546,11 +541,11 @@ const Dashboard = () => {
           id="income"
           title="Income This Month" 
           subTitle="Fees & Misc Receipts"
-          numericValue={stats.incomeMonth || 351179}
+          numericValue={stats.incomeMonth || 0}
           icon={ArrowDown} 
           iconBg="bg-[#0ea5e9]" 
           strokeColor="#0284c7"
-          trend="↑ 1133% MTD"
+          trend={stats.incomeMonth > 0 ? "Monthly Inflow" : "₹0 Month"}
           trendType="positive"
           delay={80}
           linkTo="/accounts/income"
@@ -562,11 +557,11 @@ const Dashboard = () => {
           id="expense"
           title="Expense This Month" 
           subTitle="Salaries & Operations"
-          numericValue={stats.expenseMonth || 207950}
+          numericValue={stats.expenseMonth || 0}
           icon={ArrowUp} 
           iconBg="bg-[#f43f5e]" 
           strokeColor="#e11d48"
-          trend="Operating Costs"
+          trend={stats.expenseMonth > 0 ? "Operating Costs" : "₹0 Month"}
           trendType="alert"
           delay={160}
           linkTo="/accounts/expense"
@@ -578,11 +573,11 @@ const Dashboard = () => {
           id="balance"
           title="Cash & Bank Balance" 
           subTitle="Net Available Liquidity"
-          numericValue={stats.cashBankBalance || stats.cashBalance || 686229}
+          numericValue={stats.cashBankBalance || stats.cashBalance || 0}
           icon={Wallet} 
           iconBg="bg-[#f59e0b]" 
           strokeColor="#d97706"
-          trend="Net Surplus"
+          trend={stats.cashBankBalance > 0 ? "Net Surplus" : "Zero Balance"}
           trendType="positive"
           delay={240}
           linkTo="/accounts/day-book"
@@ -970,7 +965,7 @@ const Dashboard = () => {
                 <span className="text-gray-500 font-medium flex items-center gap-1">
                   💵 Petty Cash Drawer Balance:
                 </span>
-                <span className="font-mono font-bold text-gray-900">₹42,500</span>
+                <span className="font-mono font-bold text-gray-900">₹{Number(stats.collectedToday || 0).toLocaleString('en-IN')}</span>
               </div>
               <div className="space-y-1">
                 <div className="flex justify-between items-center text-[11px] font-semibold text-gray-600">
@@ -978,13 +973,13 @@ const Dashboard = () => {
                     <Target className="w-3.5 h-3.5 text-[#f39c12]" /> Today's Collection Goal (₹60,000)
                   </span>
                   <span className="font-bold text-[#00a65a]">
-                    {Math.min(100, Math.round(((stats.collectedToday || 46500) / 60000) * 100))}%
+                    {Math.min(100, Math.round(((stats.collectedToday || 0) / 60000) * 100))}%
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
                   <div 
                     className="bg-gradient-to-r from-[#00a65a] to-[#3c8dbc] h-1.5 rounded-full transition-all duration-500"
-                    style={{ width: `${Math.min(100, Math.round(((stats.collectedToday || 46500) / 60000) * 100))}%` }}
+                    style={{ width: `${Math.min(100, Math.round(((stats.collectedToday || 0) / 60000) * 100))}%` }}
                   />
                 </div>
               </div>
@@ -1023,7 +1018,7 @@ const Dashboard = () => {
                       <p className="text-[10px] text-gray-400">Physical Vault Drawer</p>
                     </div>
                   </div>
-                  <span className="text-[13px] font-mono font-bold text-gray-900">₹42,500</span>
+                  <span className="text-[13px] font-mono font-bold text-gray-900">₹{Number(stats.collectedToday || 0).toLocaleString('en-IN')}</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2.5 bg-gray-50/80 rounded border border-gray-100">
@@ -1036,7 +1031,7 @@ const Dashboard = () => {
                       <p className="text-[10px] text-gray-400">A/c: •••• 4892</p>
                     </div>
                   </div>
-                  <span className="text-[13px] font-mono font-bold text-[#3c8dbc]">₹14,25,800</span>
+                  <span className="text-[13px] font-mono font-bold text-[#3c8dbc]">₹0</span>
                 </div>
 
                 <div className="flex items-center justify-between p-2.5 bg-gray-50/80 rounded border border-gray-100">
@@ -1049,7 +1044,7 @@ const Dashboard = () => {
                       <p className="text-[10px] text-gray-400">A/c: •••• 1045</p>
                     </div>
                   </div>
-                  <span className="text-[13px] font-mono font-bold text-gray-900">₹8,92,400</span>
+                  <span className="text-[13px] font-mono font-bold text-gray-900">₹0</span>
                 </div>
               </div>
             </div>
@@ -1057,7 +1052,7 @@ const Dashboard = () => {
             {/* Bottom Footer */}
             <div className="p-3 bg-gray-50/80 border-t border-gray-100 flex items-center justify-between text-xs">
               <span className="text-gray-500 font-medium">Total Liquid Capital:</span>
-              <span className="font-mono font-bold text-[#00a65a] text-[13px]">₹23,60,700</span>
+              <span className="font-mono font-bold text-[#00a65a] text-[13px]">₹{Number(stats.cashBankBalance || stats.collectedToday || 0).toLocaleString('en-IN')}</span>
             </div>
           </div>
         </div>
@@ -1077,7 +1072,11 @@ const Dashboard = () => {
               </div>
 
               <div className="p-3 space-y-2">
-                {deadlines.map((d) => (
+                {deadlines.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400 text-xs">
+                    No pending financial deadlines or compliance dues.
+                  </div>
+                ) : deadlines.map((d) => (
                   <div 
                     key={d.id} 
                     className={`p-2.5 rounded border transition-all flex items-center justify-between gap-2 ${
@@ -1161,7 +1160,7 @@ const Dashboard = () => {
                 <div className="w-full mt-3 border-t border-gray-100 pt-2 text-[11.5px] space-y-1.5">
                   <div className="flex justify-between items-center py-0.5">
                     <span className="text-gray-500">Monthly Basic Salary:</span>
-                    <span className="font-bold text-gray-800">₹{Number(profile.basicSalary || 35000).toLocaleString('en-IN')}</span>
+                    <span className="font-bold text-gray-800">₹{Number(profile.basicSalary || 0).toLocaleString('en-IN')}</span>
                   </div>
                   <div className="flex justify-between items-center py-0.5">
                     <span className="text-gray-500">Official Email:</span>
@@ -1169,7 +1168,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex justify-between items-center py-0.5">
                     <span className="text-gray-500">Phone Contact:</span>
-                    <span className="font-medium text-gray-700">{profile.phone || '+91 98765 01234'}</span>
+                    <span className="font-medium text-gray-700">{profile.phone || 'Not configured'}</span>
                   </div>
                 </div>
               </div>
