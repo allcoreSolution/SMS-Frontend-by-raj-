@@ -16,6 +16,7 @@
     "dev:student": "npm --prefix Student_Parents run dev",
     "dev:driver": "npm --prefix Driver_Panel run dev",
     "build": "node build_all.js",
+    "start": "node build_all.js",
     "build:landing": "npm --prefix Multi_School_Erp run build"
   }
 }
