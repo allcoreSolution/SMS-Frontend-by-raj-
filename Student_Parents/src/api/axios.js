@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const isAndroidPlatform = typeof window !== 'undefined' && (window.location.hostname === 'appassets.androidplatform.net' || !window.location.hostname || window.location.protocol === 'file:');
-const defaultHost = (isLocalhost || isAndroidPlatform) ? 'localhost' : window.location.hostname;
+const isProduction = typeof window !== 'undefined' && !isLocalhost;
+const LIVE_BACKEND_URL = 'https://sms-backend-by-raj-1.onrender.com/api';
 
 const API_BASE_URL = (typeof window !== 'undefined' && window.__API_BASE_URL__) || 
                      (typeof window !== 'undefined' && window.localStorage && localStorage.getItem('api_base_url')) || 
                      import.meta.env.VITE_API_URL || 
-                     (isAndroidPlatform ? 'http://192.168.1.5:5050/api' : (isLocalhost ? 'http://localhost:5050/api' : `http://${defaultHost}:5050/api`));
+                     (isProduction ? LIVE_BACKEND_URL : 'http://localhost:5050/api');
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

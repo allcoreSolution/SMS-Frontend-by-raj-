@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-// Ensure this maps precisely to your Node.js backend URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+// Dynamic Backend URL: automatically uses Render cloud backend when deployed, localhost in development
+const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_URL = import.meta.env.VITE_API_URL || (isProduction ? 'https://sms-backend-by-raj-1.onrender.com/api' : 'http://localhost:5050/api');
 
 const axiosInstance = axios.create({
   baseURL: API_URL,

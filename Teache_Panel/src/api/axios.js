@@ -7,6 +7,12 @@ export const getApiBaseUrl = () => {
     if (window.__API_BASE_URL__) return window.__API_BASE_URL__;
     const override = localStorage.getItem('api_override_url') || localStorage.getItem('api_base_url');
     if (override) return override;
+
+    // Auto-detect Render deployment / Production domain
+    const isProduction = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (isProduction) {
+      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+    }
   }
   return import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
 };

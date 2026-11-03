@@ -1,22 +1,11 @@
 import axios from 'axios';
 
-const defaultHost = (typeof window !== 'undefined' && window.location.hostname && window.location.hostname !== 'app.schoolerp' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? window.location.hostname : '192.168.1.5';
+const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+const LIVE_BACKEND_URL = 'https://sms-backend-by-raj-1.onrender.com/api';
 
-// Migrate stale IP addresses in localStorage
-if (typeof window !== 'undefined' && window.localStorage) {
-  try {
-    const cachedUrl = localStorage.getItem('api_server_url') || localStorage.getItem('api_base_url');
-    if (cachedUrl && (cachedUrl.includes('192.168.1.5') || cachedUrl.includes('192.168.1.5'))) {
-      const freshUrl = `http://${defaultHost}:5050/api`;
-      localStorage.setItem('api_server_url', freshUrl);
-      localStorage.setItem('api_base_url', freshUrl);
-    }
-  } catch (_) {}
-}
-
-const API_URL = (typeof window !== 'undefined' && window.__API_BASE_URL__) ||
-  (typeof window !== 'undefined' && window.localStorage && (localStorage.getItem('api_server_url') || localStorage.getItem('api_base_url'))) ||
-  (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? (import.meta.env.VITE_API_URL || 'http://localhost:5050/api') : `http://${defaultHost}:5050/api`);
+const API_URL = import.meta.env.VITE_API_URL || 
+  (typeof window !== 'undefined' && window.__API_BASE_URL__) ||
+  (isProduction ? LIVE_BACKEND_URL : 'http://localhost:5050/api');
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
