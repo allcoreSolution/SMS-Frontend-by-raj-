@@ -129,7 +129,13 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   };
 
   return (
-    <header className="h-[55px] bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-5 sticky top-0 z-40 shrink-0 font-sans">
+    <header 
+      className="h-[55px] bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-5 sticky top-0 z-40 shrink-0 font-sans w-full max-w-full overflow-hidden"
+      style={{
+        paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+        paddingLeft: 'max(0.75rem, env(safe-area-inset-left))'
+      }}
+    >
       <div className="flex items-center gap-2 sm:gap-3.5">
         {/* Working Sidebar Toggle Hamburger Button */}
         <button
@@ -173,7 +179,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         </Link>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2">
+      <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto pr-0.5 sm:pr-1">
         {/* Universal Search Bar Trigger */}
         <button
           onClick={() => setShowSearch(true)}

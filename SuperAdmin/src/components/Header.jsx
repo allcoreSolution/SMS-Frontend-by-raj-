@@ -124,7 +124,13 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
   }, []);
 
   return (
-    <header className={`h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-4 md:px-6 fixed top-0 right-0 left-0 transition-all duration-300 ease-in-out z-20 shadow-xs ${sidebarOpen ? 'lg:left-64' : 'lg:left-0'}`}>
+    <header 
+      className={`h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center justify-between px-3 sm:px-4 md:px-6 fixed top-0 right-0 left-0 transition-all duration-300 ease-in-out z-20 shadow-xs overflow-hidden ${sidebarOpen ? 'lg:left-64' : 'lg:left-0'}`}
+      style={{
+        paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+        paddingLeft: 'max(0.75rem, env(safe-area-inset-left))'
+      }}
+    >
 
       {/* Left */}
       <div className="flex items-center gap-3">
@@ -200,7 +206,7 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
       )}
 
       {/* Right */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 ml-auto pr-0.5 sm:pr-1">
 
         {/* Language */}
         <div className="relative hidden sm:block">
@@ -307,14 +313,14 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
               style={{ background: 'linear-gradient(135deg, #ff5c0a, #ff8c55)' }}>
               {user?.name ? user.name.slice(0, 2) : 'SA'}
             </div>
-            <div className="hidden sm:block text-left">
+            <div className="hidden md:block text-left shrink-0">
               <p className="text-xs font-bold text-slate-800 leading-tight">{user?.name || 'Super Admin'}</p>
               <div className="flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                 <p className="text-[10px] text-orange-600 font-bold">Platform Owner</p>
               </div>
             </div>
-            <ChevronDown className="w-3 h-3 text-slate-400 hidden sm:block" />
+            <ChevronDown className="w-3 h-3 text-slate-400 hidden md:block shrink-0" />
           </button>
           
           {showUserMenu && (

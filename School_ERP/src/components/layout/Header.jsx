@@ -422,7 +422,13 @@ const Header = ({ toggleSidebar }) => {
 
   return (
     <>
-      <header className="bg-white h-14 sm:h-16 border-b border-gray-200/90 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-40 shadow-2xs">
+      <header 
+        className="bg-white h-14 sm:h-16 border-b border-gray-200/90 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-40 shadow-2xs w-full max-w-full overflow-hidden"
+        style={{
+          paddingRight: 'max(1rem, env(safe-area-inset-right))',
+          paddingLeft: 'max(0.75rem, env(safe-area-inset-left))'
+        }}
+      >
         {/* Left side */}
         <div className="flex items-center gap-3 sm:gap-4">
           <button 

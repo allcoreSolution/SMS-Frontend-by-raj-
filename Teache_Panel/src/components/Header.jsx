@@ -381,30 +381,36 @@ const Header = () => {
 
   return (
     <>
-    <header className="h-[60px] bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30 box-border theme-header select-none">
+    <header 
+      className="h-[60px] bg-white border-b border-gray-200 flex items-center justify-between px-2.5 sm:px-4 lg:px-6 sticky top-0 z-30 box-border theme-header select-none w-full max-w-full overflow-hidden"
+      style={{
+        paddingRight: 'max(0.75rem, env(safe-area-inset-right))',
+        paddingLeft: 'max(0.6rem, env(safe-area-inset-left))'
+      }}
+    >
       
       {/* Left Items */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         {/* Hamburger Menu Icon */}
         <button 
           title="Toggle Sidebar"
-          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer" 
+          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors cursor-pointer shrink-0" 
           onClick={toggleSidebar}
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Dynamic School Name & Logo */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {schoolInfo?.logo && (
             <img 
               src={schoolInfo.logo} 
               alt={schoolInfo?.name || 'School'} 
-              className="w-5 h-5 object-contain rounded"
+              className="w-5 h-5 object-contain rounded shrink-0"
             />
           )}
           <span 
-            className="text-[13px] sm:text-[14px] font-extrabold text-gray-800 tracking-tight hidden sm:inline-block theme-text max-w-[200px] md:max-w-[280px] truncate"
+            className="text-[13px] sm:text-[14px] font-extrabold text-gray-800 tracking-tight hidden sm:inline-block theme-text max-w-[130px] md:max-w-[180px] lg:max-w-[240px] truncate shrink min-w-0"
             title={schoolInfo?.name || 'School ERP'}
           >
             {schoolInfo?.name || 'School ERP'}
@@ -414,7 +420,7 @@ const Header = () => {
         {/* Command Center Button */}
         <button 
           onClick={(e) => toggle(e, 'commandCenter')}
-          className="hidden md:flex items-center gap-1 px-2.5 py-1 border border-orange-200/80 bg-orange-50/70 hover:bg-orange-100/90 rounded-lg text-[11px] font-semibold text-orange-600 ml-2 transition-all shadow-2xs cursor-pointer"
+          className="hidden xl:flex items-center gap-1 px-2.5 py-1 border border-orange-200/80 bg-orange-50/70 hover:bg-orange-100/90 rounded-lg text-[11px] font-semibold text-orange-600 ml-1 lg:ml-2 transition-all shadow-2xs cursor-pointer shrink-0"
         >
           <Palette className="w-2.5 h-2.5 text-[#ff5c0a]" />
           <span>{t('commandCenter', 'Command Center')}</span>
@@ -423,17 +429,17 @@ const Header = () => {
       </div>
       
       {/* Right Items */}
-      <div className="flex items-center gap-2 sm:gap-3 text-gray-500">
+      <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-2.5 text-gray-500 shrink-0 ml-auto min-w-0">
         
         {/* Academic Session Selector */}
         <div className="relative">
           <button 
             onClick={(e) => toggle(e, 'session')} 
-            className="hidden lg:flex items-center gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 px-2.5 py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors"
+            className="hidden lg:flex items-center gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 px-2 sm:px-2.5 py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors shrink-0"
           >
             <Calendar className="w-4 h-4 text-orange-500" />
-            <span className="text-xs font-semibold theme-text">{session}</span>
-            <ChevronDown className="w-3 h-3 text-gray-400" />
+            <span className="text-xs font-semibold theme-text hidden sm:inline">{session}</span>
+            <ChevronDown className="w-3 h-3 text-gray-400 hidden sm:inline shrink-0" />
           </button>
           {activeMenu === 'session' && (
             <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-36 bg-white border border-slate-200 shadow-xl rounded-2xl py-1.5 z-50 theme-card">
@@ -455,14 +461,14 @@ const Header = () => {
         <div className="relative">
           <button 
             onClick={(e) => toggle(e, 'lang')} 
-            className="flex items-center gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 px-2 sm:px-2.5 py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors"
+            className="flex items-center gap-1 sm:gap-1.5 cursor-pointer hover:text-gray-900 hover:bg-gray-50 p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-transparent hover:border-gray-200 transition-colors shrink-0"
             title="Change Language"
           >
-            <Globe className="w-4 h-4 text-sky-500" />
-            <span className="text-xs font-semibold theme-text">
+            <Globe className="w-4 h-4 text-sky-500 shrink-0" />
+            <span className="text-xs font-semibold theme-text hidden sm:inline">
               {supportedLanguages.find(l => l.name === currentLang)?.native || currentLang}
             </span>
-            <ChevronDown className="w-3 h-3 text-gray-400" />
+            <ChevronDown className="w-3 h-3 text-gray-400 hidden sm:inline shrink-0" />
           </button>
           {activeMenu === 'lang' && (
             <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-64 bg-white border border-slate-200 shadow-2xl rounded-2xl py-2 z-50 theme-card overflow-hidden animate-in fade-in zoom-in-95 duration-100">
@@ -495,10 +501,10 @@ const Header = () => {
         </div>
         
         {/* Global ERP Search Icon */}
-        <div className="relative flex items-center">
+        <div className="relative flex items-center shrink-0">
           <button 
             onClick={(e) => toggle(e, 'search')} 
-            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-2 rounded-xl cursor-pointer"
+            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-1.5 sm:p-2 rounded-xl cursor-pointer shrink-0"
             title="Quick Search Modules & Students"
           >
             <Search className="w-4 h-4" />
@@ -570,10 +576,10 @@ const Header = () => {
         </div>
         
         {/* Quick Add Menu */}
-        <div className="relative flex items-center">
+        <div className="relative hidden sm:flex items-center shrink-0">
           <button 
             onClick={(e) => toggle(e, 'add')} 
-            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-2 rounded-xl cursor-pointer"
+            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-1.5 sm:p-2 rounded-xl cursor-pointer shrink-0"
             title="Quick Actions"
           >
             <Plus className="w-4 h-4" />
@@ -598,10 +604,10 @@ const Header = () => {
         </div>
 
         {/* Real Backend Notifications */}
-        <div className="relative flex items-center">
+        <div className="relative flex items-center shrink-0">
           <button 
             onClick={(e) => toggle(e, 'notify')} 
-            className="relative hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-2 rounded-xl cursor-pointer"
+            className="relative hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-1.5 sm:p-2 rounded-xl cursor-pointer shrink-0"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
@@ -615,7 +621,7 @@ const Header = () => {
           {activeMenu === 'notify' && (
             <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-80 md:w-88 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 overflow-hidden theme-card animate-in fade-in duration-100">
               <div className="px-4 py-2.5 border-b border-gray-100 flex justify-between items-center bg-slate-50/70">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <span className="text-xs font-bold text-gray-800">{t('notifications', 'Notifications')}</span>
                   {unreadCount > 0 && (
                     <span className="px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold">
@@ -698,10 +704,10 @@ const Header = () => {
         </div>
         
         {/* Apps Center Shortcut Icon */}
-        <div className="flex items-center">
+        <div className="hidden sm:flex items-center shrink-0">
           <button 
             onClick={() => navigate('/apps-center')} 
-            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-2 rounded-xl cursor-pointer"
+            className="hover:text-gray-900 hover:bg-gray-100 text-gray-500 transition-colors p-1.5 sm:p-2 rounded-xl cursor-pointer shrink-0"
             title="Apps Center"
           >
             <Grid className="w-4 h-4" />
@@ -713,7 +719,7 @@ const Header = () => {
           type="button"
           onClick={handleToggleRole}
           title="Click to switch between Teacher & Staff Panel"
-          className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all cursor-pointer bg-slate-50 hover:bg-orange-50 border-slate-200 hover:border-[#ff5c0a] text-slate-700 hover:text-[#ff5c0a] shrink-0"
+          className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border transition-all cursor-pointer bg-slate-50 hover:bg-orange-50 border-slate-200 hover:border-[#ff5c0a] text-slate-700 hover:text-[#ff5c0a] shrink-0"
         >
           <span className={`w-2 h-2 rounded-full ${profile.role === 'Staff' ? 'bg-indigo-500' : 'bg-emerald-500'}`} />
           <span>{profile.role === 'Staff' ? 'Staff Desk' : 'Teacher Desk'}</span>
@@ -721,10 +727,10 @@ const Header = () => {
         </button>
 
         {/* User Profile Dropdown */}
-        <div className="relative flex items-center ml-1 border-l border-gray-200 pl-2.5 sm:pl-3">
+        <div className="relative flex items-center ml-0.5 sm:ml-1 border-l border-gray-200 pl-1.5 sm:pl-3 shrink-0 pr-0.5 sm:pr-1">
           <div 
             onClick={(e) => toggle(e, 'profile')} 
-            className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform"
+            className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform shrink-0" title={profile?.name || "Profile"}
           >
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs flex items-center justify-center bg-gradient-to-tr from-orange-500 via-amber-500 to-rose-500 text-white font-extrabold text-xs select-none shrink-0 relative">
               {profile?.avatar ? (
@@ -741,11 +747,11 @@ const Header = () => {
                 {(profile?.name || 'Staff').trim().charAt(0)}
               </span>
             </div>
-            <div className="hidden xl:flex flex-col text-left">
+            <div className="hidden 2xl:flex flex-col text-left shrink-0">
               <span className="text-xs font-bold text-gray-800 leading-tight truncate max-w-[110px]">{profile.name}</span>
               <span className="text-[10px] text-gray-400 font-medium truncate max-w-[110px]">{profile.role}</span>
             </div>
-            <ChevronDown className="w-3 h-3 text-gray-400 hidden xl:block" />
+            <ChevronDown className="w-3 h-3 text-gray-400 hidden 2xl:block shrink-0" />
           </div>
 
           {activeMenu === 'profile' && (
@@ -760,7 +766,7 @@ const Header = () => {
                 onClick={handleToggleRole} 
                 className="px-4 py-2 flex items-center justify-between text-xs text-indigo-600 hover:bg-indigo-50 cursor-pointer font-bold transition-colors"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                   <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
                   <span>Switch to {profile?.role === 'Staff' ? 'Teacher' : 'Staff'}</span>
                 </div>
@@ -802,7 +808,7 @@ const Header = () => {
       <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-xs p-4" onClick={() => setActiveMenu(null)}>
         <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150" onClick={e => e.stopPropagation()}>
           <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-slate-50/50">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 min-w-0">
               <Sliders className="w-5 h-5 text-orange-500" />
               <h3 className="text-sm font-bold text-gray-800">{t('settings', 'System Preferences & Settings')}</h3>
             </div>
