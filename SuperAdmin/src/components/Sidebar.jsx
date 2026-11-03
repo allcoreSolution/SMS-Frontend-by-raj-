@@ -162,8 +162,9 @@ const NavItem = ({ item, onClose, isOpen, onToggle }) => {
     return (
       <li className="mb-0.5">
         <button
+          type="button"
           onClick={onToggle}
-          className={`w-full flex items-center justify-between px-3 py-2 -ml-3 relative transition-all duration-200 border-l-[3px] rounded-r-xl ` +
+          className={`w-full flex items-center justify-between px-3 py-2 -ml-3 relative transition-all duration-200 border-l-[3px] rounded-r-xl cursor-pointer ` +
             (isChildActive ? 'text-white shadow-xs font-bold' : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent')
           }
           style={isChildActive ? { backgroundColor: item.bg || 'rgba(255,92,10,0.15)', borderColor: item.color || '#ff5c0a' } : {}}
@@ -207,7 +208,7 @@ const NavItem = ({ item, onClose, isOpen, onToggle }) => {
     <li className="mb-0.5">
       <NavLink to={item.to} end={item.to === '/'} onClick={onClose}
         className={({ isActive }) =>
-          `flex items-center gap-3 px-3 py-2 -ml-3 relative transition-all duration-200 border-l-[3px] rounded-r-xl ` +
+          `flex items-center gap-3 px-3 py-2 -ml-3 relative transition-all duration-200 border-l-[3px] rounded-r-xl cursor-pointer ` +
           (isActive 
             ? 'text-white shadow-xs font-bold' 
             : 'text-slate-300 hover:text-white hover:bg-white/5 border-transparent')
@@ -280,7 +281,7 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
   return (
     <aside
       className={`
-        fixed left-0 top-0 h-screen w-64 z-30 flex flex-col overflow-hidden
+        fixed left-0 top-0 h-screen w-64 z-50 flex flex-col overflow-hidden
         transition-transform duration-300 ease-in-out bg-[#131927] border-r border-[#1e2638] shadow-2xl
         ${isMobileVisible ? 'translate-x-0' : '-translate-x-full'}
         ${desktopOpen ? 'lg:translate-x-0' : 'lg:-translate-x-full'}
