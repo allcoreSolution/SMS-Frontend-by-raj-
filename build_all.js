@@ -6,8 +6,9 @@ const rootDir = __dirname;
 const distDir = path.join(rootDir, 'dist');
 
 console.log('====================================================');
-console.log('🚀 Starting Unified School ERP Master Build...');
-console.log(`Target output: ${distDir}`);
+console.log('🚀 Starting Unified School ERP Master Build on Render...');
+console.log(`Repository Root: ${rootDir}`);
+console.log(`Target Output:   ${distDir}`);
 console.log('====================================================');
 
 // Clean and recreate dist directory
@@ -16,11 +17,29 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-// Helper to run build for a panel
+// Helper to install & build a panel
 function buildPanel(panelName, subpath, targetFolder) {
-  console.log(`\n📦 Building ${panelName} (Subpath: ${subpath})...`);
+  console.log(`\n----------------------------------------------------`);
+  console.log(`📦 Processing ${panelName} (Subpath: ${subpath})...`);
   const panelDir = path.join(rootDir, panelName);
-  
+
+  if (!fs.existsSync(panelDir)) {
+    console.error(`❌ Directory not found: ${panelDir}`);
+    return;
+  }
+
+  // Auto-install dependencies on fresh Render clone if node_modules missing
+  const nodeModulesDir = path.join(panelDir, 'node_modules');
+  if (!fs.existsSync(nodeModulesDir)) {
+    console.log(`📥 Installing dependencies for ${panelName}...`);
+    execSync('npm install --prefer-offline --no-audit --progress=false', {
+      cwd: panelDir,
+      stdio: 'inherit'
+    });
+  }
+
+  // Run build
+  console.log(`⚡ Building ${panelName}...`);
   execSync('npm run build', {
     cwd: panelDir,
     stdio: 'inherit',
@@ -43,7 +62,7 @@ function buildPanel(panelName, subpath, targetFolder) {
       // Root app (Multi_School_Erp)
       fs.cpSync(panelDist, destDir, { recursive: true });
     }
-    console.log(`✅ ${panelName} copied to ${targetFolder ? 'dist/' + targetFolder : 'dist/'}`);
+    console.log(`✅ ${panelName} successfully copied to ${targetFolder ? 'dist/' + targetFolder : 'dist/'}`);
   } else {
     throw new Error(`Build failed: dist folder not found for ${panelName}`);
   }
@@ -79,7 +98,7 @@ console.log('✅ Android APKs copied to dist/apk/');
 
 console.log('\n====================================================');
 console.log('🎉 ALL 8 PANELS UNIFIED BUILD COMPLETE!');
-console.log('Single distribution folder ready at School-ERP/dist:');
+console.log('Single distribution folder ready at dist:');
 console.log(' - /            -> Multi_School_Erp (Landing Hub)');
 console.log(' - /admin/      -> School_ERP (Admin Master ERP)');
 console.log(' - /teacher/    -> Teache_Panel (Teacher & Staff)');
@@ -90,4 +109,3 @@ console.log(' - /superadmin/ -> SuperAdmin (SaaS Multi-Tenant)');
 console.log(' - /branch/     -> Branch-Admin (Branch Network)');
 console.log(' - /apk/        -> Android APKs');
 console.log('====================================================');
-
