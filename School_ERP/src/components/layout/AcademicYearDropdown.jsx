@@ -29,11 +29,12 @@ const AcademicYearDropdown = () => {
     <div className="relative shrink-0" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-1 px-1.5 sm:px-2 py-1 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
+        className="flex items-center gap-1 px-1 sm:px-2 py-1 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
+        title={`Academic Year: ${selectedYear}`}
       >
-        <CalendarDays className="w-3.5 h-3.5 text-gray-500" />
-        <span>{selectedYear.replace('20', '').replace('-20', '-')}</span>
-        <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <CalendarDays className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+        <span className="hidden xs:inline text-[10.5px] sm:text-xs">{selectedYear.replace('20', '').replace('-20', '-')}</span>
+        <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform hidden sm:inline shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (

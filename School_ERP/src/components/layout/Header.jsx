@@ -423,14 +423,14 @@ const Header = ({ toggleSidebar }) => {
   return (
     <>
       <header 
-        className="bg-white h-14 sm:h-16 border-b border-gray-200/90 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-40 shadow-2xs w-full max-w-full overflow-hidden"
+        className="bg-white h-14 sm:h-16 border-b border-gray-200/90 flex items-center justify-between px-2 sm:px-6 sticky top-0 z-40 shadow-2xs w-full max-w-full"
         style={{
-          paddingRight: 'max(1rem, env(safe-area-inset-right))',
-          paddingLeft: 'max(0.75rem, env(safe-area-inset-left))'
+          paddingRight: 'max(0.6rem, env(safe-area-inset-right))',
+          paddingLeft: 'max(0.5rem, env(safe-area-inset-left))'
         }}
       >
         {/* Left side */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex items-center gap-1.5 sm:gap-4 min-w-0 flex-1 mr-1 sm:mr-2">
           <button 
             onClick={toggleSidebar} 
             className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-700 transition-colors cursor-pointer"
@@ -439,7 +439,7 @@ const Header = ({ toggleSidebar }) => {
             <Menu className="w-5 h-5" />
           </button>
           
-          <div className="relative flex items-center gap-2 sm:gap-3 min-w-0" ref={schoolDropdownRef}>
+          <div className="relative flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1" ref={schoolDropdownRef}>
             <button
               onClick={() => setIsSchoolDropdownOpen(prev => !prev)}
               className="flex items-center gap-1.5 py-1 px-2 -ml-1 rounded-lg hover:bg-slate-100 transition-colors group cursor-pointer text-left"
@@ -448,7 +448,7 @@ const Header = ({ toggleSidebar }) => {
               <div className="w-6 h-6 rounded-md bg-gradient-to-tr from-[#ff5c0a] to-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
                 <Building className="w-3.5 h-3.5" />
               </div>
-              <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[130px] xs:max-w-[190px] sm:max-w-[260px] md:max-w-none">
+              <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate min-w-0 max-w-[100px] xs:max-w-[160px] sm:max-w-[260px] md:max-w-none">
                 {activeSchool?.schoolName || currentUserData?.tenant?.schoolName || (localStorage.getItem('schoolName') !== 'Greenwood International School' ? localStorage.getItem('schoolName') : '') || 'RAM INTERNATIONAL SCHOOL'}
               </span>
               <ChevronDown className={`w-3.5 h-3.5 text-gray-400 group-hover:text-gray-700 transition-transform duration-200 shrink-0 ${isSchoolDropdownOpen ? 'rotate-180' : ''}`} />
@@ -530,7 +530,7 @@ const Header = ({ toggleSidebar }) => {
         </div>
 
         {/* Right side - Matching Screenshot */}
-        <div ref={menuRef} className="flex items-center gap-1.5 sm:gap-2.5 shrink-0 ml-auto">
+        <div ref={menuRef} className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto">
           {/* Academic Session & Language */}
           <div className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-gray-700 shrink-0">
             <AcademicYearDropdown />
@@ -553,7 +553,7 @@ const Header = ({ toggleSidebar }) => {
           <button 
             type="button"
             onClick={() => setIsSearchModalOpen(true)}
-            className="2xl:hidden w-8 h-8 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
+            className="2xl:hidden w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer shrink-0"
             title="Search (Ctrl+K)"
           >
             <Search className="w-4 h-4" />
@@ -630,7 +630,7 @@ const Header = ({ toggleSidebar }) => {
           <div className="relative shrink-0">
             <button 
               onClick={() => setActiveMenu(activeMenu === 'notif' ? null : 'notif')}
-              className={`w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center transition-all relative shrink-0 cursor-pointer ${
+              className={`w-7 h-7 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center transition-all relative shrink-0 cursor-pointer ${
                 activeMenu === 'notif' ? 'bg-orange-50 text-[#ff5c0a] ring-2 ring-orange-500/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
               }`}
               title="Notifications"
@@ -740,7 +740,7 @@ const Header = ({ toggleSidebar }) => {
           </div>
 
           {/* User Profile - Always fully visible with right safe margin */}
-          <div className="relative shrink-0 pr-1 sm:pr-2">
+          <div className="relative shrink-0 pr-0.5 sm:pr-1">
             <button 
               onClick={() => setActiveMenu(activeMenu === 'profile' ? null : 'profile')}
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 transition-all cursor-pointer overflow-hidden shrink-0 border border-white"

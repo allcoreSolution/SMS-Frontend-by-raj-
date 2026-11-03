@@ -155,16 +155,16 @@ const LanguageDropdown = () => {
     <div className="relative shrink-0" ref={dropdownRef}>
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer shrink-0 ${
+        className={`flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer shrink-0 ${
           isOpen 
             ? 'bg-orange-50 text-[#ff5c0a] border-orange-200 ring-2 ring-orange-500/20' 
             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-orange-50 hover:text-[#ff5c0a]'
         }`}
-        title="Change Portal Language"
+        title={`Language: ${selectedLang}`}
       >
-        <span className="text-sm leading-none">{currentFlag}</span>
+        <span className="text-sm leading-none shrink-0">{currentFlag}</span>
         <span className="hidden sm:inline font-bold">{selectedLang}</span>
-        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform hidden sm:inline shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (

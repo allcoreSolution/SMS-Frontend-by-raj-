@@ -67,7 +67,7 @@ export default function ModulesPage() {
     <div className="min-h-screen bg-[#fdfdfd] overflow-hidden">
       <Navbar />
       
-      <main className="mt-[68px] sm:mt-[80px]">
+      <main className="mt-[72px] sm:mt-[80px]">
         {/* Header Section */}
         <section className="py-8 lg:py-10 px-4 sm:px-6 lg:px-12 w-full border-b-[2px] border-gray-900 bg-[#111827] relative overflow-hidden">
            <div className="absolute inset-0 bg-grid-pattern opacity-30" />
