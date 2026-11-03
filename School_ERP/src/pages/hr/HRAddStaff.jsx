@@ -163,7 +163,7 @@ export default function HRAddStaff() {
           confirmationDate: s.confirmationDate ? s.confirmationDate.split('T')[0] : '',
           employeeCode: s.staffId || s.employeeCode || '',
           employmentType: s.employmentType || 'Full-Time',
-          reportingManager: s.reportingManager || '',
+          reportingManager: s.reportingManager?._id || (typeof s.reportingManager === 'string' ? s.reportingManager : '') || '',
           fathersName: s.fathersName || '',
           mothersName: s.mothersName || '',
           emergencyContactName: s.emergencyContactName || '',
