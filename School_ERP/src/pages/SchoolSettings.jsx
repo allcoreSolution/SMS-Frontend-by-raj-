@@ -48,13 +48,13 @@ export default function SchoolSettings() {
   const [saving, setSaving] = useState(false);
 
   // Profile Form States
-  const [schoolName, setSchoolName] = useState("Greenwood International School");
-  const [shortName, setShortName] = useState("GIS");
-  const [email, setEmail] = useState("admin@greenwood.edu");
-  const [phone, setPhone] = useState("+91 98765 43210");
-  const [principalName, setPrincipalName] = useState("Dr. Aris Thorne");
+  const [schoolName, setSchoolName] = useState("RAM INTERNATIONAL SCHOOL");
+  const [shortName, setShortName] = useState("RIS");
+  const [email, setEmail] = useState("ram@gmail.com");
+  const [phone, setPhone] = useState("8694893893");
+  const [principalName, setPrincipalName] = useState("Principal");
   const [country, setCountry] = useState("India (+91)");
-  const [address, setAddress] = useState("42 Knowledge Park, Silicon Valley Boulevard, Sector 62");
+  const [address, setAddress] = useState("Main Campus");
   const [schoolLogo, setSchoolLogo] = useState("");
   const [favicon, setFavicon] = useState("");
 
@@ -247,6 +247,12 @@ export default function SchoolSettings() {
         settingsService.saveSetting("attendance_settings", attendancePayload),
         settingsService.saveSetting("security_settings", securityPayload)
       ]);
+
+      // Propagate school name update globally
+      localStorage.setItem('schoolName', schoolName);
+      window.dispatchEvent(new CustomEvent('school_changed', { detail: { schoolName } }));
+      window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: { schoolName } }));
+      window.dispatchEvent(new CustomEvent('command_center_refresh_data'));
 
       Swal.fire({
         icon: "success",

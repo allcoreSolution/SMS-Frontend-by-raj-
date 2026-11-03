@@ -153,7 +153,11 @@ const LiveActivity = () => {
     fetchRealActivities();
     const handleRefresh = () => fetchRealActivities();
     window.addEventListener('command_center_refresh_data', handleRefresh);
-    return () => window.removeEventListener('command_center_refresh_data', handleRefresh);
+    window.addEventListener('school_changed', handleRefresh);
+    return () => {
+      window.removeEventListener('command_center_refresh_data', handleRefresh);
+      window.removeEventListener('school_changed', handleRefresh);
+    };
   }, []);
 
   const filteredActivities = filter === 'All' 

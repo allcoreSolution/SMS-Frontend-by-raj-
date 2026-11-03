@@ -54,15 +54,24 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Active School Name State
+  const [currentSchoolName, setCurrentSchoolName] = useState(() => {
+    const s = localStorage.getItem('schoolName');
+    return (s && s !== 'Greenwood International School') ? s : 'RAM INTERNATIONAL SCHOOL';
+  });
+
   // Fetch real metrics from backend API
   const fetchStats = async () => {
     try {
+      const activeTenantId = localStorage.getItem('schoolId') || localStorage.getItem('active_school_id') || '';
+      const params = activeTenantId ? { tenant: activeTenantId } : {};
+
       const [studentRes, transactionRes, attRes, staffRes, feesDashRes, noticeRes] = await Promise.allSettled([
-        studentService.getStudents({ limit: 1 }),
-        financeService.getAllTransactions({ limit: 100 }),
-        attendanceService.getAttendanceSummary(),
-        hrService.getStaff({ limit: 1 }),
-        axiosInstance.get('/fees-dashboard'),
+        studentService.getStudents({ limit: 1, ...params }),
+        financeService.getAllTransactions({ limit: 100, ...params }),
+        attendanceService.getAttendanceSummary(params),
+        hrService.getStaff({ limit: 1, ...params }),
+        axiosInstance.get('/fees-dashboard', { params }),
         noticeService.getNotices()
       ]);
 
@@ -120,14 +129,22 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchStats();
-    const handleRefresh = () => fetchStats();
+    const handleRefresh = () => {
+      const s = localStorage.getItem('schoolName');
+      if (s && s !== 'Greenwood International School') setCurrentSchoolName(s);
+      fetchStats();
+    };
     window.addEventListener('command_center_refresh_data', handleRefresh);
-    return () => window.removeEventListener('command_center_refresh_data', handleRefresh);
+    window.addEventListener('school_changed', handleRefresh);
+    return () => {
+      window.removeEventListener('command_center_refresh_data', handleRefresh);
+      window.removeEventListener('school_changed', handleRefresh);
+    };
   }, []);
 
   // User & School greeting
   const schoolDisplayName = userData?.username || userData?.name || 'school';
-  const schoolName = userData?.tenant?.schoolName || 'ALL CORE SOLUTION';
+  const schoolName = currentSchoolName || userData?.tenant?.schoolName || 'RAM INTERNATIONAL SCHOOL';
 
   // Time-based greeting with localization
   const hour = currentDate.getHours();

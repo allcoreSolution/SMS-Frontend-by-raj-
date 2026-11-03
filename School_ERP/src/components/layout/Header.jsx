@@ -28,10 +28,12 @@ import {
   Bus,
   Bed,
   Clock,
-  Video
+  Video,
+  Globe
 } from "lucide-react";
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useRef, useEffect } from 'react';
+import axiosInstance from '../../api/axios';
 import CommandCenterModal from './CommandCenterModal';
 import LanguageDropdown from './LanguageDropdown';
 import AcademicYearDropdown from './AcademicYearDropdown';
@@ -75,6 +77,85 @@ const Header = ({ toggleSidebar }) => {
     window.addEventListener('user_profile_updated', handleProfileUpdate);
     return () => window.removeEventListener('user_profile_updated', handleProfileUpdate);
   }, []);
+
+  // Dynamic School / Tenant State
+  const [schools, setSchools] = useState([]);
+  const [activeSchool, setActiveSchool] = useState(() => {
+    try {
+      const savedName = localStorage.getItem('schoolName');
+      const savedId = localStorage.getItem('active_school_id') || localStorage.getItem('schoolId');
+      if (savedName && savedName !== 'Greenwood International School') {
+        return { _id: savedId, schoolName: savedName };
+      }
+    } catch (_) {}
+    return null;
+  });
+  const [isSchoolDropdownOpen, setIsSchoolDropdownOpen] = useState(false);
+  const schoolDropdownRef = useRef(null);
+
+  useEffect(() => {
+    const fetchSchools = async () => {
+      try {
+        const res = await axiosInstance.get('/tenant/list');
+        const list = Array.isArray(res.data?.data) ? res.data.data : [];
+        if (list.length > 0) {
+          setSchools(list);
+          const savedId = localStorage.getItem('active_school_id') || localStorage.getItem('schoolId');
+          const savedName = localStorage.getItem('schoolName');
+          
+          let current = list.find(s => s._id === savedId || (savedName && savedName !== 'Greenwood International School' && s.schoolName === savedName));
+          if (!current) {
+            const userTenantId = currentUserData?.tenant?._id || currentUserData?.tenant;
+            if (userTenantId) {
+              current = list.find(s => s._id === userTenantId);
+            }
+          }
+          if (!current) {
+            current = list[0]; // Default to first registered school (RAM INTERNATIONAL SCHOOL)
+          }
+
+          if (current) {
+            setActiveSchool(current);
+            localStorage.setItem('active_school_id', current._id);
+            localStorage.setItem('schoolId', current._id);
+            localStorage.setItem('schoolName', current.schoolName);
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load schools list:', e);
+      }
+    };
+    fetchSchools();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (schoolDropdownRef.current && !schoolDropdownRef.current.contains(e.target)) {
+        setIsSchoolDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSelectSchool = (school) => {
+    if (!school) {
+      setActiveSchool({ _id: '', schoolName: 'All Schools (Global Network)' });
+      localStorage.removeItem('active_school_id');
+      localStorage.removeItem('schoolId');
+      localStorage.setItem('schoolName', 'All Schools (Global Network)');
+      window.dispatchEvent(new CustomEvent('school_changed', { detail: null }));
+    } else {
+      setActiveSchool(school);
+      localStorage.setItem('active_school_id', school._id);
+      localStorage.setItem('schoolId', school._id);
+      localStorage.setItem('schoolName', school.schoolName);
+      window.dispatchEvent(new CustomEvent('school_changed', { detail: school }));
+    }
+    setIsSchoolDropdownOpen(false);
+    window.dispatchEvent(new CustomEvent('command_center_refresh_data'));
+    window.dispatchEvent(new CustomEvent('user_profile_updated'));
+  };
 
   // Helpers to persist read notification IDs across reloads
   const getReadNotificationIds = () => {
@@ -352,10 +433,75 @@ const Header = ({ toggleSidebar }) => {
             <Menu className="w-5 h-5" />
           </button>
           
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[120px] xs:max-w-[180px] sm:max-w-none" title={currentUserData?.tenant?.schoolName || currentUserData?.schoolName || 'ALL CORE SOLUTION'}>
-              {currentUserData?.tenant?.schoolName || currentUserData?.schoolName || localStorage.getItem('schoolName') || 'ALL CORE SOLUTION'}
-            </span>
+          <div className="relative flex items-center gap-2 sm:gap-3 min-w-0" ref={schoolDropdownRef}>
+            <button
+              onClick={() => setIsSchoolDropdownOpen(prev => !prev)}
+              className="flex items-center gap-1.5 py-1 px-2 -ml-1 rounded-lg hover:bg-slate-100 transition-colors group cursor-pointer text-left"
+              title="Click to switch active school"
+            >
+              <div className="w-6 h-6 rounded-md bg-gradient-to-tr from-[#ff5c0a] to-amber-500 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                <Building className="w-3.5 h-3.5" />
+              </div>
+              <span className="text-xs sm:text-base font-bold text-gray-800 tracking-tight truncate max-w-[130px] xs:max-w-[190px] sm:max-w-[260px] md:max-w-none">
+                {activeSchool?.schoolName || currentUserData?.tenant?.schoolName || (localStorage.getItem('schoolName') !== 'Greenwood International School' ? localStorage.getItem('schoolName') : '') || 'RAM INTERNATIONAL SCHOOL'}
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-gray-400 group-hover:text-gray-700 transition-transform duration-200 shrink-0 ${isSchoolDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* School Switcher Dropdown Menu */}
+            {isSchoolDropdownOpen && (
+              <div className="absolute top-full left-0 mt-2 w-72 sm:w-80 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="px-3.5 py-2 border-b border-slate-100">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Select Active Institution</p>
+                  <p className="text-xs text-slate-600 font-medium">Real-time data filters by selected school</p>
+                </div>
+                
+                <div className="max-h-60 overflow-y-auto py-1">
+                  {schools.map(s => {
+                    const isSelected = activeSchool?._id === s._id || (!activeSchool?._id && s._id === localStorage.getItem('active_school_id'));
+                    return (
+                      <button
+                        key={s._id}
+                        onClick={() => handleSelectSchool(s)}
+                        className={`w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer ${isSelected ? 'bg-orange-50/70 text-orange-950 font-bold' : 'text-slate-700'}`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-[#ff5c0a] text-white shadow-xs' : 'bg-slate-100 text-slate-600'}`}>
+                            <Building className="w-4 h-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-bold truncate">{s.schoolName}</p>
+                            <p className="text-[10px] text-slate-400 truncate">{s.address || s.city || 'Campus Branch'} • {s.phone || 'Active'}</p>
+                          </div>
+                        </div>
+                        {isSelected && (
+                          <CheckCircle2 className="w-4 h-4 text-[#ff5c0a] shrink-0" />
+                        )}
+                      </button>
+                    );
+                  })}
+
+                  {/* All Schools Option for SuperAdmin */}
+                  <button
+                    onClick={() => handleSelectSchool(null)}
+                    className={`w-full px-3.5 py-2.5 flex items-center justify-between text-left hover:bg-slate-50 border-t border-slate-100 transition-colors cursor-pointer ${!activeSchool?._id ? 'bg-blue-50/70 text-blue-950 font-bold' : 'text-slate-700'}`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${!activeSchool?._id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600'}`}>
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs font-bold truncate">All Schools (Global Network)</p>
+                        <p className="text-[10px] text-slate-400 truncate">Consolidated institutional view</p>
+                      </div>
+                    </div>
+                    {!activeSchool?._id && (
+                      <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
             
             {/* Command Center Pill - Desktop */}
             <div className="hidden lg:block relative shrink-0">
