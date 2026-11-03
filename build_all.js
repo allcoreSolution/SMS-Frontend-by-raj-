@@ -96,6 +96,20 @@ const parentDir = path.join(rootDir, '..');
 });
 console.log('✅ Android APKs copied to dist/apk/');
 
+// 4. Generate SPA _redirects for Render Static Sites
+const redirectsContent = [
+  '/admin/*        /admin/index.html       200',
+  '/teacher/*      /teacher/index.html     200',
+  '/accountant/*   /accountant/index.html  200',
+  '/student/*      /student/index.html     200',
+  '/driver/*       /driver/index.html      200',
+  '/superadmin/*   /superadmin/index.html  200',
+  '/branch/*       /branch/index.html      200',
+  '/*              /index.html             200'
+].join('\n');
+fs.writeFileSync(path.join(distDir, '_redirects'), redirectsContent, 'utf8');
+console.log('✅ Render Static Site _redirects file written to dist/_redirects');
+
 console.log('\n====================================================');
 console.log('🎉 ALL 8 PANELS UNIFIED BUILD COMPLETE!');
 console.log('Single distribution folder ready at dist:');
