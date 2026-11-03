@@ -58,3 +58,4 @@ export const getCode128Bars = (text = 'STAFF') => {
 };
 
 export default getCode128Bars;
+

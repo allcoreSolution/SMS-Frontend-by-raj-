@@ -372,8 +372,13 @@ const Dashboard = () => {
       if (res.success && res.data) {
         setStats(res.data);
       }
-      const p = localDb.getProfile();
-      if (p) setProfile(p);
+      const pRes = await accountantService.getProfile();
+      if (pRes?.data) {
+        setProfile(pRes.data);
+      } else {
+        const p = localDb.getProfile();
+        if (p) setProfile(p);
+      }
     } catch (e) {
       console.error('Error loading dashboard stats:', e);
     } finally {
@@ -1143,11 +1148,17 @@ const Dashboard = () => {
               
               <div className="p-4 flex flex-col items-center">
                 <div className="relative">
-                  <img 
-                    src={profile.avatar || "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=128&h=128&q=80"} 
-                    alt={profile.name} 
-                    className="w-16 h-16 rounded-full border-[2px] border-purple-200 object-cover shadow-2xs"
-                  />
+                  {profile.avatar ? (
+                    <img 
+                      src={profile.avatar} 
+                      alt={profile.name} 
+                      className="w-16 h-16 rounded-full border-[2px] border-purple-200 object-cover shadow-2xs"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full border-[2px] border-purple-200 bg-gradient-to-tr from-[#605ca8] to-purple-400 text-white font-bold text-xl flex items-center justify-center shadow-2xs">
+                      {profile.name ? profile.name.charAt(0).toUpperCase() : 'A'}
+                    </div>
+                  )}
                   <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" title="Active on duty" />
                 </div>
 

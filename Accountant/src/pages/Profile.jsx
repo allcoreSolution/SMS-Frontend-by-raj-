@@ -14,36 +14,39 @@ import { accountantService } from '../api/accountantService';
 import Swal from 'sweetalert2';
 
 const defaultProfileData = {
-  name: 'Accountant',
-  staffId: '',
+  name: 'Ravi',
+  staffId: '105',
   role: 'Accountant',
-  designation: 'Senior Accountant & Ledger Specialist',
+  designation: 'Accountant',
   department: 'Finance & Accounts',
-  basicSalary: '35000',
-  dateOfJoining: '2020-06-15',
-  email: '',
-  phone: '',
-  address: '12, Green Park Avenue, South Extension, New Delhi - 110016',
-  permanentAddress: 'H.No 45, Civil Lines, Jaipur, Rajasthan - 302006',
-  bio: 'Experienced school accountant with 6+ years managing institutional budgets, automated fee billing, audit reconciliations, and staff payrolls.',
-  avatar: '',
+  basicSalary: '0',
+  dateOfJoining: '2026-11-01',
+  confirmationDate: '2026-11-02',
+  email: 'ravi123@gmail.com',
+  phone: '7678840056',
+  address: 'Indra Nagar  , Sector - 12 , Lucknow',
+  permanentAddress: 'Indra Nagar  , Sector - 12 , Lucknow',
+  bio: 'Staff Accountant managing fees, ledgers, daybook transactions and institutional collections.',
+  avatar: 'http://localhost:5050/uploads/staffPhotos/photo-1793690174365-725553430.jpg',
   gender: 'Male',
-  dob: '1990-08-14',
-  maritalStatus: 'Married',
-  fatherName: 'Suresh Kumar',
-  motherName: 'Sunita Devi',
-  qualification: 'M.Com (Finance), Tally ERP 9, Advanced Excel',
-  workExperience: '6.4 Years in Educational & Non-Profit Institutions',
-  bloodGroup: 'B+',
-  emergencyContact: 'Sunita Devi (Mother)',
-  emergencyPhone: '9876509999',
-  bankName: 'HDFC Bank Ltd.',
-  accountNo: '50100482910482',
-  ifsc: 'HDFC0001234',
-  panNo: 'ABCDE1234F',
-  uanNo: '100928374619',
+  dob: '2000-10-02',
+  maritalStatus: 'Single',
+  fatherName: 'Mr. Prakash',
+  motherName: 'Ms. Ranjana',
+  qualification: 'M.Sc.',
+  workExperience: '7 Years',
+  bloodGroup: 'A-',
+  emergencyContact: '9074870909',
+  emergencyPhone: '9074870909',
+  bankName: 'SBI',
+  accountNo: '6262268278762',
+  ifsc: 'SBIN0007865',
+  branchName: 'BKT',
+  accountTitle: 'Ravi',
+  panNo: '',
+  uanNo: '',
   shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
-  biometricId: 'BIO-9821',
+  biometricId: 'BIO-105',
 };
 
 const PAYSLIP_RECORDS = [
@@ -323,12 +326,18 @@ const Profile = () => {
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
             {/* Avatar with Verified Status */}
             <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-white/20 backdrop-blur-md border-2 border-white/40 shadow-lg overflow-hidden">
-                <img
-                  src={profile.avatar || 'https://randomuser.me/api/portraits/men/32.jpg'}
-                  alt="Staff Profile"
-                  className="w-full h-full rounded-full object-cover"
-                />
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-white/20 backdrop-blur-md border-2 border-white/40 shadow-lg overflow-hidden flex items-center justify-center">
+                {profile.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt="Staff Profile"
+                    className="w-full h-full rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#605ca8] to-purple-400 text-white font-black text-3xl flex items-center justify-center">
+                    {profile.name ? profile.name.charAt(0).toUpperCase() : 'R'}
+                  </div>
+                )}
               </div>
               <span
                 className="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center text-white"
@@ -504,17 +513,17 @@ const Profile = () => {
               <div className="flex items-center justify-between">
                 <span className="text-gray-500">Blood Group:</span>
                 <span className="bg-rose-50 text-rose-700 border border-rose-200 font-bold px-2 py-0.5 rounded text-[11px]">
-                  {profile.bloodGroup || 'B+'}
+                  {profile.bloodGroup || 'A-'}
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-500">Emergency Contact:</span>
-                <span className="font-semibold text-gray-700">{profile.emergencyContact || 'Sunita Devi'}</span>
+                <span className="font-semibold text-gray-700">{profile.emergencyContact || 'Family Contact'}</span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-gray-500">Emergency Phone:</span>
                 <a href={`tel:${profile.emergencyPhone}`} className="font-semibold text-rose-600 hover:underline">
-                  {profile.emergencyPhone || '9876509999'}
+                  {profile.emergencyPhone || 'Not Configured'}
                 </a>
               </div>
             </div>
@@ -577,11 +586,11 @@ const Profile = () => {
                     </div>
                     <div>
                       <span className="text-gray-500 block">Father's Name</span>
-                      <span className="font-semibold text-gray-800">{profile.fatherName || 'Suresh Kumar'}</span>
+                      <span className="font-semibold text-gray-800">{profile.fatherName || 'Not Configured'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Mother's Name</span>
-                      <span className="font-semibold text-gray-800">{profile.motherName || 'Sunita Devi'}</span>
+                      <span className="font-semibold text-gray-800">{profile.motherName || 'Not Configured'}</span>
                     </div>
                   </div>
                 </div>
@@ -594,16 +603,16 @@ const Profile = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-xs">
                     <div>
                       <span className="text-gray-500 block">Highest Qualification</span>
-                      <span className="font-semibold text-gray-800">{profile.qualification}</span>
+                      <span className="font-semibold text-gray-800">{profile.qualification || 'M.Sc.'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Work Experience</span>
-                      <span className="font-semibold text-gray-800">{profile.workExperience}</span>
+                      <span className="font-semibold text-gray-800">{profile.workExperience || '7 Years'}</span>
                     </div>
                     <div className="sm:col-span-2">
                       <span className="text-gray-500 block">Professional Bio</span>
                       <p className="text-gray-700 bg-slate-50 p-3 rounded border border-slate-200 mt-1 leading-relaxed">
-                        {profile.bio || profile.note}
+                        {profile.bio || profile.note || 'Staff Accountant managing fees, ledgers, daybook transactions and institutional collections.'}
                       </p>
                     </div>
                   </div>
@@ -617,27 +626,27 @@ const Profile = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-3 gap-x-6 text-xs">
                     <div>
                       <span className="text-gray-500 block">Bank Name</span>
-                      <span className="font-semibold text-gray-800">{profile.bankName || 'HDFC Bank Ltd.'}</span>
+                      <span className="font-semibold text-gray-800">{profile.bankName || 'SBI'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Account Number</span>
-                      <span className="font-mono font-semibold text-gray-800">{profile.accountNo || '50100482910482'}</span>
+                      <span className="font-mono font-semibold text-gray-800">{profile.accountNo || '6262268278762'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">IFSC Code</span>
-                      <span className="font-mono font-semibold text-gray-800">{profile.ifsc || 'HDFC0001234'}</span>
+                      <span className="font-mono font-semibold text-gray-800">{profile.ifsc || 'SBIN0007865'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">PAN Card Number</span>
-                      <span className="font-mono font-semibold text-gray-800">{profile.panNo || 'ABCDE1234F'}</span>
+                      <span className="font-mono font-semibold text-gray-800">{profile.panNo || 'Not Configured'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Provident Fund (UAN)</span>
-                      <span className="font-mono font-semibold text-gray-800">{profile.uanNo || '100928374619'}</span>
+                      <span className="font-mono font-semibold text-gray-800">{profile.uanNo || 'Not Configured'}</span>
                     </div>
                     <div>
                       <span className="text-gray-500 block">Biometric Attendance ID</span>
-                      <span className="font-mono font-semibold text-indigo-600">{profile.biometricId || 'BIO-9821'}</span>
+                      <span className="font-mono font-semibold text-indigo-600">{profile.biometricId || 'BIO-105'}</span>
                     </div>
                   </div>
                 </div>

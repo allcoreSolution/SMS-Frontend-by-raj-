@@ -3,6 +3,7 @@
  * All methods return { success: true, data } so existing UI keeps working.
  */
 import localDb from './localDb';
+import axiosInstance from './axios';
 
 const ok = (data) => ({ success: true, data });
 const fail = (message) => ({ success: false, message });
@@ -361,8 +362,108 @@ export const accountantService = {
   },
 
   // ── Profile ────────────────────────────────────────────────
-  getProfile: async () => ok(localDb.getProfile()),
-  saveProfile: async (data) => ok(localDb.saveProfile(data)),
+  getProfile: async () => {
+    try {
+      let user = null;
+      try {
+        const raw = localStorage.getItem('accountant_user');
+        if (raw) user = JSON.parse(raw);
+      } catch (_) {}
+
+      let staffDoc = null;
+      if (user?._id) {
+        const res = await axiosInstance.get(`/staff/${user._id}`).catch(() => null);
+        if (res?.data?.data) staffDoc = res.data.data;
+      }
+      if (!staffDoc && user?.email) {
+        const res = await axiosInstance.get(`/staff?search=${encodeURIComponent(user.email)}`).catch(() => null);
+        if (res?.data?.data) {
+          staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
+        }
+      }
+      if (!staffDoc) {
+        const res = await axiosInstance.get('/staff?designation=Accountant').catch(() => null);
+        if (res?.data?.data) {
+          staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
+        }
+      }
+
+      if (staffDoc) {
+        const mapped = {
+          _id: staffDoc._id,
+          name: staffDoc.fullName || 'Ravi',
+          fullName: staffDoc.fullName || 'Ravi',
+          staffId: staffDoc.staffId || staffDoc.employeeCode || '105',
+          role: typeof staffDoc.role === 'object' ? staffDoc.role?.name : staffDoc.role || 'Accountant',
+          designation: staffDoc.designation || 'Accountant',
+          department: staffDoc.department || 'Finance & Accounts',
+          basicSalary: staffDoc.basicSalary || staffDoc.additionalInfo?.basicSalary || '35000',
+          dateOfJoining: staffDoc.dateOfJoining ? staffDoc.dateOfJoining.slice(0, 10) : '',
+          confirmationDate: staffDoc.confirmationDate ? staffDoc.confirmationDate.slice(0, 10) : '',
+          email: staffDoc.email || 'ravi123@gmail.com',
+          phone: staffDoc.phone || '7678840056',
+          address: staffDoc.currentAddress || '',
+          permanentAddress: staffDoc.currentAddress || '',
+          bio: staffDoc.note || '',
+          avatar: staffDoc.photo ? (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:') ? staffDoc.photo : `http://localhost:5050/${staffDoc.photo.replace(/^\/+/, '')}`) : '',
+          gender: staffDoc.gender || 'Male',
+          dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '',
+          maritalStatus: staffDoc.maritalStatus || 'Single',
+          fatherName: staffDoc.fathersName || '',
+          motherName: staffDoc.mothersName || '',
+          qualification: staffDoc.qualification || '',
+          workExperience: staffDoc.workExperience || '',
+          bloodGroup: staffDoc.bloodGroup || '',
+          emergencyContact: staffDoc.emergencyContactName || '',
+          emergencyPhone: staffDoc.emergencyContactPhone || '',
+          bankName: staffDoc.bankDetails?.bankName || '',
+          accountNo: staffDoc.bankDetails?.accountNumber || '',
+          ifsc: staffDoc.bankDetails?.ifscCode || '',
+          branchName: staffDoc.bankDetails?.branchName || '',
+          accountTitle: staffDoc.bankDetails?.accountTitle || '',
+          panNo: staffDoc.statutoryIds?.panNumber || '',
+          aadhaarNo: staffDoc.statutoryIds?.aadhaarNumber || '',
+          uanNo: staffDoc.statutoryIds?.uanNumber || '',
+          biometricId: staffDoc.biometricId || staffDoc.deviceMappingId || '',
+          shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
+        };
+
+        localDb.saveProfile(mapped);
+        return ok(mapped);
+      }
+    } catch (e) {
+      console.warn('Real staff profile fetch failed, using local profile:', e);
+    }
+    return ok(localDb.getProfile());
+  },
+  saveProfile: async (data) => {
+    localDb.saveProfile(data);
+    try {
+      if (data._id) {
+        await axiosInstance.patch(`/staff/${data._id}`, {
+          fullName: data.name || data.fullName,
+          phone: data.phone,
+          email: data.email,
+          currentAddress: data.address,
+          qualification: data.qualification,
+          workExperience: data.workExperience,
+          maritalStatus: data.maritalStatus,
+          fathersName: data.fatherName,
+          mothersName: data.motherName,
+          emergencyContactName: data.emergencyContact,
+          emergencyContactPhone: data.emergencyPhone,
+          bankDetails: {
+            bankName: data.bankName,
+            accountNumber: data.accountNo,
+            ifscCode: data.ifsc,
+            branchName: data.branchName,
+            accountTitle: data.accountTitle || data.name
+          }
+        }).catch(() => {});
+      }
+    } catch (_) {}
+    return ok(data);
+  },
 
   // ── Leaves ─────────────────────────────────────────────────
   getLeaves: async () => ok(localDb.getAll('leaves')),
