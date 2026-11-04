@@ -7,7 +7,7 @@ import {
   Settings, FileText, LifeBuoy, Server,
   MonitorPlay, Rss, BookOpen, BrainCircuit, LayoutList,
   LogOut, ChevronDown, ChevronLeft, Sparkles, Zap, Bell, X, Puzzle, CreditCard, Wallet, Plug,
-  Megaphone, Headset, Landmark, ShieldCheck
+  Megaphone, Headset, Landmark, ShieldCheck, ShoppingBag
 } from 'lucide-react';
 
 const navSections = [
@@ -21,6 +21,7 @@ const navSections = [
       { to: '/plan-addons', icon: Puzzle, label: 'Plan Add-ons', color: '#fb923c', bg: 'rgba(251,146,60,0.15)' },
       { to: '/team', icon: Users, label: 'Team', color: '#f472b6', bg: 'rgba(244,114,182,0.15)' },
       { to: '/payments', icon: CreditCard, label: 'Payments', color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
+      { to: '/license-orders', icon: ShoppingBag, label: 'License Orders', badge: '₹10K', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
       { to: '/templates', icon: LayoutTemplate, label: 'Templates', color: '#c084fc', bg: 'rgba(192,132,252,0.15)' },
       {
         icon: BarChart3, label: 'Reports', color: '#60a5fa', bg: 'rgba(96,165,250,0.15)',
@@ -221,6 +222,11 @@ const NavItem = ({ item, onClose, isOpen, onToggle }) => {
               <item.icon className="w-4 h-4 pointer-events-none transition-colors" style={{ color: isActive ? (item.color || '#ff5c0a') : 'inherit', filter: isActive ? `drop-shadow(0 0 6px ${item.color || '#ff5c0a'}80)` : 'none' }} />
             </div>
             <span className={`text-[13px] tracking-wide relative z-10 pl-1 ${isActive ? 'font-bold text-white' : 'font-medium'}`}>{item.label}</span>
+            {item.badge && (
+              <span className="ml-auto mr-1 px-1.5 py-0.5 text-[10px] font-bold rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                {item.badge}
+              </span>
+            )}
           </>
         )}
       </NavLink>

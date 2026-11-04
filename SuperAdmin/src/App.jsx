@@ -25,6 +25,7 @@ import NewOnboardingTemplate from './pages/platform/NewOnboardingTemplate';
 import Plans from './pages/plans/Plans';
 import PlanAddons from './pages/plans/PlanAddons';
 import Payments from './pages/payments/Payments';
+import LicenseOrders from './pages/platform/LicenseOrders';
 import PaymentGateways from './pages/billing/PaymentGateways';
 import WalletOversight from './pages/comms/WalletOversight';
 import RateCards from './pages/comms/RateCards';
@@ -155,6 +156,8 @@ function AppRoutes() {
               <Route path="/plans" element={<Plans />} />
               <Route path="/plan-addons" element={<PlanAddons />} />
               <Route path="/payments" element={<Payments />} />
+              <Route path="/license-orders" element={<LicenseOrders />} />
+              <Route path="/purchase-enquiries" element={<LicenseOrders />} />
               <Route path="/payment-gateways" element={<PaymentGateways />} />
               <Route path="/comms/wallets" element={<WalletOversight />} />
               <Route path="/comms/rate-cards" element={<RateCards />} />

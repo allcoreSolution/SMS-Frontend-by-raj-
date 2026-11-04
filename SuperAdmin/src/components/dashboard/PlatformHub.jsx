@@ -7,7 +7,7 @@ import {
   Layout, Palette, FileText, Menu, BookOpen,
   Map, Award, Brush, LayoutTemplate, Smartphone,
   Activity, ScanFace, Shield, Server, RefreshCw,
-  HardDrive, Database, Clock, Code, Settings, Bell, Key, Search
+  HardDrive, Database, Clock, Code, Settings, Bell, Key, Search, ShoppingBag
 } from 'lucide-react';
 
 const tools = [
@@ -21,6 +21,7 @@ const tools = [
 
   { name: 'Plans', icon: Layers, color: 'text-orange-500', path: '/plans', category: 'Billing' },
   { name: 'Payments', icon: CreditCard, color: 'text-green-500', path: '/payments', category: 'Billing' },
+  { name: 'License Orders', icon: ShoppingBag, color: 'text-amber-500', path: '/license-orders', category: 'Billing' },
   { name: 'Payment Gateways', icon: Banknote, color: 'text-blue-500', path: '/payment-gateways', category: 'Billing' },
   { name: 'Comms Wallet', icon: Wallet, color: 'text-teal-500', path: '/comms-wallet', category: 'Billing' },
   { name: 'Comms Rates', icon: PhoneCall, color: 'text-purple-500', path: '/comms-rates', category: 'Billing' },
