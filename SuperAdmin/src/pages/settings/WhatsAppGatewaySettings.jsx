@@ -411,7 +411,7 @@ export default function WhatsAppGatewaySettings() {
                       value={phoneNumberId}
                       onChange={(e) => setPhoneNumberId(e.target.value)}
                       placeholder="e.g. 109823471928374"
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-900 focus:outline-none focus:border-emerald-600"
+                      className="w-full border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-900 focus:outline-none focus:border-emerald-600"
                     />
                     <p className="text-[10px] text-slate-400 mt-1">From: Meta Developer App &gt; WhatsApp &gt; API Setup &gt; Phone Number ID</p>
                   </div>
@@ -426,7 +426,7 @@ export default function WhatsAppGatewaySettings() {
                       value={wabaId}
                       onChange={(e) => setWabaId(e.target.value)}
                       placeholder="e.g. 101928374650192"
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-900 focus:outline-none focus:border-emerald-600"
+                      className="w-full border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-900 focus:outline-none focus:border-emerald-600"
                     />
                     <p className="text-[10px] text-slate-400 mt-1">From: WhatsApp &gt; API Setup &gt; WhatsApp Business Account ID</p>
                   </div>
@@ -442,7 +442,7 @@ export default function WhatsAppGatewaySettings() {
                         value={accessToken}
                         onChange={(e) => setAccessToken(e.target.value)}
                         placeholder={session.maskedToken ? `Active Token: ${session.maskedToken} (Enter new token to update)` : 'EAAB... (Paste permanent access token)'}
-                        className="w-full border border-slate-200 rounded-xl pl-3.5 pr-10 py-2.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-600"
+                        className="w-full border border-slate-200/80 rounded-2xl pl-3.5 pr-10 py-2.5 text-xs font-mono text-slate-900 focus:outline-none focus:border-emerald-600"
                       />
                       <button
                         type="button"
@@ -466,7 +466,7 @@ export default function WhatsAppGatewaySettings() {
                       value={apiVersion}
                       onChange={(e) => setApiVersion(e.target.value)}
                       placeholder="v20.0"
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-emerald-600"
+                      className="w-full border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono text-slate-800 focus:outline-none focus:border-emerald-600"
                     />
                   </div>
 
@@ -575,7 +575,7 @@ export default function WhatsAppGatewaySettings() {
                     value={testPhone}
                     onChange={(e) => setTestPhone(e.target.value)}
                     placeholder="e.g. 919876543210 (with country code)"
-                    className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-emerald-600"
+                    className="w-full border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-emerald-600"
                   />
                   <p className="text-[10px] text-slate-400 mt-1">E.164 format with country code (e.g. 91XXXXXXXXXX for India)</p>
                 </div>
@@ -589,14 +589,14 @@ export default function WhatsAppGatewaySettings() {
                         value={templateName}
                         onChange={(e) => setTemplateName(e.target.value)}
                         placeholder="hello_world"
-                        className="flex-1 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 focus:outline-none focus:border-emerald-600"
+                        className="flex-1 border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs font-mono font-semibold text-slate-800 focus:outline-none focus:border-emerald-600"
                       />
                       <input
                         type="text"
                         value={languageCode}
                         onChange={(e) => setLanguageCode(e.target.value)}
                         placeholder="en_US"
-                        className="w-20 border border-slate-200 rounded-xl px-2.5 py-2.5 text-xs font-mono text-center text-slate-800 focus:outline-none focus:border-emerald-600"
+                        className="w-20 border border-slate-200/80 rounded-2xl px-2.5 py-2.5 text-xs font-mono text-center text-slate-800 focus:outline-none focus:border-emerald-600"
                         title="Language Code"
                       />
                     </div>
@@ -612,7 +612,7 @@ export default function WhatsAppGatewaySettings() {
                       value={testMessage}
                       onChange={(e) => setTestMessage(e.target.value)}
                       placeholder="Enter test message..."
-                      className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
+                      className="w-full border border-slate-200/80 rounded-2xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
                     />
                     <p className="text-[10px] text-slate-400 mt-1">
                       Note: Regular text messages require an active 24h conversation window opened by the recipient.

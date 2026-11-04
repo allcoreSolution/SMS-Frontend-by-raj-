@@ -76,34 +76,34 @@ export default function DashboardThemesSettings() {
                 return (
                   <div key={theme.id}
                     onClick={() => toggleAllowed(theme.id)}
-                    className={`border-2 rounded-none-none overflow-hidden flex flex-col bg-white cursor-pointer transition-all ${isAllowed ? 'border-blue-500' : 'border-gray-200 opacity-60'}`}>
+                    className={`border-2 rounded-xl overflow-hidden flex flex-col bg-white cursor-pointer transition-all ${isAllowed ? 'border-blue-500' : 'border-gray-200 opacity-60'}`}>
                     <div className={`h-20 w-full relative ${theme.bg} border-b border-gray-100 overflow-hidden`}>
                       <div className="absolute top-0 left-0 right-0 h-3 bg-white/20 border-b border-black/5 flex items-center px-1">
                         <div className="flex gap-0.5">
-                          <div className="w-1.5 h-1.5 rounded-none-none bg-red-400" />
-                          <div className="w-1.5 h-1.5 rounded-none-none bg-amber-400" />
-                          <div className="w-1.5 h-1.5 rounded-none-none bg-green-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                          <div className="w-1.5 h-1.5 rounded-full bg-green-400" />
                         </div>
                       </div>
                       <div className="flex p-1.5 pt-4 gap-1 h-full">
-                        <div className="w-1/4 h-full bg-black/5 rounded-none-none" />
+                        <div className="w-1/4 h-full bg-black/5 rounded-xl" />
                         <div className="w-3/4 h-full flex flex-col gap-1">
-                          <div className="h-4 w-full bg-black/5 rounded-none-none" />
+                          <div className="h-4 w-full bg-black/5 rounded-xl" />
                           <div className="flex gap-1 flex-1">
-                            <div className="w-1/2 h-full bg-black/5 rounded-none-none" />
-                            <div className="w-1/2 h-full bg-black/5 rounded-none-none" />
+                            <div className="w-1/2 h-full bg-black/5 rounded-xl" />
+                            <div className="w-1/2 h-full bg-black/5 rounded-xl" />
                           </div>
                         </div>
                       </div>
                       {theme.tag && (
-                        <div className="absolute top-2 right-2 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-none-none uppercase tracking-wider">
+                        <div className="absolute top-2 right-2 bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-xl uppercase tracking-wider">
                           {theme.tag}
                         </div>
                       )}
                     </div>
                     <div className="p-2.5 flex items-center justify-between bg-white">
                       <span className="text-xs font-medium text-gray-700 leading-tight">{theme.name}</span>
-                      <div className={`w-4 h-4 rounded-none-none flex items-center justify-center flex-shrink-0 ml-2 ${isAllowed ? 'bg-blue-500' : 'bg-gray-200'}`}>
+                      <div className={`w-4 h-4 rounded-xl flex items-center justify-center flex-shrink-0 ml-2 ${isAllowed ? 'bg-blue-500' : 'bg-gray-200'}`}>
                         {isAllowed && <Check className="w-3 h-3 text-white" />}
                       </div>
                     </div>
@@ -114,11 +114,11 @@ export default function DashboardThemesSettings() {
           </div>
 
           {/* Default Theme */}
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm p-5">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-5">
             <h3 className="text-sm font-semibold text-gray-800 mb-1">Default Theme for New Schools</h3>
             <p className="text-xs text-gray-500 mb-3">Applied automatically when a new school is created.</p>
             <select value={defaultTheme} onChange={e => setDefaultTheme(e.target.value)}
-              className="w-full max-w-[1150px] border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+              className="w-full max-w-[1150px] border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
               {THEMES.map(t => <option key={t.id}>{t.name}</option>)}
             </select>
           </div>
@@ -126,7 +126,7 @@ export default function DashboardThemesSettings() {
 
         <div className="bg-white border-t border-gray-100 px-6 py-3 flex justify-end flex-shrink-0">
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Dashboard Settings</>}
           </button>
         </div>

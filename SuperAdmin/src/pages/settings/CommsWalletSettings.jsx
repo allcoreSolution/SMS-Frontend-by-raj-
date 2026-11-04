@@ -26,7 +26,7 @@ function StatusBadge({ status }) {
     empty: 'bg-red-50 text-red-600 border-red-200',
   };
   return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-none-none text-[10px] font-semibold border ${map[status]}`}>
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-xl text-[10px] font-semibold border ${map[status]}`}>
       {status === 'active' ? 'Active' : status === 'low' ? 'Low Balance' : 'Empty'}
     </span>
   );
@@ -112,10 +112,10 @@ function WalletOversight() {
           { label: 'Schools Registered', value: schoolsList.length, icon: <Wallet className="w-5 h-5 text-emerald-500" /> },
           { label: 'Low / Empty Wallets', value: lowCount, icon: <TrendingDown className="w-5 h-5 text-amber-500" /> },
         ].map(s => (
-          <div key={s.label} className="bg-white border border-slate-200 rounded-none-none p-5 shadow-sm flex flex-col justify-between">
+          <div key={s.label} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
-              <div className="w-10 h-10 rounded-none-none bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
                 {s.icon}
               </div>
             </div>
@@ -125,13 +125,13 @@ function WalletOversight() {
       </div>
 
       {/* Table */}
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center justify-between">
           <h3 className="font-semibold text-gray-800 text-sm">School Wallets</h3>
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search school..."
-              className="pl-8 pr-3 py-1.5 text-xs border border-gray-200 rounded-none-none focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 w-48" />
+              className="pl-8 pr-3 py-1.5 text-xs border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 w-48" />
           </div>
         </div>
         <div className="overflow-x-auto pb-4">
@@ -153,7 +153,7 @@ function WalletOversight() {
                   <td className="px-3 py-2.5 align-middle border-x border-slate-200"><StatusBadge status={s.status} /></td>
                   <td className="px-3 py-2.5 align-middle border-x border-slate-200">
                   <button onClick={() => setTopupModal(s.id)}
-                    className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-none-none transition-colors border border-blue-200 shadow-sm">
+                    className="flex items-center gap-1 px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl transition-colors border border-blue-200 shadow-sm">
                     <Plus className="w-3.5 h-3.5" /> Top-up
                   </button>
                 </td>
@@ -165,7 +165,7 @@ function WalletOversight() {
       </div>
 
       {/* Recent Transactions */}
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5">
           <h3 className="font-semibold text-gray-800 text-sm">Recent Transactions</h3>
         </div>
@@ -183,7 +183,7 @@ function WalletOversight() {
                 <tr key={t.id} className="hover:bg-slate-50 transition-colors bg-white group border-b border-slate-200">
                   <td className="px-3 py-2.5 align-middle border-x border-slate-200 font-bold text-slate-800 w-[20%]">{t.school}</td>
                   <td className="px-3 py-2.5 align-middle border-x border-slate-200">
-                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-none-none border ${t.type === 'topup' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
+                    <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-xl border ${t.type === 'topup' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-red-50 text-red-600 border-red-200'}`}>
                       {t.type === 'topup' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                       {t.type === 'topup' ? 'Top-up' : 'Deduct'}
                     </span>
@@ -203,17 +203,17 @@ function WalletOversight() {
       {/* Top-up Modal */}
       {topupModal && (
         <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <div className="bg-white rounded-none-none shadow-xl p-6 w-80">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-80">
             <h3 className="font-bold text-gray-800 mb-1">Top-up Wallet</h3>
             <p className="text-xs text-gray-500 mb-4">{schoolsList.find(s => s.id === topupModal)?.name}</p>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5">Amount (₹)</label>
             <input value={topupAmt} onChange={e => setTopupAmt(e.target.value)} type="number" placeholder="e.g. 1000"
-              className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 mb-4" />
+              className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 mb-4" />
             <div className="flex gap-2">
               <button onClick={() => { setTopupModal(null); setTopupAmt(''); }}
-                className="flex-1 px-4 py-2 text-xs font-semibold text-gray-600 border border-gray-200 rounded-none-none hover:bg-gray-50">Cancel</button>
+                className="flex-1 px-4 py-2 text-xs font-semibold text-gray-600 border border-slate-200/80 rounded-2xl hover:bg-gray-50">Cancel</button>
               <button onClick={handleTopup}
-                className={`flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white rounded-none-none transition-all ${done ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                className={`flex-1 flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold text-white rounded-xl transition-all ${done ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
                 {done ? <><Check className="w-3.5 h-3.5" /> Done!</> : 'Confirm Top-up'}
               </button>
             </div>
@@ -231,7 +231,7 @@ const Field = ({ label, k, note, rates, set }) => (
     <div className="relative">
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-semibold">₹</span>
       <input value={rates[k]} onChange={e => set(k, e.target.value)} type="number" step="0.01"
-        className="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-none-none text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+        className="w-full pl-7 pr-3 py-2 border border-slate-200/80 rounded-2xl text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
     </div>
     {note && <p className="text-[10px] text-gray-400 mt-1">{note}</p>}
   </div>
@@ -268,14 +268,14 @@ function RateCards() {
         <p className="text-sm text-gray-500">Platform-level default rates charged per message from each school's comms wallet.</p>
       </div>
 
-      <div className="bg-blue-50 border border-blue-100 rounded-none-none px-4 py-3 flex gap-2.5">
+      <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex gap-2.5">
         <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
         <p className="text-xs text-blue-800 leading-relaxed">
           Custom rates override the default for specific schools. Changes apply to new messages only.
         </p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-blue-500" />
           <h3 className="font-semibold text-gray-800 text-sm">SMS Rates</h3>
@@ -287,7 +287,7 @@ function RateCards() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center gap-2">
           <MessageCircle className="w-4 h-4 text-green-500" />
           <h3 className="font-semibold text-gray-800 text-sm">WhatsApp Rates (per conversation)</h3>
@@ -300,7 +300,7 @@ function RateCards() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center gap-2">
           <Settings className="w-4 h-4 text-gray-400" />
           <h3 className="font-semibold text-gray-800 text-sm">Email Rate</h3>
@@ -312,7 +312,7 @@ function RateCards() {
 
       <div className="flex justify-end">
         <button onClick={handleSave}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
           {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Rate Cards</>}
         </button>
       </div>
@@ -350,7 +350,7 @@ function MetaDltConfig() {
         <p className="text-sm text-gray-500">Platform-owned WhatsApp (Meta Cloud) and SMS (DLT) credentials for the comms wallet.</p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center gap-2">
           <MessageCircle className="w-4 h-4 text-green-500" />
           <span className="text-sm font-semibold text-gray-700">WhatsApp (Meta Cloud API)</span>
@@ -364,7 +364,7 @@ function MetaDltConfig() {
               <div key={f.key}>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">{f.label}</label>
                 <input value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
               </div>
             ))}
           </div>
@@ -373,26 +373,26 @@ function MetaDltConfig() {
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">Access Token</label>
               <input value={form.accessToken} onChange={e => set('accessToken', e.target.value)} type="password"
                 placeholder="Leave blank to keep existing"
-                className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
               <p className="text-xs text-gray-400 mt-1">Stored encrypted. Enter only to replace.</p>
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">API Version</label>
               <input value={form.apiVersion} onChange={e => set('apiVersion', e.target.value)}
-                className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5">App Secret</label>
             <input value={form.appSecret} onChange={e => set('appSecret', e.target.value)} type="password"
               placeholder="Leave blank to keep existing"
-              className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+              className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
             <p className="text-xs text-gray-400 mt-1">Used for webhook signature verification. Stored encrypted.</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+      <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
         <div className="border-b border-gray-100 px-5 py-3.5 flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-blue-500" />
           <span className="text-sm font-semibold text-gray-700">SMS (India DLT)</span>
@@ -405,13 +405,13 @@ function MetaDltConfig() {
             <div key={f.key}>
               <label className="block text-xs font-semibold text-gray-600 mb-1.5">{f.label}</label>
               <input value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
             </div>
           ))}
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-100 rounded-none-none px-4 py-3 flex gap-2.5">
+      <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex gap-2.5">
         <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
         <p className="text-xs text-blue-800 leading-relaxed">
           Message wording is fixed by superadmin-approved Meta/DLT templates. Schools cannot edit platform-level templates.
@@ -420,7 +420,7 @@ function MetaDltConfig() {
 
       <div className="flex justify-end">
         <button onClick={handleSave}
-          className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
           {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Config</>}
         </button>
       </div>

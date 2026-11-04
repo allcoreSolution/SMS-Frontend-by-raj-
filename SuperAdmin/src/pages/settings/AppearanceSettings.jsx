@@ -9,8 +9,8 @@ import SettingsLayout from '../../components/SettingsLayout';
 const ToggleSwitch = ({ checked, onChange, label }) => (
   <div className="flex items-center justify-between py-1 cursor-pointer" onClick={() => onChange(!checked)}>
     <span className="text-xs font-medium text-slate-700">{label}</span>
-    <div className={`relative w-9 h-5 rounded-none-none transition-colors duration-200 ease-in-out flex-shrink-0 ${checked ? 'bg-emerald-500' : 'bg-slate-300'}`}>
-      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transform transition-transform duration-200 ease-in-out ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
+    <div className={`relative w-9 h-5 rounded-xl transition-colors duration-200 ease-in-out flex-shrink-0 ${checked ? 'bg-emerald-500' : 'bg-slate-300'}`}>
+      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-xl bg-white shadow transform transition-transform duration-200 ease-in-out ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
     </div>
   </div>
 );
@@ -21,10 +21,10 @@ const ColorPickerField = ({ label, subtitle, value, onChange }) => {
   return (
     <div className="space-y-1.5">
       <label className="block text-xs font-semibold text-slate-700">{label}</label>
-      <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/90 rounded-none-none p-2 hover:border-slate-300 transition-all focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500">
+      <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/90 rounded-xl p-2 hover:border-slate-300 transition-all focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500">
         <div
           onClick={() => pickerRef.current?.click()}
-          className="w-7 h-7 rounded-none-none border border-slate-300/80 shadow-xs cursor-pointer flex-shrink-0 relative overflow-hidden transition-transform hover:scale-105"
+          className="w-7 h-7 rounded-xl border border-slate-300/80 shadow-xs cursor-pointer flex-shrink-0 relative overflow-hidden transition-transform hover:scale-105"
           style={{ backgroundColor: value }}
         >
           <input
@@ -131,7 +131,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
 
 
           {/* Section 1: Global Frontend Branding */}
-          <div className={`border rounded-none-none overflow-hidden shadow-xs transition-colors ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
+          <div className={`border rounded-xl overflow-hidden shadow-xs transition-colors ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
             <div className="p-4 px-6 border-b border-slate-100/80 flex items-center justify-between bg-slate-50/50">
               <div className="flex items-center gap-2">
                 <Palette className="w-4 h-4 text-orange-500" />
@@ -175,7 +175,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                 <div>
                   <button
                     onClick={handleSaveBranding}
-                    className="w-full py-2.5 rounded-none-none bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <LockIcon className="w-3.5 h-3.5 text-slate-400" />
                     {brandingSaved ? 'Saved Brand Identity!' : 'Save Brand Identity'}
@@ -195,7 +195,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Sub-panel 1: Sidebar Design */}
-              <div className={`border rounded-none-none p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
+              <div className={`border rounded-xl p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
                 <div className="space-y-5">
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
                     <Layout className="w-4 h-4 text-blue-500" /> Sidebar Design
@@ -207,7 +207,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                       <select
                         value={sidebarTheme}
                         onChange={e => setSidebarTheme(e.target.value)}
-                        className="w-full border border-slate-200 rounded-none-none px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
+                        className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
                       >
                         <option>Dark Professional (Charcoal)</option>
                         <option>Light Clean</option>
@@ -222,7 +222,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                       <select
                         value={sidebarAccent}
                         onChange={e => setSidebarAccent(e.target.value)}
-                        className="w-full border border-slate-200 rounded-none-none px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
+                        className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
                       >
                         <option>Orange</option>
                         <option>Blue</option>
@@ -243,7 +243,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
               </div>
 
               {/* Sub-panel 2: Top Navbar Design */}
-              <div className={`border rounded-none-none p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
+              <div className={`border rounded-xl p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
                 <div className="space-y-5">
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">
                     <Monitor className="w-4 h-4 text-indigo-500" /> Top Navbar & Theme Mode
@@ -255,7 +255,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                       <select
                         value={navbarVariant}
                         onChange={e => setNavbarVariant(e.target.value)}
-                        className="w-full border border-slate-200 rounded-none-none px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
+                        className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 shadow-xs cursor-pointer"
                       >
                         <option>Clean White</option>
                         <option>Dark Charcoal</option>
@@ -269,8 +269,8 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                     </div>
 
                     {/* Dark Mode Card */}
-                    <div className="mt-4 bg-slate-50 border border-slate-200/80 rounded-none-none p-4 text-center flex flex-col items-center justify-center space-y-2.5">
-                      <div className="w-9 h-9 rounded-none-none bg-slate-900 text-yellow-400 flex items-center justify-center shadow-xs">
+                    <div className="mt-4 bg-slate-50 border border-slate-200/80 rounded-xl p-4 text-center flex flex-col items-center justify-center space-y-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-slate-900 text-yellow-400 flex items-center justify-center shadow-xs">
                         <Moon className="w-4 h-4 fill-current" />
                       </div>
 
@@ -278,12 +278,12 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                         <button
                           type="button"
                           onClick={() => setSystemDarkMode(!systemDarkMode)}
-                          className={`relative w-10 h-5 rounded-none-none transition-colors duration-200 ease-in-out cursor-pointer ${
+                          className={`relative w-10 h-5 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer ${
                             systemDarkMode ? 'bg-indigo-600' : 'bg-slate-300'
                           }`}
                         >
                           <span
-                            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transform transition-transform duration-200 ease-in-out ${
+                            className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-xl bg-white shadow transform transition-transform duration-200 ease-in-out ${
                               systemDarkMode ? 'translate-x-5' : 'translate-x-0'
                             }`}
                           />
@@ -303,7 +303,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
               </div>
 
               {/* Sub-panel 3: Theme Presets */}
-              <div className={`border rounded-none-none p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
+              <div className={`border rounded-xl p-6 shadow-xs flex flex-col justify-between ${systemDarkMode ? 'bg-[#1e293b] border-slate-700' : 'bg-white border-slate-200/90'}`}>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
                     <Palette className="w-4 h-4 text-purple-500" /> Theme Presets
@@ -322,7 +322,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
                         <div
                           key={preset.name}
                           onClick={() => setSelectedPreset(preset.name)}
-                          className={`rounded-none-none border overflow-hidden cursor-pointer transition-all ${
+                          className={`rounded-xl border overflow-hidden cursor-pointer transition-all ${
                             isSelected ? 'border-blue-500 shadow-sm ring-2 ring-blue-500/20' : 'border-slate-200 hover:border-slate-300'
                           }`}
                         >
@@ -374,7 +374,7 @@ export default function AppearanceSettings({ inSettingsCenter = false }) {
 
           <button
             onClick={handleApplyGlobal}
-            className={`px-5 py-2 rounded-none-none text-xs font-bold text-white shadow-xs transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-xs transition-all flex items-center gap-2 cursor-pointer ${
               savedToast ? 'bg-emerald-600 shadow-emerald-600/20' : 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'
             }`}
           >

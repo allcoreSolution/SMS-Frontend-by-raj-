@@ -7,8 +7,8 @@ import { settingsService } from '../../api/settingsService';
 function Toggle({ checked, onChange }) {
   return (
     <button type="button" onClick={() => onChange(!checked)}
-      className={`relative w-9 h-5 rounded-none-none transition-colors duration-200 flex-shrink-0 focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}>
-      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
+      className={`relative w-9 h-5 rounded-xl transition-colors duration-200 flex-shrink-0 focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}>
+      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
     </button>
   );
 }
@@ -77,7 +77,7 @@ export default function RegistrationSettings() {
 
           <div className="grid grid-cols-2 gap-5">
             {/* Left */}
-            <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+            <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
               <div className="border-b border-gray-100 px-5 py-3.5">
                 <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-gray-400" /> Registration &amp; Onboarding
@@ -100,7 +100,7 @@ export default function RegistrationSettings() {
 
             {/* Right */}
             <div className="space-y-5">
-              <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+              <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
                 <div className="border-b border-gray-100 px-5 py-3.5">
                   <h3 className="font-semibold text-gray-800 text-sm">Security &amp; Spam Control</h3>
                 </div>
@@ -114,7 +114,7 @@ export default function RegistrationSettings() {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+              <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
                 <div className="border-b border-gray-100 px-5 py-3.5">
                   <h3 className="font-semibold text-gray-800 text-sm">Post-Registration Notifications</h3>
                 </div>
@@ -131,7 +131,7 @@ export default function RegistrationSettings() {
         {/* Footer */}
         <div className="bg-white border-t border-gray-100 px-6 py-3 flex justify-end flex-shrink-0">
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Registration Settings</>}
           </button>
         </div>

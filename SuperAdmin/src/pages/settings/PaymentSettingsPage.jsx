@@ -34,7 +34,7 @@ export default function PaymentSettingsPage() {
             <p className="text-sm text-gray-500">Platform payment mode (sandbox/live) and default currency.</p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
             <div className="border-b border-gray-100 px-5 py-3.5">
               <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                 <CreditCard className="w-4 h-4 text-gray-400" /> Subscription Payment Settings
@@ -44,7 +44,7 @@ export default function PaymentSettingsPage() {
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">Default Currency for Subscriptions</label>
                 <select value={currency} onChange={e => setCurrency(e.target.value)}
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                   <option>Indian Rupee (₹)</option>
                   <option>US Dollar ($)</option>
                   <option>Euro (€)</option>
@@ -55,7 +55,7 @@ export default function PaymentSettingsPage() {
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">Platform Payment Mode</label>
                 <select value={mode} onChange={e => setMode(e.target.value)}
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400">
                   <option>Live (Accept Real Payments)</option>
                   <option>Sandbox (Test Mode)</option>
                 </select>
@@ -67,7 +67,7 @@ export default function PaymentSettingsPage() {
         {/* Footer */}
         <div className="bg-white border-t border-gray-100 px-6 py-3 flex justify-end flex-shrink-0">
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Payments</>}
           </button>
         </div>

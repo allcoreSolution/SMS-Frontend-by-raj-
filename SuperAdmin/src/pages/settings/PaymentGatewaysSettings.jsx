@@ -256,13 +256,13 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               <span className="text-xs font-bold text-gray-500">Mode:</span>
               <button
                 onClick={() => setMode(m => m === 'LIVE' ? 'SANDBOX' : 'LIVE')}
-                className={`px-3 py-1.5 rounded-none-none text-xs font-black tracking-wide border transition-all flex items-center gap-1.5 shadow-sm ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-black tracking-wide border transition-all flex items-center gap-1.5 shadow-sm ${
                   mode === 'LIVE'
                     ? 'bg-emerald-500 text-white border-emerald-600 shadow-emerald-500/20'
                     : 'bg-amber-500 text-white border-amber-600 shadow-amber-500/20'
                 }`}
               >
-                <span className="w-2 h-2 rounded-none-none bg-white animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
                 {mode === 'LIVE' ? 'Mode: LIVE' : 'Mode: SANDBOX'}
               </button>
             </div>
@@ -278,10 +278,10 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               { label: 'Configured', value: configuredCount, icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" /> },
               { label: 'Used By Schools', value: usedBySchoolsCount, icon: <Building className="w-5 h-5 text-amber-500" /> }
             ].map((s, idx) => (
-              <div key={idx} className="bg-white border border-slate-200 rounded-none-none p-5 shadow-sm flex flex-col justify-between">
+              <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
-                  <div className="w-10 h-10 rounded-none-none bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
                     {s.icon}
                   </div>
                 </div>
@@ -291,15 +291,15 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
           </div>
 
           {/* Sub-Header Active Gateways Notice */}
-          <div className="bg-white border border-gray-200/70 rounded-none-none px-4 py-3 mb-6 shadow-sm text-xs font-semibold text-gray-600 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-none-none bg-emerald-500 flex-shrink-0 animate-ping" />
+          <div className="bg-white border border-gray-200/70 rounded-xl px-4 py-3 mb-6 shadow-sm text-xs font-semibold text-gray-600 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0 animate-ping" />
             <span>
               <strong className="text-emerald-700">Active gateways</strong> are the ones schools can choose for online fee collection. Switch a gateway off — or select rows and use Deactivate — to hide it from every school.
             </span>
           </div>
 
           {/* Filter & Controls Bar */}
-          <div className="bg-white border border-gray-200/90 rounded-none-none p-3.5 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="bg-white border border-gray-200/90 rounded-xl p-3.5 shadow-sm mb-6 flex flex-col md:flex-row md:items-center justify-between gap-3">
             
             {/* Search Box */}
             <div className="relative flex-1 min-w-[220px]">
@@ -309,7 +309,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search gateways..."
-                className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-none-none text-xs font-medium text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                className="w-full pl-9 pr-3 py-2 border border-slate-200/80 rounded-2xl text-xs font-medium text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -325,7 +325,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               <select
                 value={selectedRegion}
                 onChange={e => setSelectedRegion(e.target.value)}
-                className="border border-gray-200 rounded-none-none px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
+                className="border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
               >
                 <option>All regions</option>
                 <option>North America</option>
@@ -341,7 +341,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               <select
                 value={selectedFlow}
                 onChange={e => setSelectedFlow(e.target.value)}
-                className="border border-gray-200 rounded-none-none px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
+                className="border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
               >
                 <option>All flows</option>
                 <option>Redirect</option>
@@ -355,7 +355,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               <select
                 value={selectedStatus}
                 onChange={e => setSelectedStatus(e.target.value)}
-                className="border border-gray-200 rounded-none-none px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
+                className="border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-bold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
               >
                 <option>All statuses</option>
                 <option>Configured</option>
@@ -365,14 +365,14 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               </select>
 
               {/* Count Tag */}
-              <span className="text-xs font-bold text-gray-500 px-2.5 py-1 bg-gray-100 rounded-none-none">
+              <span className="text-xs font-bold text-gray-500 px-2.5 py-1 bg-gray-100 rounded-xl">
                 {filteredGateways.length} shown
               </span>
 
               {/* Export Excel Button */}
               <button
                 onClick={handleExportExcel}
-                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-none-none text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer"
+                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" /> Export Excel / CSV
               </button>
@@ -383,20 +383,20 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
 
           {/* Bulk Selection Action Bar */}
           {selectedIds.length > 0 && (
-            <div className="bg-blue-600 text-white px-5 py-3 rounded-none-none mb-6 shadow-lg shadow-blue-500/20 flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2">
+            <div className="bg-blue-600 text-white px-5 py-3 rounded-xl mb-6 shadow-lg shadow-blue-500/20 flex items-center justify-between gap-4 animate-in fade-in slide-in-from-top-2">
               <span className="text-xs font-bold">
                 {selectedIds.length} gateway{selectedIds.length > 1 ? 's' : ''} selected
               </span>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleBulkActivate(true)}
-                  className="bg-white text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-none-none text-xs font-black shadow-sm transition-colors"
+                  className="bg-white text-blue-700 hover:bg-blue-50 px-3 py-1.5 rounded-xl text-xs font-black shadow-sm transition-colors"
                 >
                   Activate Selected
                 </button>
                 <button
                   onClick={() => handleBulkActivate(false)}
-                  className="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-none-none text-xs font-black transition-colors"
+                  className="bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-xl text-xs font-black transition-colors"
                 >
                   Deactivate Selected
                 </button>
@@ -413,20 +413,20 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
           {/* Region-Grouped Gateway Lists */}
           <div className="space-y-8 pb-10">
             {Object.keys(groupedRegions).length === 0 ? (
-              <div className="bg-white border border-gray-200/80 rounded-none-none p-12 text-center text-gray-400">
+              <div className="bg-white border border-gray-200/80 rounded-xl p-12 text-center text-gray-400">
                 <Search className="w-10 h-10 mx-auto mb-3 opacity-30" />
                 <h4 className="text-base font-bold text-gray-700 mb-1">No payment gateways found</h4>
                 <p className="text-xs text-gray-400">Try adjusting your search query or filter options.</p>
               </div>
             ) : (
               Object.entries(groupedRegions).map(([regionName, items]) => (
-                <div key={regionName} className="bg-white border border-gray-200/90 rounded-none-none overflow-hidden shadow-sm">
+                <div key={regionName} className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-sm">
                   
                   {/* Region Header */}
                   <div className="bg-gray-50/80 border-b border-gray-200/70 px-5 py-3.5 flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <span className="text-xs font-black text-gray-800 uppercase tracking-widest">{regionName}</span>
-                      <span className="w-5 h-5 rounded-none-none bg-gray-200 text-gray-700 text-[10px] font-extrabold flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-xl bg-gray-200 text-gray-700 text-[10px] font-extrabold flex items-center justify-center">
                         {items.length}
                       </span>
                     </div>
@@ -451,10 +451,10 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                               type="checkbox"
                               checked={isSelected}
                               onChange={() => handleToggleSelectRow(gw.id)}
-                              className="w-4 h-4 rounded-none-none border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer flex-shrink-0"
+                              className="w-4 h-4 rounded-xl border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer flex-shrink-0"
                             />
                             {/* Logo Avatar */}
-                            <div className={`w-10 h-10 rounded-none-none ${gw.color} text-white font-extrabold text-lg flex items-center justify-center flex-shrink-0 shadow-sm`}>
+                            <div className={`w-10 h-10 rounded-xl ${gw.color} text-white font-extrabold text-lg flex items-center justify-center flex-shrink-0 shadow-sm`}>
                               {gw.logo}
                             </div>
                             {/* Title & Currencies */}
@@ -471,24 +471,24 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                           <div className="flex flex-wrap items-center gap-3">
                             
                             {/* Flow Type Tag */}
-                            <span className="px-2.5 py-1 rounded-none-none text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200/60">
+                            <span className="px-2.5 py-1 rounded-xl text-[11px] font-bold bg-sky-50 text-sky-700 border border-sky-200/60">
                               {gw.flow}
                             </span>
 
                             {/* Status Badge */}
                             {gw.status === 'configured' ? (
-                              <span className="px-2.5 py-1 rounded-none-none text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1">
-                                <span className="w-1.5 h-1.5 rounded-none-none bg-emerald-500" /> Configured
+                              <span className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" /> Configured
                               </span>
                             ) : (
-                              <span className="px-2.5 py-1 rounded-none-none text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center gap-1">
+                              <span className="px-2.5 py-1 rounded-xl text-[11px] font-extrabold bg-amber-50 text-amber-800 border border-amber-200/80 flex items-center gap-1">
                                 <Key className="w-3 h-3 text-amber-600" /> Needs keys
                               </span>
                             )}
 
                             {/* Schools count */}
                             <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
-                              <span className={`w-2 h-2 rounded-none-none ${gw.schools > 0 ? 'bg-emerald-500' : 'bg-gray-300'}`} />
+                              <span className={`w-2 h-2 rounded-full ${gw.schools > 0 ? 'bg-emerald-500' : 'bg-gray-300'}`} />
                               {gw.schools} schools
                             </span>
 
@@ -500,13 +500,13 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                             {/* Active Toggle Switch */}
                             <button
                               onClick={(e) => handleToggleActiveGateway(gw.id, e)}
-                              className={`relative w-10 h-6 rounded-none-none transition-colors duration-200 ease-in-out cursor-pointer flex-shrink-0 ${
+                              className={`relative w-10 h-6 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer flex-shrink-0 ${
                                 gw.active ? 'bg-emerald-500' : 'bg-gray-300'
                               }`}
                               title={gw.active ? 'Active (Click to deactivate)' : 'Disabled (Click to activate)'}
                             >
                               <span
-                                className={`absolute top-1 left-1 w-4 h-4 rounded-none-none bg-white shadow transform transition-transform duration-200 ease-in-out ${
+                                className={`absolute top-1 left-1 w-4 h-4 rounded-xl bg-white shadow transform transition-transform duration-200 ease-in-out ${
                                   gw.active ? 'translate-x-4' : 'translate-x-0'
                                 }`}
                               />
@@ -515,7 +515,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                             {/* Configure Button (Matching orange style from screenshot) */}
                             <button
                               onClick={() => openConfigureDrawer(gw)}
-                              className="px-4 py-1.5 rounded-none-none bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white text-xs font-black shadow-sm shadow-orange-500/20 transition-all flex items-center gap-1.5"
+                              className="px-4 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white text-xs font-black shadow-sm shadow-orange-500/20 transition-all flex items-center gap-1.5"
                             >
                               Configure
                             </button>
@@ -542,7 +542,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               {/* Drawer Header */}
               <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-white flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-none-none ${editingGw.color} text-white font-black text-xl flex items-center justify-center shadow-sm`}>
+                  <div className={`w-10 h-10 rounded-xl ${editingGw.color} text-white font-black text-xl flex items-center justify-center shadow-sm`}>
                     {editingGw.logo}
                   </div>
                   <div>
@@ -552,7 +552,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                 </div>
                 <button
                   onClick={() => setEditingGw(null)}
-                  className="p-2 rounded-none-none text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+                  className="p-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -562,19 +562,19 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
               <div className="p-6 flex-1 overflow-y-auto space-y-5">
 
                 {/* Status Toggle & Environment */}
-                <div className="bg-gray-50 border border-gray-200/80 rounded-none-none p-4 flex items-center justify-between">
+                <div className="bg-gray-50 border border-gray-200/80 rounded-xl p-4 flex items-center justify-between">
                   <div>
                     <h4 className="text-xs font-black text-gray-900">Gateway Status</h4>
                     <p className="text-[11px] font-medium text-gray-500">Allow schools to select this gateway</p>
                   </div>
                   <button
                     onClick={() => setFormData(f => ({ ...f, active: !f.active }))}
-                    className={`relative w-11 h-6 rounded-none-none transition-colors duration-200 ease-in-out cursor-pointer ${
+                    className={`relative w-11 h-6 rounded-xl transition-colors duration-200 ease-in-out cursor-pointer ${
                       formData.active ? 'bg-emerald-500' : 'bg-gray-300'
                     }`}
                   >
                     <span
-                      className={`absolute top-1 left-1 w-4 h-4 rounded-none-none bg-white shadow transform transition-transform duration-200 ease-in-out ${
+                      className={`absolute top-1 left-1 w-4 h-4 rounded-xl bg-white shadow transform transition-transform duration-200 ease-in-out ${
                         formData.active ? 'translate-x-5' : 'translate-x-0'
                       }`}
                     />
@@ -588,7 +588,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                     <button
                       type="button"
                       onClick={() => setFormData(f => ({ ...f, envMode: 'LIVE' }))}
-                      className={`py-2 rounded-none-none text-xs font-bold border transition-all ${
+                      className={`py-2 rounded-xl text-xs font-bold border transition-all ${
                         formData.envMode === 'LIVE'
                           ? 'bg-emerald-50 text-emerald-700 border-emerald-300 ring-2 ring-emerald-400/20'
                           : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
@@ -599,7 +599,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                     <button
                       type="button"
                       onClick={() => setFormData(f => ({ ...f, envMode: 'SANDBOX' }))}
-                      className={`py-2 rounded-none-none text-xs font-bold border transition-all ${
+                      className={`py-2 rounded-xl text-xs font-bold border transition-all ${
                         formData.envMode === 'SANDBOX'
                           ? 'bg-amber-50 text-amber-800 border-amber-300 ring-2 ring-amber-400/20'
                           : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
@@ -621,7 +621,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                       value={formData.keyId}
                       onChange={e => setFormData(f => ({ ...f, keyId: e.target.value }))}
                       placeholder={`e.g. ${editingGw.id}_live_key_...`}
-                      className="w-full border border-gray-300 rounded-none-none px-3.5 py-2.5 pr-10 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 pr-10 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       type="button"
@@ -644,7 +644,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                       value={formData.secretKey}
                       onChange={e => setFormData(f => ({ ...f, secretKey: e.target.value }))}
                       placeholder={`e.g. ${editingGw.id}_secret_...`}
-                      className="w-full border border-gray-300 rounded-none-none px-3.5 py-2.5 pr-10 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 pr-10 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <button
                       type="button"
@@ -666,12 +666,12 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                     value={formData.merchantId}
                     onChange={e => setFormData(f => ({ ...f, merchantId: e.target.value }))}
                     placeholder="e.g. m_account_99812"
-                    className="w-full border border-gray-300 rounded-none-none px-3.5 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
                 {/* Webhook Endpoint */}
-                <div className="bg-blue-50/60 border border-blue-200/80 rounded-none-none p-4">
+                <div className="bg-blue-50/60 border border-blue-200/80 rounded-xl p-4">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-xs font-bold text-blue-900 flex items-center gap-1.5">
                       <ShieldCheck className="w-3.5 h-3.5 text-blue-600" /> Webhook Callback URL
@@ -684,14 +684,14 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                       <Copy className="w-3 h-3" /> Copy
                     </button>
                   </div>
-                  <code className="text-[11px] text-blue-800 bg-white border border-blue-200 rounded-none-none px-2.5 py-1.5 block break-all font-mono">
+                  <code className="text-[11px] text-blue-800 bg-white border border-blue-200 rounded-xl px-2.5 py-1.5 block break-all font-mono">
                     https://api.multischoolerp.com/v1/webhooks/{editingGw.id}
                   </code>
                 </div>
 
                 {/* Test Result Message */}
                 {testResult && (
-                  <div className={`p-3.5 rounded-none-none text-xs font-bold flex items-center gap-2 ${
+                  <div className={`p-3.5 rounded-xl text-xs font-bold flex items-center gap-2 ${
                     testResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'
                   }`}>
                     {testResult.success ? <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0" />}
@@ -707,7 +707,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                   type="button"
                   onClick={handleTestConnection}
                   disabled={isTesting}
-                  className="flex items-center gap-1.5 border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-4 py-2.5 rounded-none-none text-xs font-bold transition-all shadow-sm"
+                  className="flex items-center gap-1.5 border border-gray-300 hover:border-gray-400 bg-white text-gray-700 px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 text-gray-500 ${isTesting ? 'animate-spin' : ''}`} />
                   {isTesting ? 'Testing...' : 'Test Connection'}
@@ -723,7 +723,7 @@ export default function PaymentGatewaysSettings({ inSettingsCenter = false }) {
                   <button
                     type="button"
                     onClick={handleSaveDrawer}
-                    className={`px-5 py-2.5 rounded-none-none text-xs font-black text-white shadow-md transition-all flex items-center gap-1.5 ${
+                    className={`px-5 py-2.5 rounded-xl text-xs font-black text-white shadow-md transition-all flex items-center gap-1.5 ${
                       savedSuccess ? 'bg-emerald-600 shadow-emerald-500/20' : 'bg-orange-500 hover:bg-orange-600 shadow-orange-500/20'
                     }`}
                   >

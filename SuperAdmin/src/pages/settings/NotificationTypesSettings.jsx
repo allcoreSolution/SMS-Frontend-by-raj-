@@ -522,7 +522,7 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
             </div>
             <button
               onClick={handleExportExcel}
-              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-none-none text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer self-start sm:self-auto"
+              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer self-start sm:self-auto"
             >
               <Download className="w-3.5 h-3.5" /> Export Excel / CSV
             </button>
@@ -537,10 +537,10 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
               { label: 'Active Events', value: activeCount, icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" /> },
               { label: 'Inactive Events', value: inactiveCount, icon: <PauseCircle className="w-5 h-5 text-amber-500" /> }
             ].map((s, idx) => (
-              <div key={idx} className="bg-white border border-slate-200 rounded-none-none p-5 shadow-sm flex flex-col justify-between">
+              <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
-                  <div className="w-10 h-10 rounded-none-none bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
                     {s.icon}
                   </div>
                 </div>
@@ -550,7 +550,7 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
           </div>
 
           {/* Search Bar */}
-          <div className="bg-white border border-gray-200/90 rounded-none-none p-3.5 shadow-sm mb-6">
+          <div className="bg-white border border-gray-200/90 rounded-xl p-3.5 shadow-sm mb-6">
             <div className="relative max-w-md">
               <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
@@ -558,7 +558,7 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search by name or description"
-                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-none-none text-xs font-medium text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
+                className="w-full pl-10 pr-4 py-2 border border-slate-200/80 rounded-2xl text-xs font-medium text-gray-700 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -569,7 +569,7 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
           </div>
 
           {/* Notification Types List */}
-          <div className="bg-white border border-gray-200/90 rounded-none-none overflow-hidden shadow-sm divide-y divide-gray-100 mb-10">
+          <div className="bg-white border border-gray-200/90 rounded-xl overflow-hidden shadow-sm divide-y divide-gray-100 mb-10">
             {filteredTypes.map(item => (
               <div
                 key={item.id}
@@ -580,13 +580,13 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                 
                 {/* Left: Icon + Title + Key Code Tag + Description */}
                 <div className="flex items-center gap-4 flex-1">
-                  <div className={`w-10 h-10 rounded-none-none ${item.color} font-black text-lg flex items-center justify-center flex-shrink-0 shadow-xs`}>
+                  <div className={`w-10 h-10 rounded-xl ${item.color} font-black text-lg flex items-center justify-center flex-shrink-0 shadow-xs`}>
                     {item.icon}
                   </div>
                   <div>
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <h4 className="text-sm font-bold text-gray-900 leading-tight">{item.name}</h4>
-                      <code className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-none-none bg-gray-100 text-gray-500 border border-gray-200/60">
+                      <code className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-xl bg-gray-100 text-gray-500 border border-gray-200/60">
                         {item.key}
                       </code>
                     </div>
@@ -601,11 +601,11 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                   
                   {/* Status Tag */}
                   {item.active ? (
-                    <span className="px-2.5 py-1 rounded-none-none text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1">
+                    <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1">
                       <Check className="w-3 h-3" /> Active
                     </span>
                   ) : (
-                    <span className="px-2.5 py-1 rounded-none-none text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200/60">
+                    <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-gray-100 text-gray-500 border border-gray-200/60">
                       Inactive
                     </span>
                   )}
@@ -613,7 +613,7 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                   {/* Deactivate / Activate Button (Matching red outlined style from screenshot) */}
                   <button
                     onClick={() => handleToggleActive(item.id)}
-                    className={`px-3 py-1 rounded-none-none text-xs font-bold transition-all border cursor-pointer ${
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
                       item.active
                         ? 'border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300'
                         : 'border-emerald-300 text-emerald-600 hover:bg-emerald-50'
@@ -626,14 +626,14 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                   {item.isSystem ? (
                     <button
                       onClick={() => setSystemModalItem(item)}
-                      className="px-3.5 py-1 rounded-none-none bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-1 rounded-xl bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-600 text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                     >
                       <Settings className="w-3 h-3 text-gray-400" /> System
                     </button>
                   ) : (
                     <button
                       onClick={() => openEditDefaults(item)}
-                      className="px-3.5 py-1 rounded-none-none bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                      className="px-3.5 py-1 rounded-xl bg-white hover:bg-gray-50 border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
                     >
                       <Edit3 className="w-3.5 h-3.5 text-gray-500" /> Edit Defaults
                     </button>
@@ -653,14 +653,14 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
             <div className="w-full max-w-[1150px] bg-white h-full shadow-2xl flex flex-col overflow-hidden">
               <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60 flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-none-none bg-slate-100 text-sm flex items-center justify-center">{editingItem.icon}</div>
+                  <div className="w-8 h-8 rounded-xl bg-slate-100 text-sm flex items-center justify-center">{editingItem.icon}</div>
                   <div><h3 className="text-sm font-bold text-slate-900">{editingItem.name}</h3><code className="text-[10px] font-mono text-slate-400">{editingItem.key}</code></div>
                 </div>
-                <button onClick={() => setEditingItem(null)} className="p-1.5 rounded-none-none text-slate-400 hover:bg-slate-100 cursor-pointer"><X className="w-4 h-4" /></button>
+                <button onClick={() => setEditingItem(null)} className="p-1.5 rounded-xl text-slate-400 hover:bg-slate-100 cursor-pointer"><X className="w-4 h-4" /></button>
               </div>
               <div className="p-5 flex-1 overflow-y-auto space-y-4">
-                <div className="bg-blue-50 border border-blue-200/70 rounded-none-none p-3.5 text-xs text-blue-900 leading-relaxed">
-                  Use <code className="bg-white px-1 py-0.5 rounded-none-none text-blue-800 font-mono">{'{student_name}'}</code>, <code className="bg-white px-1 py-0.5 rounded-none-none text-blue-800 font-mono">{'{school_name}'}</code>, <code className="bg-white px-1 py-0.5 rounded-none-none text-blue-800 font-mono">{'{date}'}</code> as dynamic placeholders.
+                <div className="bg-blue-50 border border-blue-200/70 rounded-xl p-3.5 text-xs text-blue-900 leading-relaxed">
+                  Use <code className="bg-white px-1 py-0.5 rounded-xl text-blue-800 font-mono">{'{student_name}'}</code>, <code className="bg-white px-1 py-0.5 rounded-xl text-blue-800 font-mono">{'{school_name}'}</code>, <code className="bg-white px-1 py-0.5 rounded-xl text-blue-800 font-mono">{'{date}'}</code> as dynamic placeholders.
                 </div>
                 {[['sms', 'SMS Template', 'blue', MessageSquare], ['whatsapp', 'WhatsApp Template', 'emerald', Smartphone], ['push', 'Push Notification', 'amber', Bell]].map(([key, label, color, Icon]) => (
                   <div key={key}>
@@ -668,8 +668,8 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                       <Icon className={`w-3.5 h-3.5 text-${color}-500`} /> {label}
                     </label>
                     {key === 'push'
-                      ? <input type="text" value={templateForm[key]} onChange={e => setTemplateForm(f => ({ ...f, [key]: e.target.value }))} className="w-full border border-slate-200 rounded-none-none px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
-                      : <textarea rows={3} value={templateForm[key]} onChange={e => setTemplateForm(f => ({ ...f, [key]: e.target.value }))} className="w-full border border-slate-200 rounded-none-none px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none font-mono" />
+                      ? <input type="text" value={templateForm[key]} onChange={e => setTemplateForm(f => ({ ...f, [key]: e.target.value }))} className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                      : <textarea rows={3} value={templateForm[key]} onChange={e => setTemplateForm(f => ({ ...f, [key]: e.target.value }))} className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs font-medium text-slate-800 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none font-mono" />
                     }
                   </div>
                 ))}
@@ -677,14 +677,14 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
                   <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-2">Available Placeholders</p>
                   <div className="flex flex-wrap gap-1.5">
                     {['{student_name}','{school_name}','{date}','{time}','{link}','{amount}','{exam_name}'].map(tag => (
-                      <button key={tag} type="button" onClick={() => navigator.clipboard.writeText(tag)} className="px-2 py-1 rounded-none-none bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-mono flex items-center gap-1 cursor-pointer"><Copy className="w-2.5 h-2.5 text-slate-400" /> {tag}</button>
+                      <button key={tag} type="button" onClick={() => navigator.clipboard.writeText(tag)} className="px-2 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-[10px] font-mono flex items-center gap-1 cursor-pointer"><Copy className="w-2.5 h-2.5 text-slate-400" /> {tag}</button>
                     ))}
                   </div>
                 </div>
               </div>
               <div className="p-5 border-t border-slate-100 bg-slate-50/60 flex items-center justify-end gap-3 flex-shrink-0">
                 <button onClick={() => setEditingItem(null)} className="px-4 py-2 text-xs font-medium text-slate-600 hover:text-slate-800 cursor-pointer">Cancel</button>
-                <button onClick={handleSaveDefaults} className={`px-5 py-2 rounded-none-none text-xs font-bold text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ${savedToast ? 'bg-emerald-600' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                <button onClick={handleSaveDefaults} className={`px-5 py-2 rounded-xl text-xs font-bold text-white shadow-xs transition-all flex items-center gap-1.5 cursor-pointer ${savedToast ? 'bg-emerald-600' : 'bg-blue-600 hover:bg-blue-700'}`}>
                   {savedToast ? <><Check className="w-3.5 h-3.5" /> Saved!</> : 'Save Templates'}
                 </button>
               </div>
@@ -695,12 +695,12 @@ export default function NotificationTypesSettings({ inSettingsCenter = false }) 
         {/* System Info Modal */}
         {systemModalItem && (
           <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="w-full max-w-[1150px] bg-white rounded-none-none shadow-2xl p-6 text-center">
-              <div className="w-12 h-12 rounded-none-none bg-slate-100 text-2xl flex items-center justify-center mx-auto mb-4">{systemModalItem.icon}</div>
+            <div className="w-full max-w-[1150px] bg-white rounded-xl shadow-2xl p-6 text-center">
+              <div className="w-12 h-12 rounded-xl bg-slate-100 text-2xl flex items-center justify-center mx-auto mb-4">{systemModalItem.icon}</div>
               <h3 className="text-base font-bold text-slate-900 mb-1">{systemModalItem.name}</h3>
-              <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2.5 py-1 rounded-none-none block mb-4 w-fit mx-auto">{systemModalItem.key}</code>
+              <code className="text-xs font-mono text-blue-600 bg-blue-50 px-2.5 py-1 rounded-xl block mb-4 w-fit mx-auto">{systemModalItem.key}</code>
               <p className="text-xs text-slate-500 mb-5 leading-relaxed">This is a core system event handled automatically by the backend engine. Templates are managed system-wide for security compliance.</p>
-              <button onClick={() => setSystemModalItem(null)} className="w-full py-2 rounded-none-none bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs transition-all cursor-pointer">Close</button>
+              <button onClick={() => setSystemModalItem(null)} className="w-full py-2 rounded-xl bg-slate-900 hover:bg-black text-white text-xs font-bold shadow-xs transition-all cursor-pointer">Close</button>
             </div>
           </div>
         )}

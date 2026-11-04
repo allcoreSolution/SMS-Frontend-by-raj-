@@ -11,8 +11,8 @@ const tabs = [
 ];
 
 const Toggle = ({ checked, onChange }) => (
-  <button onClick={() => onChange(!checked)} className={`w-10 h-5 rounded-none-none transition-colors relative ${checked ? 'bg-orange-500' : 'bg-gray-200'}`}>
-    <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-none-none shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
+  <button onClick={() => onChange(!checked)} className={`w-10 h-5 rounded-xl transition-colors relative ${checked ? 'bg-orange-500' : 'bg-gray-200'}`}>
+    <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-xl shadow transition-transform ${checked ? 'translate-x-5' : 'translate-x-0.5'}`} />
   </button>
 );
 
@@ -25,7 +25,7 @@ export default function Settings() {
   const [gateways, setGateways] = useState({ Razorpay: { key: '', secret: '' }, Stripe: { key: '', secret: '' }, PayU: { key: '', secret: '' } });
   const [smtp, setSmtp] = useState({ host: '', port: '587', username: '', password: '', fromName: 'Multi School ERP', fromEmail: '' });
   const [primaryColor, setPrimaryColor] = useState('#f97316');
-  const [borderRadius, setBorderRadius] = useState('rounded-none-none');
+  const [borderRadius, setBorderRadius] = useState('rounded-xl');
 
   const showToast = (msg) => {
     setToast(msg);
@@ -33,7 +33,7 @@ export default function Settings() {
   };
 
   const SaveBtn = ({ onClick }) => (
-    <button onClick={onClick} className="mt-5 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-none-none text-sm font-semibold transition-colors">
+    <button onClick={onClick} className="mt-5 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-colors">
       <Save className="w-4 h-4" /> Save Changes
     </button>
   );
@@ -41,7 +41,7 @@ export default function Settings() {
   return (
     <div>
       {toast && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-none-none shadow-lg bg-green-500 text-white text-sm font-semibold">
+        <div className="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg bg-green-500 text-white text-sm font-semibold">
           <CheckCircle className="w-4 h-4" /> {toast}
         </div>
       )}
@@ -53,7 +53,7 @@ export default function Settings() {
 
       <div className="flex gap-6">
         <div className="w-48 flex-shrink-0">
-          <div className="bg-white rounded-none-none border border-gray-200 shadow-sm overflow-hidden">
+          <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             {tabs.map(t => (
               <button key={t.key} onClick={() => setTab(t.key)}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-colors border-b border-gray-50 last:border-0 ${tab === t.key ? 'bg-orange-50 text-orange-600 border-l-2 border-l-orange-500' : 'text-gray-600 hover:bg-gray-50'}`}>
@@ -65,7 +65,7 @@ export default function Settings() {
 
         <div className="flex-1">
           {tab === 'general' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">General Settings</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
@@ -77,7 +77,7 @@ export default function Settings() {
                   <div key={f.key}>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">{f.label}</label>
                     <input type={f.type || 'text'} value={general[f.key]} onChange={e => setGeneral({ ...general, [f.key]: e.target.value })}
-                      className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
+                      className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
                   </div>
                 ))}
                 <div>
@@ -90,7 +90,7 @@ export default function Settings() {
                       localStorage.setItem('sa_language', lang);
                       document.documentElement.lang = lang === 'Hindi' ? 'hi' : lang === 'English' ? 'en' : 'en';
                     }}
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white"
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300 bg-white"
                   >
                     <option value="English">English</option>
                     <option value="Hindi">Hindi</option>
@@ -107,7 +107,7 @@ export default function Settings() {
           )}
 
           {tab === 'security' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">Security Settings</h2>
               <div className="space-y-5">
                 {[
@@ -125,7 +125,7 @@ export default function Settings() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">Session Timeout (minutes)</label>
                   <input type="number" value={security.sessionTimeout} onChange={e => setSecurity({ ...security, sessionTimeout: e.target.value })}
-                    className="w-32 border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
+                    className="w-32 border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
                 </div>
               </div>
               <SaveBtn onClick={() => showToast('Security settings saved!')} />
@@ -133,7 +133,7 @@ export default function Settings() {
           )}
 
           {tab === 'notifications' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">Notification Preferences</h2>
               <div className="space-y-4">
                 {[
@@ -156,14 +156,14 @@ export default function Settings() {
           )}
 
           {tab === 'payment' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">Payment Gateway Configuration</h2>
               <div className="space-y-6">
                 {Object.keys(gateways).map(gw => (
-                  <div key={gw} className="border border-gray-200 rounded-none-none p-4">
+                  <div key={gw} className="border border-slate-200/80 rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold text-gray-700">{gw}</h3>
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-none-none ${gateways[gw].key ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
+                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-xl ${gateways[gw].key ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                         {gateways[gw].key ? 'Configured' : 'Not Configured'}
                       </span>
                     </div>
@@ -172,7 +172,7 @@ export default function Settings() {
                         <div key={f.key}>
                           <label className="block text-xs font-semibold text-gray-600 mb-1">{f.label}</label>
                           <input type="password" value={gateways[gw][f.key]} onChange={e => setGateways({ ...gateways, [gw]: { ...gateways[gw], [f.key]: e.target.value } })}
-                            placeholder="••••••••••••" className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
+                            placeholder="••••••••••••" className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
                         </div>
                       ))}
                     </div>
@@ -184,7 +184,7 @@ export default function Settings() {
           )}
 
           {tab === 'email' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">Email & SMS Configuration</h2>
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -198,7 +198,7 @@ export default function Settings() {
                   <div key={f.key}>
                     <label className="block text-xs font-semibold text-gray-600 mb-1">{f.label}</label>
                     <input type={f.type || 'text'} value={smtp[f.key]} onChange={e => setSmtp({ ...smtp, [f.key]: e.target.value })}
-                      placeholder={f.placeholder} className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
+                      placeholder={f.placeholder} className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-300" />
                   </div>
                 ))}
               </div>
@@ -207,7 +207,7 @@ export default function Settings() {
           )}
 
           {tab === 'appearance' && (
-            <div className="bg-white rounded-none-none border border-gray-200 shadow-sm p-6">
+            <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
               <h2 className="text-sm font-bold text-gray-700 mb-5">Appearance</h2>
               <div className="space-y-5">
                 <div>
@@ -215,10 +215,10 @@ export default function Settings() {
                   <div className="flex items-center gap-3">
                     {['#f97316', '#3b82f6', '#8b5cf6', '#22c55e', '#ef4444', '#0ea5e9'].map(c => (
                       <button key={c} onClick={() => setPrimaryColor(c)}
-                        className={`w-8 h-8 rounded-none-none border-2 shadow-md hover:scale-110 transition-transform ${primaryColor === c ? 'border-gray-800 scale-110' : 'border-white'}`}
+                        className={`w-8 h-8 rounded-xl border-2 shadow-md hover:scale-110 transition-transform ${primaryColor === c ? 'border-gray-800 scale-110' : 'border-white'}`}
                         style={{ background: c }} />
                     ))}
-                    <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} className="w-8 h-8 rounded-none-none border border-gray-200 cursor-pointer" />
+                    <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} className="w-8 h-8 rounded-xl border border-gray-200 cursor-pointer" />
                     <span className="text-xs font-mono text-gray-500">{primaryColor}</span>
                   </div>
                 </div>
@@ -226,14 +226,14 @@ export default function Settings() {
                   <label className="block text-xs font-semibold text-gray-600 mb-2">Sidebar Style</label>
                   <div className="flex gap-3">
                     {['Dark', 'Light', 'Colored'].map(s => (
-                      <button key={s} className="px-4 py-2 border border-gray-200 rounded-none-none text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">{s}</button>
+                      <button key={s} className="px-4 py-2 border border-slate-200/80 rounded-2xl text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors">{s}</button>
                     ))}
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-2">Border Radius</label>
                   <div className="flex gap-3">
-                    {[{ key: 'sharp', label: 'Sharp' }, { key: 'rounded-none-none', label: 'Rounded' }, { key: 'pill', label: 'Pill' }].map(r => (
+                    {[{ key: 'sharp', label: 'Sharp' }, { key: 'rounded-xl', label: 'Rounded' }, { key: 'pill', label: 'Pill' }].map(r => (
                       <button key={r.key} onClick={() => setBorderRadius(r.key)}
                         className={`px-4 py-2 border text-sm font-semibold transition-colors ${borderRadius === r.key ? 'border-orange-400 bg-orange-50 text-orange-600' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                         {r.label}
@@ -244,9 +244,9 @@ export default function Settings() {
                 <div>
                   <p className="text-xs font-semibold text-gray-600 mb-2">Preview</p>
                   <div className="flex gap-2 flex-wrap">
-                    <button className="px-3 py-1.5 text-white text-xs font-semibold rounded-none-none" style={{ background: primaryColor }}>Primary Button</button>
-                    <button className="px-3 py-1.5 text-xs font-semibold rounded-none-none border" style={{ borderColor: primaryColor, color: primaryColor }}>Outline Button</button>
-                    <span className="px-2 py-0.5 text-white text-xs font-semibold rounded-none-none" style={{ background: primaryColor }}>Badge</span>
+                    <button className="px-3 py-1.5 text-white text-xs font-semibold rounded-xl" style={{ background: primaryColor }}>Primary Button</button>
+                    <button className="px-3 py-1.5 text-xs font-semibold rounded-xl border" style={{ borderColor: primaryColor, color: primaryColor }}>Outline Button</button>
+                    <span className="px-2 py-0.5 text-white text-xs font-semibold rounded-xl" style={{ background: primaryColor }}>Badge</span>
                   </div>
                 </div>
               </div>

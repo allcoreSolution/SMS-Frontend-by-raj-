@@ -49,21 +49,21 @@ export default function AppBrandingSettings() {
           </div>
 
           {/* Mobile Identity */}
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm mb-5 overflow-hidden">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm mb-5 overflow-hidden">
             <div className="border-b border-gray-100 px-5 py-3.5">
               <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                 <Smartphone className="w-4 h-4 text-gray-400" /> Mobile Identity
               </h3>
             </div>
             <div className="p-5 space-y-5">
-              <div className="bg-gray-50 rounded-none-none p-4 flex items-center justify-between">
+              <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Enable dynamic branding</p>
                   <p className="text-xs text-gray-500 mt-0.5">When off, apps use the built-in default brand.</p>
                 </div>
                 <button type="button" onClick={() => setDynamicBranding(v => !v)}
-                  className={`relative w-9 h-5 rounded-none-none transition-colors duration-200 flex-shrink-0 focus:outline-none ${dynamicBranding ? 'bg-blue-600' : 'bg-gray-200'}`}>
-                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transition-transform duration-200 ${dynamicBranding ? 'translate-x-4' : 'translate-x-0'}`} />
+                  className={`relative w-9 h-5 rounded-xl transition-colors duration-200 flex-shrink-0 focus:outline-none ${dynamicBranding ? 'bg-blue-600' : 'bg-gray-200'}`}>
+                  <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${dynamicBranding ? 'translate-x-4' : 'translate-x-0'}`} />
                 </button>
               </div>
 
@@ -72,7 +72,7 @@ export default function AppBrandingSettings() {
                   App Name <span className="text-gray-400 font-normal">(max 40 chars)</span>
                 </label>
                 <input value={appName} onChange={e => setAppName(e.target.value)} maxLength={40}
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
               </div>
 
               <div>
@@ -80,13 +80,13 @@ export default function AppBrandingSettings() {
                   App Logo <span className="text-gray-400 font-normal">(PNG/JPG, &lt; 2MB)</span>
                 </label>
                 <input type="file" accept=".png,.jpg,.jpeg"
-                  className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-none-none file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-600 hover:file:bg-gray-200 border border-gray-200 rounded-none-none p-1 bg-white" />
+                  className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-gray-100 file:text-gray-600 hover:file:bg-gray-200 border border-slate-200/80 rounded-2xl p-1 bg-white" />
               </div>
             </div>
           </div>
 
           {/* Brand Palette */}
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
             <div className="border-b border-gray-100 px-5 py-3.5">
               <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                 <Palette className="w-4 h-4 text-gray-400" /> Brand Palette
@@ -97,7 +97,7 @@ export default function AppBrandingSettings() {
                 {Object.entries(colors).map(([key, val]) => (
                   <div key={key} className="text-center">
                     <p className="text-xs font-semibold text-gray-700 mb-2 capitalize">{key}</p>
-                    <div className="h-10 rounded-none-none border border-gray-200 cursor-pointer relative overflow-hidden hover:brightness-110 transition-all" style={{ backgroundColor: val }}>
+                    <div className="h-10 rounded-xl border border-gray-200 cursor-pointer relative overflow-hidden hover:brightness-110 transition-all" style={{ backgroundColor: val }}>
                       <input type="color" value={val} onChange={e => setColors(c => ({ ...c, [key]: e.target.value }))}
                         className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
                     </div>
@@ -106,7 +106,7 @@ export default function AppBrandingSettings() {
                 ))}
               </div>
               <p className="text-xs text-gray-500 mb-4">Colors drive buttons, headers and accents inside the mobile apps.</p>
-              <div className="bg-blue-50 border border-blue-100 text-blue-800 px-4 py-3 rounded-none-none text-xs leading-relaxed flex gap-2">
+              <div className="bg-blue-50 border border-blue-100 text-blue-800 px-4 py-3 rounded-xl text-xs leading-relaxed flex gap-2">
                 <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                 <div>
                   The Parent, Staff and Driver apps inherit these values. To give one app its own name, logo or colours, use <strong>Settings &gt; App Branding</strong>.
@@ -121,7 +121,7 @@ export default function AppBrandingSettings() {
             <Info className="w-3.5 h-3.5" /> Apps refresh branding on next launch.
           </div>
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Branding</>}
           </button>
         </div>

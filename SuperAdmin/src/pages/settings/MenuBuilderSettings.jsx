@@ -56,10 +56,10 @@ const DEFAULT_STRUCTURE = {
 // Badge component
 function Badge({ type }) {
   if (type === 'Group') return (
-    <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black bg-gray-700 text-white rounded-none-none uppercase tracking-wide">Group</span>
+    <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black bg-gray-700 text-white rounded-xl uppercase tracking-wide">Group</span>
   );
   if (type === 'Header') return (
-    <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black bg-teal-500 text-white rounded-none-none uppercase tracking-wide">Header</span>
+    <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black bg-teal-500 text-white rounded-xl uppercase tracking-wide">Header</span>
   );
   return null;
 }
@@ -76,7 +76,7 @@ function StructureItem({ item, onRemove, depth = 0 }) {
   const [expanded, setExpanded] = useState(true);
   return (
     <div className={`${depth > 0 ? 'ml-5 border-l border-dashed border-gray-200 pl-3' : ''}`}>
-      <div className={`flex items-center gap-2 py-1.5 px-3 rounded-none-none group hover:bg-gray-50 cursor-default
+      <div className={`flex items-center gap-2 py-1.5 px-3 rounded-xl group hover:bg-gray-50 cursor-default
         ${item.type === 'header' ? 'text-teal-600 font-black text-[11px] uppercase tracking-wide' : 'text-[13px] text-gray-700 font-medium'}`}>
         <GripVertical className="w-3.5 h-3.5 text-gray-300 cursor-grab flex-shrink-0" />
         {item.children?.length > 0
@@ -88,7 +88,7 @@ function StructureItem({ item, onRemove, depth = 0 }) {
         <span className="flex-1">{item.label}</span>
         {item.badge && <Badge type={item.badge} />}
         <button onClick={() => onRemove(item.id)}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-none-none hover:bg-red-50 hover:text-red-500 text-gray-300">
+          className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-xl hover:bg-red-50 hover:text-red-500 text-gray-300">
           <Trash2 className="w-3 h-3" />
         </button>
       </div>
@@ -164,7 +164,7 @@ export default function MenuBuilderSettings() {
                 <input
                   value={search} onChange={e => setSearch(e.target.value)}
                   placeholder="Search menu items..."
-                  className="w-full pl-8 pr-3 py-1.5 border border-gray-200 rounded-none-none text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-gray-50" />
+                  className="w-full pl-8 pr-3 py-1.5 border border-slate-200/80 rounded-2xl text-[12px] text-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-400 bg-gray-50" />
                 {search && <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
                   <X className="w-3 h-3" />
                 </button>}
@@ -212,14 +212,14 @@ export default function MenuBuilderSettings() {
                 {/* Role dropdown */}
                 <div className="relative">
                   <select value={role} onChange={e => handleRoleChange(e.target.value)}
-                    className="appearance-none pl-3 pr-8 py-1.5 border border-gray-300 rounded-none-none text-[13px] text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer min-w-[200px]">
+                    className="appearance-none pl-3 pr-8 py-1.5 border border-gray-300 rounded-xl text-[13px] text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer min-w-[200px]">
                     {ROLES.map(r => <option key={r}>{r}</option>)}
                   </select>
                   <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 </div>
                 {/* Save button */}
                 <button onClick={handleSave}
-                  className={`flex items-center gap-2 px-4 py-1.5 font-bold text-[13px] rounded-none-none transition-all text-white ${saved ? 'bg-green-500' : 'bg-green-500 hover:bg-green-600'}`}>
+                  className={`flex items-center gap-2 px-4 py-1.5 font-bold text-[13px] rounded-xl transition-all text-white ${saved ? 'bg-green-500' : 'bg-green-500 hover:bg-green-600'}`}>
                   <Save className="w-3.5 h-3.5" /> {saved ? '✓ Saved!' : 'Save Menu'}
                 </button>
               </div>
@@ -244,7 +244,7 @@ export default function MenuBuilderSettings() {
               ) : (
                 <div className="p-4">
                   {/* Drop hint bar */}
-                  <div className="border-2 border-dashed border-gray-200 rounded-none-none p-3 mb-3 text-center text-[12px] text-gray-300">
+                  <div className="border-2 border-dashed border-gray-200 rounded-xl p-3 mb-3 text-center text-[12px] text-gray-300">
                     Click items from the left panel to add them here
                   </div>
                   {/* Items */}

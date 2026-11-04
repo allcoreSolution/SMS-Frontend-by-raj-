@@ -13,8 +13,8 @@ import { useLanguage } from '../../i18n/LanguageContext';
 function Toggle({ checked, onChange }) {
   return (
     <div onClick={() => onChange(!checked)}
-      className={`relative w-9 h-5 rounded-none-none cursor-pointer transition-colors duration-200 flex-shrink-0 ${checked ? 'bg-green-500' : 'bg-gray-300'}`}>
-      <div className={`absolute top-[2px] left-[2px] w-4 h-4 rounded-none-none bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : ''}`} />
+      className={`relative w-9 h-5 rounded-full cursor-pointer transition-colors duration-200 shrink-0 ${checked ? 'bg-green-500' : 'bg-gray-300'}`}>
+      <div className={`absolute top-[2px] left-[2px] w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : ''}`} />
     </div>
   );
 }
@@ -37,7 +37,7 @@ function SaveBar({ label = 'Save Changes', note = 'Changes apply immediately.', 
     <div className="border-t border-gray-200 bg-white px-8 py-3 flex items-center justify-between flex-shrink-0 shadow-[0_-2px_6px_rgba(0,0,0,0.04)]">
       <span className="text-[12px] text-gray-400">{note}</span>
       <button onClick={handle}
-        className={`flex items-center gap-2 px-5 py-2 font-bold text-[13px] rounded-none-none shadow transition-all text-white ${saved ? 'bg-green-500' : 'bg-blue-500 hover:bg-blue-600'}`}>
+        className={`flex items-center gap-2 px-5 py-2 font-bold text-[13px] rounded-xl shadow transition-all text-white ${saved ? 'bg-green-500' : 'bg-blue-500 hover:bg-blue-600'}`}>
         <Save className="w-3.5 h-3.5" /> {saved ? '✓ Saved!' : label}
       </button>
     </div>
@@ -77,12 +77,12 @@ function GeneralBrandingPanel() {
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Site Name</label>
               <input value={siteName} onChange={e => setSiteName(e.target.value)}
-                className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Platform Country</label>
               <select value={country} onChange={e => setCountry(e.target.value)}
-                className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
                 {['India (+91)', 'USA (+1)', 'UAE (+971)', 'UK (+44)', 'Canada (+1)', 'Australia (+61)'].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
@@ -91,7 +91,7 @@ function GeneralBrandingPanel() {
               <select value={language} onChange={e => {
                 setLanguage(e.target.value);
               }}
-                className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+                className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
                 {['English','Hindi','Marathi','Gujarati','Tamil','Telugu','Bengali'].map(l => <option key={l} value={l}>{l}</option>)}
               </select>
             </div>
@@ -99,17 +99,17 @@ function GeneralBrandingPanel() {
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Footer Text</label>
             <input value={footer} onChange={e => setFooter(e.target.value)}
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
           </div>
           <div className="grid grid-cols-2 gap-8">
             {[{ label: 'Site Logo (PNG, JPG)', accept: '.png,.jpg', preview: 'bg-blue-600' },
               { label: 'Site Favicon (.ico, .png)', accept: '.ico,.png', preview: 'bg-orange-500' }].map(f => (
               <div key={f.label}>
                 <label className="block text-[13px] font-bold text-gray-700 mb-2">{f.label}</label>
-                <div className={`mb-2 w-10 h-10 rounded-none-none ${f.preview} flex items-center justify-center text-white text-xs font-black`}>M</div>
+                <div className={`mb-2 w-10 h-10 rounded-xl ${f.preview} flex items-center justify-center text-white text-xs font-black`}>M</div>
                 <div className="flex">
-                  <input readOnly placeholder="Choose a file..." className="flex-1 border border-gray-300 rounded-none-none px-3 py-1.5 text-[12px] text-gray-400 bg-white focus:outline-none" />
-                  <label className="px-3 py-1.5 border border-l-0 border-gray-300 rounded-none-none text-[12px] font-semibold text-gray-600 bg-gray-50 cursor-pointer hover:bg-gray-100">
+                  <input readOnly placeholder="Choose a file..." className="flex-1 border border-gray-300 rounded-xl px-3 py-1.5 text-[12px] text-gray-400 bg-white focus:outline-none" />
+                  <label className="px-3 py-1.5 border border-l-0 border-gray-300 rounded-xl text-[12px] font-semibold text-gray-600 bg-gray-50 cursor-pointer hover:bg-gray-100">
                     Browse<input type="file" className="hidden" accept={f.accept} />
                   </label>
                 </div>
@@ -139,17 +139,17 @@ function AppBrandingPanel() {
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">App / Product Name</label>
             <input value={appName} onChange={e => setAppName(e.target.value)}
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Tagline</label>
             <input value={tagline} onChange={e => setTagline(e.target.value)}
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Brand Primary Color</label>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-none-none border border-gray-200 overflow-hidden cursor-pointer" style={{ backgroundColor: primaryColor }}>
+              <div className="w-10 h-10 rounded-xl border border-gray-200 overflow-hidden cursor-pointer" style={{ backgroundColor: primaryColor }}>
                 <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} className="opacity-0 w-full h-full cursor-pointer" />
               </div>
               <span className="text-[13px] font-mono text-gray-600">{primaryColor}</span>
@@ -158,8 +158,8 @@ function AppBrandingPanel() {
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-2">App Logo</label>
             <div className="flex">
-              <input readOnly placeholder="Choose a file..." className="flex-1 border border-gray-300 rounded-none-none px-3 py-1.5 text-[12px] text-gray-400 bg-white focus:outline-none" />
-              <label className="px-3 py-1.5 border border-l-0 border-gray-300 rounded-none-none text-[12px] font-semibold text-gray-600 bg-gray-50 cursor-pointer hover:bg-gray-100">
+              <input readOnly placeholder="Choose a file..." className="flex-1 border border-gray-300 rounded-xl px-3 py-1.5 text-[12px] text-gray-400 bg-white focus:outline-none" />
+              <label className="px-3 py-1.5 border border-l-0 border-gray-300 rounded-xl text-[12px] font-semibold text-gray-600 bg-gray-50 cursor-pointer hover:bg-gray-100">
                 Browse<input type="file" className="hidden" />
               </label>
             </div>
@@ -207,23 +207,23 @@ function PaymentsPanel() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Currency</label>
-              <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <select value={currency} onChange={e => setCurrency(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
                 {['Indian Rupee (₹)', 'US Dollar ($)', 'Euro (€)', 'AED (د.إ)'].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Payment Mode</label>
-              <select value={mode} onChange={e => setMode(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <select value={mode} onChange={e => setMode(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
                 <option>Live</option><option>Sandbox</option>
               </select>
             </div>
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Tax Label</label>
-              <input value={taxLabel} onChange={e => setTaxLabel(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <input value={taxLabel} onChange={e => setTaxLabel(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
             <div>
               <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Tax Rate (%)</label>
-              <input value={taxRate} onChange={e => setTaxRate(e.target.value)} type="number" className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              <input value={taxRate} onChange={e => setTaxRate(e.target.value)} type="number" className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
             </div>
           </div>
           <div className="flex flex-col gap-3 pt-2">
@@ -258,11 +258,11 @@ function SubscriptionsPanel() {
         <div className="space-y-4 max-w-[1150px]">
           <div className="grid grid-cols-3 gap-4">
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Trial Period (Days)</label>
-              <input value={trialDays} onChange={e => setTrialDays(e.target.value)} type="number" className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={trialDays} onChange={e => setTrialDays(e.target.value)} type="number" className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Grace Period (Days)</label>
-              <input value={graceDays} onChange={e => setGraceDays(e.target.value)} type="number" className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={graceDays} onChange={e => setGraceDays(e.target.value)} type="number" className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Billing Interval</label>
-              <select value={interval} onChange={e => setInterval(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+              <select value={interval} onChange={e => setInterval(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
                 <option>Monthly</option><option>Quarterly</option><option>Yearly</option>
               </select></div>
           </div>
@@ -302,7 +302,7 @@ function DashboardThemesPanel() {
         <div className="grid grid-cols-3 gap-4 max-w-[1150px]">
           {themes.map(t => (
             <button key={t.id} onClick={() => setSelected(t.id)}
-              className={`rounded-none-none border-2 overflow-hidden transition-all ${selected === t.id ? 'border-blue-500 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}>
+              className={`rounded-xl border-2 overflow-hidden transition-all ${selected === t.id ? 'border-blue-500 shadow-md' : 'border-gray-200 hover:border-gray-300'}`}>
               <div className="h-16 flex">
                 <div className="w-1/3" style={{ backgroundColor: t.colors[0] }} />
                 <div className="flex-1" style={{ backgroundColor: t.colors[1] }} />
@@ -340,7 +340,7 @@ function LoginPageDesignsPanel() {
             <div className="flex gap-2">
               {['split', 'center', 'fullbg'].map(l => (
                 <button key={l} onClick={() => setLayout(l)}
-                  className={`flex-1 py-2 rounded-none-none text-[12px] font-bold border-2 capitalize transition-all ${layout === l ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-600'}`}>
+                  className={`flex-1 py-2 rounded-xl text-[12px] font-bold border-2 capitalize transition-all ${layout === l ? 'border-blue-500 bg-blue-50 text-blue-600' : 'border-gray-200 text-gray-600'}`}>
                   {l === 'split' ? 'Split Screen' : l === 'center' ? 'Centered' : 'Full BG'}
                 </button>
               ))}
@@ -349,12 +349,12 @@ function LoginPageDesignsPanel() {
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Headline</label>
             <input value={headline} onChange={e => setHeadline(e.target.value)}
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
           </div>
           <div>
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Primary Color</label>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-none-none border border-gray-200 overflow-hidden cursor-pointer" style={{ backgroundColor: primaryColor }}>
+              <div className="w-10 h-10 rounded-xl border border-gray-200 overflow-hidden cursor-pointer" style={{ backgroundColor: primaryColor }}>
                 <input type="color" value={primaryColor} onChange={e => setPrimaryColor(e.target.value)} className="opacity-0 w-full h-full cursor-pointer" />
               </div>
               <span className="text-[13px] font-mono text-gray-600">{primaryColor}</span>
@@ -369,9 +369,9 @@ function LoginPageDesignsPanel() {
             ))}
           </div>
           {/* Mini preview */}
-          <div className="rounded-none-none overflow-hidden border border-gray-200 shadow-sm" style={{ height: 120, background: `linear-gradient(135deg, ${primaryColor}, #60a5fa)` }}>
+          <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm" style={{ height: 120, background: `linear-gradient(135deg, ${primaryColor}, #60a5fa)` }}>
             <div className="h-full flex items-center justify-center text-white text-center px-4">
-              {showLogo && <div className="w-6 h-6 rounded-none-none bg-white/30 mr-2 flex items-center justify-center text-[10px] font-black">M</div>}
+              {showLogo && <div className="w-6 h-6 rounded-xl bg-white/30 mr-2 flex items-center justify-center text-[10px] font-black">M</div>}
               <div className="text-[11px] font-black">{headline}</div>
             </div>
           </div>
@@ -425,7 +425,7 @@ function RegistrationPanel() {
           <div className="pt-4">
             <label className="block text-[13px] font-bold text-gray-700 mb-1.5">Max Failed Login Attempts</label>
             <input value={maxAttempts} onChange={e => setMaxAttempts(e.target.value)} type="number"
-              className="w-32 border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
+              className="w-32 border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" />
           </div>
         </div>
       </div>
@@ -469,15 +469,15 @@ function WhatsAppPanel() {
               <div className="text-[11px] text-gray-500">Send platform alerts via WhatsApp.</div></div>
           </div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Provider</label>
-            <select value={provider} onChange={e => setProvider(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <select value={provider} onChange={e => setProvider(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
               <option>Meta Cloud API</option><option>Twilio</option><option>WATI</option><option>360dialog</option>
             </select></div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">API Access Token</label>
             <input value={apiKey} onChange={e => setApiKey(e.target.value)} type="password" placeholder="Enter token..."
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Phone Number ID</label>
             <input value={phone} onChange={e => setPhone(e.target.value)}
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
         </div>
       </div>
       <SaveBar onSave={handleSave} label="Save WhatsApp Settings" />
@@ -533,24 +533,24 @@ function MailPanel() {
         <div className="space-y-4 max-w-[1150px]">
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2"><label className="block text-[13px] font-bold text-gray-700 mb-1.5">SMTP Host</label>
-              <input value={host} onChange={e => setHost(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={host} onChange={e => setHost(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Port</label>
-              <input value={port} onChange={e => setPort(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={port} onChange={e => setPort(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Username</label>
-              <input value={user} onChange={e => setUser(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={user} onChange={e => setUser(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Password</label>
-              <input value={pass} onChange={e => setPass(e.target.value)} type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+              <input value={pass} onChange={e => setPass(e.target.value)} type="password" placeholder="••••••••" className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">From Name</label>
-              <input value={fromName} onChange={e => setFromName(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={fromName} onChange={e => setFromName(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">From Email</label>
-              <input value={fromEmail} onChange={e => setFromEmail(e.target.value)} className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+              <input value={fromEmail} onChange={e => setFromEmail(e.target.value)} className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
           </div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Encryption</label>
-            <select value={encryption} onChange={e => setEncryption(e.target.value)} className="w-40 border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
+            <select value={encryption} onChange={e => setEncryption(e.target.value)} className="w-40 border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500">
               <option>TLS</option><option>SSL</option><option>None</option>
             </select>
           </div>
@@ -581,7 +581,7 @@ function PushNotifPanel() {
         <div className="space-y-4 max-w-[1150px]">
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">FCM Server Key</label>
             <input value={fcmKey} onChange={e => setFcmKey(e.target.value)} type="password" placeholder="Enter Firebase server key..."
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
           <div className="pt-2 flex flex-col gap-0">
             {[{ l: 'Push on Registration', d: 'Notify on new school sign-up.', v: onReg, fn: setOnReg },
               { l: 'Push on Payment', d: 'Notify schools when payment is received.', v: onPayment, fn: setOnPayment },
@@ -619,10 +619,10 @@ function TelegramPanel() {
           </div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Bot Token</label>
             <input value={token} onChange={e => setToken(e.target.value)} type="password" placeholder="1234567890:AAH..."
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
           <div><label className="block text-[13px] font-bold text-gray-700 mb-1.5">Chat ID / Channel ID</label>
             <input value={chatId} onChange={e => setChatId(e.target.value)} placeholder="-100xxxxxxxxx"
-              className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+              className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
         </div>
       </div>
       <SaveBar label="Save Telegram Settings" />
@@ -645,26 +645,26 @@ function CommsWalletPanel() {
         </div>
         <div className="space-y-5 max-w-[1150px]">
           {/* Balance card */}
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-none-none p-5 text-white shadow">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-5 text-white shadow">
             <div className="text-[11px] font-semibold opacity-80 mb-1">Current Wallet Balance</div>
             <div className="text-3xl font-black">{balance}</div>
             <div className="text-[11px] opacity-70 mt-1">Used for SMS & WhatsApp charges</div>
           </div>
           {/* DLT Config */}
-          <div className="bg-white border border-gray-200 rounded-none-none overflow-hidden shadow-sm">
+          <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
             <div className="border-b border-gray-100 px-4 py-3">
               <div className="text-[13px] font-black text-gray-800">DLT Configuration (India)</div>
             </div>
             <div className="p-4 space-y-3">
               <div><label className="block text-[12px] font-bold text-gray-700 mb-1">DLT Entity ID</label>
                 <input value={dltEntityId} onChange={e => setDltEntityId(e.target.value)} placeholder="TRAI Entity ID..."
-                  className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
               <div><label className="block text-[12px] font-bold text-gray-700 mb-1">Template ID</label>
                 <input value={templateId} onChange={e => setTemplateId(e.target.value)} placeholder="Approved template ID..."
-                  className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder-gray-300" /></div>
               <div><label className="block text-[12px] font-bold text-gray-700 mb-1">Sender Name / Header</label>
                 <input value={senderName} onChange={e => setSenderName(e.target.value)}
-                  className="w-full border border-gray-300 rounded-none-none px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
+                  className="w-full border border-gray-300 rounded-xl px-3 py-2 text-[13px] bg-white focus:outline-none focus:ring-1 focus:ring-blue-500" /></div>
             </div>
           </div>
         </div>
@@ -737,7 +737,7 @@ export default function GeneralSettings() {
 
           {/* Quick Guide */}
           <div className="p-3 border-t border-gray-100 flex-shrink-0">
-            <div className="bg-blue-50 rounded-none-none p-3">
+            <div className="bg-blue-50 rounded-xl p-3">
               <div className="flex items-center gap-1.5 mb-1.5">
                 <BookOpen className="w-3.5 h-3.5 text-blue-500" />
                 <span className="text-[11px] font-black text-blue-700">Quick Guide</span>

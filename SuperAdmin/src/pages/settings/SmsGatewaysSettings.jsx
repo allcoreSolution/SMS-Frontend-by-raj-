@@ -103,7 +103,7 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
             <p className="text-sm text-gray-500 mt-0.5">Providers used to deliver platform SMS &amp; WhatsApp notifications.</p>
           </div>
           <button onClick={handleExportCSV}
-            className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-none-none text-xs font-semibold transition-all self-start">
+            className="flex items-center gap-1.5 bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-all self-start">
             <Download className="w-3.5 h-3.5" /> Export CSV
           </button>
         </div>
@@ -117,16 +117,16 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
             { label: 'Active Gateways', value: activeGateways, icon: <CheckCircle2 className="w-5 h-5 text-emerald-500" />, isTag: false },
             { label: 'Platform Default', value: "Africa's Talking", icon: <Star className="w-5 h-5 text-purple-500" />, isTag: true },
           ].map((s, idx) => (
-            <div key={idx} className="bg-white border border-slate-200 rounded-none-none p-5 shadow-sm flex flex-col justify-between">
+            <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
-                <div className="w-10 h-10 rounded-none-none bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
                   {s.icon}
                 </div>
               </div>
               {s.isTag ? (
                 <div className="mt-2">
-                  <span className="px-2.5 py-1 rounded-none-none text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200/60 inline-flex items-center gap-1">
+                  <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-purple-50 text-purple-700 border border-purple-200/60 inline-flex items-center gap-1">
                     <Star className="w-3 h-3 fill-current" /> {s.value}
                   </span>
                 </div>
@@ -138,13 +138,13 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
         </div>
 
         {/* Info note */}
-        <div className="bg-white border border-gray-200 rounded-none-none px-4 py-3 text-xs text-gray-600 flex items-center gap-2">
+        <div className="bg-white border border-slate-200/80 rounded-2xl px-4 py-3 text-xs text-gray-600 flex items-center gap-2">
           <Star className="w-3.5 h-3.5 text-purple-500 fill-current flex-shrink-0" />
           <span>The <strong className="text-purple-800">Platform default</strong> gateway handles SMS when a school has no custom gateway configured. Only <strong className="text-emerald-700">Active</strong> gateways process live traffic.</span>
         </div>
 
         {/* Gateway List */}
-        <div className="bg-white border border-gray-200 rounded-none-none overflow-hidden shadow-sm">
+        <div className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-sm">
           <div className="px-5 py-3 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
             <span className="text-xs font-semibold text-gray-600">Configured Providers</span>
             <span className="text-xs text-gray-400">{gateways.length} gateways</span>
@@ -153,26 +153,26 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
             {gateways.map(gw => (
               <div key={gw.id} className="px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-gray-50 transition-colors">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-none-none bg-gray-100 border border-gray-200 text-base flex items-center justify-center flex-shrink-0">{gw.logo}</div>
+                  <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 text-base flex items-center justify-center flex-shrink-0">{gw.logo}</div>
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h4 className="text-sm font-semibold text-gray-800">{gw.name}</h4>
-                      {gw.isDefault && <span className="px-1.5 py-0.5 rounded-none-none text-xs font-semibold bg-purple-100 text-purple-700">Default</span>}
+                      {gw.isDefault && <span className="px-1.5 py-0.5 rounded-xl text-xs font-semibold bg-purple-100 text-purple-700">Default</span>}
                     </div>
                     <p className="text-xs text-gray-400 mt-0.5">{gw.region}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 justify-end flex-shrink-0">
                   {gw.active
-                    ? <span className="px-2.5 py-1 rounded-none-none text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
-                    : <span className="px-2.5 py-1 rounded-none-none text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">Inactive</span>
+                    ? <span className="px-2.5 py-1 rounded-xl text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+                    : <span className="px-2.5 py-1 rounded-xl text-xs font-medium bg-gray-100 text-gray-500 border border-gray-200">Inactive</span>
                   }
                   <button onClick={() => openEditDrawer(gw)}
-                    className="px-3 py-1.5 rounded-none-none bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium transition-all flex items-center gap-1.5">
+                    className="px-3 py-1.5 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 text-xs font-medium transition-all flex items-center gap-1.5">
                     <Edit3 className="w-3 h-3 text-gray-400" /> Edit
                   </button>
                   <button onClick={() => openTestModal(gw)}
-                    className="px-3 py-1.5 rounded-none-none bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all flex items-center gap-1.5">
+                    className="px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all flex items-center gap-1.5">
                     <Send className="w-3 h-3" /> Test
                   </button>
                 </div>
@@ -188,24 +188,24 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
           <div className="w-full max-w-[1150px] bg-white h-full shadow-2xl flex flex-col overflow-hidden">
             <div className="p-5 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-none-none bg-gray-100 text-xl flex items-center justify-center">{editingGw.logo}</div>
+                <div className="w-9 h-9 rounded-xl bg-gray-100 text-xl flex items-center justify-center">{editingGw.logo}</div>
                 <div>
                   <h3 className="text-sm font-bold text-gray-800">Edit {editingGw.name}</h3>
                   <p className="text-xs text-gray-500">{editingGw.region} Gateway</p>
                 </div>
               </div>
-              <button onClick={() => setEditingGw(null)} className="p-1.5 rounded-none-none text-gray-400 hover:bg-gray-100"><X className="w-4 h-4" /></button>
+              <button onClick={() => setEditingGw(null)} className="p-1.5 rounded-xl text-gray-400 hover:bg-gray-100"><X className="w-4 h-4" /></button>
             </div>
             <div className="p-5 flex-1 overflow-y-auto space-y-4">
-              <div className="bg-gray-50 border border-gray-200 rounded-none-none p-4 space-y-3">
+              <div className="bg-gray-50 border border-slate-200/80 rounded-2xl p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-xs font-semibold text-gray-800">Active Status</p>
                     <p className="text-xs text-gray-500">Enable this provider for platform messaging</p>
                   </div>
                   <button type="button" onClick={() => setEditForm(f => ({ ...f, active: !f.active }))}
-                    className={`relative w-9 h-5 rounded-none-none transition-colors ${editForm.active ? 'bg-blue-600' : 'bg-gray-200'}`}>
-                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transition-transform ${editForm.active ? 'translate-x-4' : 'translate-x-0'}`} />
+                    className={`relative w-9 h-5 rounded-xl transition-colors ${editForm.active ? 'bg-blue-600' : 'bg-gray-200'}`}>
+                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${editForm.active ? 'translate-x-4' : 'translate-x-0'}`} />
                   </button>
                 </div>
                 <div className="border-t border-gray-200 pt-3 flex items-center justify-between">
@@ -214,7 +214,7 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
                     <p className="text-xs text-gray-500">Send system SMS when no school gateway is set</p>
                   </div>
                   <button type="button" onClick={() => handleSetDefault(editingGw.id)}
-                    className={`px-2.5 py-1 rounded-none-none text-xs font-semibold transition-all ${editingGw.isDefault ? 'bg-purple-600 text-white' : 'bg-white border border-purple-200 text-purple-700 hover:bg-purple-50'}`}>
+                    className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all ${editingGw.isDefault ? 'bg-purple-600 text-white' : 'bg-white border border-purple-200 text-purple-700 hover:bg-purple-50'}`}>
                     {editingGw.isDefault ? 'Current Default' : 'Set Default'}
                   </button>
                 </div>
@@ -227,7 +227,7 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
                 <div key={field}>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</label>
                   <input type="text" value={editForm[field]} onChange={e => setEditForm(f => ({ ...f, [field]: e.target.value }))} placeholder={placeholder}
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                 </div>
               ))}
 
@@ -235,7 +235,7 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">Auth Token / API Secret <span className="text-red-500">*</span></label>
                 <div className="relative">
                   <input type={showToken ? 'text' : 'password'} value={editForm.authToken} onChange={e => setEditForm(f => ({ ...f, authToken: e.target.value }))} placeholder="Enter auth token..."
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 pr-10 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 pr-10 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                   <button type="button" onClick={() => setShowToken(!showToken)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                     {showToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                   </button>
@@ -246,23 +246,23 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">DLT Entity ID (India DLT Compliance)</label>
                   <input type="text" value={editForm.dltEntityId} onChange={e => setEditForm(f => ({ ...f, dltEntityId: e.target.value }))} placeholder="e.g. 10019283120"
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                 </div>
               )}
 
-              <div className="bg-blue-50 border border-blue-100 rounded-none-none p-3.5">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl p-3.5">
                 <div className="flex items-center justify-between mb-1.5">
                   <span className="text-xs font-semibold text-blue-800 flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-blue-500" /> Delivery Report Webhook</span>
                   <button type="button" onClick={() => navigator.clipboard.writeText(editingGw.webhookUrl)}
                     className="text-xs font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1"><Copy className="w-3 h-3" /> Copy</button>
                 </div>
-                <code className="text-xs text-blue-800 bg-white border border-blue-100 rounded-none-none px-2.5 py-1.5 block break-all font-mono">{editingGw.webhookUrl}</code>
+                <code className="text-xs text-blue-800 bg-white border border-blue-100 rounded-xl px-2.5 py-1.5 block break-all font-mono">{editingGw.webhookUrl}</code>
               </div>
             </div>
             <div className="p-5 border-t border-gray-100 flex items-center justify-end gap-3 flex-shrink-0">
               <button onClick={() => setEditingGw(null)} className="px-4 py-2 text-xs font-medium text-gray-600 hover:text-gray-800">Cancel</button>
               <button onClick={handleSaveEdit}
-                className={`px-5 py-2 rounded-none-none text-xs font-semibold text-white transition-all flex items-center gap-1.5 ${editSuccess ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+                className={`px-5 py-2 rounded-xl text-xs font-semibold text-white transition-all flex items-center gap-1.5 ${editSuccess ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
                 {editSuccess ? <><Check className="w-3.5 h-3.5" /> Saved!</> : 'Save Provider'}
               </button>
             </div>
@@ -273,30 +273,30 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
       {/* Test SMS Modal */}
       {testingGw && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-          <div className="w-full max-w-[1150px] bg-white rounded-none-none shadow-2xl overflow-hidden">
+          <div className="w-full max-w-[1150px] bg-white rounded-xl shadow-2xl overflow-hidden">
             <div className="p-5 border-b border-gray-100 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-none-none bg-gray-100 text-xl flex items-center justify-center">{testingGw.logo}</div>
+                <div className="w-9 h-9 rounded-xl bg-gray-100 text-xl flex items-center justify-center">{testingGw.logo}</div>
                 <div>
                   <h3 className="text-sm font-bold text-gray-800">Test {testingGw.name}</h3>
                   <p className="text-xs text-gray-500">Send an instant test SMS</p>
                 </div>
               </div>
-              <button onClick={() => setTestingGw(null)} className="p-1.5 rounded-none-none text-gray-400 hover:bg-gray-100"><X className="w-4 h-4" /></button>
+              <button onClick={() => setTestingGw(null)} className="p-1.5 rounded-xl text-gray-400 hover:bg-gray-100"><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={handleSendTestSMS} className="p-5 space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">Recipient Mobile Number</label>
                 <input type="text" required value={testMobile} onChange={e => setTestMobile(e.target.value)} placeholder="+919876543210"
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-600 mb-1.5">Test Message Body</label>
                 <textarea rows={3} required value={testMessage} onChange={e => setTestMessage(e.target.value)}
-                  className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none" />
+                  className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-xs text-gray-800 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none" />
               </div>
               {testResult && (
-                <div className={`p-3 rounded-none-none text-xs font-medium flex items-center gap-2 ${testResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                <div className={`p-3 rounded-xl text-xs font-medium flex items-center gap-2 ${testResult.success ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
                   {testResult.success ? <Sparkles className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" /> : <AlertCircle className="w-3.5 h-3.5 text-red-600 flex-shrink-0" />}
                   <span>{testResult.message}</span>
                 </div>
@@ -304,7 +304,7 @@ export default function SmsGatewaysSettings({ inSettingsCenter = false }) {
               <div className="flex items-center justify-end gap-2 pt-1">
                 <button type="button" onClick={() => setTestingGw(null)} className="px-4 py-2 text-xs font-medium text-gray-600 hover:text-gray-800">Close</button>
                 <button type="submit" disabled={isSending}
-                  className="px-5 py-2 rounded-none-none bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all flex items-center gap-2">
+                  className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all flex items-center gap-2">
                   <Send className={`w-3.5 h-3.5 ${isSending ? 'animate-bounce' : ''}`} />
                   {isSending ? 'Sending...' : 'Send Test SMS'}
                 </button>

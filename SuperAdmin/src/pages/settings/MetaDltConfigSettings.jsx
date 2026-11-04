@@ -52,7 +52,7 @@ export default function MetaDltConfigSettings() {
             <p className="text-sm text-gray-500">Platform Meta WhatsApp + DLT SMS credentials for the comms wallet.</p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden mb-5">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden mb-5">
             <div className="border-b border-gray-100 px-5 py-3.5">
               <h3 className="font-semibold text-gray-800 text-sm">Platform Meta / DLT Configuration</h3>
             </div>
@@ -75,7 +75,7 @@ export default function MetaDltConfigSettings() {
                     <div key={f.key}>
                       <label className="block text-xs font-semibold text-gray-600 mb-1.5">{f.label}</label>
                       <input value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                        className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                        className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                     </div>
                   ))}
                 </div>
@@ -84,20 +84,20 @@ export default function MetaDltConfigSettings() {
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">Access Token</label>
                     <input value={form.accessToken} onChange={e => set('accessToken', e.target.value)} type="password"
                       placeholder="Leave blank to keep existing"
-                      className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                      className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                     <p className="text-xs text-gray-400 mt-1">Stored encrypted. Enter only to replace.</p>
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">API Version</label>
                     <input value={form.apiVersion} onChange={e => set('apiVersion', e.target.value)}
-                      className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                      className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                   </div>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">App Secret</label>
                   <input value={form.appSecret} onChange={e => set('appSecret', e.target.value)} type="password"
                     placeholder="Leave blank to keep existing"
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                   <p className="text-xs text-gray-400 mt-1">Used for webhook signature verification. Stored encrypted.</p>
                 </div>
               </div>
@@ -116,14 +116,14 @@ export default function MetaDltConfigSettings() {
                     <div key={f.key}>
                       <label className="block text-xs font-semibold text-gray-600 mb-1.5">{f.label}</label>
                       <input value={form[f.key]} onChange={e => set(f.key, e.target.value)} placeholder={f.placeholder}
-                        className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                        className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Info */}
-              <div className="bg-blue-50 border border-blue-100 rounded-none-none px-4 py-3 flex gap-2.5">
+              <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex gap-2.5">
                 <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-blue-800 leading-relaxed">
                   Message wording is fixed by superadmin-approved Meta/DLT templates. Schools cannot edit platform-level templates.
@@ -136,7 +136,7 @@ export default function MetaDltConfigSettings() {
         {/* Footer */}
         <div className="bg-white border-t border-gray-100 px-6 py-3 flex justify-end flex-shrink-0">
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Comms Config</>}
           </button>
         </div>

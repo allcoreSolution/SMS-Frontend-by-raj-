@@ -7,8 +7,8 @@ import { settingsService } from '../../api/settingsService';
 function Toggle({ checked, onChange }) {
   return (
     <button type="button" onClick={() => onChange(!checked)}
-      className={`relative w-9 h-5 rounded-none-none transition-colors duration-200 flex-shrink-0 focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}>
-      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-none-none bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
+      className={`relative w-9 h-5 rounded-xl transition-colors duration-200 flex-shrink-0 focus:outline-none ${checked ? 'bg-blue-600' : 'bg-gray-200'}`}>
+      <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${checked ? 'translate-x-4' : 'translate-x-0'}`} />
     </button>
   );
 }
@@ -61,7 +61,7 @@ export default function SubscriptionsSettings() {
             <p className="text-sm text-gray-500">Renewal reminders, grace period and multi-channel billing alerts.</p>
           </div>
 
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm overflow-hidden">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm overflow-hidden">
             <div className="border-b border-gray-100 px-5 py-3.5">
               <h3 className="font-semibold text-gray-800 text-sm flex items-center gap-2">
                 <RefreshCw className="w-4 h-4 text-gray-400" /> Subscription &amp; Renewal Management
@@ -72,20 +72,20 @@ export default function SubscriptionsSettings() {
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">Reminder Intervals (Days before expiry)</label>
                   <input value={reminderDays} onChange={e => setReminderDays(e.target.value)}
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                   <p className="text-xs text-gray-400 mt-1">Comma separated days to send renewal reminders.</p>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">Grace Period (Days after expiry)</label>
                   <input value={gracePeriod} onChange={e => setGracePeriod(e.target.value)}
-                    className="w-full border border-gray-200 rounded-none-none px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
+                    className="w-full border border-slate-200/80 rounded-2xl px-3 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400" />
                   <p className="text-xs text-gray-400 mt-1">Days to allow access after subscription ends.</p>
                 </div>
               </div>
 
               <div>
                 <p className="text-sm font-semibold text-gray-700 mb-3">Multi-Channel Reminders</p>
-                <div className="flex items-start gap-3 bg-gray-50 border border-gray-100 rounded-none-none p-4">
+                <div className="flex items-start gap-3 bg-gray-50 border border-slate-200/80 rounded-2xl p-4">
                   <Toggle checked={smsReminders} onChange={setSmsReminders} />
                   <div>
                     <p className="text-sm font-medium text-gray-800">Enable SMS/WhatsApp reminders for renewals</p>
@@ -100,7 +100,7 @@ export default function SubscriptionsSettings() {
         {/* Footer */}
         <div className="bg-white border-t border-gray-100 px-6 py-3 flex justify-end flex-shrink-0">
           <button onClick={handleSave}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-none-none transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
+            className={`flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-xl transition-all text-white ${saved ? 'bg-emerald-500' : 'bg-blue-600 hover:bg-blue-700'}`}>
             {saved ? <><Check className="w-3.5 h-3.5" /> Saved!</> : <><Save className="w-3.5 h-3.5" /> Save Subscriptions</>}
           </button>
         </div>

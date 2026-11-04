@@ -191,7 +191,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
           {/* Header Title + Back Button (Matching screenshot) */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-none-none bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20">
+              <div className="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20">
                 <Camera className="w-5 h-5" />
               </div>
               <h1 className="text-2xl font-black text-gray-900 tracking-tight">
@@ -202,14 +202,14 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleExportExcel}
-                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-none-none text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer"
+                className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white px-4 py-2 rounded-xl text-xs font-black transition-all shadow-xs shadow-emerald-600/20 cursor-pointer"
               >
                 <Download className="w-3.5 h-3.5" /> Export Excel / CSV
               </button>
 
               <button
                 onClick={() => navigate('/settings')}
-                className="px-4 py-2 rounded-none-none bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 text-xs font-bold shadow-xs transition-all flex items-center gap-2 cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4 text-gray-500" /> Back to Settings
               </button>
@@ -226,16 +226,16 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
               { label: 'Pending Enrollment', value: '4,775', icon: <AlertTriangle className="w-5 h-5 text-amber-500" /> },
               { label: 'AI Vector Engine', value: 'Online Node.JS', icon: <span className="font-mono font-bold text-slate-500 text-xs">AI</span>, isTag: true }
             ].map((s, idx) => (
-              <div key={idx} className="bg-white border border-slate-200 rounded-none-none p-5 shadow-sm flex flex-col justify-between">
+              <div key={idx} className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{s.label}</span>
-                  <div className="w-10 h-10 rounded-none-none bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0 border border-slate-100 shadow-sm">
                     {s.icon}
                   </div>
                 </div>
                 {s.isTag ? (
                   <div className="mt-2">
-                    <span className="px-2.5 py-1 rounded-none-none text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1">
+                    <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1">
                       <Check className="w-3 h-3" /> {s.value}
                     </span>
                   </div>
@@ -247,7 +247,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
           </div>
 
           {/* Main Card: Select School Section */}
-          <div className="bg-white border border-gray-200/90 rounded-none-none shadow-xs overflow-hidden">
+          <div className="bg-white border border-gray-200/90 rounded-xl shadow-xs overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 bg-white flex items-center gap-2">
               <span className="text-lg">🏢</span>
               <h2 className="text-sm font-black text-gray-900">Select School</h2>
@@ -257,7 +257,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
               <select
                 value={selectedSchoolId}
                 onChange={e => setSelectedSchoolId(e.target.value)}
-                className="w-full border-2 border-orange-400 rounded-none-none px-4 py-3 text-xs font-semibold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all cursor-pointer shadow-xs"
+                className="w-full border-2 border-orange-400 rounded-xl px-4 py-3 text-xs font-semibold text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all cursor-pointer shadow-xs"
               >
                 <option value="">— Select a School to manage —</option>
                 {schoolsList.map(school => (
@@ -271,7 +271,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
 
           {/* Render Users Table when a school is selected */}
           {selectedSchoolId && (
-            <div className="bg-white border border-gray-200/90 rounded-none-none shadow-xs overflow-hidden animate-in fade-in duration-300">
+            <div className="bg-white border border-gray-200/90 rounded-xl shadow-xs overflow-hidden animate-in fade-in duration-300">
               
               {/* School Header Sub-bar */}
               <div className="p-5 border-b border-gray-100 bg-gradient-to-r from-blue-50/60 via-white to-transparent flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -288,14 +288,14 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                 <div className="flex items-center gap-2.5 flex-wrap">
                   <button
                     onClick={handleSyncEdgeDevices}
-                    className="px-3.5 py-2 rounded-none-none bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-600/20 transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm shadow-blue-600/20 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <RefreshCw className="w-3.5 h-3.5" /> Sync AI Edge Cameras
                   </button>
 
                   <button
                     onClick={() => setSyncToast(true)}
-                    className="px-3.5 py-2 rounded-none-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm shadow-emerald-600/20 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" /> Send Registration Link
                   </button>
@@ -304,7 +304,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
 
               {/* Sync Toast Alert */}
               {syncToast && (
-                <div className="mx-6 mt-4 p-3 rounded-none-none bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
+                <div className="mx-6 mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-emerald-600" />
                   <span>AI Biometric Camera Sync Initiated! 512-d embeddings pushed to edge hardware nodes.</span>
                 </div>
@@ -319,7 +319,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Search by student or staff name..."
-                    className="w-full pl-10 pr-3 py-1.5 border border-gray-200 rounded-none-none text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full pl-10 pr-3 py-1.5 border border-slate-200/80 rounded-2xl text-xs font-medium bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
 
@@ -328,7 +328,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                     <button
                       key={role}
                       onClick={() => setRoleFilter(role)}
-                      className={`px-3 py-1 rounded-none-none text-xs font-bold transition-all ${
+                      className={`px-3 py-1 rounded-xl text-xs font-bold transition-all ${
                         roleFilter === role
                           ? 'bg-slate-900 text-white shadow-xs'
                           : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-100'
@@ -366,10 +366,10 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                           {/* User Avatar + Name */}
                           <td className="px-3 py-2.5 align-middle border-x border-slate-200 font-bold text-gray-900 w-[25%]">
                             <div className="flex items-center gap-3">
-                              <div className="w-9 h-9 rounded-none-none bg-gray-100 border border-gray-200 text-lg flex items-center justify-center flex-shrink-0 shadow-xs relative">
+                              <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 text-lg flex items-center justify-center flex-shrink-0 shadow-xs relative">
                                 {user.avatar}
                                 {user.enrolled && (
-                                  <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-none-none bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white">
+                                  <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-xl bg-emerald-500 border-2 border-white flex items-center justify-center text-[8px] text-white">
                                     ✓
                                   </span>
                                 )}
@@ -380,7 +380,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
 
                           {/* Role & Details */}
                           <td className="px-3 py-2.5 align-middle border-x border-slate-200">
-                            <span className="px-2 py-0.5 rounded-none-none text-[10px] font-black bg-blue-100 text-blue-700 mr-2 uppercase tracking-widest">
+                            <span className="px-2 py-0.5 rounded-xl text-[10px] font-black bg-blue-100 text-blue-700 mr-2 uppercase tracking-widest">
                               {user.role}
                             </span>
                             <span className="text-gray-500 font-medium text-[12px]">{user.details}</span>
@@ -389,11 +389,11 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                           {/* Vector Status Badge */}
                           <td className="px-3 py-2.5 align-middle border-x border-slate-200">
                             {user.enrolled ? (
-                              <span className="px-2.5 py-1 rounded-none-none text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1 uppercase tracking-widest">
+                              <span className="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1 uppercase tracking-widest">
                                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Enrolled (512-d)
                               </span>
                             ) : (
-                              <span className="px-2.5 py-1 rounded-none-none text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 inline-flex items-center gap-1 uppercase tracking-widest">
+                              <span className="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60 inline-flex items-center gap-1 uppercase tracking-widest">
                                 <AlertTriangle className="w-3.5 h-3.5 text-amber-600" /> Pending Enrollment
                               </span>
                             )}
@@ -417,7 +417,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                           <td className="px-3 py-2.5 align-middle border-x border-slate-200 text-right space-x-2">
                             <button
                               onClick={() => handleStartScan(user)}
-                              className="px-3 py-1 rounded-none-none bg-sky-500 hover:bg-sky-600 text-white font-bold shadow-xs transition-all inline-flex items-center gap-1 cursor-pointer text-[12px]"
+                              className="px-3 py-1 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold shadow-xs transition-all inline-flex items-center gap-1 cursor-pointer text-[12px]"
                             >
                               <Camera className="w-3 h-3" /> {user.enrolled ? 'Re-scan' : 'Capture'}
                             </button>
@@ -425,7 +425,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                             {user.enrolled && (
                               <button
                                 onClick={() => handleDeleteVector(user.id)}
-                                className="px-2.5 py-1 rounded-none-none bg-white hover:bg-red-50 border border-red-200 text-red-600 font-bold transition-all cursor-pointer"
+                                className="px-2.5 py-1 rounded-xl bg-white hover:bg-red-50 border border-red-200 text-red-600 font-bold transition-all cursor-pointer"
                               >
                                 <Trash2 className="w-3 h-3" />
                               </button>
@@ -447,7 +447,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
         {/* AI Camera Face Scanner Simulation Modal */}
         {scanningUser && (
           <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-200">
-            <div className="w-full max-w-[1150px] bg-slate-900 text-white rounded-none-none shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-800">
+            <div className="w-full max-w-[1150px] bg-slate-900 text-white rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-800">
               
               {/* Modal Header */}
               <div className="p-5 border-b border-slate-800 flex items-center justify-between">
@@ -463,14 +463,14 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
               {/* Viewport Simulation Container */}
               <div className="p-6 text-center space-y-4">
                 
-                <div className="w-48 h-48 rounded-none-none border-4 border-sky-500/80 mx-auto relative overflow-hidden bg-slate-950 flex items-center justify-center shadow-xl shadow-sky-500/10">
+                <div className="w-48 h-48 rounded-xl border-4 border-sky-500/80 mx-auto relative overflow-hidden bg-slate-950 flex items-center justify-center shadow-xl shadow-sky-500/10">
                   {/* Avatar Icon */}
                   <span className="text-6xl animate-pulse">{scanningUser.avatar}</span>
 
                   {/* Face Mesh Overlay simulation */}
                   {scanStep === 1 && (
-                    <div className="absolute inset-0 bg-sky-500/10 flex items-center justify-center border-2 border-dashed border-sky-400 rounded-none-none animate-ping">
-                      <div className="w-36 h-36 border border-emerald-400/80 rounded-none-none" />
+                    <div className="absolute inset-0 bg-sky-500/10 flex items-center justify-center border-2 border-dashed border-sky-400 rounded-xl animate-ping">
+                      <div className="w-36 h-36 border border-emerald-400/80 rounded-xl" />
                     </div>
                   )}
 
@@ -489,7 +489,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                 {/* Progress Bar */}
                 {scanStep === 1 && (
                   <div className="space-y-2">
-                    <div className="w-full bg-slate-800 rounded-none-none h-2 overflow-hidden">
+                    <div className="w-full bg-slate-800 rounded-xl h-2 overflow-hidden">
                       <div className="bg-gradient-to-r from-sky-500 to-emerald-400 h-full transition-all duration-300" style={{ width: `${scanProgress}%` }} />
                     </div>
                     <p className="text-[11px] font-mono text-sky-400">Computing 512-D Facial Landmarks Embedding... {scanProgress}%</p>
@@ -497,7 +497,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                 )}
 
                 {scanStep === 2 && (
-                  <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 rounded-none-none text-xs font-bold">
+                  <div className="p-3 bg-emerald-950/80 border border-emerald-800 text-emerald-300 rounded-xl text-xs font-bold">
                     ✨ Face Vector Enrolled Successfully! (512-Dimensional Embedding Saved)
                   </div>
                 )}
@@ -507,7 +507,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                   {scanStep === 0 && (
                     <button
                       onClick={handleRunAiScanner}
-                      className="w-full py-3 rounded-none-none bg-sky-500 hover:bg-sky-600 text-white text-xs font-black shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-xs font-black shadow-lg shadow-sky-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                     >
                       <Play className="w-4 h-4 fill-current" /> Start AI Face Recognition Scan
                     </button>
@@ -516,7 +516,7 @@ export default function FaceVectorsSettings({ inSettingsCenter = false }) {
                   {scanStep === 2 && (
                     <button
                       onClick={() => setScanningUser(null)}
-                      className="w-full py-3 rounded-none-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+                      className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
                     >
                       Done & Close
                     </button>

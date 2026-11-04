@@ -8,8 +8,8 @@ export default function PushNotificationsSettings() {
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto p-6 max-w-[1150px] mx-auto w-full">
           
-          <div className="bg-white border border-gray-200 rounded-none-none shadow-sm p-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-none-none bg-amber-50 flex items-center justify-center mb-4">
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-10 flex flex-col items-center text-center">
+            <div className="w-14 h-14 rounded-xl bg-amber-50 flex items-center justify-center mb-4">
               <Bell className="w-7 h-7 text-amber-500" />
             </div>
             <h1 className="text-xl font-bold text-gray-800 mb-2">Push Notifications</h1>
@@ -24,7 +24,7 @@ export default function PushNotificationsSettings() {
               ))}
             </div>
             <button onClick={() => window.open('/settings-push-workspace', '_blank')}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-none-none transition-colors text-sm">
+              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors text-sm">
               <ExternalLink className="w-4 h-4" /> Open Push Notifications
             </button>
             <p className="text-xs text-gray-400 mt-3">Opens the full workspace in a new tab.</p>
