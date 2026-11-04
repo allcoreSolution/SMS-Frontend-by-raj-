@@ -19,28 +19,65 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (loading) return;
+
+    const loginIdentifier = identifier.trim();
+
+    // Validate input
+    if (!loginIdentifier || !password.trim()) {
+      Swal.fire('Validation Error', 'Please enter your email/username and password.', 'warning');
+      return;
+    }
+
     setLoading(true);
+
     try {
-      const res = await authService.login({ username: identifier, email: identifier, password });
-      if (res.success) {
-         Swal.fire({
-           title: 'Login Successful',
-           text: 'Welcome back to the Accountant Portal!',
-           icon: 'success',
-           timer: 1500,
-           showConfirmButton: false,
-           background: '#ffffff',
-           confirmButtonColor: '#3c8dbc'
-         }).then(() => {
-           navigate('/accounts/dashboard', { replace: true });
-         });
+      const res = await authService.login({
+        username: loginIdentifier,
+        email: loginIdentifier,
+        password
+      });
+
+      if (res?.success) {
+        await Swal.fire({
+          title: 'Login Successful',
+          text: 'Welcome back to the Accountant Portal!',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#ffffff',
+          confirmButtonColor: '#3c8dbc'
+        });
+
+        navigate('/accounts/dashboard', { replace: true });
       } else {
-         Swal.fire('Error', res.message || 'Login failed', 'error');
+        Swal.fire(
+          'Login Failed',
+          'Invalid username/email or password. Please try again.',
+          'error'
+        );
       }
     } catch (err) {
-       Swal.fire('Error', err.response?.data?.message || 'Invalid credentials', 'error');
+      console.error('Accountant Login Error:', {
+        status: err.response?.status,
+        code: err.code,
+        message: err.message
+      });
+
+      let errorMessage = 'Something went wrong. Please try again.';
+
+      if (!err.response) {
+        errorMessage = 'Unable to connect to the server. Please check your internet connection or server status.';
+      } else if ([400, 401, 403].includes(err.response.status)) {
+        errorMessage = 'Invalid username/email or password.';
+      } else if (err.response.status >= 500) {
+        errorMessage = 'Server is temporarily unavailable. Please try again later.';
+      }
+
+      Swal.fire('Login Error', errorMessage, 'error');
     } finally {
-       setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -99,10 +136,10 @@ const Login = () => {
               didOpen: () => Swal.showLoading()
             });
 
-            const resetRes = await authService.resetPassword({ 
-              email: resetEmail, 
-              otp: formValues.otp, 
-              newPassword: formValues.newPassword 
+            const resetRes = await authService.resetPassword({
+              email: resetEmail,
+              otp: formValues.otp,
+              newPassword: formValues.newPassword
             });
 
             if (resetRes.success) {
@@ -128,7 +165,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-white flex font-sans">
-      
+
       {/* Left Side - Branding & Aesthetics */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1e282c] via-[#222d32] to-[#12181a] relative flex-col justify-between p-12 overflow-hidden items-start">
         {/* Abstract Background Shapes */}
@@ -140,7 +177,7 @@ const Login = () => {
             <GraduationCap className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-white text-[42px] font-bold leading-tight mb-4 tracking-tight">
-            Next Generation <br/> <span className="text-[#3c8dbc]">School ERP</span> System.
+            Next Generation <br /> <span className="text-[#3c8dbc]">School ERP</span> System.
           </h1>
           <p className="text-[#a0aabf] text-[16px] max-w-md leading-relaxed font-light">
             Manage your institution's finances, academic records, and communications in one seamlessly integrated platform.
@@ -171,7 +208,7 @@ const Login = () => {
 
       {/* Right Side - Login Form */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-white relative z-10">
-        
+
         <div className="w-full max-w-[420px]">
           {/* Mobile Only Branding */}
           <div className="lg:hidden flex items-center gap-3 mb-10">
@@ -187,14 +224,14 @@ const Login = () => {
             <h2 className="text-[28px] font-bold text-[#111] mb-2 tracking-tight">Accountant Portal</h2>
             <p className="text-[#666] text-[15px]">Please enter your credentials to securely sign in to your dashboard.</p>
           </div>
-          
+
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-[13px] font-bold text-[#444] mb-1.5 uppercase tracking-wide">Email Address / Username</label>
               <div className="relative group">
-                <input 
-                  type="text" 
-                  placeholder="e.g. accountant@allcoresolution.com" 
+                <input
+                  type="text"
+                  placeholder="e.g. accountant@allcoresolution.com"
                   required
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
@@ -203,12 +240,12 @@ const Login = () => {
                 <User className="w-[18px] h-[18px] absolute left-3.5 top-[14px] text-gray-400 group-focus-within:text-[#3c8dbc] transition-colors" />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-[13px] font-bold text-[#444] mb-1.5 uppercase tracking-wide">System Password</label>
               <div className="relative group">
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   placeholder="••••••••"
                   required
                   value={password}
@@ -239,14 +276,14 @@ const Login = () => {
               </button>
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="w-full bg-[#3c8dbc] hover:bg-[#367fa9] text-white py-3.5 rounded-[3px] text-[15px] font-bold shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-75 disabled:cursor-not-allowed"
             >
               {loading ? 'Authenticating...' : <><span className="mr-1">Sign In to Dashboard</span> <LogIn className="w-[18px] h-[18px]" /></>}
             </button>
-            
+
           </form>
 
           <div className="mt-6 text-center">
