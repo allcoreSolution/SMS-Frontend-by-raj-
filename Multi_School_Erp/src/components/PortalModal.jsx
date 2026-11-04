@@ -135,7 +135,14 @@ export default function PortalModal() {
         notes: `Selected Plan: ${formData.plan}. Client Note: ${formData.notes || 'Interested in complete commercial package.'}`
       };
 
-      const res = await axios.post(`${API_BASE}/leads`, payload);
+      let res;
+      try {
+        const primaryApi = PORTAL_URLS.api || 'https://sms-backend-by-raj-1.onrender.com/api';
+        res = await axios.post(`${primaryApi}/leads`, payload);
+      } catch (postErr) {
+        console.warn('Primary endpoint failed, falling back to cloud backend:', postErr.message);
+        res = await axios.post('https://sms-backend-by-raj-1.onrender.com/api/leads', payload);
+      }
       const leadId = res.data?.data?._id || 'ACS-' + Math.floor(10000 + Math.random() * 90000);
       setSubmittedLead({
         id: leadId,
@@ -143,12 +150,8 @@ export default function PortalModal() {
         ...formData
       });
     } catch (err) {
-      const mockId = 'ACS-LOCAL-' + Math.floor(10000 + Math.random() * 90000);
-      setSubmittedLead({
-        id: mockId,
-        ref: 'ACS-LIC-' + Math.floor(1000 + Math.random() * 9000),
-        ...formData
-      });
+      console.error('Lead submission failed:', err);
+      setErrorMsg('Submission failed. Please check internet connection and try again.');
     } finally {
       setSubmitting(false);
     }
