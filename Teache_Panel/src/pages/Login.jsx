@@ -124,16 +124,33 @@ const Login = () => {
     });
 
     if (newIp) {
-      let formatted = newIp.trim();
-      if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
-        formatted = `http://${formatted}`;
+      let formatted = newIp.trim().replace(/\/+$/, '');
+      // Strip existing trailing /api for clean re-composition
+      if (formatted.endsWith('/api')) {
+        formatted = formatted.slice(0, -4);
       }
-      if (!formatted.includes(':5050')) {
+
+      // Add protocol if missing
+      if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
+        // If domain or onrender.com, use https, otherwise http for local IPs
+        if (formatted.includes('.onrender.com') || formatted.includes('.com') || formatted.includes('.net') || formatted.includes('.app')) {
+          formatted = `https://${formatted}`;
+        } else {
+          formatted = `http://${formatted}`;
+        }
+      }
+
+      // Check if port already exists or if it's a cloud domain
+      const isCloudOrHttps = formatted.startsWith('https://') || formatted.includes('.onrender.com') || formatted.includes('.vercel.app');
+      const hasPort = /:\d+$/.test(formatted);
+
+      // Only append default port 5050 for raw local addresses without port
+      if (!hasPort && !isCloudOrHttps) {
         formatted = `${formatted}:5050`;
       }
-      if (!formatted.endsWith('/api')) {
-        formatted = `${formatted}/api`;
-      }
+
+      // Always guarantee clean /api endpoint
+      formatted = `${formatted}/api`;
       localStorage.setItem('api_override_url', formatted);
       localStorage.setItem('api_base_url', formatted);
       if (typeof window !== 'undefined') {

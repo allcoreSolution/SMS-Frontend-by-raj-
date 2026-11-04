@@ -222,16 +222,27 @@ export default function Login() {
     });
 
     if (newIp) {
-      let formatted = newIp.trim();
-      if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
-        formatted = `http://${formatted}`;
+      let formatted = newIp.trim().replace(/\/+$/, '');
+      if (formatted.endsWith('/api')) {
+        formatted = formatted.slice(0, -4);
       }
-      if (!formatted.includes(':5050')) {
+
+      if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
+        if (formatted.includes('.onrender.com') || formatted.includes('.com') || formatted.includes('.net') || formatted.includes('.app')) {
+          formatted = `https://${formatted}`;
+        } else {
+          formatted = `http://${formatted}`;
+        }
+      }
+
+      const isCloudOrHttps = formatted.startsWith('https://') || formatted.includes('.onrender.com') || formatted.includes('.vercel.app');
+      const hasPort = /:\d+$/.test(formatted);
+
+      if (!hasPort && !isCloudOrHttps) {
         formatted = `${formatted}:5050`;
       }
-      if (!formatted.endsWith('/api')) {
-        formatted = `${formatted}/api`;
-      }
+
+      formatted = `${formatted}/api`;
       localStorage.setItem('api_base_url', formatted);
       if (typeof window !== 'undefined') {
         window.__API_BASE_URL__ = formatted;
