@@ -126,12 +126,15 @@ const FeeCollections = () => {
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-orange-600 mb-1">
             <Building2 className="w-4 h-4" /> Multi-Branch Audit & Reconciliation
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-            Global Fees Collection Report
-            <span className="text-xs bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full font-bold">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              Global Fees Collection Report
+            </h1>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-orange-700 border border-orange-200/80 shadow-2xs whitespace-nowrap">
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shrink-0"></span>
               {filteredData.length} Receipts
             </span>
-          </h1>
+          </div>
           <p className="text-sm text-gray-500 mt-0.5">
             Real-time multi-campus cash register, online PG receipts, and centralized fee reconciliations.
           </p>

@@ -204,20 +204,20 @@ const Login = () => {
           name: 'Priya Sharma (Staff Admin)',
           email: 'staff@school.edu',
           role: 'Staff',
-          tenantId: 'SCH-DEMO-01',
-          schoolName: 'Delhi Public International School'
+          tenantId: '6ad9bbe1c6514fd4a43099c6',
+          schoolName: 'All Core Solutions School'
         } : {
           id: 'tch_101',
           name: 'Rajesh Kumar (Senior Educator)',
           email: 'ryadavy498@gmail.com',
           role: 'Teacher',
-          tenantId: 'SCH-DEMO-01',
-          schoolName: 'Delhi Public International School'
+          tenantId: '6ad9bbe1c6514fd4a43099c6',
+          schoolName: 'All Core Solutions School'
         };
 
         localStorage.setItem('token', `demo_token_${Date.now()}`);
         localStorage.setItem('user', JSON.stringify(dummyUser));
-        localStorage.setItem('schoolId', 'SCH-DEMO-01');
+        localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
         localStorage.setItem('schoolName', 'Delhi Public International School');
 
         Swal.fire({

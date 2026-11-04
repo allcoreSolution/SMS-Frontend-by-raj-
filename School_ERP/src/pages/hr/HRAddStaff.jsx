@@ -416,6 +416,11 @@ export default function HRAddStaff() {
       });
       dataPayload.append('fullName', formData.firstName);
       dataPayload.append('staffId', formData.employeeCode || `STF-${Date.now().toString().slice(-4)}`);
+      
+      const activeTenant = localStorage.getItem('schoolId') || localStorage.getItem('active_school_id');
+      if (activeTenant && !formData.tenant) {
+        dataPayload.append('tenant', activeTenant);
+      }
 
       if (photoFile) {
         dataPayload.append('photo', photoFile);

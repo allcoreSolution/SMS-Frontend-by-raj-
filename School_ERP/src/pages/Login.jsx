@@ -24,13 +24,14 @@ const Login = () => {
       role: 'admin',
       token: 'demo-school-erp-token-authenticated',
       tenant: {
+        _id: '6ad9bbe1c6514fd4a43099c6',
         schoolName: 'ALL CORE SOLUTION',
         plan: 'Enterprise Pro Suite'
       }
     };
     localStorage.setItem('token', dummyUser.token);
     localStorage.setItem('user', JSON.stringify(dummyUser));
-    localStorage.setItem('schoolId', 'tenant-allcore-01');
+    localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
 
     Swal.fire({
       icon: 'success',
