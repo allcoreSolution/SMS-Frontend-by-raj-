@@ -8,14 +8,14 @@ export default function Deliverables() {
   const items = [
     { 
       title: 'Super Admin SaaS Platform', 
-      sub: 'REACT 18 • PORT 5179', 
+      sub: 'REACT 18 • SAAS PLATFORM', 
       desc: 'Centralized mega-dashboard to onboard unlimited schools, manage platform licenses, track global analytics, and handle super-admin communications.', 
       icon: '👑',
       target: PORTAL_URLS.superAdmin
     },
     { 
       title: 'School ERP Web Panel', 
-      sub: 'REACT 18 • PORT 5176', 
+      sub: 'REACT 18 • INSTITUTIONAL CORE', 
       desc: 'The core administrative portal assigned to each school tenant. Manages HR, Academics, Admissions, and 30+ sophisticated sub-modules out of the box.', 
       icon: '🏫',
       target: PORTAL_URLS.admin
@@ -30,7 +30,7 @@ export default function Deliverables() {
     },
     { 
       title: 'Accountant & Fee Panel', 
-      sub: 'REACT 18 • PORT 5178', 
+      sub: 'REACT 18 • FINANCE & FEE DESK', 
       desc: 'Specialized financial web portal for collecting fees, search due fees, fee group allocations, voucher day-books, and income/expense ledgers.', 
       icon: '💰',
       target: PORTAL_URLS.accountant,
@@ -38,7 +38,7 @@ export default function Deliverables() {
     },
     { 
       title: 'Student & Parent App & Web', 
-      sub: 'PORT 5175 • ANDROID APK', 
+      sub: 'STUDENT PORTAL • ANDROID APK', 
       desc: 'Native Android mobile application and web portal for parents & students. Instant fee payments, live CBT exam results, and attendance records in Hindi and English.', 
       icon: '📱',
       target: '/apk/Student_Parents.apk',
@@ -54,7 +54,7 @@ export default function Deliverables() {
     },
     { 
       title: 'Centralized API Gateway', 
-      sub: 'NODE.JS • PORT 5050', 
+      sub: 'NODE.JS • CLOUD API ENGINE', 
       desc: 'The core monolithic engine powering the entire ecosystem. Secured by JWT, advanced middleware, and RBAC tokenization. Engineered for heavy loads.', 
       icon: '⚙️',
       modal: 'hardware'

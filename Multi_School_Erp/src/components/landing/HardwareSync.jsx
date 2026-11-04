@@ -33,7 +33,7 @@ export default function HardwareSync() {
               </div>
               <div className="flex-1 bg-white p-2 sm:p-3 flex flex-col gap-2 sm:gap-3 overflow-hidden">
                  <div className="w-full bg-[#09B48E] text-white border-[1.5px] border-gray-900 px-2 sm:px-3 py-1 sm:py-1.5 font-bold text-[9px] sm:text-[10px] flex justify-between uppercase tracking-wider flex-shrink-0">
-                    <span className="truncate">☁️ Connected to :5050/api/hardware</span>
+                    <span className="truncate">☁️ Connected to Cloud Hardware API</span>
                     <span className="text-green-100 animate-pulse ml-1">● Live</span>
                  </div>
                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2 flex-shrink-0">
@@ -103,7 +103,7 @@ export default function HardwareSync() {
               rel="noreferrer"
               className="w-full sm:w-auto px-4 py-2.5 bg-white text-gray-800 font-bold text-xs uppercase tracking-wider border-[2px] border-gray-900 hover:bg-gray-100 transition-colors flex items-center justify-center gap-1.5"
             >
-              <span>Test QR Gate Pass :5175</span>
+              <span>Test QR Gate Pass ↗</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>

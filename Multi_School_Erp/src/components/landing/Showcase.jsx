@@ -6,7 +6,7 @@ export default function Showcase() {
   const panels = [
     {
       title: 'School Admin ERP Master',
-      port: ':5176',
+      port: 'WEB',
       badge: 'Admin ERP',
       badgeColor: 'bg-amber-400 text-gray-900',
       url: PORTAL_URLS.admin,
@@ -34,14 +34,14 @@ export default function Showcase() {
     },
     {
       title: 'Accountant & Financial Panel',
-      port: ':5178',
+      port: 'WEB',
       badge: 'Accountant Panel',
       badgeColor: 'bg-teal-400 text-gray-900',
       url: PORTAL_URLS.accountant,
       isDownload: false,
       desc: 'Specialized finance web portal: Instant Fee Invoicing, Defaulter reminders, Fee Group allocation, Income & Expense vouchers, and Cash Ledgers.',
       stats: [
-        { label: 'Platform', val: 'Web Portal (:5178)' },
+        { label: 'Platform', val: 'Web Cloud Portal' },
         { label: 'Fee Counter', val: 'Online & Cash Invoicing' }
       ],
       theme: 'border-teal-400'
@@ -75,7 +75,7 @@ export default function Showcase() {
           Dedicated portals for <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">every single stakeholder.</span>
         </h2>
         <p className="text-gray-600 font-bold leading-relaxed text-[11px] sm:text-[13px] max-w-2xl mx-auto">
-          Every panel has its own dedicated local port and credentials. Click any panel below to launch its live running environment directly.
+          Every panel has its own dedicated portal and credentials. Click any panel below to launch its live running environment directly.
         </p>
       </div>
 
@@ -87,7 +87,7 @@ export default function Showcase() {
             href={p.url}
             {...(p.isDownload ? { download: p.downloadName } : { target: "_blank", rel: "noreferrer" })}
             className="relative group w-full cursor-pointer block"
-            title={p.isDownload ? `Click to download ${p.title}` : `Click to launch ${p.title} on ${p.port}`}
+            title={p.isDownload ? `Click to download ${p.title}` : `Click to launch ${p.title}`}
           >
             <div className="absolute inset-0 bg-gray-900 translate-x-2 translate-y-2 sm:translate-x-2.5 sm:translate-y-2.5 transition-transform duration-300 group-hover:translate-x-3.5 group-hover:translate-y-3.5" />
             <div className="relative w-full bg-white border-[2.5px] border-gray-900 flex flex-col transition-transform group-hover:-translate-x-1 group-hover:-translate-y-1">
@@ -128,7 +128,7 @@ export default function Showcase() {
                 </div>
 
                 <div className="w-full bg-gray-900 group-hover:bg-amber-400 text-white group-hover:text-gray-900 border-2 border-gray-900 py-2 sm:py-2.5 px-3 sm:px-4 flex items-center justify-center gap-2 font-black text-[11px] sm:text-xs uppercase tracking-widest transition-colors shadow-[2px_2px_0_0_#111827]">
-                  <span>{p.isDownload ? `Download ${p.badge} APK ⬇` : `Launch ${p.badge} (${p.port})`}</span>
+                  <span>{p.isDownload ? `Download ${p.badge} APK ⬇` : `Launch ${p.badge} ↗`}</span>
                   {p.isDownload ? <Download className="w-3.5 h-3.5" /> : <ExternalLink className="w-3.5 h-3.5" />}
                 </div>
               </div>

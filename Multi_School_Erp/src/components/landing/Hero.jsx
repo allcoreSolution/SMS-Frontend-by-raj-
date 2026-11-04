@@ -101,7 +101,7 @@ export default function Hero() {
                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border-[1.5px] border-gray-900 bg-green-400"></div>
                  </div>
                  <div className="font-black text-gray-900 uppercase tracking-widest text-[9px] sm:text-xs bg-amber-300 border-[1.5px] border-gray-900 px-2 sm:px-3 py-0.5 sm:py-1 flex items-center gap-1">
-                   <span>School Admin ERP :5176</span>
+                   <span>School Admin ERP</span>
                    <ExternalLink className="w-3 h-3" />
                  </div>
               </div>
@@ -166,7 +166,7 @@ export default function Hero() {
                 <span className="text-base">👩‍🏫</span>
                 <div className="text-left">
                   <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Teacher & Staff</div>
-                  <div className="text-[10px] font-black text-gray-900 leading-none">Teacher Panel :5177 ↗</div>
+                  <div className="text-[10px] font-black text-gray-900 leading-none">Teacher Panel ↗</div>
                 </div>
              </a>
              <a
@@ -179,7 +179,7 @@ export default function Hero() {
              </a>
            </div>
 
-           {/* Desktop Floating Badge for Accountant Panel :5178 & Driver APK */}
+           {/* Desktop Floating Badge for Accountant Panel & Driver APK */}
            <div className="hidden lg:flex absolute -bottom-4 right-4 sm:right-6 z-20 flex-col gap-1">
              <a
                 href={PORTAL_URLS.accountant}
@@ -191,7 +191,7 @@ export default function Hero() {
                 <span className="text-base">💼</span>
                 <div className="text-left">
                   <div className="text-[8px] font-black uppercase tracking-wider text-gray-500">Finance & Fee Desk</div>
-                  <div className="text-[10px] font-black text-teal-900 leading-none">Accountant Panel :5178 ↗</div>
+                  <div className="text-[10px] font-black text-teal-900 leading-none">Accountant Panel ↗</div>
                 </div>
              </a>
              <a
@@ -226,7 +226,7 @@ export default function Hero() {
               <div className="bg-white border-[1.5px] border-gray-900 shadow-[2px_2px_0_0_#111827] p-2 flex flex-col justify-between hover:bg-amber-50 transition-all text-left">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-base">👩‍🏫</span>
-                  <span className="text-[7.5px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 px-1 border border-amber-900/40">:5177</span>
+                  <span className="text-[7.5px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 px-1 border border-amber-900/40">STAFF</span>
                 </div>
                 <div>
                   <a href={PORTAL_URLS.teacher} target="_blank" rel="noreferrer" className="text-[10px] font-black text-gray-900 leading-tight block hover:text-amber-600">
@@ -247,7 +247,7 @@ export default function Hero() {
               >
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-base">💼</span>
-                  <span className="text-[7.5px] font-black uppercase tracking-wider bg-teal-100 text-teal-900 px-1 border border-teal-900/40">:5178</span>
+                  <span className="text-[7.5px] font-black uppercase tracking-wider bg-teal-100 text-teal-900 px-1 border border-teal-900/40">FINANCE</span>
                 </div>
                 <div>
                   <div className="text-[10px] font-black text-gray-900 leading-tight">Fee Desk</div>

@@ -85,7 +85,7 @@ export default function ModulesPage() {
               <div className="h-0.5 w-12 bg-gray-700 mb-3" />
               
               <p className="text-gray-400 font-semibold text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-                 Every card in this catalog is connected with its dedicated running portal (:5176 School Admin ERP, :5177 Teacher Panel, :5178 Accountant Panel, :5175 Student/Parent, :5174 Branch Admin, :5050 Backend). Click any module to launch its live screen.
+                 Every card in this catalog is connected with its dedicated running portal (School Admin ERP, Teacher Panel, Accountant Panel, Student & Parent Portal, Branch Admin, and Cloud Backend API). Click any module to launch its live screen.
               </p>
            </div>
         </section>

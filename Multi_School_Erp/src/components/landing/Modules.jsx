@@ -68,7 +68,7 @@ export default function Modules() {
           Every module a school needs. <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-emerald-700">All live & clickable.</span>
         </h2>
         <p className="text-gray-600 font-bold leading-relaxed text-[11px] sm:text-[13px] max-w-2xl mx-auto">
-          Every tile below is interconnected with the local running portals (:5176 School Admin ERP, :5177 Teacher Panel, :5178 Accountant Panel, :5175 Student/Parent, :5174 Branch Admin, :5050 Backend). Click any module to test its real live screen.
+          Every tile below is interconnected with our dedicated portals (School Admin ERP, Teacher Panel, Accountant Panel, Student & Parent Portal, Branch Admin, and Cloud Backend API). Click any module to test its real live screen.
         </p>
       </div>
 

@@ -12,20 +12,20 @@ export default function Ecosystem() {
       sub: 'SAAS PLATFORM • MULTI-TENANTS', 
       desc: 'Global SaaS control. Onboard schools, manage subscription plans, configure billing gateways, and oversee cross-tenant system metrics.', 
       icon: '👑', 
-      tag: 'Port 5179 • SuperAdmin', 
+      tag: 'Multi-Tenant • SuperAdmin', 
       actionType: 'url',
       actionTarget: PORTAL_URLS.superAdmin,
-      btnText: 'Open SuperAdmin :5179 ↗'
+      btnText: 'Open SuperAdmin ↗'
     },
     { 
       title: 'School Admin & Staff ERP', 
       sub: 'REACT 18 • INSTITUTIONAL CORE', 
       desc: 'The complete administrative powerhouse. Covers Admissions, HR Staff Directory, Offline Exam Marksheets, Biometric Devices, and 30+ modules.', 
       icon: '🏫', 
-      tag: 'Port 5176 • School_ERP', 
+      tag: 'Core ERP • School Admin', 
       actionType: 'url',
       actionTarget: PORTAL_URLS.admin,
-      btnText: 'Open School ERP :5176 ↗'
+      btnText: 'Open School ERP ↗'
     },
     { 
       title: 'Parent & Student App', 
@@ -49,20 +49,20 @@ export default function Ecosystem() {
     },
     { 
       title: 'Accountant & Fee Desk', 
-      sub: 'REACT 18 • PORT 5178', 
+      sub: 'REACT 18 • FINANCE DESK', 
       desc: 'Specialized accounting web portal for collecting fees, searching due dues, managing fee groups, income/expense vouchers, and daily day-book balance.', 
       icon: '💰', 
-      tag: 'Port 5178 • Accountant', 
+      tag: 'Finance Hub • Accountant', 
       actionType: 'url',
       actionTarget: PORTAL_URLS.accountant,
-      btnText: 'Open Accountant Panel :5178 ↗'
+      btnText: 'Open Accountant Panel ↗'
     },
     { 
       title: 'Windows Biometric API', 
       sub: 'ZKTECO ADMS PROTOCOL', 
       desc: 'Standalone secure desktop executable bridging physical hardware directly with the cloud. Uninterrupted low-latency push synchronization.', 
       icon: '🔒', 
-      tag: 'Hardware API :5050', 
+      tag: 'Hardware API • Live Sync', 
       actionType: 'modal',
       actionTarget: 'hardware',
       btnText: 'Open Biometric Terminal ⚡'
@@ -155,7 +155,7 @@ export default function Ecosystem() {
                💡
              </div>
              <p className="text-xs sm:text-sm font-bold text-gray-700 leading-snug">
-               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin on <strong>5179</strong>, School ERP on <strong>5176</strong>, Teacher on <strong>5177</strong>, Accountant on <strong>5178</strong>, Student/Parent on <strong>5175</strong>, Driver on <strong>5180</strong>, Branch Admin on <strong>5174</strong>, plus dedicated <strong>Android APKs</strong> for Teachers, Parents, and Drivers.
+               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin SaaS, School Admin ERP, Teacher Panel, Accountant Panel, Student & Parent Portal, Driver App, and Branch Admin Network, plus dedicated <strong>Android APKs</strong> for Teachers, Parents, and Drivers.
              </p>
            </div>
            

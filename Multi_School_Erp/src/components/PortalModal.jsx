@@ -286,7 +286,7 @@ export default function PortalModal() {
               {/* Grid of All Dedicated Portals */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
                 
-                {/* 1. Teacher & Staff Panel (Teache_Panel :5177) */}
+                {/* 1. Teacher & Staff Panel (Teache_Panel) */}
                 <div className="bg-white border-[2.5px] border-indigo-900 p-4 shadow-[4px_4px_0_0_#312e81] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -294,7 +294,7 @@ export default function PortalModal() {
                         👩‍🏫
                       </div>
                       <span className="text-[10px] font-black bg-indigo-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5177 • Teacher Panel
+                        Teacher & Staff Panel
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Teacher & Staff Panel</h4>
@@ -322,7 +322,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-indigo-50 text-indigo-900 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-indigo-900 hover:bg-indigo-100 transition-colors flex items-center justify-center gap-1 shadow-[1px_1px_0_0_#111827]"
                     >
-                      <span>Launch Teacher Web Panel :5177</span>
+                      <span>Launch Teacher Web Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -339,7 +339,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 2. Accountant & Fee Collection Panel (Web Panel :5178) */}
+                {/* 2. Accountant & Fee Collection Panel (Web Panel) */}
                 <div className="bg-white border-[2.5px] border-teal-900 p-4 shadow-[4px_4px_0_0_#134e4a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -347,7 +347,7 @@ export default function PortalModal() {
                         💰
                       </div>
                       <span className="text-[10px] font-black bg-teal-700 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5178 • Accountant Panel
+                        Accountant & Fee Desk
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Accountant & Fee Desk</h4>
@@ -367,7 +367,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-teal-700 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch Accountant Panel :5178</span>
+                      <span>Launch Accountant Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -384,7 +384,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 3. Main School Admin ERP (School_ERP :5176) */}
+                {/* 3. Main School Admin ERP (School_ERP) */}
                 <div className="bg-white border-[2.5px] border-blue-900 p-4 shadow-[4px_4px_0_0_#1e3a8a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -392,7 +392,7 @@ export default function PortalModal() {
                         🏫
                       </div>
                       <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5176 • School_ERP
+                        Main School Admin ERP
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Main School Admin ERP</h4>
@@ -412,7 +412,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-blue-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-blue-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch School Admin ERP :5176</span>
+                      <span>Launch School Admin ERP</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -429,7 +429,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 4. SuperAdmin Platform (SuperAdmin :5179) */}
+                {/* 4. SuperAdmin Platform (SuperAdmin) */}
                 <div className="bg-white border-[2.5px] border-purple-900 p-4 shadow-[4px_4px_0_0_#581c87] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -437,7 +437,7 @@ export default function PortalModal() {
                         👑
                       </div>
                       <span className="text-[10px] font-black bg-purple-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Port 5179 • SuperAdmin
+                        SuperAdmin Platform
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">SuperAdmin Platform</h4>
@@ -457,7 +457,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-purple-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-purple-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch SuperAdmin :5179</span>
+                      <span>Launch SuperAdmin Platform</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -474,7 +474,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 5. Branch Admin Network (Branch-Admin :5174) */}
+                {/* 5. Branch Admin Network (Branch-Admin) */}
                 <div className="bg-white border-[2.5px] border-amber-900 p-4 shadow-[4px_4px_0_0_#78350f] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -482,7 +482,7 @@ export default function PortalModal() {
                         🏛️
                       </div>
                       <span className="text-[10px] font-black bg-amber-500 text-gray-950 px-2 py-0.5 uppercase tracking-wide">
-                        Port 5174 • Branch-Admin
+                        Branch Admin Network
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Branch Admin Network</h4>
@@ -502,7 +502,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-amber-500 text-gray-900 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch Branch Admin :5174</span>
+                      <span>Launch Branch Admin Network</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">
@@ -547,7 +547,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-emerald-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch Student Portal :5175</span>
+                      <span>Launch Student & Parent Portal</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <a 
@@ -572,7 +572,7 @@ export default function PortalModal() {
                   </div>
                 </div>
 
-                {/* 7. Driver Telematics Panel (Driver_Panel :5180) */}
+                {/* 7. Driver Telematics Panel (Driver_Panel) */}
                 <div className="bg-white border-[2.5px] border-amber-900 p-4 shadow-[4px_4px_0_0_#78350f] flex flex-col justify-between group hover:-translate-y-1 transition-all">
                   <div>
                     <div className="flex items-center justify-between mb-2">
@@ -580,7 +580,7 @@ export default function PortalModal() {
                         🚌
                       </div>
                       <span className="text-[10px] font-black bg-amber-500 text-gray-950 px-2 py-0.5 uppercase tracking-wide">
-                        Port 5180 • Driver Panel
+                        Driver Telematics Panel
                       </span>
                     </div>
                     <h4 className="font-black text-gray-900 text-base mb-1">Driver Telematics Panel</h4>
@@ -600,7 +600,7 @@ export default function PortalModal() {
                       rel="noreferrer"
                       className="w-full bg-amber-500 text-gray-950 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
                     >
-                      <span>Launch Driver Panel :5180</span>
+                      <span>Launch Driver Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
                     <div className="flex gap-1.5 text-[10.5px] font-bold">

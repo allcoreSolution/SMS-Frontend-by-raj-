@@ -87,7 +87,7 @@ export default function FooterLanding() {
                </p>
                <div className="flex items-center gap-2 bg-slate-800/60 border border-slate-700/60 rounded-full px-3.5 py-1.5 w-fit mt-1">
                  <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" />
-                 <span className="text-[11px] font-bold text-gray-300">V3.6.0 Live Local Ports Ready</span>
+                 <span className="text-[11px] font-bold text-gray-300">V3.6.0 Multi-School ERP Ready</span>
                </div>
             </div>
 
@@ -95,19 +95,19 @@ export default function FooterLanding() {
             <div className="flex flex-col gap-2.5">
                <h4 className="text-amber-400 font-black uppercase tracking-widest text-xs mb-1">Live Dedicated Panels</h4>
                <a href={PORTAL_URLS.teacher} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-amber-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Teacher & Staff Panel (:5177)</span>
+                 <span>Teacher & Staff Panel</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
                <a href={PORTAL_URLS.accountant} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-emerald-400 transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Accountant & Fee Panel (:5178)</span>
+                 <span>Accountant & Fee Panel</span>
                  <ExternalLink className="w-3 h-3 text-emerald-400" />
                </a>
                <a href={PORTAL_URLS.admin} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>School Admin ERP (:5176)</span>
+                 <span>School Admin ERP</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
                <a href={PORTAL_URLS.student} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Student & Parent Portal (:5175)</span>
+                 <span>Student & Parent Portal</span>
                  <ExternalLink className="w-3 h-3 text-amber-400" />
                </a>
                <a href="/apk/Teacher.apk" download="Teacher.apk" className="text-emerald-400 hover:text-emerald-300 transition-colors text-xs font-semibold flex items-center gap-1.5">
@@ -123,11 +123,11 @@ export default function FooterLanding() {
                  <Download className="w-3 h-3 text-emerald-400" />
                </a>
                <a href={PORTAL_URLS.superAdmin} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>SuperAdmin SaaS (:5179)</span>
+                 <span>SuperAdmin SaaS Platform</span>
                  <ExternalLink className="w-3 h-3 text-blue-400" />
                </a>
                <a href={PORTAL_URLS.branch} target="_blank" rel="noreferrer" className="text-gray-300 hover:text-white transition-colors text-xs font-semibold flex items-center gap-1.5">
-                 <span>Branch Admin Network (:5174)</span>
+                 <span>Branch Admin Network</span>
                  <ExternalLink className="w-3 h-3 text-purple-400" />
                </a>
             </div>
@@ -163,7 +163,7 @@ export default function FooterLanding() {
             <div className="flex items-center gap-4 text-gray-500 font-medium text-xs">
                <span>React 18 • Node.js • Flutter • MongoDB</span>
                <span>•</span>
-               <span className="text-emerald-400">REST API :5050 Online</span>
+               <span className="text-emerald-400">REST API Gateway Online</span>
             </div>
          </div>
       </div>

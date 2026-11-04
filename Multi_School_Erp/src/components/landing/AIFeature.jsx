@@ -27,7 +27,7 @@ export default function AIFeature() {
               className="inline-flex items-center gap-2 px-6 py-3 bg-amber-400 text-gray-900 font-black text-xs uppercase tracking-wider border-[2px] border-gray-900 shadow-[3px_3px_0_0_#111827] hover:bg-amber-300 transition-colors"
             >
               <Bot className="w-4 h-4" />
-              <span>Launch Live AI Assistant (:5175) ↗</span>
+              <span>Launch Live AI Assistant ↗</span>
             </a>
           </div>
 
@@ -97,7 +97,7 @@ export default function AIFeature() {
                  <div className="absolute top-2 right-2 bottom-2 w-[240px] sm:w-[280px] bg-white border-[2px] border-gray-900 flex flex-col shadow-[4px_4px_0_0_#111827] z-10 transition-transform group-hover:-translate-y-1">
                     <div className="bg-amber-100 border-b-[1.5px] border-gray-900 px-3 py-2 flex justify-between items-center">
                        <span className="font-black text-gray-900 text-[11px] flex items-center gap-1.5">
-                         <span className="text-amber-500">✨</span> AI Assistant (:5175)
+                         <span className="text-amber-500">✨</span> AI Assistant
                        </span>
                        <span className="text-gray-900 font-bold text-xs">↗</span>
                     </div>
