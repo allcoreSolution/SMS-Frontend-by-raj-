@@ -868,7 +868,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-1 sm:py-2 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-40 select-none overflow-visible" style={{ paddingRight: 'max(0.85rem, env(safe-area-inset-right))', paddingLeft: 'max(0.5rem, env(safe-area-inset-left))' }}>
+        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-1 sm:py-2 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-40 select-none overflow-visible" style={{ paddingRight: 'max(0.35rem, env(safe-area-inset-right))', paddingLeft: 'max(0.35rem, env(safe-area-inset-left))' }}>
           
           {/* Left Actions: Menu Toggle & Student Portal Logo */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0">
@@ -902,7 +902,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 </div>
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[130px] xs:max-w-[190px] sm:max-w-[320px]" title={schoolInfo?.name}>
+                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[80px] xs:max-w-[130px] sm:max-w-[320px]" title={schoolInfo?.name}>
                   {schoolInfo?.name || (isStudent 
                     ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal')
                     : (currentLang === 'hi' ? 'अभिभावक पोर्टल' : 'Parent Portal'))}
@@ -1031,7 +1031,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           </div>
 
           {/* Right Action Icons: Language, Apps, Avatar */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0 ml-0.5 sm:ml-1 pr-1 sm:pr-0">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0 ml-auto pr-0.5 sm:pr-0">
             
             {/* Dedicated 2-Language Selector (English & Hindi Only) */}
             <div className="relative shrink-0" ref={langDropdownRef}>
@@ -1194,7 +1194,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   setLangOpen(false); 
                   setTopChildOpen(false); 
                 }}
-                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-blue-500/90 bg-[#2563EB] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs transition-transform cursor-pointer hover:ring-2 hover:ring-blue-300 hover:scale-105 shrink-0 overflow-hidden active:scale-95"
+                className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-2 border-blue-500/90 bg-[#2563EB] text-white font-bold text-[10px] sm:text-xs flex items-center justify-center shadow-xs transition-transform cursor-pointer hover:ring-2 hover:ring-blue-300 hover:scale-105 shrink-0 overflow-hidden active:scale-95 mr-0.5 sm:mr-0"
                 title={`My Profile - ${current?.name || 'Student'}`}
                 aria-label="My Profile"
               >

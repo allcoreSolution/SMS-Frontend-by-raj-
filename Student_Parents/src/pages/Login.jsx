@@ -579,7 +579,7 @@ export default function Login() {
             <div className="bg-white text-slate-800 rounded-t-[32px] px-4 pt-3 pb-6 shadow-[0_-12px_45px_rgba(0,0,0,0.22)] -mt-4 z-10 flex-1">
               
               {/* 3D Student & Mother Avatar Badge */}
-              <div className="w-full flex justify-center -mt-5 mb-1.5">
+              <div className="w-full flex justify-center -mt-3.5 mb-2">
                 <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-2 ring-blue-100/70 bg-gradient-to-b from-sky-50 to-white flex items-center justify-center">
                   <img 
                     src={loginAvatarHeroImg} 
