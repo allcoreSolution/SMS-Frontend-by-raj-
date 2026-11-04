@@ -1,7 +1,16 @@
 import React, { createContext, useContext, useState } from 'react';
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
+const getApiUrl = () => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://localhost:5050/api';
+    }
+  }
+  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+};
+const API_URL = getApiUrl();
 
 const AuthContext = createContext(null);
 
