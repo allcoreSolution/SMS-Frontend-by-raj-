@@ -46,12 +46,14 @@ export default function Payments() {
   };
 
   return (
-    <div className="bg-white rounded-none border border-gray-100 shadow-sm p-6 max-w-[1150px] w-full mx-auto min-h-[85vh]">
+    <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 sm:p-6 max-w-[1250px] w-full mx-auto min-h-[85vh]">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-end gap-3">
-          <h1 className="text-2xl font-bold text-gray-800 tracking-tight leading-none">Payment History</h1>
-          <span className="text-[13px] text-gray-500 font-medium pb-0.5">{payments.length} total</span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2.5">
+          <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Payment History</h1>
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+            {payments.length} total
+          </span>
         </div>
       </div>
 
