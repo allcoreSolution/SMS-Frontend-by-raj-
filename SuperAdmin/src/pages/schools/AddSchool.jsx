@@ -89,7 +89,7 @@ const AddSchool = () => {
       setSuccess(true);
       // Removed the 1800ms auto redirect so they can copy the credentials
     } catch (err) {
-      Swal.fire({ icon: 'error', title: 'Registration Failed', text: err.message || 'An error occurred', confirmButtonColor: '#0891b2' });
+      Swal.fire({ icon: 'error', title: 'Registration Failed', text: err.response?.data?.message || err.message || 'An error occurred', confirmButtonColor: '#0891b2' });
     } finally {
       setLoading(false);
     }

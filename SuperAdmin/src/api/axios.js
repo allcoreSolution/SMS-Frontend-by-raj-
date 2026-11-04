@@ -6,7 +6,7 @@ const API_URL = import.meta.env.VITE_API_URL || (isProduction ? 'https://sms-bac
 const axiosInstance = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 axiosInstance.interceptors.request.use((config) => {
