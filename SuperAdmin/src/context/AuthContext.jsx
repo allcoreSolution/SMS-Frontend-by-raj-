@@ -18,7 +18,14 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem('sa_user');
-      return saved ? JSON.parse(saved) : null;
+      const parsed = saved ? JSON.parse(saved) : null;
+      if (parsed) {
+        const storedAvatar = localStorage.getItem('superadmin_user_avatar');
+        if (storedAvatar && !parsed.avatar) {
+          parsed.avatar = storedAvatar;
+        }
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -37,11 +44,13 @@ export const AuthProvider = ({ children }) => {
         const token = authData.token;
         if (!token) return false;
 
+        const storedAvatar = localStorage.getItem('superadmin_user_avatar') || '';
         const userData = {
           id: authData._id,
           name: authData.username || authData.name || 'Super Admin',
           email: authData.email || email,
           role: (authData.role || 'superadmin').toString().toLowerCase(),
+          avatar: authData.avatar || storedAvatar || '',
         };
 
         localStorage.setItem('sa_user', JSON.stringify(userData));
@@ -54,11 +63,13 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.warn('SuperAdmin Login API failed, checking demo fallback:', err?.message);
       if ((email === 'ryadavy498@gmail.com' || email === 'admin123@gmail.com') && password === 'admin@123') {
+        const storedAvatar = localStorage.getItem('superadmin_user_avatar') || '';
         const demoUser = {
           id: 'demo_superadmin',
           name: 'Super Admin Master',
           email: email,
           role: 'superadmin',
+          avatar: storedAvatar,
         };
         localStorage.setItem('sa_user', JSON.stringify(demoUser));
         localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
@@ -77,11 +88,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateUser = (data) => {
-    if (user) {
-      const updatedUser = { ...user, ...data };
-      setUser(updatedUser);
-      localStorage.setItem('sa_user', JSON.stringify(updatedUser));
-    }
+    setUser((prev) => {
+      const updatedUser = { ...(prev || {}), ...data };
+      if (data?.avatar !== undefined) {
+        if (data.avatar) {
+          localStorage.setItem('superadmin_user_avatar', data.avatar);
+        } else {
+          localStorage.removeItem('superadmin_user_avatar');
+        }
+      }
+      try {
+        localStorage.setItem('sa_user', JSON.stringify(updatedUser));
+      } catch (e) {
+        console.warn('Failed to update sa_user in localStorage', e);
+      }
+      return updatedUser;
+    });
   };
 
   return (
