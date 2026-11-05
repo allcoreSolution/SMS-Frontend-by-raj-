@@ -59,7 +59,12 @@ const Header = ({ toggleSidebar }) => {
 
   const [currentUserData, setCurrentUserData] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem('user') || '{}');
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      const customAvatar = localStorage.getItem('school_erp_user_avatar');
+      if (customAvatar && !u.avatar) {
+        u.avatar = customAvatar;
+      }
+      return u;
     } catch (e) {
       return null;
     }
@@ -67,15 +72,21 @@ const Header = ({ toggleSidebar }) => {
 
   useEffect(() => {
     const handleProfileUpdate = (e) => {
-      if (e.detail) setCurrentUserData(e.detail);
-      else {
-        try {
-          setCurrentUserData(JSON.parse(localStorage.getItem('user') || '{}'));
-        } catch (err) {}
-      }
+      try {
+        const u = e?.detail || JSON.parse(localStorage.getItem('user') || '{}');
+        const customAvatar = localStorage.getItem('school_erp_user_avatar');
+        if (customAvatar && !u.avatar) {
+          u.avatar = customAvatar;
+        }
+        setCurrentUserData({ ...u });
+      } catch (err) {}
     };
     window.addEventListener('user_profile_updated', handleProfileUpdate);
-    return () => window.removeEventListener('user_profile_updated', handleProfileUpdate);
+    window.addEventListener('storage', handleProfileUpdate);
+    return () => {
+      window.removeEventListener('user_profile_updated', handleProfileUpdate);
+      window.removeEventListener('storage', handleProfileUpdate);
+    };
   }, []);
 
   // Dynamic School / Tenant State
@@ -235,9 +246,9 @@ const Header = ({ toggleSidebar }) => {
   const activeUser = currentUserData || {};
   const displayName = activeUser?.name || activeUser?.username || 'Administrator';
   const displayEmail = activeUser?.email || 'admin@schoolerp.com';
-  const userAvatar = activeUser?.avatar || '';
+  const userAvatar = activeUser?.avatar || localStorage.getItem('school_erp_user_avatar') || '';
   const initials = String(displayName).trim().split(/\s+/).map(n => n[0] || '').join('').substring(0, 2).toUpperCase() || 'AD';
-  const schoolName = activeUser?.tenant?.schoolName || 'ALL CORE SOLUTION';
+  const schoolName = activeSchool?.schoolName || activeUser?.tenant?.schoolName || (localStorage.getItem('schoolName') !== 'Greenwood International School' ? localStorage.getItem('schoolName') : '') || 'ALL CORE SOLUTION';
 
   const quickLinks = [
     // General & Navigation
@@ -396,8 +407,19 @@ const Header = ({ toggleSidebar }) => {
         setActiveMenu(null);
       }
     };
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setActiveMenu(null);
+        setIsSchoolDropdownOpen(false);
+        setIsSearchModalOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const unreadCount = notifications.filter(n => n.unread).length;
@@ -742,8 +764,12 @@ const Header = ({ toggleSidebar }) => {
           {/* User Profile - Always fully visible with right safe margin */}
           <div className="relative shrink-0 pr-0.5 sm:pr-1">
             <button 
-              onClick={() => setActiveMenu(activeMenu === 'profile' ? null : 'profile')}
-              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#ea580c] text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 transition-all cursor-pointer overflow-hidden shrink-0 border border-white"
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveMenu(activeMenu === 'profile' ? null : 'profile');
+              }}
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-[#ea580c] to-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 active:scale-95 transition-all cursor-pointer overflow-hidden shrink-0 border border-white"
               title={displayName}
             >
               {userAvatar ? (
@@ -754,44 +780,103 @@ const Header = ({ toggleSidebar }) => {
             </button>
             
             {activeMenu === 'profile' && (
-              <div className="absolute top-[calc(100%+8px)] right-0 w-60 sm:w-64 max-w-[calc(100vw-20px)] bg-white border border-slate-100 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
-                {/* Dark Blue Header Card */}
-                <div className="bg-[#1e293b] p-4 sm:p-5 text-center text-white">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#ea580c] text-white rounded-full flex items-center justify-center font-bold text-base mx-auto mb-2.5 shadow-md overflow-hidden border-2 border-white/20">
-                    {userAvatar ? (
-                      <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
-                    ) : (
-                      initials
-                    )}
+              <div 
+                onClick={(e) => e.stopPropagation()}
+                className="absolute top-[calc(100%+8px)] right-0 w-72 max-w-[calc(100vw-16px)] sm:w-80 bg-white border border-slate-200/90 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150"
+              >
+                {/* Header Card with Gradient */}
+                <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 p-4 sm:p-5 text-center text-white relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-28 h-28 bg-orange-500/15 rounded-full blur-2xl pointer-events-none" />
+                  <div className="relative z-10">
+                    <div className="w-14 h-14 bg-gradient-to-tr from-[#ea580c] to-amber-500 text-white rounded-full flex items-center justify-center font-black text-base mx-auto mb-2 shadow-lg ring-2 ring-white/20 overflow-hidden">
+                      {userAvatar ? (
+                        <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
+                      ) : (
+                        initials
+                      )}
+                    </div>
+                    <h4 className="text-sm font-bold text-white leading-tight truncate px-2">{displayName}</h4>
+                    <p className="text-[11px] text-slate-300 truncate px-2 mt-0.5">{displayEmail}</p>
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 mt-2 rounded-full bg-white/10 text-orange-300 text-[10px] font-bold tracking-wider uppercase border border-white/10">
+                      <ShieldCheck className="w-3 h-3 text-orange-400" />
+                      <span>{activeUser?.role || 'Administrator'}</span>
+                    </div>
                   </div>
-                  <h4 className="text-sm font-bold text-white leading-tight truncate px-2">{displayName}</h4>
-                  <p className="text-[11px] text-slate-300 mt-0.5">{activeUser?.role || 'Administrator'}</p>
                 </div>
                 
-                <div className="py-1">
+                <div className="p-2 space-y-1">
                   <button 
+                    type="button"
                     onClick={() => handleNavigate('/profile')}
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors cursor-pointer"
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50/70 hover:text-indigo-600 rounded-xl transition-colors cursor-pointer group"
                   >
-                    <User className="w-4 h-4 text-cyan-600"/> My Profile
+                    <div className="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                      <User className="w-4 h-4"/>
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="text-xs font-bold text-slate-800 group-hover:text-indigo-600">My Profile & Documents</div>
+                      <div className="text-[10px] text-slate-400">Photo, certificates, affiliation & ID</div>
+                    </div>
                   </button>
+
                   <button 
-                    onClick={() => {
-                      localStorage.removeItem('token');
-                      localStorage.removeItem('user');
-                      localStorage.removeItem('schoolId');
-                      window.location.href = '/login';
-                    }} 
-                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-xs font-medium text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                    type="button"
+                    onClick={() => handleNavigate('/settings/school-settings')}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-orange-50/70 hover:text-orange-600 rounded-xl transition-colors cursor-pointer group"
                   >
-                    <LogOut className="w-4 h-4 text-rose-600"/> Logout
+                    <div className="w-7 h-7 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center shrink-0 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                      <Building className="w-4 h-4"/>
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="text-xs font-bold text-slate-800 group-hover:text-orange-600">School Configuration</div>
+                      <div className="text-[10px] text-slate-400 truncate">{schoolName}</div>
+                    </div>
                   </button>
+
+                  <button 
+                    type="button"
+                    onClick={() => handleNavigate('/settings/roles-permissions')}
+                    className="w-full flex items-center gap-3 px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-purple-50/70 hover:text-purple-600 rounded-xl transition-colors cursor-pointer group"
+                  >
+                    <div className="w-7 h-7 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+                      <ShieldCheck className="w-4 h-4"/>
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="text-xs font-bold text-slate-800 group-hover:text-purple-600">Roles & Permissions</div>
+                      <div className="text-[10px] text-slate-400">Staff access control matrix</div>
+                    </div>
+                  </button>
+
+                  <div className="pt-1 border-t border-slate-100">
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        localStorage.removeItem('schoolId');
+                        window.location.href = '/login';
+                      }} 
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-rose-600"/>
+                      <span className="font-bold">Log Out</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </div>
       </header>
+
+      {/* Global Transparent Backdrop to dismiss active dropdowns on click/tap outside */}
+      {activeMenu && (
+        <div 
+          className="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[0.5px]"
+          onClick={() => setActiveMenu(null)}
+          onTouchStart={() => setActiveMenu(null)}
+        />
+      )}
 
       {/* Spotlight Command Modal */}
       {isSearchModalOpen && (
