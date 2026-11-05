@@ -88,11 +88,24 @@ function walk(root, code) {
 }
 
 export const LanguageProvider = ({ children }) => {
-  const [code, setCode] = useState(() => nameToCode(localStorage.getItem('sa_language') || 'English'));
+  const [code, setCode] = useState(() => {
+    try {
+      const isHindi = sessionStorage.getItem('sa_user_selected_hindi') === 'true';
+      return isHindi ? 'hi' : 'en';
+    } catch (e) {
+      return 'en';
+    }
+  });
 
   const setLanguage = useCallback((nameOrCode) => {
     const c = nameToCode(nameOrCode);
-    localStorage.setItem('sa_language', codeToName(c));
+    if (c === 'hi') {
+      sessionStorage.setItem('sa_user_selected_hindi', 'true');
+      localStorage.setItem('sa_language', 'Hindi');
+    } else {
+      sessionStorage.removeItem('sa_user_selected_hindi');
+      localStorage.setItem('sa_language', 'English');
+    }
     setCode(c);
   }, []);
 

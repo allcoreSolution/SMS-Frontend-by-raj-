@@ -1,13 +1,7 @@
-// Format:  English | Hindi | Marathi | Gujarati | Tamil | Telugu | Bengali
-// Lookup is exact (case-insensitive) on the full trimmed UI string.
+// English and Hindi only
 export const LANGUAGES = [
-  { name: 'English', code: 'en' },
+  { name: 'English', code: 'en', native: 'English' },
   { name: 'Hindi', code: 'hi', native: 'हिन्दी' },
-  { name: 'Marathi', code: 'mr', native: 'मराठी' },
-  { name: 'Gujarati', code: 'gu', native: 'ગુજરાતી' },
-  { name: 'Tamil', code: 'ta', native: 'தமிழ்' },
-  { name: 'Telugu', code: 'te', native: 'తెలుగు' },
-  { name: 'Bengali', code: 'bn', native: 'বাংলা' },
 ];
 
 const COLS = ['hi', 'mr', 'gu', 'ta', 'te', 'bn'];

@@ -1,28 +1,50 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Globe, ChevronDown, Check, Search } from 'lucide-react';
+import { ChevronDown, Check } from 'lucide-react';
 
 export const supportedLanguages = [
   { name: 'English', native: 'English', code: 'en', flag: '🇬🇧' },
   { name: 'Hindi', native: 'हिन्दी', code: 'hi', flag: '🇮🇳' },
-  { name: 'Gujarati', native: 'ગુજરાતી', code: 'gu', flag: '🇮🇳' },
-  { name: 'Marathi', native: 'मराठी', code: 'mr', flag: '🇮🇳' },
-  { name: 'Punjabi', native: 'ਪੰਜਾਬੀ', code: 'pa', flag: '🇮🇳' },
-  { name: 'Bengali', native: 'বাংলা', code: 'bn', flag: '🇮🇳' },
-  { name: 'Tamil', native: 'தமிழ்', code: 'ta', flag: '🇮🇳' },
-  { name: 'Telugu', native: 'తెలుగు', code: 'te', flag: '🇮🇳' },
-  { name: 'Urdu', native: 'اُردُو', code: 'ur', flag: '🇵🇰' },
-  { name: 'Arabic', native: 'العربية', code: 'ar', flag: '🇸🇦' },
-  { name: 'Spanish', native: 'Español', code: 'es', flag: '🇪🇸' },
-  { name: 'French', native: 'Français', code: 'fr', flag: '🇫🇷' },
-  { name: 'German', native: 'Deutsch', code: 'de', flag: '🇩🇪' },
-  { name: 'Russian', native: 'Русский', code: 'ru', flag: '🇷🇺' },
-  { name: 'Chinese', native: '中文', code: 'zh-CN', flag: '🇨🇳' },
-  { name: 'Japanese', native: '日本語', code: 'ja', flag: '🇯🇵' },
 ];
+
+export const hideGoogleTranslateElements = () => {
+  try {
+    if (typeof document === 'undefined') return;
+    document.body.style.top = '0px';
+    document.body.style.marginTop = '0px';
+    document.body.style.position = 'static';
+    
+    const selectors = [
+      '.goog-te-banner-frame',
+      '#goog-gt-tt',
+      '#goog-gt-vt',
+      '.goog-te-balloon-frame',
+      '.goog-tooltip',
+      '.goog-te-gadget',
+      '.goog-te-gadget-icon',
+      '.skiptranslate',
+      'iframe.skiptranslate',
+      'div.skiptranslate',
+      '[class*="VIpgJd"]',
+      '[id*="goog-gt-"]'
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('pointer-events', 'none', 'important');
+        el.style.setProperty('width', '0px', 'important');
+        el.style.setProperty('height', '0px', 'important');
+      });
+    });
+  } catch (e) {}
+};
 
 export const triggerGoogleTranslate = (langCode) => {
   try {
     const host = window.location.hostname;
+    hideGoogleTranslateElements();
+
     if (!langCode || langCode === 'en' || (typeof langCode === 'string' && langCode.toLowerCase() === 'english')) {
       const domains = ['', host, '.' + host];
       const paths = ['/', window.location.pathname];
@@ -36,6 +58,8 @@ export const triggerGoogleTranslate = (langCode) => {
         combo.value = '';
         combo.dispatchEvent(new Event('change', { bubbles: true }));
       }
+      setTimeout(hideGoogleTranslateElements, 100);
+      setTimeout(hideGoogleTranslateElements, 500);
       return;
     }
 
@@ -44,6 +68,7 @@ export const triggerGoogleTranslate = (langCode) => {
     document.cookie = `googtrans=${val}; path=/; domain=${host};`;
 
     const applyToCombo = () => {
+      hideGoogleTranslateElements();
       const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
       if (combo) {
         const desiredVal = (!langCode || langCode === 'en') ? '' : langCode.toLowerCase();
@@ -62,15 +87,16 @@ export const triggerGoogleTranslate = (langCode) => {
         try {
           combo.dispatchEvent(new Event('input', { bubbles: true }));
         } catch (_) {}
+        setTimeout(hideGoogleTranslateElements, 150);
         return true;
       }
       return false;
     };
 
     if (!applyToCombo()) {
-      setTimeout(applyToCombo, 300);
-      setTimeout(applyToCombo, 800);
-      setTimeout(applyToCombo, 1500);
+      setTimeout(applyToCombo, 200);
+      setTimeout(applyToCombo, 600);
+      setTimeout(applyToCombo, 1200);
     }
   } catch (e) {
     console.warn('Translate trigger error:', e);
@@ -79,29 +105,34 @@ export const triggerGoogleTranslate = (langCode) => {
 
 const LanguageDropdown = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [selectedLang, setSelectedLang] = useState(() => {
     try {
-      const saved = localStorage.getItem('app_language');
-      if (saved && saved.toLowerCase() === 'hindi') {
-        localStorage.setItem('app_language', 'English');
-        localStorage.setItem('app_language_code', 'en');
-        return 'English';
-      }
-      return saved || 'English';
+      // By default open in English, unless user explicitly switched to Hindi in this session
+      const isHindi = sessionStorage.getItem('app_user_selected_hindi') === 'true';
+      return isHindi ? 'Hindi' : 'English';
     } catch (e) {
       return 'English';
     }
   });
   const dropdownRef = useRef(null);
 
-  // Initialize language translation on mount - strictly enforce English as default
+  // Auto-hide any Google Translate floating widget or banner elements dynamically
   useEffect(() => {
-    const saved = localStorage.getItem('app_language');
-    if (!saved || saved.toLowerCase() === 'hindi') {
-      localStorage.setItem('app_language', 'English');
-      localStorage.setItem('app_language_code', 'en');
+    hideGoogleTranslateElements();
+    const observer = new MutationObserver(() => {
+      hideGoogleTranslateElements();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
+
+  // Initialize translation strictly based on session state (default English)
+  useEffect(() => {
+    const isHindi = sessionStorage.getItem('app_user_selected_hindi') === 'true';
+    if (!isHindi) {
       triggerGoogleTranslate('en');
+    } else {
+      triggerGoogleTranslate('hi');
     }
   }, []);
 
@@ -119,8 +150,15 @@ const LanguageDropdown = () => {
   const handleSelectLanguage = (lang) => {
     setSelectedLang(lang.name);
     try {
-      localStorage.setItem('app_language', lang.name);
-      localStorage.setItem('app_language_code', lang.code);
+      if (lang.name === 'Hindi' || lang.code === 'hi') {
+        sessionStorage.setItem('app_user_selected_hindi', 'true');
+        localStorage.setItem('app_language', 'Hindi');
+        localStorage.setItem('app_language_code', 'hi');
+      } else {
+        sessionStorage.removeItem('app_user_selected_hindi');
+        localStorage.setItem('app_language', 'English');
+        localStorage.setItem('app_language_code', 'en');
+      }
     } catch (e) {}
 
     // Trigger full-site DOM translation via Google Translate engine
@@ -133,29 +171,19 @@ const LanguageDropdown = () => {
     }));
 
     setIsOpen(false);
-    setSearchQuery('');
   };
-
-  const filteredLanguages = useMemo(() => {
-    if (!searchQuery.trim()) return supportedLanguages;
-    const q = searchQuery.toLowerCase().trim();
-    return supportedLanguages.filter(l => 
-      l.name.toLowerCase().includes(q) || 
-      l.native.toLowerCase().includes(q) ||
-      l.code.toLowerCase().includes(q)
-    );
-  }, [searchQuery]);
 
   const currentFlag = useMemo(() => {
     const found = supportedLanguages.find(l => l.name === selectedLang);
-    return found ? found.flag : '🌐';
+    return found ? found.flag : '🇬🇧';
   }, [selectedLang]);
 
   return (
     <div className="relative shrink-0" ref={dropdownRef}>
       <button 
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer shrink-0 ${
+        className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg text-xs font-semibold transition-all border cursor-pointer shrink-0 ${
           isOpen 
             ? 'bg-orange-50 text-[#ff5c0a] border-orange-200 ring-2 ring-orange-500/20' 
             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-orange-50 hover:text-[#ff5c0a]'
@@ -168,51 +196,34 @@ const LanguageDropdown = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-[calc(100%+8px)] right-0 w-[240px] bg-white border border-slate-100 rounded-2xl shadow-2xl ring-1 ring-slate-900/10 z-50 p-2 animate-in fade-in slide-in-from-top-2 duration-150">
-          <div className="px-2 py-1 border-b border-slate-100 mb-1.5">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Language</p>
+        <div className="absolute top-[calc(100%+6px)] right-0 w-44 bg-white border border-slate-200/90 rounded-2xl shadow-xl ring-1 ring-slate-900/10 z-50 p-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
+          <div className="px-2.5 py-1 border-b border-slate-100 mb-1">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Select Language</p>
           </div>
 
-          {/* Search languages filter */}
-          <div className="relative px-1 mb-1.5">
-            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search language..."
-              className="w-full pl-8 pr-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:border-[#ff5c0a] focus:bg-white text-slate-700"
-              autoFocus
-            />
-          </div>
-          
-          <div className="max-h-[260px] overflow-y-auto space-y-0.5 custom-scrollbar pr-0.5">
-            {filteredLanguages.map((lang) => {
+          <div className="space-y-0.5">
+            {supportedLanguages.map((lang) => {
               const isSelected = selectedLang === lang.name;
               return (
                 <button
                   key={lang.code}
+                  type="button"
                   onClick={() => handleSelectLanguage(lang)}
-                  className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition-colors cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors cursor-pointer ${
                     isSelected 
                       ? 'bg-orange-50 text-[#ff5c0a] font-bold shadow-xs' 
                       : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium'
                   }`}
                 >
-                  <div className="flex items-center gap-2 truncate">
+                  <div className="flex items-center gap-2">
                     <span className="text-base leading-none shrink-0">{lang.flag}</span>
-                    <span className="truncate">{lang.name}</span>
-                    <span className="text-[11px] text-slate-400 font-normal shrink-0">({lang.native})</span>
+                    <span className="font-semibold">{lang.name}</span>
+                    <span className="text-[11px] text-slate-400 font-normal">({lang.native})</span>
                   </div>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-[#ff5c0a] stroke-[3] shrink-0 ml-1" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-[#ff5c0a] stroke-[3] shrink-0" />}
                 </button>
               );
             })}
-            {filteredLanguages.length === 0 && (
-              <div className="p-3 text-center text-xs text-slate-400">
-                No language found
-              </div>
-            )}
           </div>
         </div>
       )}

@@ -137,28 +137,51 @@ table:not([class*="border-none"]):not([class*="modern-table"]) tbody tr:hover {
   }
 }
 
-/* Google Translate Full-Site Real-Time Engine Styles */
+/* Google Translate Full-Site Real-Time Engine Styles - Completely Eradicate Any Floating Icon/Widget/Banners */
 .goog-te-banner-frame.skiptranslate, 
 .goog-te-banner-frame, 
 #goog-gt-tt, 
-.goog-te-balloon-frame { 
+#goog-gt-vt,
+.goog-te-balloon-frame,
+.goog-te-balloon,
+.goog-tooltip, 
+.goog-tooltip:hover,
+.goog-text-highlight,
+#google_translate_element,
+.goog-te-gadget,
+.goog-te-gadget-icon,
+.goog-te-gadget-simple,
+.skiptranslate,
+iframe.skiptranslate,
+div.skiptranslate,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyr,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
+[class*="VIpgJd"],
+[id*="goog-gt-"],
+body > .skiptranslate,
+body > div[style*="z-index: 2000000000"],
+body > iframe[style*="visibility: visible"],
+.goog-logo-link { 
   display: none !important; 
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0px !important;
+  height: 0px !important;
+  max-width: 0px !important;
+  max-height: 0px !important;
+  position: absolute !important;
+  left: -9999px !important;
+  top: -9999px !important;
+  z-index: -9999 !important;
+  overflow: hidden !important;
 }
-body { 
+
+html, body { 
   top: 0px !important; 
   position: static !important; 
-}
-.goog-tooltip, 
-.goog-tooltip:hover { 
-  display: none !important; 
-}
-.goog-text-highlight { 
-  background-color: transparent !important; 
-  box-shadow: none !important; 
-}
-#google_translate_element { 
-  display: none !important; 
-}
-.skiptranslate iframe {
-  display: none !important;
+  margin-top: 0px !important;
+  transform: none !important;
 }

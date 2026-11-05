@@ -16,16 +16,16 @@
     <script type="text/javascript">
       (function() {
         try {
-          var host = window.location.hostname;
-          var domains = ['', host, '.' + host];
-          var paths = ['/', window.location.pathname];
-          domains.forEach(function(d) {
-            paths.forEach(function(p) {
-              document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+          var isHindiSession = sessionStorage.getItem('app_user_selected_hindi') === 'true';
+          if (!isHindiSession) {
+            var host = window.location.hostname;
+            var domains = ['', host, '.' + host];
+            var paths = ['/', window.location.pathname];
+            domains.forEach(function(d) {
+              paths.forEach(function(p) {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+              });
             });
-          });
-          var saved = localStorage.getItem('app_language');
-          if (saved && saved.toLowerCase() === 'hindi') {
             localStorage.setItem('app_language', 'English');
             localStorage.setItem('app_language_code', 'en');
           }
@@ -33,7 +33,7 @@
       })();
     </script>
     <div id="root"></div>
-    <div id="google_translate_element" style="display:none;position:absolute;top:-9999px;"></div>
+    <div id="google_translate_element" style="display:none !important;visibility:hidden !important;position:absolute !important;top:-9999px !important;left:-9999px !important;width:0 !important;height:0 !important;overflow:hidden !important;pointer-events:none !important;"></div>
     <script type="text/javascript">
       function googleTranslateElementInit() {
         if (window.google && window.google.translate && window.google.translate.TranslateElement) {
@@ -41,7 +41,8 @@
             new window.google.translate.TranslateElement({
               pageLanguage: 'en',
               autoDisplay: false,
-              includedLanguages: 'en,hi,gu,mr,pa,bn,ta,te,ur,ar,es,fr,de,ru,zh-CN,ja'
+              includedLanguages: 'en,hi',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
             }, 'google_translate_element');
           } catch (e) {
             console.warn('Google translate init error:', e);

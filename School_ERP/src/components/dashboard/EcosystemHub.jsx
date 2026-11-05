@@ -17,8 +17,8 @@ import { getTranslation } from '../../utils/translations';
 const EcosystemHub = () => {
   const [currentLang, setCurrentLang] = useState(() => {
     try {
-      const saved = localStorage.getItem('app_language');
-      return (saved && saved.toLowerCase() === 'hindi') ? 'English' : (saved || 'English');
+      const isHindi = sessionStorage.getItem('app_user_selected_hindi') === 'true';
+      return isHindi ? 'Hindi' : 'English';
     } catch (e) {
       return 'English';
     }
