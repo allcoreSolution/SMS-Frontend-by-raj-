@@ -113,7 +113,7 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-slate-50 flex font-sans">
+    <div className="min-h-screen w-full bg-slate-50 flex flex-col lg:flex-row font-sans overflow-x-hidden">
       
       {/* Left Side - Modern Visual Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 relative flex-col justify-between p-14 overflow-hidden items-start border-r border-slate-800">
@@ -171,8 +171,8 @@ const Login = () => {
       </div>
 
       {/* Right Side - Interactive Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-6 sm:px-12 bg-white relative z-10">
-        <div className="w-full max-w-md space-y-6">
+      <div className="w-full lg:w-1/2 min-h-screen flex flex-col justify-between py-8 px-4 sm:px-8 md:px-12 bg-white relative z-10 overflow-y-auto">
+        <div className="w-full max-w-md mx-auto my-auto space-y-6">
           
           {/* Mobile Branding */}
           <div className="lg:hidden flex items-center gap-3 mb-2">
