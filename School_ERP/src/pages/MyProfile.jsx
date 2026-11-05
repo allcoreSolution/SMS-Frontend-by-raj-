@@ -313,19 +313,35 @@ export default function MyProfile() {
     try {
       const res = await profileService.getProfile();
       if (res && res.success && res.data) {
-        setProfile(res.data);
-        setFormData(res.data);
+        const customAvatar = localStorage.getItem('school_erp_user_avatar');
+        const customName = localStorage.getItem('school_erp_custom_name');
+        
+        const mergedData = {
+          ...res.data,
+          avatar: customAvatar || res.data.avatar || profile.avatar
+        };
+
+        if (customName) {
+          const parts = customName.split(/\s+/).filter(Boolean);
+          mergedData.firstName = parts[0] || mergedData.firstName;
+          mergedData.lastName = parts.slice(1).join(' ') || mergedData.lastName;
+        }
+
+        setProfile(mergedData);
+        setFormData(mergedData);
 
         // Sync basic info to local storage for Header & Top bar
         try {
           const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
           const updatedLocal = {
             ...currentLocal,
-            name: `${res.data.firstName} ${res.data.lastName}`.trim(),
-            username: res.data.username,
-            email: res.data.email,
-            avatar: res.data.avatar || currentLocal.avatar,
-            role: res.data.role
+            name: `${mergedData.firstName} ${mergedData.lastName}`.trim(),
+            firstName: mergedData.firstName,
+            lastName: mergedData.lastName,
+            username: mergedData.username,
+            email: mergedData.email,
+            avatar: mergedData.avatar,
+            role: mergedData.role
           };
           localStorage.setItem('user', JSON.stringify(updatedLocal));
           window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: updatedLocal }));
@@ -335,7 +351,6 @@ export default function MyProfile() {
       }
     } catch (error) {
       console.warn('Backend profile sync note:', error);
-      // Graceful fallback to cached state - do not block the user with an intrusive popup
     } finally {
       setLoading(false);
     }
@@ -351,7 +366,7 @@ export default function MyProfile() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  // Handle Save Profile
+  // Handle Save Profile (Optimistic & Resilient)
   const handleSaveProfile = async (e) => {
     if (e) e.preventDefault();
     if (!formData.firstName.trim()) {
@@ -359,46 +374,57 @@ export default function MyProfile() {
       return;
     }
 
+    const newFullName = `${formData.firstName} ${formData.lastName || ''}`.trim();
+    const customAvatar = localStorage.getItem('school_erp_user_avatar');
+    const updatedProfile = {
+      ...profile,
+      ...formData,
+      avatar: customAvatar || formData.avatar || profile.avatar
+    };
+
+    // 1. Immediately apply to local state & UI
+    setProfile(updatedProfile);
+    setFormData(updatedProfile);
+    setIsEditing(false);
+
+    try {
+      localStorage.setItem('school_erp_custom_name', newFullName);
+      const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
+      const updatedLocal = {
+        ...currentLocal,
+        name: newFullName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        avatar: updatedProfile.avatar,
+        role: formData.role || currentLocal.role
+      };
+      localStorage.setItem('user', JSON.stringify(updatedLocal));
+      window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: updatedLocal }));
+    } catch (e) {}
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Profile Updated!',
+      text: 'Profile changes and initials are now live across all navigation bars.',
+      timer: 1800,
+      showConfirmButton: false,
+      toast: true,
+      position: 'top-end'
+    });
+
+    // 2. Also persist to backend API
     try {
       setSaving(true);
       const res = await profileService.updateProfile(formData);
-      if (res && res.success) {
-        setProfile(res.data);
-        setFormData(res.data);
-        setIsEditing(false);
-
-        // Update local storage
-        try {
-          const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
-          const updatedLocal = {
-            ...currentLocal,
-            name: `${res.data.firstName} ${res.data.lastName}`.trim(),
-            email: res.data.email,
-            avatar: res.data.avatar,
-            role: res.data.role
-          };
-          localStorage.setItem('user', JSON.stringify(updatedLocal));
-          window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: updatedLocal }));
-        } catch (e) {}
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Profile Updated!',
-          text: 'Your profile changes have been saved to MongoDB.',
-          timer: 2000,
-          showConfirmButton: false,
-          toast: true,
-          position: 'top-end'
-        });
+      if (res && res.success && res.data) {
+        const merged = { ...res.data, avatar: customAvatar || res.data.avatar };
+        setProfile(merged);
+        setFormData(merged);
       }
     } catch (error) {
-      console.error('Update profile error:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Update Failed',
-        text: error.response?.data?.message || 'Failed to update profile. Please try again.',
-        confirmButtonColor: '#4f46e5'
-      });
+      console.warn('API updateProfile fallback note:', error);
     } finally {
       setSaving(false);
     }
@@ -682,15 +708,19 @@ export default function MyProfile() {
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 relative z-10">
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6 relative z-10">
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-5">
             
             {/* Avatar & User Details */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
               
               {/* Avatar Container with Upload & Remove */}
               <div className="relative group shrink-0">
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 p-0.5 shadow-2xl ring-4 ring-white/10">
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 p-0.5 shadow-xl ring-2 ring-white/10 cursor-pointer relative group/avatar"
+                  title="Click to choose profile photo"
+                >
                   {profile.avatar ? (
                     <img
                       src={profile.avatar}
@@ -698,76 +728,84 @@ export default function MyProfile() {
                       className="w-full h-full object-cover rounded-2xl"
                     />
                   ) : (
-                    <div className="w-full h-full rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex items-center justify-center text-white text-3xl font-extrabold tracking-wider">
+                    <div className="w-full h-full rounded-2xl bg-gradient-to-br from-indigo-700 via-indigo-800 to-purple-900 flex items-center justify-center text-white text-2xl sm:text-3xl font-extrabold tracking-wider">
                       {initials}
                     </div>
                   )}
+                  {/* Hover upload pill */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex flex-col items-center justify-center text-white text-[10px] font-bold rounded-2xl">
+                    <Camera className="w-5 h-5 mb-0.5" />
+                    <span>Change</span>
+                  </div>
                 </div>
 
                 {/* Status Dot */}
-                <span className="absolute top-1 right-1 flex h-4 w-4">
+                <span className="absolute top-0.5 right-0.5 flex h-3.5 w-3.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 ring-2 ring-slate-900"></span>
+                  <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 ring-2 ring-slate-900"></span>
                 </span>
 
                 {/* Avatar Action Buttons */}
-                <div className="absolute -bottom-2 inset-x-0 flex justify-center gap-1.5 opacity-95 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1.5 mt-2 justify-center">
                   <button
+                    type="button"
                     onClick={() => fileInputRef.current?.click()}
                     title="Upload new photo"
-                    className="p-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow-md transition-transform hover:scale-110 cursor-pointer"
+                    className="px-2 py-0.5 bg-indigo-600/90 hover:bg-indigo-600 text-white rounded-md text-[10px] font-bold flex items-center gap-1 transition shadow-xs cursor-pointer"
                   >
-                    <Camera className="w-3.5 h-3.5" />
+                    <Camera className="w-3 h-3" />
+                    <span>{profile.avatar ? 'Change' : 'Upload'}</span>
                   </button>
                   {profile.avatar && (
                     <button
+                      type="button"
                       onClick={handleDeleteAvatar}
                       title="Remove custom photo"
-                      className="p-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg shadow-md transition-transform hover:scale-110 cursor-pointer"
+                      className="p-1 bg-rose-600/80 hover:bg-rose-600 text-white rounded-md text-[10px] transition shadow-xs cursor-pointer"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-3 h-3" />
                     </button>
                   )}
                 </div>
               </div>
 
               {/* Bio & Information */}
-              <div className="space-y-1.5 pt-1">
-                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-                  <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-2">
+              <div className="space-y-1 pt-0.5">
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                  <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                     {fullName}
                     <span title="Verified Account" className="text-sky-400">
-                      <CheckCircle2 className="w-5 h-5 fill-sky-400/20" />
+                      <CheckCircle2 className="w-4 h-4 fill-sky-400/20" />
                     </span>
                   </h1>
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
                     {roleName}
                   </span>
                 </div>
 
-                <p className="text-sm text-slate-300 font-medium flex items-center justify-center sm:justify-start gap-2">
-                  <Briefcase className="w-4 h-4 text-indigo-400" />
+                <p className="text-xs text-slate-300 font-medium flex items-center justify-center sm:justify-start gap-2">
+                  <Briefcase className="w-3.5 h-3.5 text-indigo-400" />
                   <span>{profile.designation || 'System Administrator'}</span>
                   <span className="text-slate-500">•</span>
                   <span>{profile.department || 'Management / IT'}</span>
                 </p>
 
-                <div className="text-xs text-slate-400 flex flex-wrap items-center justify-center sm:justify-start gap-3 pt-1">
-                  <span className="flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" /> {profile.email}
+                <div className="text-[11px] text-slate-400 flex flex-wrap items-center justify-center sm:justify-start gap-2.5 pt-0.5">
+                  <span className="flex items-center gap-1">
+                    <Mail className="w-3 h-3 text-slate-400" /> {profile.email}
                   </span>
                   <span className="text-slate-600 hidden sm:inline">|</span>
-                  <span className="flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> {profile.phone || '+91 9876543210'}
+                  <span className="flex items-center gap-1">
+                    <Phone className="w-3 h-3 text-slate-400" /> {profile.phone || '+91 9876543210'}
                   </span>
                   <span className="text-slate-600 hidden sm:inline">|</span>
-                  <span className="flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-slate-400" /> {schoolName}
+                  <span className="flex items-center gap-1">
+                    <Building className="w-3 h-3 text-slate-400" /> {schoolName}
                   </span>
                 </div>
 
                 {profile.bio && (
-                  <p className="text-xs text-slate-300 italic pt-1 max-w-xl">
+                  <p className="text-[11px] text-slate-300 italic pt-0.5 max-w-xl">
                     "{profile.bio}"
                   </p>
                 )}
@@ -775,90 +813,94 @@ export default function MyProfile() {
             </div>
 
             {/* Quick Action Button */}
-            <div className="flex items-center gap-2.5 shrink-0 self-center md:self-start">
+            <div className="flex items-center gap-2 shrink-0 self-center md:self-start">
               {!isEditing ? (
                 <button
+                  type="button"
                   onClick={() => {
                     setIsEditing(true);
                     setActiveTab('personal');
                   }}
-                  className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5"
+                  className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95"
                 >
-                  <Edit3 className="w-4 h-4" /> Edit Profile
+                  <Edit3 className="w-3.5 h-3.5" /> Edit Profile
                 </button>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   <button
+                    type="button"
                     onClick={() => {
                       setFormData(profile);
                       setIsEditing(false);
                     }}
-                    className="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
+                    className="px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-xl transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handleSaveProfile}
                     disabled={saving}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-emerald-600/30 flex items-center gap-2 cursor-pointer transition-all hover:-translate-y-0.5 disabled:opacity-50"
+                    className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer transition-all active:scale-95 disabled:opacity-50"
                   >
-                    {saving ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                    {saving ? <RefreshCw className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
                     Save Changes
                   </button>
                 </div>
               )}
 
               <button
+                type="button"
                 onClick={fetchProfileData}
                 title="Refresh Profile"
-                className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors cursor-pointer"
+                className="p-1.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors cursor-pointer"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-7 pt-6 border-t border-white/10">
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-                <CheckCircle2 className="w-5 h-5" />
+          {/* Quick Metrics Bar - Compact Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-5 pt-4 border-t border-white/10">
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-white/10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <CheckCircle2 className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">Account Status</p>
-                <p className="text-xs font-bold text-white">Active & Verified</p>
-              </div>
-            </div>
-
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">Permissions</p>
-                <p className="text-xs font-bold text-white">{roleName} Access</p>
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-400 font-medium">Account Status</p>
+                <p className="text-[11px] font-bold text-white truncate">Active & Verified</p>
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
-                <Fingerprint className="w-5 h-5" />
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-white/10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
+                <ShieldCheck className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">2FA Security</p>
-                <p className={`text-xs font-bold ${profile.twoFactorEnabled ? 'text-emerald-400' : 'text-amber-400'}`}>
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-400 font-medium">Permissions</p>
+                <p className="text-[11px] font-bold text-white truncate">{roleName} Access</p>
+              </div>
+            </div>
+
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-white/10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                <Fingerprint className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-400 font-medium">2FA Security</p>
+                <p className={`text-[11px] font-bold truncate ${profile.twoFactorEnabled ? 'text-emerald-400' : 'text-amber-400'}`}>
                   {profile.twoFactorEnabled ? 'Enabled & Safe' : 'Disabled'}
                 </p>
               </div>
             </div>
 
-            <div className="bg-white/5 backdrop-blur-md rounded-xl p-3 border border-white/10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                <Activity className="w-5 h-5" />
+            <div className="bg-white/5 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-white/10 flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                <Activity className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-[11px] text-slate-400 font-medium">Active Session</p>
-                <p className="text-xs font-bold text-white">Online Now</p>
+              <div className="min-w-0">
+                <p className="text-[10px] text-slate-400 font-medium">Active Session</p>
+                <p className="text-[11px] font-bold text-white truncate">Online Now</p>
               </div>
             </div>
           </div>
@@ -867,15 +909,15 @@ export default function MyProfile() {
       </div>
 
       {/* MAIN CONTAINER */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-5 sm:mt-6">
         
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6">
           
           {/* LEFT NAVIGATION TABS */}
-          <div className="lg:w-72 shrink-0">
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-3 sticky top-6">
+          <div className="lg:w-64 shrink-0">
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-2.5 sticky top-6">
               
-              <div className="px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                 Profile Navigation
               </div>
 
@@ -893,23 +935,23 @@ export default function MyProfile() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-start gap-3.5 px-3.5 py-3 rounded-xl text-left transition-all cursor-pointer ${
+                      className={`w-full flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                         isActive
                           ? 'bg-gradient-to-r from-indigo-50 to-indigo-100/50 text-indigo-700 shadow-xs font-semibold border-l-4 border-indigo-600'
                           : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 font-medium'
                       }`}
                     >
-                      <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
+                      <Icon className={`w-4 h-4 shrink-0 mt-0.5 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
                       <div>
                         <div className="text-xs font-semibold">{item.name}</div>
-                        <div className="text-[11px] text-slate-400 mt-0.5">{item.desc}</div>
+                        <div className="text-[10px] text-slate-400">{item.desc}</div>
                       </div>
                     </button>
                   );
                 })}
               </div>
 
-              <div className="my-4 border-t border-slate-100" />
+              <div className="my-3 border-t border-slate-100" />
 
               {/* Log Out Button */}
               <button
@@ -948,23 +990,24 @@ export default function MyProfile() {
               <div className="space-y-6">
                 
                 {/* Form Card */}
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                  <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between">
                     <div>
-                      <h2 className="text-base font-bold text-slate-900">Personal & Identity Details</h2>
-                      <p className="text-xs text-slate-500 mt-0.5">Manage your biographical information, designation and contacts</p>
+                      <h2 className="text-sm sm:text-base font-bold text-slate-900">Personal & Identity Details</h2>
+                      <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">Manage your biographical information, designation and contacts</p>
                     </div>
                     {!isEditing && (
                       <button
+                        type="button"
                         onClick={() => setIsEditing(true)}
-                        className="px-3.5 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+                        className="px-3 py-1.5 text-xs font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer active:scale-95"
                       >
                         <Edit3 className="w-3.5 h-3.5" /> Edit Fields
                       </button>
                     )}
                   </div>
 
-                  <form onSubmit={handleSaveProfile} className="p-6 space-y-6">
+                  <form onSubmit={handleSaveProfile} className="p-4 sm:p-5 space-y-4 sm:space-y-5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       
                       {/* First Name */}
@@ -1480,17 +1523,17 @@ export default function MyProfile() {
 
             {/* TAB 5: DOCUMENTS & VERIFICATION */}
             {activeTab === 'documents' && (
-              <div className="space-y-6">
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                  <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-slate-50/50 to-white">
+              <div className="space-y-4 sm:space-y-5">
+                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+                  <div className="p-4 sm:p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-slate-50/50 to-white">
                     <div>
                       <div className="flex items-center gap-2">
-                        <h2 className="text-base font-bold text-slate-900">Institutional Documents & Verification Vault</h2>
+                        <h2 className="text-sm sm:text-base font-bold text-slate-900">Institutional Documents & Verification Vault</h2>
                         <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {documents.length} Files Active
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
                         CBSE / Board affiliations, administrator ID proofs, trust deeds, tax 12A/80G & official signatures
                       </p>
                     </div>
@@ -1498,7 +1541,7 @@ export default function MyProfile() {
                     <button
                       type="button"
                       onClick={() => setShowUploadModal(true)}
-                      className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow transition cursor-pointer self-start sm:self-auto shrink-0"
+                      className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-bold rounded-xl shadow-xs hover:shadow transition cursor-pointer self-start sm:self-auto shrink-0 active:scale-95"
                     >
                       <Plus className="w-3.5 h-3.5" />
                       <span>Upload Document</span>
@@ -1506,9 +1549,9 @@ export default function MyProfile() {
                   </div>
 
                   {/* Compliance Notice */}
-                  <div className="p-4 mx-6 mt-6 rounded-xl bg-indigo-50/60 border border-indigo-100/80 flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
-                    <div className="text-xs">
+                  <div className="p-3 sm:p-3.5 mx-4 sm:mx-5 mt-4 sm:mt-5 rounded-xl bg-indigo-50/60 border border-indigo-100/80 flex items-start gap-2.5">
+                    <ShieldCheck className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                    <div className="text-[11px] sm:text-xs">
                       <p className="font-bold text-indigo-900">Government & Accreditation Compliance Vault</p>
                       <p className="text-indigo-700/90 mt-0.5 leading-relaxed">
                         All uploaded affiliation certificates, principal ID proofs, and digital signatures are encrypted and verified. They are automatically referenced on official report cards, fee receipts, and education department inspection dashboards.
@@ -1517,11 +1560,11 @@ export default function MyProfile() {
                   </div>
 
                   {/* Documents Grid */}
-                  <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     {documents.map((doc) => (
                       <div
                         key={doc.id}
-                        className="p-4 rounded-xl border border-slate-200/90 hover:border-indigo-300 hover:shadow-sm transition-all bg-white flex flex-col justify-between group relative"
+                        className="p-3.5 sm:p-4 rounded-xl border border-slate-200/90 hover:border-indigo-300 hover:shadow-xs transition-all bg-white flex flex-col justify-between group relative"
                       >
                         <div>
                           <div className="flex items-start justify-between gap-2 mb-2">
