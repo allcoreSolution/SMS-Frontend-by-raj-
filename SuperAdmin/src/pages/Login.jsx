@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useAuth } from '../context/AuthContext';
+import superAdminHeroImg from '../assets/superadmin_login_hero.png';
 
 const Login = () => {
   const { login } = useAuth();
@@ -145,8 +146,8 @@ const Login = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-500/5 rounded-full blur-[160px]" />
       </div>
 
-      {/* Left Column - High-Tech SaaS Presentation (Desktop Only: lg:flex) */}
-      <div className="hidden lg:flex lg:w-1/2 relative z-10 flex-col justify-between p-10 xl:p-14 border-r border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 overflow-hidden">
+      {/* Left Column - High-Tech SaaS Presentation with 3D Picture Showcase (Desktop: lg:flex) */}
+      <div className="hidden lg:flex lg:w-1/2 relative z-10 flex-col justify-between p-8 xl:p-12 border-r border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 overflow-hidden">
         
         {/* Subtle grid pattern */}
         <div 
@@ -156,73 +157,81 @@ const Login = () => {
 
         {/* Top Branding Section */}
         <div className="relative z-10">
-          <div className="flex items-center gap-3.5 mb-8">
-            <div className="w-13 h-13 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/25 ring-1 ring-white/20">
-              <Landmark className="w-7 h-7 text-white" />
+          <div className="flex items-center gap-3.5 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-xl shadow-orange-500/25 ring-1 ring-white/20">
+              <Landmark className="w-6 h-6 text-white" />
             </div>
             <div>
               <span className="text-xl font-black text-white tracking-tight flex items-center gap-1.5">
                 <span>MultiSchool</span>
                 <span className="text-orange-500">ERP</span>
               </span>
-              <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">SuperAdmin Master Suite v3.7</p>
+              <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider">SuperAdmin Master Suite v3.7</p>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-orange-400 text-xs font-bold mb-4 border border-white/10 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-orange-400 text-xs font-bold mb-3 border border-white/10 backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Central Cloud Governance Platform</span>
           </div>
 
-          <h1 className="text-white text-3xl xl:text-5xl font-black leading-tight tracking-tight mb-4">
+          <h1 className="text-white text-3xl xl:text-4xl font-black leading-tight tracking-tight mb-3">
             Master Central <br />
             <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">
               Command Center
             </span>
           </h1>
 
-          <p className="text-slate-300 text-sm xl:text-base max-w-md leading-relaxed font-normal">
+          <p className="text-slate-300 text-xs xl:text-sm max-w-md leading-relaxed font-normal">
             Govern registered school branches, manage subscription licensing, provision tenant databases, and inspect live transactions in real time.
           </p>
         </div>
 
-        {/* Middle Feature Cards */}
-        <div className="relative z-10 grid grid-cols-2 gap-4 w-full max-w-lg my-8">
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md space-y-1">
-            <div className="w-9 h-9 bg-orange-500/20 text-orange-400 rounded-xl flex items-center justify-center mb-2">
-              <Globe className="w-4 h-4" />
+        {/* 🌟 3D Isometric Picture Showcase Card */}
+        <div className="relative z-10 my-4 rounded-3xl overflow-hidden border border-white/15 shadow-2xl shadow-black/50 group bg-slate-900/60 backdrop-blur-md">
+          <img 
+            src={superAdminHeroImg} 
+            alt="MultiSchool SuperAdmin Governance Center" 
+            className="w-full h-48 xl:h-56 object-cover object-center transform group-hover:scale-105 transition-transform duration-700" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-transparent pointer-events-none" />
+          
+          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
+            <span className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-900/90 backdrop-blur-md border border-white/10 text-[11px] font-bold shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Multi-Tenant Mesh Active</span>
+            </span>
+            <span className="px-2.5 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-[10.5px] font-black text-orange-300 tracking-wider uppercase font-mono">
+              236 Schools Connected
+            </span>
+          </div>
+        </div>
+
+        {/* Feature Micro-Badges */}
+        <div className="relative z-10 grid grid-cols-2 gap-3 w-full max-w-lg mb-2">
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-orange-500/20 text-orange-400 rounded-lg flex items-center justify-center shrink-0">
+              <Globe className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs font-black text-white">Multi-Tenant Fabric</p>
-            <p className="text-[11px] text-slate-400 leading-snug">Instant cluster isolation & tenant database routing</p>
+            <div>
+              <p className="text-[11px] font-black text-white leading-tight">Multi-Tenant Fabric</p>
+              <p className="text-[10px] text-slate-400 leading-tight">Instant cluster isolation</p>
+            </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md space-y-1">
-            <div className="w-9 h-9 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mb-2">
-              <ShieldCheck className="w-4 h-4" />
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-3.5 h-3.5" />
             </div>
-            <p className="text-xs font-black text-white">Bank-Grade Audit</p>
-            <p className="text-[11px] text-slate-400 leading-snug">Zero-trust root authentication & 2FA protection</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md space-y-1">
-            <div className="w-9 h-9 bg-cyan-500/20 text-cyan-400 rounded-xl flex items-center justify-center mb-2">
-              <Server className="w-4 h-4" />
+            <div>
+              <p className="text-[11px] font-black text-white leading-tight">Bank-Grade Audit</p>
+              <p className="text-[10px] text-slate-400 leading-tight">Zero-trust root access</p>
             </div>
-            <p className="text-xs font-black text-white">99.99% Uptime</p>
-            <p className="text-[11px] text-slate-400 leading-snug">High availability microservices architecture</p>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md space-y-1">
-            <div className="w-9 h-9 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center mb-2">
-              <Zap className="w-4 h-4" />
-            </div>
-            <p className="text-xs font-black text-white">Real-Time Sync</p>
-            <p className="text-[11px] text-slate-400 leading-snug">Webhooks & bi-directional telemetry stream</p>
           </div>
         </div>
 
         {/* Bottom Footer Credit */}
-        <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 font-medium pt-4 border-t border-white/10">
+        <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 font-medium pt-3 border-t border-white/10">
           <span>&copy; {new Date().getFullYear()} MultiSchool ERP</span>
           <span className="flex items-center gap-1.5 text-emerald-400 font-bold">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -235,9 +244,9 @@ const Login = () => {
       <div className="w-full lg:w-1/2 min-h-screen flex flex-col justify-between p-4 sm:p-8 md:p-12 lg:p-14 bg-white relative z-10 overflow-y-auto">
         
         {/* Mobile Header Branding (Visible on < lg screens) */}
-        <div className="lg:hidden flex items-center justify-between pb-6 pt-2 border-b border-slate-100">
+        <div className="lg:hidden flex items-center justify-between pb-4 pt-1 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
+            <div className="w-9 h-9 bg-gradient-to-tr from-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
               <Landmark className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -255,28 +264,45 @@ const Login = () => {
         </div>
 
         {/* Centered Form Wrapper */}
-        <div className="w-full max-w-md mx-auto my-auto py-6 sm:py-8 space-y-6">
+        <div className="w-full max-w-md mx-auto my-auto py-5 sm:py-6 space-y-5">
           
+          {/* 🌟 Mobile Hero Picture Preview Card (Visible on Mobile / Small Screens) */}
+          <div className="lg:hidden relative rounded-2xl overflow-hidden border border-slate-200 shadow-md">
+            <img 
+              src={superAdminHeroImg} 
+              alt="SuperAdmin 3D Platform" 
+              className="w-full h-36 object-cover object-center" 
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent pointer-events-none" />
+            <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-white text-[10.5px] font-bold">
+              <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Root Cloud Console
+              </span>
+              <span className="text-orange-300 font-mono">v3.7 Master</span>
+            </div>
+          </div>
+
           {/* Header Title */}
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-orange-50 text-orange-600 text-[11px] font-black uppercase tracking-wider">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-orange-50 text-orange-600 text-[10.5px] font-black uppercase tracking-wider">
               <KeyRound className="w-3.5 h-3.5 text-orange-500" />
               <span>Root Administrative Portal</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               Sign In to SuperAdmin
             </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-medium">
               Enter your master platform credentials to access central management.
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-3.5">
             
             {/* Identifier (Email / Master ID) */}
             <div>
-              <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider mb-1">
                 Master ID or Email Address <span className="text-rose-500">*</span>
               </label>
               <div className="relative group">
@@ -286,7 +312,7 @@ const Login = () => {
                   onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
                   placeholder="e.g. ryadavy498@gmail.com"
                   required
-                  className="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-3 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400"
+                  className="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400"
                 />
                 <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
               </div>
@@ -294,7 +320,7 @@ const Login = () => {
 
             {/* Password */}
             <div>
-              <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center justify-between mb-1">
                 <label className="block text-[11px] font-black text-slate-700 uppercase tracking-wider">
                   Master Password <span className="text-rose-500">*</span>
                 </label>
@@ -313,7 +339,7 @@ const Login = () => {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
                   required
-                  className="w-full border border-slate-200 rounded-xl pl-10 pr-10 py-3 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400"
+                  className="w-full border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400"
                 />
                 <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
                 <button
@@ -344,7 +370,7 @@ const Login = () => {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-3.5 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-orange-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed border border-orange-400/30"
+              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-lg shadow-orange-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed border border-orange-400/30"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -356,7 +382,7 @@ const Login = () => {
           </form>
 
           {/* Quick Demo Access Box (Responsive card) */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-50/80 via-amber-50/50 to-orange-50/80 border border-orange-200/80 space-y-3">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-br from-orange-50/80 via-amber-50/50 to-orange-50/80 border border-orange-200/80 space-y-2.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-black text-orange-900 uppercase tracking-wider text-[10px] flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-orange-500" />
@@ -385,8 +411,8 @@ const Login = () => {
           </div>
 
           {/* Other Portal Links for Multi-Portal Navigation */}
-          <div className="pt-2">
-            <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider text-center mb-2.5">
+          <div className="pt-1">
+            <p className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider text-center mb-2">
               Looking for dedicated sub-panels?
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
@@ -414,9 +440,9 @@ const Login = () => {
         </div>
 
         {/* Footer Credit & Copyright */}
-        <div className="pt-6 pb-2 text-center text-xs text-slate-400 border-t border-slate-100">
+        <div className="pt-4 pb-2 text-center text-xs text-slate-400 border-t border-slate-100">
           <p className="font-medium">&copy; {new Date().getFullYear()} Multi-School ERP SaaS Platform. All rights reserved.</p>
-          <p className="font-semibold text-slate-500 mt-1">
+          <p className="font-semibold text-slate-500 mt-0.5">
             Engineered by <span className="text-orange-500 font-bold">RAJ YADAV</span> @ALLCORE SOLUTION
           </p>
         </div>
