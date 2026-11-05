@@ -340,10 +340,12 @@ const CanvasDesigner = () => {
   const [bgGradient, setBgGradient] = useState('radial-gradient(circle at 50% 50%, #ffffff 0%, #fffbf0 100%)');
   const [elements, setElements] = useState(PRESET_TEMPLATES.academicExcellence.elements);
   const [selectedId, setSelectedId] = useState(null);
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(0.75);
   const [showGrid, setShowGrid] = useState(false);
   const [showPreviewData, setShowPreviewData] = useState(true);
   const [activeTab, setActiveTab] = useState('templates'); // 'templates' | 'elements' | 'variables' | 'layers'
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [history, setHistory] = useState([PRESET_TEMPLATES.academicExcellence.elements]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
@@ -830,138 +832,157 @@ const CanvasDesigner = () => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-80px)] -m-4 sm:-m-6 bg-slate-900 text-slate-100 overflow-hidden select-none">
-      
-      {/* Hidden File Input for Image Upload */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="hidden"
-      />
-
-      {/* TOP HEADER / ACTION BAR */}
-      <header className="h-14 px-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between shrink-0 z-30">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md">
-            <Sliders className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-sm font-black text-white tracking-wide uppercase">MultiSchool Canvas Studio</h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                PRO DESIGNER
-              </span>
-            </div>
-            <p className="text-[10.5px] text-slate-400">Certificates, Student & Faculty ID Cards, Badges & Transcripts</p>
-          </div>
-        </div>
-
-        {/* Center Quick Tools */}
-        <div className="hidden md:flex items-center gap-2 bg-slate-900 border border-slate-800 rounded-xl px-2 py-1">
-          <button
-            onClick={handleUndo}
-            disabled={historyIndex <= 0}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            title="Undo (Ctrl+Z)"
-          >
-            <Undo className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleRedo}
-            disabled={historyIndex >= history.length - 1}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
-            title="Redo (Ctrl+Y)"
-          >
-            <Redo className="w-4 h-4" />
-          </button>
-
-          <div className="w-px h-4 bg-slate-800 mx-1" />
-
-          {/* Zoom controls */}
-          <div className="flex items-center gap-1 text-xs font-semibold text-slate-300">
-            <button
-              onClick={() => setZoom(prev => Math.max(0.4, Number((prev - 0.1).toFixed(1))))}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-white cursor-pointer"
-              title="Zoom Out"
-            >
-              <ZoomOut className="w-3.5 h-3.5" />
-            </button>
-            <span className="w-12 text-center text-[11px] font-mono text-orange-400">{Math.round(zoom * 100)}%</span>
-            <button
-              onClick={() => setZoom(prev => Math.min(2.0, Number((prev + 0.1).toFixed(1))))}
-              className="p-1.5 rounded-lg hover:bg-slate-800 hover:text-white cursor-pointer"
-              title="Zoom In"
-            >
-              <ZoomIn className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => setZoom(1.0)}
-              className="px-1.5 py-0.5 rounded text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer"
-            >
-              Reset
-            </button>
-          </div>
-
-          <div className="w-px h-4 bg-slate-800 mx-1" />
-
-          {/* Grid Toggle */}
-          <button
-            onClick={() => setShowGrid(prev => !prev)}
-            className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-xs ${showGrid ? 'bg-orange-500 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            title="Toggle Alignment Grid"
-          >
-            <Grid className="w-3.5 h-3.5" />
-            <span className="text-[10.5px]">Grid</span>
-          </button>
-
-          {/* Sample Data Toggle */}
-          <button
-            onClick={() => setShowPreviewData(prev => !prev)}
-            className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 text-xs ${showPreviewData ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-            title="Toggle Sample Student Data vs Raw Tags"
-          >
-            {showPreviewData ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-            <span className="text-[10.5px]">Sample Data</span>
-          </button>
-        </div>
-
-        {/* Right Primary Actions */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 hover:border-slate-600 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
-          >
-            <Printer className="w-3.5 h-3.5 text-amber-400" />
-            <span>Print PDF</span>
-          </button>
-
-          <button
-            onClick={exportAsImage}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-700 hover:border-slate-600 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
-          >
-            <Download className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Export PNG</span>
-          </button>
-
-          <button
-            onClick={saveTemplateLocally}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-orange-500/20 active:scale-95"
-          >
-            <Save className="w-3.5 h-3.5" />
-            <span>Save Design</span>
-          </button>
-        </div>
-      </header>
-
-      {/* 3-COLUMN WORKSPACE BODY */}
-      <div className="flex-1 flex overflow-hidden">
+    <div className="w-full h-[calc(100vh-130px)] p-2 sm:p-3 flex flex-col min-w-0 overflow-hidden box-border">
+      <div className="flex flex-col flex-1 w-full bg-slate-950 text-slate-100 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden select-none">
         
-        {/* ======================================================== */}
-        {/* LEFT TOOLBAR & PALETTE DRAWER */}
-        {/* ======================================================== */}
-        <aside className="w-72 bg-slate-950 border-r border-slate-800 flex flex-col shrink-0 z-20 overflow-hidden">
+        {/* Hidden File Input for Image Upload */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+        />
+
+        {/* TOP HEADER / ACTION BAR */}
+        <header className="h-14 px-3 sm:px-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between shrink-0 z-30 gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <button
+              onClick={() => setLeftSidebarOpen(prev => !prev)}
+              className={`p-1.5 rounded-lg border transition-colors cursor-pointer shrink-0 ${leftSidebarOpen ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
+              title="Toggle Tool Drawer"
+            >
+              <Sliders className="w-4 h-4" />
+            </button>
+
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shrink-0">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div className="truncate">
+              <div className="flex items-center gap-2">
+                <h1 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase truncate">Canvas Studio</h1>
+                <span className="hidden sm:inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 shrink-0">
+                  PRO
+                </span>
+              </div>
+              <p className="hidden md:block text-[10px] text-slate-400 truncate">Certificates, Student & Faculty ID Cards, Badges</p>
+            </div>
+          </div>
+
+          {/* Center Quick Tools */}
+          <div className="hidden lg:flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-xl px-2 py-1 shrink-0">
+            <button
+              onClick={handleUndo}
+              disabled={historyIndex <= 0}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+              title="Undo (Ctrl+Z)"
+            >
+              <Undo className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={handleRedo}
+              disabled={historyIndex >= history.length - 1}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors cursor-pointer"
+              title="Redo (Ctrl+Y)"
+            >
+              <Redo className="w-3.5 h-3.5" />
+            </button>
+
+            <div className="w-px h-4 bg-slate-800 mx-0.5" />
+
+            {/* Zoom controls */}
+            <div className="flex items-center gap-1 text-xs font-semibold text-slate-300">
+              <button
+                onClick={() => setZoom(prev => Math.max(0.3, Number((prev - 0.1).toFixed(1))))}
+                className="p-1 rounded hover:bg-slate-800 hover:text-white cursor-pointer"
+                title="Zoom Out"
+              >
+                <ZoomOut className="w-3 h-3" />
+              </button>
+              <span className="w-10 text-center text-[10.5px] font-mono text-orange-400">{Math.round(zoom * 100)}%</span>
+              <button
+                onClick={() => setZoom(prev => Math.min(2.0, Number((prev + 0.1).toFixed(1))))}
+                className="p-1 rounded hover:bg-slate-800 hover:text-white cursor-pointer"
+                title="Zoom In"
+              >
+                <ZoomIn className="w-3 h-3" />
+              </button>
+              <button
+                onClick={() => setZoom(0.75)}
+                className="px-1.5 py-0.5 rounded text-[9.5px] bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer"
+              >
+                Fit
+              </button>
+            </div>
+
+            <div className="w-px h-4 bg-slate-800 mx-0.5" />
+
+            {/* Grid Toggle */}
+            <button
+              onClick={() => setShowGrid(prev => !prev)}
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs ${showGrid ? 'bg-orange-500 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+              title="Toggle Alignment Grid"
+            >
+              <Grid className="w-3.5 h-3.5" />
+              <span className="text-[10px]">Grid</span>
+            </button>
+
+            {/* Sample Data Toggle */}
+            <button
+              onClick={() => setShowPreviewData(prev => !prev)}
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1 text-xs ${showPreviewData ? 'bg-emerald-600 text-white font-bold' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+              title="Toggle Sample Student Data vs Raw Tags"
+            >
+              {showPreviewData ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+              <span className="text-[10px]">Data</span>
+            </button>
+          </div>
+
+          {/* Right Primary Actions */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={handlePrint}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-700 hover:border-slate-600 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
+              title="Print Certificate (PDF)"
+            >
+              <Printer className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden sm:inline">Print</span>
+            </button>
+
+            <button
+              onClick={exportAsImage}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-slate-700 hover:border-slate-600 bg-slate-900 hover:bg-slate-800 text-slate-200 text-xs font-bold transition-all cursor-pointer shadow-xs"
+              title="Export as PNG"
+            >
+              <Download className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline">Export</span>
+            </button>
+
+            <button
+              onClick={saveTemplateLocally}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-orange-500/20 active:scale-95"
+            >
+              <Save className="w-3.5 h-3.5" />
+              <span>Save</span>
+            </button>
+
+            <button
+              onClick={() => setRightSidebarOpen(prev => !prev)}
+              className={`p-1.5 rounded-lg border transition-colors cursor-pointer shrink-0 ${rightSidebarOpen ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
+              title="Toggle Inspector"
+            >
+              <Sliders className="w-4 h-4" />
+            </button>
+          </div>
+        </header>
+
+        {/* 3-COLUMN WORKSPACE BODY */}
+        <div className="flex-1 flex overflow-hidden">
+          
+          {/* ======================================================== */}
+          {/* LEFT TOOLBAR & PALETTE DRAWER */}
+          {/* ======================================================== */}
+          <aside className={`${leftSidebarOpen ? 'w-64 sm:w-72' : 'w-0 p-0 border-0 opacity-0'} transition-all duration-200 bg-slate-950 border-r border-slate-800 flex flex-col shrink-0 z-20 overflow-hidden`}>
           
           {/* Navigation Tabs */}
           <div className="grid grid-cols-4 p-2 gap-1 bg-slate-900/60 border-b border-slate-800 text-center">
@@ -1522,7 +1543,7 @@ const CanvasDesigner = () => {
         {/* ======================================================== */}
         {/* RIGHT INSPECTOR PROPERTY PANEL */}
         {/* ======================================================== */}
-        <aside className="w-72 bg-slate-950 border-l border-slate-800 flex flex-col shrink-0 z-20 overflow-hidden">
+        <aside className={`${rightSidebarOpen ? 'w-64 sm:w-72' : 'w-0 p-0 border-0 opacity-0'} transition-all duration-200 bg-slate-950 border-l border-slate-800 flex flex-col shrink-0 z-20 overflow-hidden`}>
           <div className="h-10 px-3 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
               <Sliders className="w-3.5 h-3.5 text-orange-400" />
@@ -1813,6 +1834,7 @@ const CanvasDesigner = () => {
 
       </div>
     </div>
+  </div>
   );
 };
 
