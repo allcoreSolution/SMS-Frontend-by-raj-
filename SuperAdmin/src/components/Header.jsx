@@ -130,8 +130,20 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
     fetchRealNotifications();
   }, []);
 
+  const isDemoAvatar = (url) => {
+    if (!url || typeof url !== 'string') return true;
+    const lower = url.toLowerCase().trim();
+    if (lower.startsWith('data:image/') || lower.startsWith('blob:')) return false;
+    return lower.includes('unsplash.com') || 
+           lower.includes('pravatar.cc') || 
+           lower.includes('ui-avatars.com') ||
+           lower.includes('placeholder') ||
+           lower.includes('dummy');
+  };
+
   const displayName = user?.name || user?.username || 'Super Admin';
   const displayEmail = user?.email || 'superadmin@erp.com';
+  const validAvatar = user?.avatar && !isDemoAvatar(user.avatar) ? user.avatar : null;
   const avatarInitials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'SA';
 
   return (
@@ -280,9 +292,9 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
             >
               {/* User Avatar */}
               <div className="w-8 h-8 rounded-xl overflow-hidden shrink-0 shadow-sm ring-1 ring-orange-500/20 bg-slate-100 flex items-center justify-center">
-                {user?.avatar ? (
+                {validAvatar ? (
                   <img 
-                    src={user.avatar} 
+                    src={validAvatar} 
                     alt={displayName} 
                     className="w-full h-full object-cover" 
                   />
@@ -314,8 +326,8 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
                 {/* User Header Info Card */}
                 <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-orange-50/30">
                    <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-xs ring-1 ring-orange-500/30">
-                     {user?.avatar ? (
-                       <img src={user.avatar} alt={displayName} className="w-full h-full object-cover" />
+                     {validAvatar ? (
+                       <img src={validAvatar} alt={displayName} className="w-full h-full object-cover" />
                      ) : (
                        <div 
                          className="w-full h-full flex items-center justify-center text-white text-xs font-black uppercase"

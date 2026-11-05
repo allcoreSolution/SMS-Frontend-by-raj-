@@ -83,6 +83,18 @@ const defaultSchoolDocuments = [
   }
 ];
 
+export const isDemoAvatar = (url) => {
+  if (!url || typeof url !== 'string') return true;
+  const lower = url.toLowerCase().trim();
+  if (lower.startsWith('data:image/')) return false; // Real uploaded image
+  if (lower.startsWith('blob:')) return false;
+  return lower.includes('unsplash.com') || 
+         lower.includes('pravatar.cc') || 
+         lower.includes('ui-avatars.com') ||
+         lower.includes('placeholder') ||
+         lower.includes('dummy');
+};
+
 export default function MyProfile() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -91,15 +103,21 @@ export default function MyProfile() {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}');
       const customAvatar = localStorage.getItem('school_erp_user_avatar');
-      const name = (u.name || u.username || 'School Administrator').trim();
-      const parts = name.split(/\s+/);
+      if (customAvatar && isDemoAvatar(customAvatar)) {
+        localStorage.removeItem('school_erp_user_avatar');
+      }
+      const rawAv = customAvatar || u.avatar || '';
+      const cleanAvatar = isDemoAvatar(rawAv) ? '' : rawAv;
+      const customName = localStorage.getItem('school_erp_custom_name');
+      const name = (customName || u.name || `${u.firstName || ''} ${u.lastName || ''}` || u.username || 'Super Admin').trim();
+      const parts = name.split(/\s+/).filter(Boolean);
       return {
-        firstName: parts[0] || 'School',
-        lastName: parts.slice(1).join(' ') || 'Admin',
+        firstName: u.firstName || parts[0] || 'Super',
+        lastName: u.lastName || parts.slice(1).join(' ') || 'Admin',
         username: u.username || 'admin',
-        email: u.email || 'admin@schoolerp.com',
-        phone: u.phone || '+91 98765 43210',
-        avatar: u.avatar || customAvatar || '',
+        email: u.email || 'ryadavy498@gmail.com',
+        phone: u.phone || '+91 9876543210',
+        avatar: cleanAvatar,
         bio: u.bio || 'Principal & Chief Administrator overseeing academic programs, institutional accreditation, and school operations.',
         designation: u.designation || 'Head of Institution / Principal',
         department: u.department || 'Executive Administration',
@@ -108,7 +126,7 @@ export default function MyProfile() {
         state: u.state || 'Delhi',
         postalCode: u.postalCode || '110001',
         country: u.country || 'India',
-        role: u.role || 'Administrator',
+        role: u.role || 'SuperAdmin',
         tenant: u.tenant || null,
         twoFactorEnabled: !!u.twoFactorEnabled,
         preferences: {
@@ -125,11 +143,11 @@ export default function MyProfile() {
       };
     } catch (e) {
       return {
-        firstName: 'School',
+        firstName: 'Super',
         lastName: 'Admin',
         username: 'admin',
-        email: 'admin@schoolerp.com',
-        phone: '+91 98765 43210',
+        email: 'ryadavy498@gmail.com',
+        phone: '+91 9876543210',
         avatar: '',
         bio: 'Principal & Chief Administrator',
         designation: 'Principal',
@@ -139,7 +157,7 @@ export default function MyProfile() {
         state: 'Delhi',
         postalCode: '110001',
         country: 'India',
-        role: 'Administrator',
+        role: 'SuperAdmin',
         tenant: null,
         twoFactorEnabled: false,
         preferences: {
@@ -316,9 +334,12 @@ export default function MyProfile() {
         const customAvatar = localStorage.getItem('school_erp_user_avatar');
         const customName = localStorage.getItem('school_erp_custom_name');
         
+        const rawAv = customAvatar || res.data.avatar || profile.avatar || '';
+        const cleanAvatar = isDemoAvatar(rawAv) ? '' : rawAv;
+        
         const mergedData = {
           ...res.data,
-          avatar: customAvatar || res.data.avatar || profile.avatar
+          avatar: cleanAvatar
         };
 
         if (customName) {

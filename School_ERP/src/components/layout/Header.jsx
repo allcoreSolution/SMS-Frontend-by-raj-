@@ -42,6 +42,18 @@ import { noticeService } from '../../api/noticeService';
 import { financeService } from '../../api/financeService';
 import { getTranslation } from '../../utils/translations';
 
+export const isDemoAvatar = (url) => {
+  if (!url || typeof url !== 'string') return true;
+  const lower = url.toLowerCase().trim();
+  if (lower.startsWith('data:image/')) return false; // Real uploaded user photo
+  if (lower.startsWith('blob:')) return false;
+  return lower.includes('unsplash.com') || 
+         lower.includes('pravatar.cc') || 
+         lower.includes('ui-avatars.com') ||
+         lower.includes('placeholder') ||
+         lower.includes('dummy');
+};
+
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
   const [isDesignsModalOpen, setIsDesignsModalOpen] = useState(false);
@@ -61,9 +73,12 @@ const Header = ({ toggleSidebar }) => {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}');
       const customAvatar = localStorage.getItem('school_erp_user_avatar');
-      if (customAvatar && !u.avatar) {
-        u.avatar = customAvatar;
+      const customName = localStorage.getItem('school_erp_custom_name');
+      if (customName) {
+        u.name = customName;
       }
+      const rawAv = customAvatar || u.avatar || '';
+      u.avatar = isDemoAvatar(rawAv) ? '' : rawAv;
       return u;
     } catch (e) {
       return null;
@@ -75,9 +90,12 @@ const Header = ({ toggleSidebar }) => {
       try {
         const u = e?.detail || JSON.parse(localStorage.getItem('user') || '{}');
         const customAvatar = localStorage.getItem('school_erp_user_avatar');
-        if (customAvatar && !u.avatar) {
-          u.avatar = customAvatar;
+        const customName = localStorage.getItem('school_erp_custom_name');
+        if (customName) {
+          u.name = customName;
         }
+        const rawAv = customAvatar || u.avatar || '';
+        u.avatar = isDemoAvatar(rawAv) ? '' : rawAv;
         setCurrentUserData({ ...u });
       } catch (err) {}
     };
@@ -244,10 +262,12 @@ const Header = ({ toggleSidebar }) => {
   const searchInputRef = useRef(null);
 
   const activeUser = currentUserData || {};
-  const displayName = activeUser?.name || `${activeUser?.firstName || ''} ${activeUser?.lastName || ''}`.trim() || activeUser?.username || 'Administrator';
-  const displayEmail = activeUser?.email || 'admin@schoolerp.com';
-  const userAvatar = localStorage.getItem('school_erp_user_avatar') || activeUser?.avatar || '';
-  const initials = String(displayName).trim().split(/\s+/).filter(Boolean).map(n => n[0] || '').join('').substring(0, 2).toUpperCase() || 'AD';
+  const customName = localStorage.getItem('school_erp_custom_name');
+  const displayName = customName || activeUser?.name || `${activeUser?.firstName || ''} ${activeUser?.lastName || ''}`.trim() || activeUser?.username || 'Super Admin';
+  const displayEmail = activeUser?.email || 'ryadavy498@gmail.com';
+  const rawAvatar = localStorage.getItem('school_erp_user_avatar') || activeUser?.avatar || '';
+  const userAvatar = isDemoAvatar(rawAvatar) ? '' : rawAvatar;
+  const initials = String(displayName).trim().split(/\s+/).filter(Boolean).map(n => n[0] || '').join('').substring(0, 2).toUpperCase() || 'SA';
   const schoolName = activeSchool?.schoolName || activeUser?.tenant?.schoolName || (localStorage.getItem('schoolName') !== 'Greenwood International School' ? localStorage.getItem('schoolName') : '') || 'ALL CORE SOLUTION';
 
   const quickLinks = [
@@ -551,8 +571,23 @@ const Header = ({ toggleSidebar }) => {
           </div>
         </div>
 
+        {/* Click-outside backdrop rendered strictly behind dropdowns */}
+        {activeMenu && (
+          <div 
+            className="fixed inset-0 z-40 bg-black/5"
+            onClick={(e) => {
+              e.stopPropagation();
+              setActiveMenu(null);
+            }}
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              setActiveMenu(null);
+            }}
+          />
+        )}
+
         {/* Right side - Matching Screenshot */}
-        <div ref={menuRef} className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto">
+        <div ref={menuRef} className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto relative z-50">
           {/* Academic Session & Language */}
           <div className="flex items-center gap-1 sm:gap-1.5 text-xs font-semibold text-gray-700 shrink-0">
             <AcademicYearDropdown />
@@ -863,15 +898,6 @@ const Header = ({ toggleSidebar }) => {
           </div>
         </div>
       </header>
-
-      {/* Global Transparent Backdrop to dismiss active dropdowns on click/tap outside */}
-      {activeMenu && (
-        <div 
-          className="fixed inset-0 z-40 bg-slate-900/10 backdrop-blur-[0.5px]"
-          onClick={() => setActiveMenu(null)}
-          onTouchStart={() => setActiveMenu(null)}
-        />
-      )}
 
       {/* Spotlight Command Modal */}
       {isSearchModalOpen && (
