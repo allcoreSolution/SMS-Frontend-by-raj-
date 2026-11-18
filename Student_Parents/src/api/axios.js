@@ -1,24 +1,46 @@
 import axios from 'axios';
 
-const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const isProduction = typeof window !== 'undefined' && !isLocalhost;
 const LIVE_BACKEND_URL = 'https://sms-backend-by-raj-1.onrender.com/api';
 
-const API_BASE_URL = (typeof window !== 'undefined' && window.__API_BASE_URL__) || 
-                     (typeof window !== 'undefined' && window.localStorage && localStorage.getItem('api_base_url')) || 
-                     import.meta.env.VITE_API_URL || 
-                     (isProduction ? LIVE_BACKEND_URL : 'http://localhost:5050/api');
+export const getApiBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    const isProduction = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (isProduction) {
+      const stored = localStorage.getItem('api_base_url') || localStorage.getItem('api_override_url');
+      if (stored && stored.startsWith('https://') && !stored.includes('localhost')) {
+        return stored;
+      }
+      return import.meta.env.VITE_API_URL || LIVE_BACKEND_URL;
+    }
+    return (
+      window.__API_BASE_URL__ ||
+      localStorage.getItem('api_base_url') ||
+      import.meta.env.VITE_API_URL ||
+      'http://localhost:5050/api'
+    );
+  }
+  return import.meta.env.VITE_API_URL || LIVE_BACKEND_URL;
+};
 
 const axiosInstance = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: getApiBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
+    if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+      if (!config.baseURL || config.baseURL.includes('localhost') || config.baseURL.includes('192.168.') || config.baseURL.startsWith('http://')) {
+        config.baseURL = LIVE_BACKEND_URL;
+      }
+    } else {
+      const dynamicBase = getApiBaseUrl();
+      if (dynamicBase) config.baseURL = dynamicBase;
+    }
+
     const token = localStorage.getItem('parent_token') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

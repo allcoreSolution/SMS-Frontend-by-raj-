@@ -1,19 +1,10 @@
-import axios from 'axios';
-
-const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const isAndroidPlatform = typeof window !== 'undefined' && (window.location.hostname === 'appassets.androidplatform.net' || !window.location.hostname || window.location.protocol === 'file:');
-const defaultHost = (isLocalhost || isAndroidPlatform) ? 'localhost' : window.location.hostname;
-
-const API_BASE = (typeof window !== 'undefined' && window.__API_BASE_URL__) || 
-                 (typeof window !== 'undefined' && window.localStorage && localStorage.getItem('api_base_url')) || 
-                 import.meta.env.VITE_API_URL || 
-                 (isAndroidPlatform ? 'http://192.168.1.5:5050/api' : (isLocalhost ? 'http://localhost:5050/api' : `http://${defaultHost}:5050/api`));
+import axiosInstance from './axios';
 
 export const authService = {
   login: async (credentials) => {
     try {
-      const response = await axios.post(`${API_BASE}/auth/login`, credentials, {
-        timeout: 8000,
+      const response = await axiosInstance.post('/auth/login', credentials, {
+        timeout: 15000,
       });
 
       if (response.data?.success && response.data?.data) {
@@ -23,6 +14,7 @@ export const authService = {
         };
         const token = udata.token || 'demo-jwt-token-active-session';
         localStorage.setItem('parent_token', token);
+        localStorage.setItem('token', token);
         localStorage.setItem('parent_user', JSON.stringify(udata));
         if (udata.school) {
           localStorage.setItem('portal_school_info', JSON.stringify(udata.school));
@@ -40,7 +32,7 @@ export const authService = {
       }
       
       // If server returned false message, attempt demo fallback if demo credentials used
-      const isDemoStudent = credentials.userId === 'YIS-2024-101' || credentials.role === 'student';
+      const isDemoStudent = credentials.userId === 'YIS-2024-101' || credentials.userId === 'ADM-2026-3588' || credentials.role === 'student';
       const isDemoParent = credentials.userId === 'P-1920-KABIR' || credentials.role === 'parent';
       if (isDemoStudent || isDemoParent) {
         return authService.demoFallbackLogin(credentials);
@@ -54,35 +46,35 @@ export const authService = {
   },
 
   demoFallbackLogin: (credentials) => {
-    const isStudent = credentials.role === 'student' || credentials.userId === 'YIS-2024-101';
+    const isStudent = credentials.role === 'student' || credentials.userId === 'YIS-2024-101' || credentials.userId === 'ADM-2026-3588';
     const defaultSchool = {
-      name: 'Greenwood International School',
-      shortName: 'Smart Campus',
-      logo: '/assets/logo_3d.png'
+      name: 'All core',
+      shortName: 'allcore',
+      logo: null
     };
 
     const fallbackUser = isStudent ? {
-      _id: '6ae81962278489a10c2ad219',
-      studentId: '6ae81962278489a10c2ad217',
-      username: 'YIS-2024-101',
-      name: 'Kabir Singh',
-      email: 'kabir.singh@gmail.com',
+      _id: '6afd949b84528eb3ba3adb68',
+      studentId: '6afd949b84528eb3ba3adb68',
+      username: 'ADM-2026-3588',
+      name: 'RAJ YADAV',
+      email: 'rajyadav@gmail.com',
       role: 'Student',
-      class: 'Class IX (A)',
+      class: 'Class I (A)',
       school: defaultSchool,
       schoolName: defaultSchool.name,
       schoolLogo: defaultSchool.logo,
       schoolShortName: defaultSchool.shortName,
       token: 'demo-student-token-active-session'
     } : {
-      _id: '6ae81962278489a10c2ad21a',
-      parentId: '6ae81962278489a10c2ad218',
+      _id: '6ad873aa0992a112edc28228',
+      parentId: '6ad873aa0992a112edc28228',
       username: 'P-1920-KABIR',
-      name: 'Vikram Singh',
-      email: 'vikram.singh@gmail.com',
-      phone: '9876510108',
+      name: 'Vikram Singh (Father)',
+      email: 'parent@allcoresolution.com',
+      phone: '9876543210',
       role: 'Parent',
-      children: ['6ae81962278489a10c2ad217'],
+      children: ['6afd949b84528eb3ba3adb68'],
       school: defaultSchool,
       schoolName: defaultSchool.name,
       schoolLogo: defaultSchool.logo,
@@ -91,6 +83,7 @@ export const authService = {
     };
 
     localStorage.setItem('parent_token', fallbackUser.token);
+    localStorage.setItem('token', fallbackUser.token);
     localStorage.setItem('parent_user', JSON.stringify(fallbackUser));
     localStorage.setItem('portal_school_info', JSON.stringify(defaultSchool));
     localStorage.setItem('active_child', isStudent ? fallbackUser.studentId : fallbackUser.children[0]);

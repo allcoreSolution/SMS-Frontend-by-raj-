@@ -15,9 +15,10 @@ import {
 const getMediaUrl = (photoPath) => {
   if (!photoPath) return null;
   if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
-  const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
-    || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
-    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'http://192.168.1.20:5050');
+  const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const baseUrl = isProduction 
+    ? 'https://sms-backend-by-raj-1.onrender.com'
+    : ((typeof window !== 'undefined' && window.__API_BASE_URL__) || (typeof window !== 'undefined' && localStorage.getItem('api_base_url')) || 'http://localhost:5050');
   const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
   return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
 };
