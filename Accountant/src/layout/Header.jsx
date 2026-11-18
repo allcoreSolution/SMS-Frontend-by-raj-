@@ -47,8 +47,8 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
                      localDb.getProfile()?.avatar || '';
       const p = localDb.getProfile();
       const u = JSON.parse(localStorage.getItem('accountant_user') || '{}');
-      const name = p?.name || u?.name || u?.username || 'Ravi';
-      const initials = name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'RA';
+      const name = p?.name || u?.name || u?.username || 'Hari Kumar';
+      const initials = name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'HK';
       return { avatar, name, initials };
     } catch (_) {
       return { avatar: '', name: 'Accountant', initials: 'AC' };

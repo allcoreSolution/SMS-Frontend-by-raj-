@@ -381,8 +381,19 @@ export const accountantService = {
           staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
         }
       }
+      // Target the active institutional Accountant record (Hari Kumar)
+      if (!staffDoc) {
+        const res = await axiosInstance.get('/staff/6afd359fd082c0a36c4f4ab3').catch(() => null);
+        if (res?.data?.data) staffDoc = res.data.data;
+      }
       if (!staffDoc) {
         const res = await axiosInstance.get('/staff?designation=Accountant').catch(() => null);
+        if (res?.data?.data) {
+          staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
+        }
+      }
+      if (!staffDoc) {
+        const res = await axiosInstance.get('/staff').catch(() => null);
         if (res?.data?.data) {
           staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
         }
@@ -391,52 +402,61 @@ export const accountantService = {
       if (staffDoc) {
         const mapped = {
           _id: staffDoc._id,
-          name: staffDoc.fullName || 'Ravi',
-          fullName: staffDoc.fullName || 'Ravi',
-          staffId: staffDoc.staffId || staffDoc.employeeCode || '105',
+          name: staffDoc.fullName || 'Hari Kumar',
+          fullName: staffDoc.fullName || 'Hari Kumar',
+          staffId: staffDoc.staffId || staffDoc.employeeCode || '112',
           role: typeof staffDoc.role === 'object' ? staffDoc.role?.name : staffDoc.role || 'Accountant',
           designation: staffDoc.designation || 'Accountant',
           department: staffDoc.department || 'Finance & Accounts',
           basicSalary: staffDoc.basicSalary || staffDoc.additionalInfo?.basicSalary || '35000',
-          dateOfJoining: staffDoc.dateOfJoining ? staffDoc.dateOfJoining.slice(0, 10) : '',
-          confirmationDate: staffDoc.confirmationDate ? staffDoc.confirmationDate.slice(0, 10) : '',
-          email: staffDoc.email || 'ravi123@gmail.com',
-          phone: staffDoc.phone || '7678840056',
-          address: staffDoc.currentAddress || '',
-          permanentAddress: staffDoc.currentAddress || '',
-          bio: staffDoc.note || '',
+          dateOfJoining: staffDoc.dateOfJoining ? staffDoc.dateOfJoining.slice(0, 10) : '2026-12-18',
+          confirmationDate: staffDoc.confirmationDate ? staffDoc.confirmationDate.slice(0, 10) : '2026-12-18',
+          email: staffDoc.email || 'harikumar@gmail.com',
+          phone: staffDoc.phone || '8400563229',
+          address: staffDoc.currentAddress || 'MP',
+          permanentAddress: staffDoc.currentAddress || 'MP',
+          bio: staffDoc.note || 'Staff Accountant managing student fees, daybook vouchers, institutional collections, and accounts.',
           avatar: (() => {
+            if (staffDoc.photo && (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:'))) {
+              return staffDoc.photo;
+            }
+            if (staffDoc.photo) {
+              const backendOrigin = (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname))
+                ? 'http://localhost:5050'
+                : 'https://sms-backend-by-raj-1.onrender.com';
+              return `${backendOrigin}/${staffDoc.photo.replace(/^\/+/, '')}`;
+            }
             const localSaved = typeof window !== 'undefined' ? (localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar') || '') : '';
-            if (localSaved) return localSaved;
-            if (!staffDoc.photo) return '';
-            if (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:')) return staffDoc.photo;
-            const backendOrigin = (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname))
-              ? 'http://localhost:5050'
-              : 'https://sms-backend-by-raj-1.onrender.com';
-            return `${backendOrigin}/${staffDoc.photo.replace(/^\/+/, '')}`;
+            return localSaved || '';
           })(),
           gender: staffDoc.gender || 'Male',
-          dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '',
-          maritalStatus: staffDoc.maritalStatus || 'Single',
-          fatherName: staffDoc.fathersName || '',
-          motherName: staffDoc.mothersName || '',
-          qualification: staffDoc.qualification || '',
-          workExperience: staffDoc.workExperience || '',
-          bloodGroup: staffDoc.bloodGroup || '',
-          emergencyContact: staffDoc.emergencyContactName || '',
-          emergencyPhone: staffDoc.emergencyContactPhone || '',
-          bankName: staffDoc.bankDetails?.bankName || '',
+          dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '1999-10-12',
+          maritalStatus: staffDoc.maritalStatus || 'Married',
+          fatherName: staffDoc.fathersName || 'Mr. Prakash Kumar',
+          motherName: staffDoc.mothersName || 'Ms. Ranjana Devi',
+          qualification: staffDoc.qualification || 'B.Tech',
+          workExperience: staffDoc.workExperience ? `${staffDoc.workExperience} Years` : '2 Years',
+          bloodGroup: staffDoc.bloodGroup || 'A+',
+          emergencyContact: staffDoc.emergencyContactName || staffDoc.phone || '8400563229',
+          emergencyPhone: staffDoc.emergencyContactPhone || staffDoc.phone || '8400563229',
+          bankName: staffDoc.bankDetails?.bankName || 'SBI',
           accountNo: staffDoc.bankDetails?.accountNumber || '',
           ifsc: staffDoc.bankDetails?.ifscCode || '',
           branchName: staffDoc.bankDetails?.branchName || '',
-          accountTitle: staffDoc.bankDetails?.accountTitle || '',
+          accountTitle: staffDoc.bankDetails?.accountTitle || staffDoc.fullName || 'Hari Kumar',
           panNo: staffDoc.statutoryIds?.panNumber || '',
           aadhaarNo: staffDoc.statutoryIds?.aadhaarNumber || '',
           uanNo: staffDoc.statutoryIds?.uanNumber || '',
-          biometricId: staffDoc.biometricId || staffDoc.deviceMappingId || '',
+          biometricId: staffDoc.biometricId || staffDoc.deviceMappingId || '112',
           shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
         };
 
+        if (mapped.avatar) {
+          try {
+            localStorage.setItem('accountant_user_avatar', mapped.avatar);
+            localStorage.setItem('school_erp_user_avatar', mapped.avatar);
+          } catch (_) {}
+        }
         localDb.saveProfile(mapped);
         return ok(mapped);
       }

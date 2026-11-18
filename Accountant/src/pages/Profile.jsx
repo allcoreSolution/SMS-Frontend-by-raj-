@@ -14,39 +14,39 @@ import { accountantService } from '../api/accountantService';
 import Swal from 'sweetalert2';
 
 const defaultProfileData = {
-  name: 'Ravi',
-  staffId: '105',
+  name: 'Hari Kumar',
+  staffId: '112',
   role: 'Accountant',
   designation: 'Accountant',
   department: 'Finance & Accounts',
-  basicSalary: '0',
-  dateOfJoining: '2026-11-01',
-  confirmationDate: '2026-11-02',
-  email: 'ravi123@gmail.com',
-  phone: '7678840056',
-  address: 'Indra Nagar  , Sector - 12 , Lucknow',
-  permanentAddress: 'Indra Nagar  , Sector - 12 , Lucknow',
-  bio: 'Staff Accountant managing fees, ledgers, daybook transactions and institutional collections.',
+  basicSalary: '35000',
+  dateOfJoining: '2026-12-18',
+  confirmationDate: '2026-12-18',
+  email: 'harikumar@gmail.com',
+  phone: '8400563229',
+  address: 'MP',
+  permanentAddress: 'MP',
+  bio: 'Staff Accountant managing student fees, daybook vouchers, institutional collections, and accounts.',
   avatar: typeof window !== 'undefined' ? (localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar') || '') : '',
   gender: 'Male',
-  dob: '2000-10-02',
-  maritalStatus: 'Single',
-  fatherName: 'Mr. Prakash',
-  motherName: 'Ms. Ranjana',
-  qualification: 'M.Sc.',
-  workExperience: '7 Years',
-  bloodGroup: 'A-',
-  emergencyContact: '9074870909',
-  emergencyPhone: '9074870909',
+  dob: '1999-10-12',
+  maritalStatus: 'Married',
+  fatherName: 'Mr. Prakash Kumar',
+  motherName: 'Ms. Ranjana Devi',
+  qualification: 'B.Tech',
+  workExperience: '2 Years',
+  bloodGroup: 'A+',
+  emergencyContact: '8400563229',
+  emergencyPhone: '8400563229',
   bankName: 'SBI',
-  accountNo: '6262268278762',
-  ifsc: 'SBIN0007865',
-  branchName: 'BKT',
-  accountTitle: 'Ravi',
+  accountNo: '',
+  ifsc: '',
+  branchName: '',
+  accountTitle: 'Hari Kumar',
   panNo: '',
   uanNo: '',
   shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
-  biometricId: 'BIO-105',
+  biometricId: '112',
 };
 
 const TABS = [
@@ -907,7 +907,7 @@ const Profile = () => {
                     </div>
                     <div>
                       <span className="text-gray-500 block">Account Beneficiary</span>
-                      <span className="font-semibold text-gray-800">{profile.accountTitle || profile.name || 'Ravi'}</span>
+                      <span className="font-semibold text-gray-800">{profile.accountTitle || profile.name || 'Hari Kumar'}</span>
                     </div>
                   </div>
                 </div>
