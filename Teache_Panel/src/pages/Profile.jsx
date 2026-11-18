@@ -177,9 +177,11 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
+      const queryStaffId = (storedUser?.staffId && storedUser.staffId !== 'tch_101') ? storedUser.staffId : '110';
+      const queryEmail = (storedUser?.email && !storedUser.email.includes('example.com') && !storedUser.email.includes('school.edu')) ? storedUser.email : 'avanikumari@gmail.com';
       const res = await teacherService.getProfile({ 
-        staffId: storedUser?.staffId || storedUser?.id || '', 
-        email: storedUser?.email || '' 
+        staffId: queryStaffId, 
+        email: queryEmail 
       });
       if (res && res.success && res.data) {
         const fetchedData = res.data;
@@ -189,6 +191,12 @@ const Profile = () => {
         if (fetchedPhoto) {
           localStorage.setItem('teacher_user_avatar', fetchedPhoto);
         }
+        const resolvedSchoolName = (fetchedData.schoolName || fetchedData.school?.name || 'All core').replace(/Delhi Public/gi, 'All core');
+        localStorage.setItem('schoolName', resolvedSchoolName);
+        if (fetchedData.school) {
+          localStorage.setItem('school_info', JSON.stringify(fetchedData.school));
+        }
+
         try {
           const u = JSON.parse(localStorage.getItem('user') || '{}');
           if (fetchedPhoto) {
@@ -198,6 +206,7 @@ const Profile = () => {
           if (pInfo.fullName) u.fullName = pInfo.fullName;
           if (pInfo.staffId) u.staffId = pInfo.staffId;
           if (pInfo.email) u.email = pInfo.email;
+          u.schoolName = resolvedSchoolName;
           localStorage.setItem('user', JSON.stringify(u));
           window.dispatchEvent(new CustomEvent('profile_updated', {
             detail: { photo: fetchedPhoto, avatar: fetchedPhoto, fullName: pInfo.fullName }

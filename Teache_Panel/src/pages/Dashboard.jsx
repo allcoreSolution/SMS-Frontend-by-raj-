@@ -259,18 +259,18 @@ const TeacherDashboardView = () => {
       const storedSchool = localStorage.getItem('school_info');
       if (storedSchool) {
         const parsed = JSON.parse(storedSchool);
-        if (parsed?.name) return parsed.name;
+        if (parsed?.name && !parsed.name.includes('Delhi Public')) return parsed.name;
       }
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const u = JSON.parse(storedUser);
-        if (u.schoolName) return u.schoolName;
-        if (u.school?.name) return u.school.name;
+        if (u.schoolName && !u.schoolName.includes('Delhi Public')) return u.schoolName;
+        if (u.school?.name && !u.school.name.includes('Delhi Public')) return u.school.name;
       }
       const rawSchool = localStorage.getItem('schoolName');
-      if (rawSchool) return rawSchool;
+      if (rawSchool && !rawSchool.includes('Delhi Public')) return rawSchool;
     } catch (_) {}
-    return 'School ERP';
+    return 'All core';
   });
 
   // Real Backend Data State

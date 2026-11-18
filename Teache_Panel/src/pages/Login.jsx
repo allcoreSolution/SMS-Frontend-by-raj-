@@ -228,7 +228,7 @@ const Login = () => {
           designation: 'Staff Faculty',
           department: 'Administration',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
-          schoolName: 'All Core Solutions School'
+          schoolName: 'All core'
         } : {
           id: '6afd5a6c6568c30df618a4c4',
           staffId: '110',
@@ -239,13 +239,15 @@ const Login = () => {
           designation: 'Teacher',
           department: 'Academics',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
-          schoolName: 'Delhi Public International School'
+          schoolName: 'All core',
+          photo: localStorage.getItem('teacher_user_avatar') || '',
+          avatar: localStorage.getItem('teacher_user_avatar') || ''
         };
 
         localStorage.setItem('token', `demo_token_${Date.now()}`);
         localStorage.setItem('user', JSON.stringify(dummyUser));
         localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
-        localStorage.setItem('schoolName', 'Delhi Public International School');
+        localStorage.setItem('schoolName', 'All core');
 
         Swal.fire({
           icon: 'success',

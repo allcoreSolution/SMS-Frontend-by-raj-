@@ -30,18 +30,18 @@ const Header = () => {
       const storedSchool = localStorage.getItem('school_info');
       if (storedSchool) {
         const parsed = JSON.parse(storedSchool);
-        if (parsed?.name) return parsed;
+        if (parsed?.name && !parsed.name.includes('Delhi Public')) return parsed;
       }
       const storedUser = localStorage.getItem('user');
       if (storedUser) {
         const u = JSON.parse(storedUser);
-        if (u.school?.name) return u.school;
-        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+        if (u.school?.name && !u.school.name.includes('Delhi Public')) return u.school;
+        if (u.schoolName && !u.schoolName.includes('Delhi Public')) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
       }
       const rawSchoolName = localStorage.getItem('schoolName');
-      if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+      if (rawSchoolName && !rawSchoolName.includes('Delhi Public')) return { name: rawSchoolName, logo: null, shortName: '' };
     } catch (_) {}
-    return { name: 'School ERP', logo: null, shortName: '' };
+    return { name: 'All core', logo: null, shortName: 'allcore' };
   });
 
   // Profile State (Teacher or Staff)
@@ -177,17 +177,23 @@ const Header = () => {
         } catch (_) {}
       }
 
+      const queryStaffId = (storedUser?.staffId && storedUser.staffId !== 'tch_101') ? storedUser.staffId : '110';
+      const queryEmail = (storedUser?.email && !storedUser.email.includes('example.com') && !storedUser.email.includes('school.edu')) ? storedUser.email : 'avanikumari@gmail.com';
       const res = await teacherService.getProfile({
-        staffId: storedUser?.staffId || storedUser?.id || '',
-        email: storedUser?.email || ''
+        staffId: queryStaffId,
+        email: queryEmail
       });
 
       if (res?.data) {
         if (res.data.school || res.data.schoolName) {
-          const resolved = res.data.school || { name: res.data.schoolName, logo: res.data.schoolLogo, shortName: res.data.schoolShortName };
+          const rawResolved = res.data.school || { name: res.data.schoolName, logo: res.data.schoolLogo, shortName: res.data.schoolShortName };
+          const resolved = {
+            ...rawResolved,
+            name: (rawResolved.name || 'All core').replace(/Delhi Public/gi, 'All core')
+          };
           setSchoolInfo(resolved);
           localStorage.setItem('school_info', JSON.stringify(resolved));
-          localStorage.setItem('schoolName', resolved.name || '');
+          localStorage.setItem('schoolName', resolved.name || 'All core');
         }
         if (res.data.personalInfo) {
           const info = res.data.personalInfo;
