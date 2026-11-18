@@ -451,6 +451,7 @@ export const accountantService = {
       if (data._id) {
         await axiosInstance.patch(`/staff/${data._id}`, {
           fullName: data.name || data.fullName,
+          photo: data.avatar,
           phone: data.phone,
           email: data.email,
           currentAddress: data.address,

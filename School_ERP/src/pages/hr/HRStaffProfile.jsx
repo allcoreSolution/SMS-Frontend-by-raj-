@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
-  ArrowLeft, Edit, Key, QrCode, Download, Printer, 
+  ArrowLeft, Edit, Key, QrCode, Download, Printer, Camera, Upload,
   User, Phone, Mail, Calendar, MapPin, Building, ShieldCheck, 
   CreditCard, Award, FileText, CheckCircle2, AlertCircle, Copy, Check,
   ExternalLink, Sparkles
@@ -32,10 +32,12 @@ export default function HRStaffProfile() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [imgError, setImgError] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [activeTab, setActiveTab] = useState('Profile');
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [showQrModal, setShowQrModal] = useState(false);
   const [copiedText, setCopiedText] = useState('');
+  const fileInputRef = useRef(null);
 
   const tabs = ['Profile', 'Payroll', 'Leaves', 'Attendance', 'Documents', 'Career', 'Appraisals', 'Audit Trail'];
 
@@ -133,14 +135,63 @@ export default function HRStaffProfile() {
     setTimeout(() => setCopiedText(''), 2000);
   };
 
-  const photoUrl = useMemo(() => {
-    if (!staff?.photo) return null;
-    const p = String(staff.photo).trim();
-    if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('data:')) {
-      return p;
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file');
+      return;
     }
-    const origin = getBackendOrigin();
-    return `${origin}/${p.replace(/^\/+/, '')}`;
+
+    try {
+      setUploadingPhoto(true);
+      const reader = new FileReader();
+      reader.onload = async (uploadEvent) => {
+        const base64Data = uploadEvent.target.result;
+        setStaff(prev => prev ? ({ ...prev, photo: base64Data }) : prev);
+        setImgError(false);
+
+        try {
+          localStorage.setItem('school_erp_user_avatar', base64Data);
+          localStorage.setItem('user_avatar', base64Data);
+          const staffIdToUpdate = staff?._id || id;
+          if (staffIdToUpdate) {
+            await hrService.updateStaff(staffIdToUpdate, { photo: base64Data });
+          }
+          window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: { avatar: base64Data } }));
+          window.dispatchEvent(new Event('storage'));
+        } catch (apiErr) {
+          console.warn('API update staff photo warning:', apiErr?.message);
+        } finally {
+          setUploadingPhoto(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error('Photo upload failed:', err);
+      setUploadingPhoto(false);
+    }
+    e.target.value = '';
+  };
+
+  const photoUrl = useMemo(() => {
+    if (staff?.photo) {
+      const p = String(staff.photo).trim();
+      if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('data:')) {
+        return p;
+      }
+      const origin = getBackendOrigin();
+      return `${origin}/${p.replace(/^\/+/, '')}`;
+    }
+    // Seamless persistent fallback to saved user avatars
+    const saved = typeof window !== 'undefined' ? (
+      localStorage.getItem('school_erp_user_avatar') ||
+      localStorage.getItem('superadmin_user_avatar') ||
+      localStorage.getItem('user_avatar') ||
+      localStorage.getItem('accountant_user_avatar') || ''
+    ) : '';
+    return saved || null;
   }, [staff]);
 
   const formatDate = (dateStr) => {
@@ -231,12 +282,30 @@ export default function HRStaffProfile() {
             
             {/* Top Photo & Identity */}
             <div className="p-6 flex flex-col items-center border-b border-slate-100 text-center relative bg-gradient-to-b from-purple-50/50 to-white">
+              <input 
+                ref={fileInputRef} 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={handlePhotoUpload} 
+              />
               <div className="w-28 h-28 rounded-lg border-2 border-[#6f42c1] overflow-hidden mb-3 bg-slate-100 flex items-center justify-center shadow-sm relative group">
                 {photoUrl && !imgError ? (
                   <img 
                     src={photoUrl} 
                     alt={staff.fullName} 
-                    onError={() => setImgError(true)}
+                    onError={() => {
+                      const localAvatar = typeof window !== 'undefined' ? (
+                        localStorage.getItem('school_erp_user_avatar') ||
+                        localStorage.getItem('superadmin_user_avatar') ||
+                        localStorage.getItem('user_avatar') || ''
+                      ) : '';
+                      if (localAvatar && photoUrl !== localAvatar) {
+                        setStaff(prev => prev ? ({ ...prev, photo: localAvatar }) : prev);
+                      } else {
+                        setImgError(true);
+                      }
+                    }}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -244,6 +313,17 @@ export default function HRStaffProfile() {
                     {staff.fullName ? staff.fullName.trim().split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'S'}
                   </div>
                 )}
+
+                {/* Upload / Change Photo Overlay Button */}
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Upload / Change Staff Photo"
+                  disabled={uploadingPhoto}
+                  className="absolute bottom-1 right-1 w-7 h-7 bg-[#6f42c1] hover:bg-[#59339e] text-white rounded-full flex items-center justify-center shadow-md transition-all active:scale-95 cursor-pointer opacity-90 group-hover:opacity-100"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                </button>
               </div>
               <h2 className="text-lg font-bold text-slate-800 leading-tight">{staff.fullName}</h2>
               <p className="text-[12px] font-semibold text-[#6f42c1] mt-0.5">{staff.designation || 'Staff Member'}</p>
