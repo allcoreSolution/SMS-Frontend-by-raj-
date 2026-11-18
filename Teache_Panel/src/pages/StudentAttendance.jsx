@@ -9,6 +9,22 @@ import { studentService } from '../api/studentService';
 import { attendanceService } from '../api/attendanceService';
 import { academicService } from '../api/academicService';
 
+const getStudentMediaUrl = (photoPath, fullName = 'Student') => {
+  if (photoPath && typeof photoPath === 'string' && photoPath.trim()) {
+    const trimmed = photoPath.trim();
+    if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const backendBase = isProduction
+      ? 'https://sms-backend-by-raj-1.onrender.com'
+      : (localStorage.getItem('api_base_url') || 'http://localhost:5050');
+    const cleanBase = backendBase.replace(/\/api\/?$/, '');
+    return `${cleanBase}${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
+  }
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Student')}&background=A7F3D0&color=065F46&bold=true`;
+};
+
 const statusCycle = { P: 'A', A: 'L', L: 'P' };
 const statusLabel = { P: 'Present', A: 'Absent', L: 'Late' };
 const statusStyle = {
@@ -123,9 +139,8 @@ const StudentAttendance = () => {
 
       const mapped = rawStudents.map(s => {
         const fullName = `${s.firstName || ''} ${s.lastName || ''}`.trim() || 'Student';
-        const photoUrl = s.studentPhoto
-          ? (s.studentPhoto.startsWith('http') ? s.studentPhoto : `http://localhost:5050/${s.studentPhoto}`)
-          : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=A7F3D0&color=065F46&bold=true`;
+        const rawPhoto = s.studentPhoto || s.photo || s.avatar;
+        const photoUrl = getStudentMediaUrl(rawPhoto, fullName);
 
         return {
           id: s._id,
@@ -473,7 +488,15 @@ const StudentAttendance = () => {
                             <td className="px-4 py-3 border border-gray-200 text-gray-400 text-xs">{i + 1}</td>
                             <td className="px-4 py-3 border border-gray-200">
                               <div className="flex items-center gap-2.5">
-                                <img src={s.photo} alt={s.name} className="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                                <img 
+                                  src={s.photo} 
+                                  alt={s.name} 
+                                  className="w-8 h-8 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'Student')}&background=A7F3D0&color=065F46&bold=true`;
+                                  }}
+                                />
                                 <p className="font-semibold text-gray-800">{s.name}</p>
                               </div>
                             </td>
@@ -576,7 +599,15 @@ const StudentAttendance = () => {
                             <td className="px-3 py-3 border border-gray-200 text-gray-400 text-center text-xs">{i + 1}</td>
                             <td className="px-3 py-3 border border-gray-200">
                               <div className="flex items-center gap-2">
-                                <img src={s.photo} alt="" className="w-6 h-6 rounded-full object-cover border border-gray-200 flex-shrink-0" />
+                                <img 
+                                  src={s.photo} 
+                                  alt="" 
+                                  className="w-6 h-6 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'Student')}&background=A7F3D0&color=065F46&bold=true`;
+                                  }}
+                                />
                                 <span className="font-semibold text-gray-800 whitespace-nowrap text-xs">{s.name}</span>
                               </div>
                             </td>
@@ -640,7 +671,15 @@ const StudentAttendance = () => {
             </div>
             <div className="p-6 space-y-4">
               <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
-                <img src={viewSummary.photo} alt="" className="w-12 h-12 rounded-full object-cover border" />
+                <img 
+                  src={viewSummary.photo} 
+                  alt="" 
+                  className="w-12 h-12 rounded-full object-cover border"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(viewSummary.name || 'Student')}&background=A7F3D0&color=065F46&bold=true`;
+                  }}
+                />
                 <div>
                   <h3 className="font-bold text-gray-800 text-base">{viewSummary.name}</h3>
                   <p className="text-xs text-amber-600 font-bold">{viewSummary.roll}</p>

@@ -12,6 +12,22 @@ import { academicService } from '../api/academicService';
 
 const statuses = ['All', 'Active', 'Inactive', 'On Hold', 'Exited'];
 
+const getStudentMediaUrl = (photoPath, fullName = 'Student') => {
+  if (photoPath && typeof photoPath === 'string' && photoPath.trim()) {
+    const trimmed = photoPath.trim();
+    if (trimmed.startsWith('data:') || trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+      return trimmed;
+    }
+    const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const backendBase = isProduction
+      ? 'https://sms-backend-by-raj-1.onrender.com'
+      : (localStorage.getItem('api_base_url') || 'http://localhost:5050');
+    const cleanBase = backendBase.replace(/\/api\/?$/, '');
+    return `${cleanBase}${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;
+  }
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName || 'Student')}&background=CCFBF1&color=0D9488&bold=true`;
+};
+
 const AttBadge = ({ pct }) => {
   const cls = pct >= 90 ? 'bg-green-100 text-green-700' : pct >= 75 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-600';
   return <span className={`text-xs font-bold px-2 py-0.5 ${cls}`}>{pct}%</span>;
@@ -117,9 +133,8 @@ const StudentList = () => {
             } catch (e) {}
           }
 
-          const photoUrl = s.studentPhoto
-            ? (s.studentPhoto.startsWith('http') ? s.studentPhoto : `http://localhost:5050/${s.studentPhoto}`)
-            : `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=CCFBF1&color=0D9488&bold=true`;
+          const rawPhoto = s.studentPhoto || s.photo || s.avatar;
+          const photoUrl = getStudentMediaUrl(rawPhoto, fullName);
 
           return {
             id: s._id,
@@ -549,9 +564,14 @@ const StudentList = () => {
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-2.5">
                               <img
+                                key={s.photo ? `${s.photo.slice(0, 30)}` : `row-${i}`}
                                 src={s.photo}
                                 alt={s.name}
                                 className="w-8 h-8 rounded-xl object-cover border border-gray-200 flex-shrink-0"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'Student')}&background=CCFBF1&color=0D9488&bold=true`;
+                                }}
                               />
                               <div>
                                 <p className="font-bold text-gray-800 text-xs">{s.name}</p>
@@ -631,9 +651,14 @@ const StudentList = () => {
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                       <img
+                        key={s.photo ? `${s.photo.slice(0, 30)}` : `card-${s.id}`}
                         src={s.photo}
                         alt={s.name}
                         className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-md mb-2.5"
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(s.name || 'Student')}&background=CCFBF1&color=0D9488&bold=true`;
+                        }}
                       />
                       <p className="font-bold text-gray-800 text-sm text-center line-clamp-1">{s.name}</p>
                       <p className="text-xs text-[#ff5c0a] font-bold">{s.roll}</p>
@@ -991,9 +1016,14 @@ const StudentList = () => {
               {/* Top */}
               <div className="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
                 <img
+                  key={viewStudent.photo ? `${viewStudent.photo.slice(0, 30)}` : 'view-modal'}
                   src={viewStudent.photo}
                   alt={viewStudent.name}
                   className="w-18 h-18 rounded-2xl object-cover border-2 border-orange-200 shadow-md"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(viewStudent.name || 'Student')}&background=CCFBF1&color=0D9488&bold=true`;
+                  }}
                 />
                 <div>
                   <h3 className="text-lg font-black text-gray-800">{viewStudent.name}</h3>
