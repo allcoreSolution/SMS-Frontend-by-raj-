@@ -5,7 +5,7 @@ import {
   User, CreditCard, Calendar, Clock, FileText, Award, 
   Phone, Mail, MapPin, Building2, CheckCircle2, AlertCircle, 
   CalendarCheck, Sparkles, TrendingUp, Eye, Briefcase, 
-  HeartPulse, GraduationCap, Star, Plus
+  HeartPulse, GraduationCap, Star, Plus, Camera, Trash2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import QRCode from 'qrcode';
@@ -27,7 +27,7 @@ const defaultProfileData = {
   address: 'Indra Nagar  , Sector - 12 , Lucknow',
   permanentAddress: 'Indra Nagar  , Sector - 12 , Lucknow',
   bio: 'Staff Accountant managing fees, ledgers, daybook transactions and institutional collections.',
-  avatar: 'http://localhost:5050/uploads/staffPhotos/photo-1793690174365-725553430.jpg',
+  avatar: typeof window !== 'undefined' ? (localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar') || '') : '',
   gender: 'Male',
   dob: '2000-10-02',
   maritalStatus: 'Single',
@@ -64,6 +64,8 @@ const Profile = () => {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState(defaultProfileData);
   const [saving, setSaving] = useState(false);
+  const [imgError, setImgError] = useState(false);
+  const avatarInputRef = useRef(null);
 
   // Live collections state
   const [payslips, setPayslips] = useState([]);
@@ -86,6 +88,10 @@ const Profile = () => {
     try {
       const res = await accountantService.getProfile();
       if (res.success && res.data) {
+        const localSavedAvatar = localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar');
+        if (localSavedAvatar && (!res.data.avatar || res.data.avatar.includes('localhost:5050'))) {
+          res.data.avatar = localSavedAvatar;
+        }
         setProfile(res.data);
         setForm(res.data);
         const staffIdentifier = res.data._id || res.data.staffId;
@@ -117,6 +123,80 @@ const Profile = () => {
     } catch (err) {
       console.error('Error loading live profile data:', err);
     }
+  };
+
+  const handleAvatarFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      Swal.fire('Invalid File', 'Please select a valid image file (PNG, JPG, WEBP).', 'warning');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire('File Too Large', 'Please upload a photo smaller than 5MB.', 'warning');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result;
+      setProfile((prev) => ({ ...prev, avatar: base64Data }));
+      setForm((prev) => ({ ...prev, avatar: base64Data }));
+      setImgError(false);
+
+      try {
+        localStorage.setItem('accountant_user_avatar', base64Data);
+        localStorage.setItem('school_erp_user_avatar', base64Data);
+        localStorage.setItem('user_avatar', base64Data);
+
+        const currentLocal = JSON.parse(localStorage.getItem('accountant_user') || '{}');
+        currentLocal.avatar = base64Data;
+        localStorage.setItem('accountant_user', JSON.stringify(currentLocal));
+
+        accountantService.saveProfile({ ...form, avatar: base64Data });
+
+        window.dispatchEvent(new Event('accountant_profile_updated'));
+        window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: { avatar: base64Data } }));
+        window.dispatchEvent(new Event('storage'));
+      } catch (_) {}
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Profile Photo Updated!',
+        text: 'Your new photo is now active across your accountant portal.',
+        timer: 1800,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
+      });
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  };
+
+  const handleRemoveAvatar = () => {
+    setProfile((prev) => ({ ...prev, avatar: '' }));
+    setForm((prev) => ({ ...prev, avatar: '' }));
+    setImgError(false);
+
+    try {
+      localStorage.removeItem('accountant_user_avatar');
+      accountantService.saveProfile({ ...form, avatar: '' });
+      window.dispatchEvent(new Event('accountant_profile_updated'));
+      window.dispatchEvent(new Event('storage'));
+    } catch (_) {}
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Photo Removed',
+      text: 'Avatar has been reset to default initials.',
+      timer: 1500,
+      showConfirmButton: false,
+      toast: true,
+      position: 'top-end'
+    });
   };
 
   useEffect(() => {
@@ -315,14 +395,23 @@ const Profile = () => {
     }
     setSaving(true);
     try {
-      const res = await accountantService.saveProfile(form);
+      const avatarToSave = form.avatar || profile.avatar || localStorage.getItem('accountant_user_avatar') || '';
+      const payload = { ...form, avatar: avatarToSave };
+      const res = await accountantService.saveProfile(payload);
       if (res.success) {
-        setProfile((prev) => ({ ...prev, ...res.data }));
+        setProfile((prev) => ({ ...prev, ...res.data, avatar: avatarToSave || res.data?.avatar }));
         setEditing(false);
+        if (avatarToSave) {
+          localStorage.setItem('accountant_user_avatar', avatarToSave);
+          localStorage.setItem('school_erp_user_avatar', avatarToSave);
+          localStorage.setItem('user_avatar', avatarToSave);
+        }
+        window.dispatchEvent(new Event('accountant_profile_updated'));
+        window.dispatchEvent(new Event('storage'));
         Swal.fire({
           icon: 'success',
           title: 'Profile Updated!',
-          text: 'Accountant details synced to MongoDB database successfully.',
+          text: 'Accountant details synced to database successfully.',
           timer: 2000,
           showConfirmButton: false,
         });
@@ -354,6 +443,15 @@ const Profile = () => {
 
   return (
     <div className="p-4 sm:p-6 space-y-6 max-w-7xl mx-auto">
+      {/* Hidden file input for avatar upload */}
+      <input
+        type="file"
+        ref={avatarInputRef}
+        onChange={handleAvatarFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* ── HERO BANNER: OFFICIAL STAFF PROFILE HEADER ── */}
       <div className="relative rounded-[6px] overflow-hidden bg-gradient-to-r from-[#1e1b4b] via-[#2e1065] to-[#431407] text-white shadow-md border border-slate-800">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]" />
@@ -361,26 +459,58 @@ const Profile = () => {
         <div className="relative z-10 p-6 flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
             {/* Avatar with Verified Status */}
-            <div className="relative group">
-              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-white/20 backdrop-blur-md border-2 border-white/40 shadow-lg overflow-hidden flex items-center justify-center">
-                {profile.avatar ? (
+            <div className="relative group flex flex-col items-center">
+              <div 
+                onClick={() => avatarInputRef.current?.click()}
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 bg-white/20 backdrop-blur-md border-2 border-white/40 shadow-lg overflow-hidden flex items-center justify-center cursor-pointer relative group/avatar"
+                title="Click to upload profile photo"
+              >
+                {profile.avatar && !imgError ? (
                   <img
                     src={profile.avatar}
                     alt="Staff Profile"
-                    className="w-full h-full rounded-full object-cover"
+                    onError={() => setImgError(true)}
+                    className="w-full h-full rounded-full object-cover group-hover/avatar:scale-105 transition-transform"
                   />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#605ca8] to-purple-400 text-white font-black text-3xl flex items-center justify-center">
-                    {profile.name ? profile.name.charAt(0).toUpperCase() : 'R'}
+                  <div className="w-full h-full rounded-full bg-gradient-to-tr from-[#605ca8] to-purple-400 text-white font-black text-2xl sm:text-3xl flex items-center justify-center tracking-wider">
+                    {profile.name ? profile.name.trim().split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'RA'}
                   </div>
                 )}
+                {/* Hover Camera Overlay */}
+                <div className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center opacity-0 group-hover/avatar:opacity-100 transition-opacity text-white text-[10px] font-bold">
+                  <Camera className="w-5 h-5 mb-0.5" />
+                  <span>Change</span>
+                </div>
               </div>
               <span
-                className="absolute bottom-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center text-white"
+                className="absolute top-1 right-1 w-5 h-5 bg-emerald-500 border-2 border-slate-900 rounded-full flex items-center justify-center text-white"
                 title="Active Employee"
               >
                 <Check className="w-3 h-3 stroke-[3]" />
               </span>
+
+              {/* Action buttons under avatar */}
+              <div className="flex items-center gap-1.5 mt-2">
+                <button
+                  type="button"
+                  onClick={() => avatarInputRef.current?.click()}
+                  className="px-2 py-0.5 bg-white/20 hover:bg-white/30 text-white rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <Camera className="w-3 h-3" />
+                  <span>{profile.avatar ? 'Change' : 'Upload'}</span>
+                </button>
+                {profile.avatar && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveAvatar}
+                    className="p-1 bg-rose-500/30 hover:bg-rose-500/50 text-rose-200 rounded text-[10px] cursor-pointer transition-colors"
+                    title="Remove Photo"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Title & Info */}
@@ -1171,6 +1301,39 @@ const Profile = () => {
             </div>
 
             <form onSubmit={handleSave} className="p-5 overflow-y-auto space-y-4 text-xs">
+              {/* Photo Preview & Upload in Modal */}
+              <div className="flex items-center gap-4 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-indigo-500/40 shrink-0 bg-slate-200 flex items-center justify-center">
+                  {form.avatar && !imgError ? (
+                    <img src={form.avatar} alt="Preview" onError={() => setImgError(true)} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="font-bold text-slate-600 text-sm">{form.name?.slice(0, 2).toUpperCase() || 'RA'}</span>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-800">Profile Photo</p>
+                  <p className="text-[10px] text-slate-500">Upload JPG, PNG or WEBP image (Max 5MB)</p>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <button
+                      type="button"
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold rounded-lg cursor-pointer flex items-center gap-1"
+                    >
+                      <Camera className="w-3 h-3" /> Choose Photo
+                    </button>
+                    {form.avatar && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAvatar}
+                        className="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-[11px] font-bold rounded-lg cursor-pointer flex items-center gap-1"
+                      >
+                        <Trash2 className="w-3 h-3" /> Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-gray-700 font-bold mb-1">Full Name *</label>
@@ -1298,10 +1461,10 @@ const Profile = () => {
 
             <div className="p-6 flex flex-col items-center text-center bg-gradient-to-b from-gray-50 to-white">
               <div className="w-20 h-20 rounded-full border-2 border-[#605ca8] p-0.5 overflow-hidden mb-2 bg-white flex items-center justify-center shadow-sm">
-                {profile.avatar ? (
-                  <img src={profile.avatar} alt="Avatar" className="w-full h-full rounded-full object-cover" />
+                {profile.avatar && !imgError ? (
+                  <img src={profile.avatar} alt="Avatar" onError={() => setImgError(true)} className="w-full h-full rounded-full object-cover" />
                 ) : (
-                  <span className="text-2xl font-bold text-[#605ca8]">{profile.name?.charAt(0)}</span>
+                  <span className="text-2xl font-bold text-[#605ca8]">{profile.name?.slice(0, 2).toUpperCase() || 'RA'}</span>
                 )}
               </div>
               <h4 className="font-bold text-base text-gray-900">{profile.name}</h4>

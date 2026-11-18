@@ -36,6 +36,7 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const searchRef = useRef(null);
 
   const searchResults = searchQuery.trim().length > 0
@@ -57,8 +58,17 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
         setShowLang(false);
       }
     };
+    const onProfileUpdate = () => {
+      setImgError(false);
+    };
+    window.addEventListener('user_profile_updated', onProfileUpdate);
+    window.addEventListener('storage', onProfileUpdate);
     window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    return () => {
+      window.removeEventListener('keydown', handler);
+      window.removeEventListener('user_profile_updated', onProfileUpdate);
+      window.removeEventListener('storage', onProfileUpdate);
+    };
   }, []);
 
   const handleSelect = (path) => {
@@ -134,6 +144,7 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
     if (!url || typeof url !== 'string') return true;
     const lower = url.toLowerCase().trim();
     if (lower.startsWith('data:image/') || lower.startsWith('blob:')) return false;
+    if (lower.includes('/uploads/') || lower.includes('onrender.com') || lower.includes('cloudinary.com') || lower.includes('amazonaws.com') || lower.includes('firebase')) return false;
     return lower.includes('unsplash.com') || 
            lower.includes('pravatar.cc') || 
            lower.includes('ui-avatars.com') ||
@@ -143,7 +154,11 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
 
   const displayName = user?.name || user?.username || 'Super Admin';
   const displayEmail = user?.email || 'superadmin@erp.com';
-  const validAvatar = user?.avatar && !isDemoAvatar(user.avatar) ? user.avatar : null;
+  const storedAvatar = localStorage.getItem('superadmin_user_avatar') || 
+                       localStorage.getItem('school_erp_user_avatar') || 
+                       localStorage.getItem('user_avatar') || '';
+  const rawAvatar = user?.avatar || storedAvatar;
+  const validAvatar = rawAvatar && !isDemoAvatar(rawAvatar) && !imgError ? rawAvatar : null;
   const avatarInitials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'SA';
 
   return (
@@ -296,6 +311,7 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
                   <img 
                     src={validAvatar} 
                     alt={displayName} 
+                    onError={() => setImgError(true)}
                     className="w-full h-full object-cover" 
                   />
                 ) : (
@@ -327,7 +343,7 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
                 <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-orange-50/30">
                    <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0 shadow-xs ring-1 ring-orange-500/30">
                      {validAvatar ? (
-                       <img src={validAvatar} alt={displayName} className="w-full h-full object-cover" />
+                       <img src={validAvatar} alt={displayName} onError={() => setImgError(true)} className="w-full h-full object-cover" />
                      ) : (
                        <div 
                          className="w-full h-full flex items-center justify-center text-white text-xs font-black uppercase"

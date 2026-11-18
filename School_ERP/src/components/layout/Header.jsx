@@ -47,6 +47,8 @@ export const isDemoAvatar = (url) => {
   const lower = url.toLowerCase().trim();
   if (lower.startsWith('data:image/')) return false; // Real uploaded user photo
   if (lower.startsWith('blob:')) return false;
+  // Allow real backend or cloud uploads
+  if (lower.includes('/uploads/') || lower.includes('onrender.com') || lower.includes('cloudinary.com') || lower.includes('amazonaws.com') || lower.includes('firebase')) return false;
   return lower.includes('unsplash.com') || 
          lower.includes('pravatar.cc') || 
          lower.includes('ui-avatars.com') ||
@@ -54,8 +56,30 @@ export const isDemoAvatar = (url) => {
          lower.includes('dummy');
 };
 
+const getPersistentAvatar = (fallbackUser) => {
+  try {
+    const keys = [
+      'school_erp_user_avatar',
+      'superadmin_user_avatar',
+      'user_avatar',
+      'accountant_user_avatar'
+    ];
+    for (const key of keys) {
+      const val = localStorage.getItem(key);
+      if (val && !isDemoAvatar(val)) return val;
+    }
+    if (fallbackUser?.avatar && !isDemoAvatar(fallbackUser.avatar)) return fallbackUser.avatar;
+    const u = JSON.parse(localStorage.getItem('user') || '{}');
+    if (u?.avatar && !isDemoAvatar(u.avatar)) return u.avatar;
+    const sa = JSON.parse(localStorage.getItem('sa_user') || '{}');
+    if (sa?.avatar && !isDemoAvatar(sa.avatar)) return sa.avatar;
+  } catch (e) {}
+  return '';
+};
+
 const Header = ({ toggleSidebar }) => {
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
   const [isDesignsModalOpen, setIsDesignsModalOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
@@ -72,13 +96,12 @@ const Header = ({ toggleSidebar }) => {
   const [currentUserData, setCurrentUserData] = useState(() => {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}');
-      const customAvatar = localStorage.getItem('school_erp_user_avatar');
+      const customAvatar = getPersistentAvatar(u);
       const customName = localStorage.getItem('school_erp_custom_name');
       if (customName) {
         u.name = customName;
       }
-      const rawAv = customAvatar || u.avatar || '';
-      u.avatar = isDemoAvatar(rawAv) ? '' : rawAv;
+      u.avatar = customAvatar;
       return u;
     } catch (e) {
       return null;
@@ -89,20 +112,22 @@ const Header = ({ toggleSidebar }) => {
     const handleProfileUpdate = (e) => {
       try {
         const u = e?.detail || JSON.parse(localStorage.getItem('user') || '{}');
-        const customAvatar = localStorage.getItem('school_erp_user_avatar');
+        const customAvatar = getPersistentAvatar(u);
         const customName = localStorage.getItem('school_erp_custom_name');
         if (customName) {
           u.name = customName;
         }
-        const rawAv = customAvatar || u.avatar || '';
-        u.avatar = isDemoAvatar(rawAv) ? '' : rawAv;
+        u.avatar = customAvatar;
         setCurrentUserData({ ...u });
+        setImgError(false);
       } catch (err) {}
     };
     window.addEventListener('user_profile_updated', handleProfileUpdate);
+    window.addEventListener('accountant_profile_updated', handleProfileUpdate);
     window.addEventListener('storage', handleProfileUpdate);
     return () => {
       window.removeEventListener('user_profile_updated', handleProfileUpdate);
+      window.removeEventListener('accountant_profile_updated', handleProfileUpdate);
       window.removeEventListener('storage', handleProfileUpdate);
     };
   }, []);
@@ -265,8 +290,7 @@ const Header = ({ toggleSidebar }) => {
   const customName = localStorage.getItem('school_erp_custom_name');
   const displayName = customName || activeUser?.name || `${activeUser?.firstName || ''} ${activeUser?.lastName || ''}`.trim() || activeUser?.username || 'Super Admin';
   const displayEmail = activeUser?.email || 'ryadavy498@gmail.com';
-  const rawAvatar = localStorage.getItem('school_erp_user_avatar') || activeUser?.avatar || '';
-  const userAvatar = isDemoAvatar(rawAvatar) ? '' : rawAvatar;
+  const userAvatar = getPersistentAvatar(activeUser);
   const initials = String(displayName).trim().split(/\s+/).filter(Boolean).map(n => n[0] || '').join('').substring(0, 2).toUpperCase() || 'SA';
   const schoolName = activeSchool?.schoolName || activeUser?.tenant?.schoolName || (localStorage.getItem('schoolName') !== 'Greenwood International School' ? localStorage.getItem('schoolName') : '') || 'ALL CORE SOLUTION';
 
@@ -807,8 +831,13 @@ const Header = ({ toggleSidebar }) => {
               className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-[#ea580c] to-amber-500 text-white flex items-center justify-center font-bold text-xs shadow-xs hover:ring-2 hover:ring-orange-400 active:scale-95 transition-all cursor-pointer overflow-hidden shrink-0 border border-white"
               title={displayName}
             >
-              {userAvatar ? (
-                <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
+              {userAvatar && !imgError ? (
+                <img 
+                  src={userAvatar} 
+                  alt={displayName} 
+                  onError={() => setImgError(true)} 
+                  className="w-full h-full object-cover shrink-0" 
+                />
               ) : (
                 initials
               )}
@@ -828,8 +857,13 @@ const Header = ({ toggleSidebar }) => {
                       className="w-11 h-11 bg-gradient-to-tr from-[#ea580c] to-amber-500 text-white rounded-full flex items-center justify-center font-black text-sm mb-1.5 shadow-md ring-2 ring-white/20 overflow-hidden cursor-pointer active:scale-95 transition-transform"
                       title="Click to view profile"
                     >
-                      {userAvatar ? (
-                        <img src={userAvatar} alt={displayName} className="w-full h-full object-cover shrink-0" />
+                      {userAvatar && !imgError ? (
+                        <img 
+                          src={userAvatar} 
+                          alt={displayName} 
+                          onError={() => setImgError(true)} 
+                          className="w-full h-full object-cover shrink-0" 
+                        />
                       ) : (
                         initials
                       )}

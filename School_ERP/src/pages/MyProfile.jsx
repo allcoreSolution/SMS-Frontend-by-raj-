@@ -88,6 +88,8 @@ export const isDemoAvatar = (url) => {
   const lower = url.toLowerCase().trim();
   if (lower.startsWith('data:image/')) return false; // Real uploaded image
   if (lower.startsWith('blob:')) return false;
+  // Real backend or cloud uploads
+  if (lower.includes('/uploads/') || lower.includes('onrender.com') || lower.includes('cloudinary.com') || lower.includes('amazonaws.com') || lower.includes('firebase')) return false;
   return lower.includes('unsplash.com') || 
          lower.includes('pravatar.cc') || 
          lower.includes('ui-avatars.com') ||
@@ -95,21 +97,37 @@ export const isDemoAvatar = (url) => {
          lower.includes('dummy');
 };
 
+export const getPersistentAvatar = () => {
+  try {
+    const keys = [
+      'school_erp_user_avatar',
+      'superadmin_user_avatar',
+      'user_avatar',
+      'accountant_user_avatar'
+    ];
+    for (const key of keys) {
+      const val = localStorage.getItem(key);
+      if (val && !isDemoAvatar(val)) return val;
+    }
+    const u = JSON.parse(localStorage.getItem('user') || '{}');
+    if (u?.avatar && !isDemoAvatar(u.avatar)) return u.avatar;
+    const sa = JSON.parse(localStorage.getItem('sa_user') || '{}');
+    if (sa?.avatar && !isDemoAvatar(sa.avatar)) return sa.avatar;
+  } catch (e) {}
+  return '';
+};
+
 export default function MyProfile() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const [imgError, setImgError] = useState(false);
 
   const getInitialProfile = () => {
     try {
       const u = JSON.parse(localStorage.getItem('user') || '{}');
-      const customAvatar = localStorage.getItem('school_erp_user_avatar');
-      if (customAvatar && isDemoAvatar(customAvatar)) {
-        localStorage.removeItem('school_erp_user_avatar');
-      }
-      const rawAv = customAvatar || u.avatar || '';
-      const cleanAvatar = isDemoAvatar(rawAv) ? '' : rawAv;
+      const persistentAvatar = getPersistentAvatar();
       const customName = localStorage.getItem('school_erp_custom_name');
-      const name = (customName || u.name || `${u.firstName || ''} ${u.lastName || ''}` || u.username || 'Super Admin').trim();
+      const name = (customName || u.name || `${u.firstName || ''} ${u.lastName || ''}`.trim() || u.username || 'Super Admin').trim();
       const parts = name.split(/\s+/).filter(Boolean);
       return {
         firstName: u.firstName || parts[0] || 'Super',
@@ -117,7 +135,7 @@ export default function MyProfile() {
         username: u.username || 'admin',
         email: u.email || 'ryadavy498@gmail.com',
         phone: u.phone || '+91 9876543210',
-        avatar: cleanAvatar,
+        avatar: persistentAvatar,
         bio: u.bio || 'Principal & Chief Administrator overseeing academic programs, institutional accreditation, and school operations.',
         designation: u.designation || 'Head of Institution / Principal',
         department: u.department || 'Executive Administration',
@@ -331,25 +349,42 @@ export default function MyProfile() {
     try {
       const res = await profileService.getProfile();
       if (res && res.success && res.data) {
-        const customAvatar = localStorage.getItem('school_erp_user_avatar');
+        const persistentAvatar = getPersistentAvatar();
         const customName = localStorage.getItem('school_erp_custom_name');
         
-        const rawAv = customAvatar || res.data.avatar || profile.avatar || '';
-        const cleanAvatar = isDemoAvatar(rawAv) ? '' : rawAv;
+        // Preserve any existing real avatar if backend returns empty or demo
+        const backendAv = res.data.avatar && !isDemoAvatar(res.data.avatar) ? res.data.avatar : '';
+        const finalAvatar = backendAv || persistentAvatar || profile.avatar || '';
         
         const mergedData = {
           ...res.data,
-          avatar: cleanAvatar
+          avatar: finalAvatar
         };
 
         if (customName) {
           const parts = customName.split(/\s+/).filter(Boolean);
           mergedData.firstName = parts[0] || mergedData.firstName;
           mergedData.lastName = parts.slice(1).join(' ') || mergedData.lastName;
+        } else {
+          // If local name is "Super Admin" and backend is default fallback "Admin SuperAdmin", keep friendly "Super Admin"
+          try {
+            const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
+            if (currentLocal.name === 'Super Admin' && res.data.firstName === 'Admin' && res.data.lastName === 'SuperAdmin') {
+              mergedData.firstName = 'Super';
+              mergedData.lastName = 'Admin';
+            }
+          } catch (_) {}
         }
 
         setProfile(mergedData);
         setFormData(mergedData);
+
+        // Keep persistent avatar synced in localStorage
+        if (finalAvatar) {
+          localStorage.setItem('school_erp_user_avatar', finalAvatar);
+          localStorage.setItem('superadmin_user_avatar', finalAvatar);
+          localStorage.setItem('user_avatar', finalAvatar);
+        }
 
         // Sync basic info to local storage for Header & Top bar
         try {
@@ -361,8 +396,8 @@ export default function MyProfile() {
             lastName: mergedData.lastName,
             username: mergedData.username,
             email: mergedData.email,
-            avatar: mergedData.avatar,
-            role: mergedData.role
+            avatar: finalAvatar || currentLocal.avatar || '',
+            role: mergedData.role || currentLocal.role
           };
           localStorage.setItem('user', JSON.stringify(updatedLocal));
           window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: updatedLocal }));
@@ -396,7 +431,7 @@ export default function MyProfile() {
     }
 
     const newFullName = `${formData.firstName} ${formData.lastName || ''}`.trim();
-    const customAvatar = localStorage.getItem('school_erp_user_avatar');
+    const customAvatar = getPersistentAvatar();
     const updatedProfile = {
       ...profile,
       ...formData,
@@ -410,6 +445,11 @@ export default function MyProfile() {
 
     try {
       localStorage.setItem('school_erp_custom_name', newFullName);
+      if (updatedProfile.avatar) {
+        localStorage.setItem('school_erp_user_avatar', updatedProfile.avatar);
+        localStorage.setItem('superadmin_user_avatar', updatedProfile.avatar);
+        localStorage.setItem('user_avatar', updatedProfile.avatar);
+      }
       const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
       const updatedLocal = {
         ...currentLocal,
@@ -418,11 +458,13 @@ export default function MyProfile() {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        avatar: updatedProfile.avatar,
+        avatar: updatedProfile.avatar || currentLocal.avatar || '',
         role: formData.role || currentLocal.role
       };
       localStorage.setItem('user', JSON.stringify(updatedLocal));
       window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: updatedLocal }));
+      window.dispatchEvent(new Event('accountant_profile_updated'));
+      window.dispatchEvent(new Event('storage'));
     } catch (e) {}
 
     Swal.fire({
@@ -440,7 +482,7 @@ export default function MyProfile() {
       setSaving(true);
       const res = await profileService.updateProfile(formData);
       if (res && res.success && res.data) {
-        const merged = { ...res.data, avatar: customAvatar || res.data.avatar };
+        const merged = { ...res.data, avatar: customAvatar || res.data.avatar || updatedProfile.avatar };
         setProfile(merged);
         setFormData(merged);
       }
@@ -473,12 +515,27 @@ export default function MyProfile() {
       // Immediately update local state & localStorage so UI is responsive
       setProfile(prev => ({ ...prev, avatar: base64Data }));
       setFormData(prev => ({ ...prev, avatar: base64Data }));
+      setImgError(false);
+
       try {
         localStorage.setItem('school_erp_user_avatar', base64Data);
+        localStorage.setItem('superadmin_user_avatar', base64Data);
+        localStorage.setItem('user_avatar', base64Data);
+        localStorage.setItem('accountant_user_avatar', base64Data);
+
         const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
         currentLocal.avatar = base64Data;
         localStorage.setItem('user', JSON.stringify(currentLocal));
+
+        const saLocal = JSON.parse(localStorage.getItem('sa_user') || '{}');
+        if (saLocal) {
+          saLocal.avatar = base64Data;
+          localStorage.setItem('sa_user', JSON.stringify(saLocal));
+        }
+
         window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: currentLocal }));
+        window.dispatchEvent(new Event('accountant_profile_updated'));
+        window.dispatchEvent(new Event('storage'));
       } catch (e) {}
 
       Swal.fire({
@@ -517,13 +574,27 @@ export default function MyProfile() {
     if (result.isConfirmed) {
       setProfile(prev => ({ ...prev, avatar: '' }));
       setFormData(prev => ({ ...prev, avatar: '' }));
+      setImgError(false);
 
       try {
         localStorage.removeItem('school_erp_user_avatar');
+        localStorage.removeItem('superadmin_user_avatar');
+        localStorage.removeItem('user_avatar');
+        localStorage.removeItem('accountant_user_avatar');
+
         const currentLocal = JSON.parse(localStorage.getItem('user') || '{}');
         currentLocal.avatar = '';
         localStorage.setItem('user', JSON.stringify(currentLocal));
+
+        const saLocal = JSON.parse(localStorage.getItem('sa_user') || '{}');
+        if (saLocal) {
+          saLocal.avatar = '';
+          localStorage.setItem('sa_user', JSON.stringify(saLocal));
+        }
+
         window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: currentLocal }));
+        window.dispatchEvent(new Event('accountant_profile_updated'));
+        window.dispatchEvent(new Event('storage'));
       } catch (e) {}
 
       Swal.fire({
@@ -742,10 +813,11 @@ export default function MyProfile() {
                   className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600 p-0.5 shadow-xl ring-2 ring-white/10 cursor-pointer relative group/avatar"
                   title="Click to choose profile photo"
                 >
-                  {profile.avatar ? (
+                  {profile.avatar && !imgError ? (
                     <img
                       src={profile.avatar}
                       alt={fullName}
+                      onError={() => setImgError(true)}
                       className="w-full h-full object-cover rounded-2xl"
                     />
                   ) : (

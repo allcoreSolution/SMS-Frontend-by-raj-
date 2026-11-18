@@ -80,6 +80,7 @@ const DEFAULT_DOCUMENTS = [
 
 export default function MyProfile() {
   const { user, updateUser } = useAuth();
+  const [imgError, setImgError] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -267,7 +268,20 @@ export default function MyProfile() {
       if (!base64Data) return;
 
       setProfile(prev => ({ ...prev, avatar: base64Data }));
+      setImgError(false);
       localStorage.setItem('superadmin_user_avatar', base64Data);
+      localStorage.setItem('school_erp_user_avatar', base64Data);
+      localStorage.setItem('user_avatar', base64Data);
+      localStorage.setItem('accountant_user_avatar', base64Data);
+
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
+        u.avatar = base64Data;
+        localStorage.setItem('user', JSON.stringify(u));
+        window.dispatchEvent(new CustomEvent('user_profile_updated', { detail: u }));
+        window.dispatchEvent(new Event('accountant_profile_updated'));
+        window.dispatchEvent(new Event('storage'));
+      } catch (_) {}
 
       if (updateUser) {
         updateUser({ avatar: base64Data });
@@ -503,10 +517,11 @@ export default function MyProfile() {
             {/* Avatar Circle with Badge & Click to Upload */}
             <div className="relative group cursor-pointer" onClick={() => avatarInputRef.current?.click()} title="Click to upload profile photo">
               <div className="w-18 h-18 sm:w-22 sm:h-22 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-400 p-0.5 shadow-md shadow-orange-500/20 overflow-hidden">
-                {profile.avatar ? (
+                {profile.avatar && !imgError ? (
                   <img 
                     src={profile.avatar} 
                     alt={profile.name} 
+                    onError={() => setImgError(true)}
                     className="w-full h-full rounded-[14px] object-cover group-hover:scale-105 transition-transform duration-300" 
                   />
                 ) : (

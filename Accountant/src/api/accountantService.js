@@ -405,7 +405,16 @@ export const accountantService = {
           address: staffDoc.currentAddress || '',
           permanentAddress: staffDoc.currentAddress || '',
           bio: staffDoc.note || '',
-          avatar: staffDoc.photo ? (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:') ? staffDoc.photo : `http://localhost:5050/${staffDoc.photo.replace(/^\/+/, '')}`) : '',
+          avatar: (() => {
+            const localSaved = typeof window !== 'undefined' ? (localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar') || '') : '';
+            if (localSaved) return localSaved;
+            if (!staffDoc.photo) return '';
+            if (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:')) return staffDoc.photo;
+            const backendOrigin = (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname))
+              ? 'http://localhost:5050'
+              : 'https://sms-backend-by-raj-1.onrender.com';
+            return `${backendOrigin}/${staffDoc.photo.replace(/^\/+/, '')}`;
+          })(),
           gender: staffDoc.gender || 'Male',
           dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '',
           maritalStatus: staffDoc.maritalStatus || 'Single',

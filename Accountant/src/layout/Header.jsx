@@ -35,8 +35,42 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState({ pages: [], students: [], records: [] });
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
   const searchInputRef = useRef(null);
+
+  const getProfileMeta = () => {
+    try {
+      const avatar = localStorage.getItem('accountant_user_avatar') || 
+                     localStorage.getItem('school_erp_user_avatar') || 
+                     localStorage.getItem('user_avatar') || 
+                     localDb.getProfile()?.avatar || '';
+      const p = localDb.getProfile();
+      const u = JSON.parse(localStorage.getItem('accountant_user') || '{}');
+      const name = p?.name || u?.name || u?.username || 'Ravi';
+      const initials = name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'RA';
+      return { avatar, name, initials };
+    } catch (_) {
+      return { avatar: '', name: 'Accountant', initials: 'AC' };
+    }
+  };
+
+  const [profileMeta, setProfileMeta] = useState(getProfileMeta);
+
+  useEffect(() => {
+    const handleProfileSync = () => {
+      setProfileMeta(getProfileMeta());
+      setImgError(false);
+    };
+    window.addEventListener('accountant_profile_updated', handleProfileSync);
+    window.addEventListener('user_profile_updated', handleProfileSync);
+    window.addEventListener('storage', handleProfileSync);
+    return () => {
+      window.removeEventListener('accountant_profile_updated', handleProfileSync);
+      window.removeEventListener('user_profile_updated', handleProfileSync);
+      window.removeEventListener('storage', handleProfileSync);
+    };
+  }, []);
 
   // Compute live unread notifications count
   const unreadNotifsCount = useMemo(() => {
@@ -221,10 +255,19 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         {/* User Profile */}
         <Link
           to="/profile"
-          title="Accountant Profile"
-          className="ml-1 sm:ml-2 w-8 h-8 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff7a29] hover:brightness-110 transition-all text-white flex items-center justify-center font-bold text-[12px] shadow-sm transform hover:scale-105 duration-200 focus:outline-none"
+          title={`${profileMeta.name} (Accountant Profile)`}
+          className="ml-1 sm:ml-2 w-8 h-8 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff7a29] hover:brightness-110 transition-all text-white flex items-center justify-center font-bold text-[12px] shadow-sm transform hover:scale-105 duration-200 focus:outline-none overflow-hidden"
         >
-          AC
+          {profileMeta.avatar && !imgError ? (
+            <img 
+              src={profileMeta.avatar} 
+              alt={profileMeta.name} 
+              onError={() => setImgError(true)} 
+              className="w-full h-full object-cover shrink-0" 
+            />
+          ) : (
+            profileMeta.initials || 'RA'
+          )}
         </Link>
       </div>
 
