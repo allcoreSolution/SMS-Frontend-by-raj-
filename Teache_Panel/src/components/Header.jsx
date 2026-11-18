@@ -786,10 +786,11 @@ const Header = () => {
             >
               {profile?.avatar ? (
                 <img 
-                  key={profile.avatar ? profile.avatar.slice(-25) : 'no-avatar'}
+                  key={profile.avatar ? `${profile.avatar.length}-${profile.avatar.slice(20, 50)}` : 'no-avatar'}
                   src={profile.avatar} 
                   alt="" 
                   className="w-full h-full object-cover absolute inset-0 z-10" 
+                  onLoad={(e) => { e.currentTarget.style.display = 'block'; }}
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}

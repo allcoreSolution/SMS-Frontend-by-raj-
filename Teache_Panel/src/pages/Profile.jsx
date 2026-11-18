@@ -88,6 +88,13 @@ const Profile = () => {
 
   // Dynamic user parsing
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  if (storedUser?.schoolName && storedUser.schoolName.includes('Delhi Public')) {
+    storedUser.schoolName = 'All core';
+    try { localStorage.setItem('user', JSON.stringify(storedUser)); } catch(_) {}
+  }
+  if (localStorage.getItem('schoolName')?.includes('Delhi Public')) {
+    localStorage.setItem('schoolName', 'All core');
+  }
   const isStaff = storedUser.role === 'Staff';
   const cachedAvatar = localStorage.getItem('teacher_user_avatar') || localStorage.getItem('user_avatar') || '';
 
@@ -597,10 +604,11 @@ const Profile = () => {
                 >
                   {personalInfo?.photo ? (
                     <img
-                      key={personalInfo.photo ? personalInfo.photo.slice(-25) : 'no-photo'}
+                      key={personalInfo.photo ? `${personalInfo.photo.length}-${personalInfo.photo.slice(20, 50)}` : 'no-photo'}
                       src={personalInfo.photo}
                       alt={personalInfo?.fullName || "Staff Photo"}
                       className="w-full h-full object-cover absolute inset-0 z-10"
+                      onLoad={(e) => { e.currentTarget.style.display = 'block'; }}
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                   ) : null}
