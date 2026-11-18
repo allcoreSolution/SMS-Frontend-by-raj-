@@ -54,6 +54,8 @@ export default function Schools() {
       const res = await tenantService.getTenants();
       const mappedSchools = toArray(res).map(t => ({
         id: t._id,
+        schoolCode: t.schoolCode || (t._id ? `SCH-${String(t._id).slice(-4).toUpperCase()}` : 'SCH-101'),
+        shortCode: t.shortCode || t.subdomain || '',
         name: t.schoolName,
         email: t.email,
         phone: t.phone || 'N/A',
@@ -248,12 +250,14 @@ export default function Schools() {
 
               <div className="flex items-center justify-between text-[11px] pt-1.5 border-t border-slate-200/60">
                 <span className="font-semibold text-slate-700">{school.plan || 'Standard'}</span>
-                <span className="text-slate-400 font-mono text-[10px]">ID: {typeof school.id === 'string' ? school.id.slice(-6) : school.id}</span>
+                <span className="text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-200/60 font-mono text-[10px] font-bold">
+                  {school.schoolCode || (typeof school.id === 'string' ? school.id.slice(-6) : school.id)}
+                </span>
               </div>
 
               <div className="flex items-center justify-end gap-1.5 pt-1.5 border-t border-slate-200/60">
                 <button
-                  onClick={() => navigate(`/schools/${school.id}`)}
+                  onClick={() => navigate(`/schools/${school.schoolCode || school.id}`)}
                   className="px-3 py-1 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-xs font-bold transition cursor-pointer"
                 >
                   Manage
@@ -312,9 +316,9 @@ export default function Schools() {
             ) : (
               filtered.map(school => (
                 <tr key={school.id} className="hover:bg-slate-50/70 transition-colors bg-white group">
-                  <td className="px-3.5 py-3 text-slate-500 text-xs font-mono align-middle border-x border-slate-200 bg-slate-50/40 text-center">
-                    <span className="truncate max-w-[50px] inline-block" title={school.id}>
-                      {typeof school.id === 'string' ? school.id.substring(0, 6) : school.id}...
+                  <td className="px-3.5 py-3 align-middle border-x border-slate-200 bg-slate-50/40 text-center">
+                    <span className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-600 border border-orange-200/60 inline-block font-mono text-[11px] font-bold tracking-wide" title={`Tenant ID: ${school.id}`}>
+                      {school.schoolCode || (typeof school.id === 'string' ? school.id.substring(0, 6) : school.id)}
                     </span>
                   </td>
                   <td className="px-3.5 py-3 align-middle border-x border-slate-200">
@@ -337,7 +341,7 @@ export default function Schools() {
                   <td className="px-3.5 py-3 align-middle border-x border-slate-200 text-center bg-slate-50/30">
                     <div className="flex items-center justify-center gap-2">
                       <button 
-                        onClick={() => navigate(`/schools/${school.id}`)} 
+                        onClick={() => navigate(`/schools/${school.schoolCode || school.id}`)} 
                         className="text-xs font-bold text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 px-2.5 py-1 rounded-lg border border-orange-200 transition cursor-pointer"
                       >
                         Manage
