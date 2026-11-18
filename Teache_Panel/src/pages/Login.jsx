@@ -64,7 +64,7 @@ const Login = () => {
   const [selectedRole, setSelectedRole] = useState('teacher');
 
   const [formData, setFormData] = useState({ 
-    identifier: 'ryadavy498@gmail.com', 
+    identifier: 'avanikumari@gmail.com', 
     password: 'admin@123' 
   });
   const [rememberMe, setRememberMe] = useState(true);
@@ -85,7 +85,7 @@ const Login = () => {
     setSelectedRole(role);
     if (role === 'teacher') {
       setFormData({
-        identifier: 'ryadavy498@gmail.com',
+        identifier: 'avanikumari@gmail.com',
         password: 'admin@123'
       });
     } else {
@@ -182,6 +182,9 @@ const Login = () => {
 
       if (res.data?.success) {
         localStorage.setItem('token', res.data.data.token);
+        if (res.data.data.photo || res.data.data.avatar) {
+          localStorage.setItem('teacher_user_avatar', res.data.data.photo || res.data.data.avatar);
+        }
         localStorage.setItem('user', JSON.stringify({
           ...res.data.data,
           role: selectedRole === 'staff' ? 'Staff' : (res.data.data.role || 'Teacher')
@@ -212,24 +215,31 @@ const Login = () => {
     } catch (err) {
       console.warn('Backend login error, evaluating demo fallback:', err);
       // Demo credentials & graceful fallback
-      const isTeacherCred = (formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
+      const isTeacherCred = (formData.identifier === 'avanikumari@gmail.com' || formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
       const isStaffCred = (formData.identifier === 'staff@school.edu' || formData.identifier === 'admin@school.edu') && formData.password === 'admin@123';
 
       if (isTeacherCred || isStaffCred || !err.response) {
         const dummyUser = selectedRole === 'staff' ? {
           id: 'staff_101',
           name: 'Priya Sharma (Staff Admin)',
+          fullName: 'Priya Sharma',
           email: 'staff@school.edu',
           role: 'Staff',
+          designation: 'Staff Faculty',
+          department: 'Administration',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
           schoolName: 'All Core Solutions School'
         } : {
-          id: 'tch_101',
-          name: 'Rajesh Kumar (Senior Educator)',
-          email: 'ryadavy498@gmail.com',
+          id: '6afd5a6c6568c30df618a4c4',
+          staffId: '110',
+          fullName: 'Avani',
+          name: 'Avani',
+          email: 'avanikumari@gmail.com',
           role: 'Teacher',
+          designation: 'Teacher',
+          department: 'Academics',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
-          schoolName: 'All Core Solutions School'
+          schoolName: 'Delhi Public International School'
         };
 
         localStorage.setItem('token', `demo_token_${Date.now()}`);
@@ -268,7 +278,7 @@ const Login = () => {
       title: 'Reset Password',
       input: 'email',
       inputLabel: 'Enter your registered school email address',
-      inputPlaceholder: selectedRole === 'staff' ? 'staff@school.edu' : 'ryadavy498@gmail.com',
+      inputPlaceholder: selectedRole === 'staff' ? 'staff@school.edu' : 'avanikumari@gmail.com',
       inputValue: formData.identifier.includes('@') ? formData.identifier : '',
       showCancelButton: true,
       confirmButtonColor: '#15803d',

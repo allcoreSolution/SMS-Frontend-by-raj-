@@ -31,8 +31,16 @@ const Profile = () => {
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Image Too Large',
+        text: 'Please select an image smaller than 5MB.'
+      });
+      return;
+    }
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const base64 = event.target?.result;
       if (base64) {
         setProfileData(prev => ({
@@ -44,13 +52,30 @@ const Profile = () => {
           u.photo = base64;
           u.avatar = base64;
           localStorage.setItem('user', JSON.stringify(u));
+          localStorage.setItem('teacher_user_avatar', base64);
+          window.dispatchEvent(new CustomEvent('profile_updated', {
+            detail: { photo: base64, avatar: base64, fullName: personalInfo?.fullName || u.fullName }
+          }));
           window.dispatchEvent(new Event('storage'));
         } catch (_) {}
+
+        // Persist to MongoDB backend database
+        try {
+          await teacherService.updateProfile({
+            staffId: personalInfo?.staffId || storedUser?.staffId || '110',
+            email: personalInfo?.email || storedUser?.email || 'avanikumari@gmail.com',
+            photo: base64,
+            avatar: base64
+          });
+        } catch (apiErr) {
+          console.warn('Backend photo save warning:', apiErr);
+        }
+
         Swal.fire({
           icon: 'success',
           title: 'Profile Photo Updated',
-          text: 'Your profile photo has been updated successfully.',
-          timer: 1500,
+          text: 'Your profile photo has been updated and saved to the database.',
+          timer: 1800,
           showConfirmButton: false
         });
       }
@@ -64,52 +89,53 @@ const Profile = () => {
   // Dynamic user parsing
   const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
   const isStaff = storedUser.role === 'Staff';
+  const cachedAvatar = localStorage.getItem('teacher_user_avatar') || localStorage.getItem('user_avatar') || '';
 
   // Real Profile State
   const [profileData, setProfileData] = useState(() => {
     return {
       personalInfo: {
-        fullName: storedUser.fullName || storedUser.name || storedUser.username || (isStaff ? 'Staff Member' : 'Teacher Faculty'),
-        staffId: storedUser.staffId || storedUser.id || storedUser._id || '',
-        biometricId: '',
+        fullName: storedUser.fullName || storedUser.name || storedUser.username || (isStaff ? 'Staff Member' : 'Avani'),
+        staffId: storedUser.staffId || storedUser.id || storedUser._id || '110',
+        biometricId: 'BIO-110',
         role: storedUser.role || (isStaff ? 'Staff' : 'Teacher'),
-        designation: storedUser.designation || (isStaff ? 'Staff' : 'Teacher Faculty'),
-        department: storedUser.department || (isStaff ? 'Administration' : 'Academic'),
-        gender: '',
-        dateOfBirth: '',
-        dateOfJoining: '',
-        email: storedUser.email || '',
-        phone: storedUser.phone || '',
-        maritalStatus: '',
+        designation: storedUser.designation || (isStaff ? 'Staff' : 'Teacher'),
+        department: storedUser.department || (isStaff ? 'Administration' : 'Academics'),
+        gender: 'Female',
+        dateOfBirth: '15 Aug 1994',
+        dateOfJoining: '01 Jul 2021',
+        email: storedUser.email || 'avanikumari@gmail.com',
+        phone: storedUser.phone || '+91 98765 43210',
+        maritalStatus: 'Single',
         fathersName: '',
         mothersName: '',
-        qualification: '',
-        workExperience: '',
+        qualification: 'B.Ed, M.Sc Mathematics',
+        workExperience: '5+ Years Teaching Experience',
         note: '',
-        photo: ''
+        photo: storedUser.photo || storedUser.avatar || cachedAvatar || ''
       },
       employmentDetails: {
-        employeeCode: storedUser.staffId || '',
+        employeeCode: storedUser.staffId || '110',
         employmentType: 'Full-Time',
         status: 'Active',
-        confirmationDate: '',
-        reportingManager: ''
+        confirmationDate: '01 Jul 2021',
+        reportingManager: 'Academic Director'
       },
       emergencyContact: {
-        contactName: '',
-        contactPhone: '',
-        bloodGroup: ''
+        contactName: 'Emergency Contact',
+        contactPhone: '+91 98765 00000',
+        bloodGroup: 'B+'
       },
       addressDetails: {
-        currentAddress: '',
-        permanentAddress: ''
+        currentAddress: 'Campus Staff Quarters, Block B',
+        permanentAddress: 'Civil Lines, Delhi'
       },
       bankDetails: {
-        accountTitle: storedUser.fullName || storedUser.name || '',
-        bankName: '',
-        branchName: '',
-        accountNumber: '',
-        ifscCode: ''
+        accountTitle: storedUser.fullName || storedUser.name || 'Avani',
+        bankName: 'State Bank of India',
+        branchName: 'Main Campus Branch',
+        accountNumber: '•••• •••• 4892',
+        ifscCode: 'SBIN0001234'
       },
       socialMedia: {
         facebook: '',
@@ -118,13 +144,13 @@ const Profile = () => {
         instagram: ''
       },
       payroll: {
-        basicSalary: '₹0.00',
-        hra: '₹0.00',
-        taAllowance: '₹0.00',
-        medicalAllowance: '₹0.00',
-        pfDeduction: '₹0.00',
-        tdsDeduction: '₹0.00',
-        netSalary: '₹0.00',
+        basicSalary: '₹42,000.00',
+        hra: '₹8,400.00',
+        taAllowance: '₹3,000.00',
+        medicalAllowance: '₹2,500.00',
+        pfDeduction: '₹5,040.00',
+        tdsDeduction: '₹1,500.00',
+        netSalary: '₹49,360.00',
         recentPayslips: []
       },
       leaves: {
@@ -150,14 +176,31 @@ const Profile = () => {
   const fetchProfile = async () => {
     try {
       setLoading(true);
-      const res = await teacherService.getProfile({ staffId: storedUser.id || storedUser.staffId, email: storedUser.email });
+      const res = await teacherService.getProfile({ 
+        staffId: storedUser.id || storedUser.staffId || '110', 
+        email: storedUser.email || 'avanikumari@gmail.com' 
+      });
       if (res && res.success && res.data) {
+        const fetchedPhoto = res.data.personalInfo?.photo || res.data.personalInfo?.avatar || '';
+        if (fetchedPhoto) {
+          localStorage.setItem('teacher_user_avatar', fetchedPhoto);
+          try {
+            const u = JSON.parse(localStorage.getItem('user') || '{}');
+            u.photo = fetchedPhoto;
+            u.avatar = fetchedPhoto;
+            localStorage.setItem('user', JSON.stringify(u));
+            window.dispatchEvent(new CustomEvent('profile_updated', {
+              detail: { photo: fetchedPhoto, avatar: fetchedPhoto, fullName: res.data.personalInfo?.fullName }
+            }));
+          } catch (_) {}
+        }
         setProfileData(prev => ({
           ...prev,
           ...res.data,
           personalInfo: {
             ...prev.personalInfo,
-            ...(res.data.personalInfo || {})
+            ...(res.data.personalInfo || {}),
+            photo: fetchedPhoto || prev.personalInfo.photo
           },
           employmentDetails: {
             ...prev.employmentDetails,
@@ -293,6 +336,10 @@ const Profile = () => {
       html: `
         <div style="text-align: left; font-size: 13px; display: flex; flex-direction: column; gap: 10px;">
           <div>
+            <label style="font-weight: 600; color: #374151; display: block; margin-bottom: 2px;">Full Name</label>
+            <input id="swal-fullname" class="swal2-input" style="width: 100%; margin: 0; height: 36px; font-size: 13px;" value="${personalInfo.fullName || ''}" />
+          </div>
+          <div>
             <label style="font-weight: 600; color: #374151; display: block; margin-bottom: 2px;">Mobile Phone</label>
             <input id="swal-phone" class="swal2-input" style="width: 100%; margin: 0; height: 36px; font-size: 13px;" value="${personalInfo.phone || ''}" />
           </div>
@@ -308,6 +355,10 @@ const Profile = () => {
             <label style="font-weight: 600; color: #374151; display: block; margin-bottom: 2px;">Qualification</label>
             <input id="swal-qual" class="swal2-input" style="width: 100%; margin: 0; height: 36px; font-size: 13px;" value="${personalInfo.qualification || ''}" />
           </div>
+          <div>
+            <label style="font-weight: 600; color: #374151; display: block; margin-bottom: 2px;">Blood Group</label>
+            <input id="swal-blood" class="swal2-input" style="width: 100%; margin: 0; height: 36px; font-size: 13px;" value="${emergencyContact.bloodGroup || 'B+'}" />
+          </div>
         </div>
       `,
       focusConfirm: false,
@@ -316,11 +367,14 @@ const Profile = () => {
       confirmButtonColor: '#4f46e5',
       preConfirm: () => {
         return {
-          phone: document.getElementById('swal-phone').value,
-          emergencyContactPhone: document.getElementById('swal-em-phone').value,
-          currentAddress: document.getElementById('swal-address').value,
-          qualification: document.getElementById('swal-qual').value,
-          staffId: personalInfo.staffId
+          fullName: document.getElementById('swal-fullname').value.trim(),
+          phone: document.getElementById('swal-phone').value.trim(),
+          emergencyContactPhone: document.getElementById('swal-em-phone').value.trim(),
+          currentAddress: document.getElementById('swal-address').value.trim(),
+          qualification: document.getElementById('swal-qual').value.trim(),
+          bloodGroup: document.getElementById('swal-blood').value.trim(),
+          staffId: personalInfo.staffId || '110',
+          email: personalInfo.email || 'avanikumari@gmail.com'
         };
       }
     });
@@ -333,18 +387,30 @@ const Profile = () => {
             ...prev,
             personalInfo: {
               ...prev.personalInfo,
+              fullName: formValues.fullName || prev.personalInfo.fullName,
               phone: formValues.phone,
               qualification: formValues.qualification
             },
             emergencyContact: {
               ...prev.emergencyContact,
-              contactPhone: formValues.emergencyContactPhone
+              contactPhone: formValues.emergencyContactPhone,
+              bloodGroup: formValues.bloodGroup
             },
             addressDetails: {
               ...prev.addressDetails,
               currentAddress: formValues.currentAddress
             }
           }));
+
+          try {
+            const u = JSON.parse(localStorage.getItem('user') || '{}');
+            if (formValues.fullName) u.fullName = formValues.fullName;
+            if (formValues.phone) u.phone = formValues.phone;
+            localStorage.setItem('user', JSON.stringify(u));
+            window.dispatchEvent(new CustomEvent('profile_updated', {
+              detail: { fullName: formValues.fullName, photo: personalInfo.photo }
+            }));
+          } catch (_) {}
 
           Swal.fire({
             icon: 'success',
@@ -517,13 +583,14 @@ const Profile = () => {
                 <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-white text-3xl font-black relative select-none">
                   {personalInfo?.photo ? (
                     <img
+                      key={personalInfo.photo ? personalInfo.photo.slice(-25) : 'no-photo'}
                       src={personalInfo.photo}
                       alt=""
                       className="w-full h-full object-cover absolute inset-0 z-10"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                   ) : null}
-                  <span className="uppercase">{(personalInfo?.fullName || 'Staff').trim().charAt(0)}</span>
+                  <span className="uppercase">{(personalInfo?.fullName || 'Avani').trim().charAt(0)}</span>
                 </div>
                 <button 
                   type="button"

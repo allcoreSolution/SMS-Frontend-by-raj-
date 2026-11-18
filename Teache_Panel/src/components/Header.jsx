@@ -48,32 +48,34 @@ const Header = () => {
   const [profile, setProfile] = useState(() => {
     try {
       const stored = localStorage.getItem('user');
+      const cachedAvatar = localStorage.getItem('teacher_user_avatar') || localStorage.getItem('user_avatar') || '';
       if (stored) {
         const u = JSON.parse(stored);
         const rawName = u.fullName || u.name || (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) || u.username;
         const cleanName = rawName ? rawName.replace(/\s*\([^)]*admin[^)]*\)/gi, '').trim() : '';
-        const name = cleanName && cleanName.toLowerCase() !== 'admin' ? cleanName : (u.role === 'Staff' ? 'Staff Member' : 'Teacher Faculty');
+        const name = cleanName && cleanName.toLowerCase() !== 'admin' ? cleanName : 'Avani';
+        const avatar = u.photo || u.avatar || cachedAvatar || '';
         if (u.role === 'Staff') {
           return {
             name,
             role: 'Staff',
             designation: u.designation || 'Staff Faculty',
-            avatar: ''
+            avatar
           };
         }
         return {
           name,
           role: u.role || 'Teacher',
-          designation: u.designation || 'Faculty',
-          avatar: ''
+          designation: u.designation || 'Teacher',
+          avatar
         };
       }
     } catch (_) {}
     return {
-      name: 'Teacher Faculty',
+      name: 'Avani',
       role: 'Teacher',
-      designation: 'Faculty',
-      avatar: ''
+      designation: 'Teacher',
+      avatar: localStorage.getItem('teacher_user_avatar') || ''
     };
   });
 
@@ -96,10 +98,39 @@ const Header = () => {
     language: currentLang
   });
 
-  // Load Real Profile & Notifications on mount
+  // Load Real Profile & Notifications on mount + listen to profile changes
   useEffect(() => {
     loadProfile();
     loadNotifications();
+
+    const handleProfileUpdated = (e) => {
+      const data = e?.detail;
+      if (data) {
+        setProfile(prev => ({
+          ...prev,
+          name: data.fullName || data.name || prev.name,
+          avatar: data.photo || data.avatar || prev.avatar
+        }));
+        if (data.photo || data.avatar) {
+          localStorage.setItem('teacher_user_avatar', data.photo || data.avatar);
+        }
+      } else {
+        loadProfile();
+      }
+    };
+
+    const handleStorageChange = (e) => {
+      if (e.key === 'user' || e.key === 'teacher_user_avatar') {
+        loadProfile();
+      }
+    };
+
+    window.addEventListener('profile_updated', handleProfileUpdated);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('profile_updated', handleProfileUpdated);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   // Sync settingsForm when theme or lang changes
@@ -132,25 +163,19 @@ const Header = () => {
   // Load Profile from Backend API
   const loadProfile = async () => {
     try {
+      let storedUser = null;
       const stored = localStorage.getItem('user');
       if (stored) {
         try {
-          const u = JSON.parse(stored);
-          const rawName = u.fullName || u.name || (u.firstName ? `${u.firstName} ${u.lastName || ''}`.trim() : null) || u.username;
-          const cleanName = rawName ? rawName.replace(/\s*\([^)]*admin[^)]*\)/gi, '').trim() : '';
-          const name = cleanName && cleanName.toLowerCase() !== 'admin' ? cleanName : (u.role === 'Staff' ? 'Staff Member' : 'Teacher Faculty');
-          if (u.role === 'Staff') {
-            setProfile({
-              name,
-              role: 'Staff',
-              designation: u.designation || 'Staff Faculty',
-              avatar: ''
-            });
-            return;
-          }
+          storedUser = JSON.parse(stored);
         } catch (_) {}
       }
-      const res = await teacherService.getProfile();
+
+      const res = await teacherService.getProfile({
+        staffId: storedUser?.staffId || storedUser?.id || '',
+        email: storedUser?.email || ''
+      });
+
       if (res?.data) {
         if (res.data.school || res.data.schoolName) {
           const resolved = res.data.school || { name: res.data.schoolName, logo: res.data.schoolLogo, shortName: res.data.schoolShortName };
@@ -158,18 +183,21 @@ const Header = () => {
           localStorage.setItem('school_info', JSON.stringify(resolved));
           localStorage.setItem('schoolName', resolved.name || '');
         }
-      }
-      if (res?.data?.personalInfo) {
-        const info = res.data.personalInfo;
-        const validName = info.fullName && info.fullName !== 'Amit Sharma' && info.fullName !== 'Faculty Member' ? info.fullName : null;
-        if (validName) {
+        if (res.data.personalInfo) {
+          const info = res.data.personalInfo;
+          const validName = info.fullName && info.fullName !== 'Amit Sharma' && info.fullName !== 'Faculty Member' ? info.fullName : (storedUser?.fullName || 'Avani');
+          const photo = info.photo || info.avatar || storedUser?.photo || storedUser?.avatar || localStorage.getItem('teacher_user_avatar') || '';
+          
           setProfile(prev => ({
             ...prev,
             name: validName,
             role: info.role || prev.role || 'Teacher',
-            designation: info.designation || prev.designation || 'Faculty',
-            avatar: info.photo || ''
+            designation: info.designation || prev.designation || 'Teacher',
+            avatar: photo
           }));
+          if (photo) {
+            localStorage.setItem('teacher_user_avatar', photo);
+          }
         }
       }
     } catch (err) {
@@ -178,10 +206,12 @@ const Header = () => {
       if (stored) {
         try {
           const u = JSON.parse(stored);
+          const cachedAvatar = localStorage.getItem('teacher_user_avatar') || '';
           setProfile(prev => ({
             ...prev,
             name: u.fullName || u.username || prev.name,
-            role: u.role || prev.role
+            role: u.role || prev.role,
+            avatar: u.photo || u.avatar || cachedAvatar || prev.avatar
           }));
         } catch(e) {}
       }
@@ -735,6 +765,7 @@ const Header = () => {
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs flex items-center justify-center bg-gradient-to-tr from-orange-500 via-amber-500 to-rose-500 text-white font-extrabold text-xs select-none shrink-0 relative">
               {profile?.avatar ? (
                 <img 
+                  key={profile.avatar ? profile.avatar.slice(-25) : 'no-avatar'}
                   src={profile.avatar} 
                   alt="" 
                   className="w-full h-full object-cover absolute inset-0 z-10" 
