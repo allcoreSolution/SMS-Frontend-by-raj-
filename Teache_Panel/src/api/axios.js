@@ -3,16 +3,20 @@ import axios from 'axios';
 // Dynamically resolve API URL supporting Web & Mobile APK (Android WebView)
 export const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
+    const isProduction = !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    if (isProduction) {
+      // In cloud production (e.g. Render), NEVER allow localhost or insecure http
+      const override = localStorage.getItem('api_override_url') || localStorage.getItem('api_base_url');
+      if (override && override.startsWith('https://') && !override.includes('localhost')) {
+        return override;
+      }
+      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+    }
+
     if (window.__ERP_API_BASE_URL__) return window.__ERP_API_BASE_URL__;
     if (window.__API_BASE_URL__) return window.__API_BASE_URL__;
     const override = localStorage.getItem('api_override_url') || localStorage.getItem('api_base_url');
     if (override) return override;
-
-    // Auto-detect Render deployment / Production domain
-    const isProduction = !['localhost', '127.0.0.1'].includes(window.location.hostname);
-    if (isProduction) {
-      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
-    }
   }
   return import.meta.env.VITE_API_URL || 'http://localhost:5050/api';
 };
@@ -22,13 +26,19 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 10000,
+  timeout: 30000,
 });
 
 axiosInstance.interceptors.request.use((config) => {
-  const dynamicBase = getApiBaseUrl();
-  if (dynamicBase) {
-    config.baseURL = dynamicBase;
+  if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
+    if (!config.baseURL || config.baseURL.includes('localhost') || config.baseURL.includes('192.168.') || config.baseURL.startsWith('http://')) {
+      config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
+    }
+  } else {
+    const dynamicBase = getApiBaseUrl();
+    if (dynamicBase) {
+      config.baseURL = dynamicBase;
+    }
   }
 
   const token = localStorage.getItem('token');

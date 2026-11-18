@@ -190,8 +190,8 @@ const Profile = () => {
         staffId: queryStaffId, 
         email: queryEmail 
       });
-      if (res && res.success && res.data) {
-        const fetchedData = res.data;
+      if (res && (res.success || res.data)) {
+        const fetchedData = res.data || res;
         const pInfo = fetchedData.personalInfo || {};
         const fetchedPhoto = pInfo.photo || pInfo.avatar || '';
         
