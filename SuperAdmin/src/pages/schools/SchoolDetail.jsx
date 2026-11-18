@@ -100,8 +100,8 @@ export default function SchoolDetail() {
         const s = res.data;
         const code = s.schoolCode || `SCH-${String(s._id).slice(-4).toUpperCase()}`;
         
-        // Auto-clean URL to short unique ID if navigated with 24-character ObjectId
-        if (id === s._id && code && window.location.pathname.includes(s._id)) {
+        // Auto-clean URL to short unique ID if navigated with 24-character ObjectId or updated code
+        if (code && (window.location.pathname.includes(s._id) || (id && id !== code))) {
           window.history.replaceState(null, '', `/schools/${code}`);
         }
 
