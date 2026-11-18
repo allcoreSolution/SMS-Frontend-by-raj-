@@ -89,6 +89,8 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const searchInputRef = useRef(null);
+  const profileMenuRef = useRef(null);
+  const notifMenuRef = useRef(null);
 
   // Quick Settings State
   const [settingsForm, setSettingsForm] = useState({
@@ -149,15 +151,19 @@ const Header = () => {
     }
   }, [activeMenu]);
 
-  // Click outside to close dropdowns
+  // Click outside to close dropdowns safely
   useEffect(() => {
-    const handleClickOutside = () => {
-      if (activeMenu !== 'commandCenter' && activeMenu !== 'quickSettings') {
+    const handleClickOutside = (e) => {
+      if (activeMenu === 'profile' && profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setActiveMenu(null);
+      } else if (activeMenu === 'notifications' && notifMenuRef.current && !notifMenuRef.current.contains(e.target)) {
+        setActiveMenu(null);
+      } else if (activeMenu && activeMenu !== 'commandCenter' && activeMenu !== 'quickSettings' && activeMenu !== 'profile' && activeMenu !== 'notifications') {
         setActiveMenu(null);
       }
     };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [activeMenu]);
 
   // Load Profile from Backend API
@@ -757,12 +763,21 @@ const Header = () => {
         </button>
 
         {/* User Profile Dropdown */}
-        <div className="relative flex items-center ml-0.5 sm:ml-1 border-l border-gray-200 pl-1.5 sm:pl-3 shrink-0 pr-0.5 sm:pr-1">
+        <div ref={profileMenuRef} className="relative flex items-center ml-0.5 sm:ml-1 border-l border-gray-200 pl-1.5 sm:pl-3 shrink-0 pr-0.5 sm:pr-1">
           <div 
             onClick={(e) => toggle(e, 'profile')} 
-            className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform shrink-0" title={profile?.name || "Profile"}
+            className="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform shrink-0" 
+            title={profile?.name || "Profile"}
           >
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs flex items-center justify-center bg-gradient-to-tr from-orange-500 via-amber-500 to-rose-500 text-white font-extrabold text-xs select-none shrink-0 relative">
+            <div 
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate('/my-profile');
+                setActiveMenu(null);
+              }}
+              title="Click to view My Profile"
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-slate-200/90 shadow-2xs flex items-center justify-center bg-gradient-to-tr from-orange-500 via-amber-500 to-rose-500 text-white font-extrabold text-xs select-none shrink-0 relative cursor-pointer hover:ring-2 hover:ring-orange-400 transition-all"
+            >
               {profile?.avatar ? (
                 <img 
                   key={profile.avatar ? profile.avatar.slice(-25) : 'no-avatar'}
@@ -775,7 +790,7 @@ const Header = () => {
                 />
               ) : null}
               <span className="pointer-events-none uppercase">
-                {(profile?.name || 'Staff').trim().charAt(0)}
+                {(profile?.name || 'A').trim().charAt(0)}
               </span>
             </div>
             <div className="hidden 2xl:flex flex-col text-left shrink-0">
@@ -786,9 +801,19 @@ const Header = () => {
           </div>
 
           {activeMenu === 'profile' && (
-            <div className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-56 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100">
-              <div className="px-4 py-2.5 border-b border-gray-100 bg-slate-50/70">
-                <p className="text-xs font-bold text-gray-800 truncate">{profile?.name || "Teacher"}</p>
+            <div 
+              onClick={(e) => e.stopPropagation()}
+              className="fixed left-3 right-3 top-14 sm:absolute sm:right-0 sm:left-auto sm:top-full mt-2 sm:w-56 bg-white border border-slate-200 shadow-2xl rounded-2xl py-1.5 z-50 theme-card animate-in fade-in duration-100"
+            >
+              <div 
+                onClick={() => { navigate('/my-profile'); setActiveMenu(null); }}
+                className="px-4 py-2.5 border-b border-gray-100 bg-slate-50/70 cursor-pointer hover:bg-orange-50/50 transition-colors"
+                title="Go to My Profile"
+              >
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold text-gray-800 truncate">{profile?.name || "Teacher"}</p>
+                  <span className="text-[9.5px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-bold">View</span>
+                </div>
                 <p className="text-[10px] text-gray-500 truncate">{profile?.designation || "Faculty"}</p>
               </div>
 

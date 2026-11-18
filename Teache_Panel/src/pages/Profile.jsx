@@ -91,26 +91,26 @@ const Profile = () => {
   const isStaff = storedUser.role === 'Staff';
   const cachedAvatar = localStorage.getItem('teacher_user_avatar') || localStorage.getItem('user_avatar') || '';
 
-  // Real Profile State
+  // Real Profile State - Clean database defaults (No demo data)
   const [profileData, setProfileData] = useState(() => {
     return {
       personalInfo: {
         fullName: storedUser.fullName || storedUser.name || storedUser.username || (isStaff ? 'Staff Member' : 'Avani'),
         staffId: storedUser.staffId || storedUser.id || storedUser._id || '110',
-        biometricId: 'BIO-110',
+        biometricId: '',
         role: storedUser.role || (isStaff ? 'Staff' : 'Teacher'),
         designation: storedUser.designation || (isStaff ? 'Staff' : 'Teacher'),
         department: storedUser.department || (isStaff ? 'Administration' : 'Academics'),
-        gender: 'Female',
-        dateOfBirth: '15 Aug 1994',
-        dateOfJoining: '01 Jul 2021',
+        gender: '',
+        dateOfBirth: '',
+        dateOfJoining: '',
         email: storedUser.email || 'avanikumari@gmail.com',
-        phone: storedUser.phone || '+91 98765 43210',
-        maritalStatus: 'Single',
+        phone: storedUser.phone || '',
+        maritalStatus: '',
         fathersName: '',
         mothersName: '',
-        qualification: 'B.Ed, M.Sc Mathematics',
-        workExperience: '5+ Years Teaching Experience',
+        qualification: '',
+        workExperience: '',
         note: '',
         photo: storedUser.photo || storedUser.avatar || cachedAvatar || ''
       },
@@ -118,24 +118,24 @@ const Profile = () => {
         employeeCode: storedUser.staffId || '110',
         employmentType: 'Full-Time',
         status: 'Active',
-        confirmationDate: '01 Jul 2021',
-        reportingManager: 'Academic Director'
+        confirmationDate: '',
+        reportingManager: ''
       },
       emergencyContact: {
-        contactName: 'Emergency Contact',
-        contactPhone: '+91 98765 00000',
-        bloodGroup: 'B+'
+        contactName: '',
+        contactPhone: '',
+        bloodGroup: ''
       },
       addressDetails: {
-        currentAddress: 'Campus Staff Quarters, Block B',
-        permanentAddress: 'Civil Lines, Delhi'
+        currentAddress: '',
+        permanentAddress: ''
       },
       bankDetails: {
         accountTitle: storedUser.fullName || storedUser.name || 'Avani',
-        bankName: 'State Bank of India',
-        branchName: 'Main Campus Branch',
-        accountNumber: '•••• •••• 4892',
-        ifscCode: 'SBIN0001234'
+        bankName: '',
+        branchName: '',
+        accountNumber: '',
+        ifscCode: ''
       },
       socialMedia: {
         facebook: '',
@@ -144,13 +144,13 @@ const Profile = () => {
         instagram: ''
       },
       payroll: {
-        basicSalary: '₹42,000.00',
-        hra: '₹8,400.00',
-        taAllowance: '₹3,000.00',
-        medicalAllowance: '₹2,500.00',
-        pfDeduction: '₹5,040.00',
-        tdsDeduction: '₹1,500.00',
-        netSalary: '₹49,360.00',
+        basicSalary: '₹0.00',
+        hra: '₹0.00',
+        taAllowance: '₹0.00',
+        medicalAllowance: '₹0.00',
+        pfDeduction: '₹0.00',
+        tdsDeduction: '₹0.00',
+        netSalary: '₹0.00',
         recentPayslips: []
       },
       leaves: {
@@ -163,7 +163,8 @@ const Profile = () => {
         late: 0,
         halfDay: 0,
         totalWorkingDays: 0,
-        percentage: '0%'
+        percentage: '0%',
+        logs: []
       },
       documents: [],
       career: [],
@@ -177,67 +178,67 @@ const Profile = () => {
     try {
       setLoading(true);
       const res = await teacherService.getProfile({ 
-        staffId: storedUser.id || storedUser.staffId || '110', 
-        email: storedUser.email || 'avanikumari@gmail.com' 
+        staffId: storedUser?.staffId || storedUser?.id || '', 
+        email: storedUser?.email || '' 
       });
       if (res && res.success && res.data) {
-        const fetchedPhoto = res.data.personalInfo?.photo || res.data.personalInfo?.avatar || '';
+        const fetchedData = res.data;
+        const pInfo = fetchedData.personalInfo || {};
+        const fetchedPhoto = pInfo.photo || pInfo.avatar || '';
+        
         if (fetchedPhoto) {
           localStorage.setItem('teacher_user_avatar', fetchedPhoto);
-          try {
-            const u = JSON.parse(localStorage.getItem('user') || '{}');
+        }
+        try {
+          const u = JSON.parse(localStorage.getItem('user') || '{}');
+          if (fetchedPhoto) {
             u.photo = fetchedPhoto;
             u.avatar = fetchedPhoto;
-            localStorage.setItem('user', JSON.stringify(u));
-            window.dispatchEvent(new CustomEvent('profile_updated', {
-              detail: { photo: fetchedPhoto, avatar: fetchedPhoto, fullName: res.data.personalInfo?.fullName }
-            }));
-          } catch (_) {}
-        }
-        setProfileData(prev => ({
-          ...prev,
-          ...res.data,
+          }
+          if (pInfo.fullName) u.fullName = pInfo.fullName;
+          if (pInfo.staffId) u.staffId = pInfo.staffId;
+          if (pInfo.email) u.email = pInfo.email;
+          localStorage.setItem('user', JSON.stringify(u));
+          window.dispatchEvent(new CustomEvent('profile_updated', {
+            detail: { photo: fetchedPhoto, avatar: fetchedPhoto, fullName: pInfo.fullName }
+          }));
+        } catch (_) {}
+
+        setProfileData({
           personalInfo: {
-            ...prev.personalInfo,
-            ...(res.data.personalInfo || {}),
-            photo: fetchedPhoto || prev.personalInfo.photo
+            fullName: pInfo.fullName || 'Avani',
+            staffId: pInfo.staffId || '110',
+            biometricId: pInfo.biometricId || (pInfo.staffId ? `BIO-${pInfo.staffId}` : ''),
+            role: pInfo.role || 'Teacher',
+            designation: pInfo.designation || 'Teacher',
+            department: pInfo.department || 'Academics',
+            gender: pInfo.gender || '',
+            dateOfBirth: pInfo.dateOfBirth || '',
+            dateOfJoining: pInfo.dateOfJoining || '',
+            email: pInfo.email || 'avanikumari@gmail.com',
+            phone: pInfo.phone || '',
+            maritalStatus: pInfo.maritalStatus || '',
+            fathersName: pInfo.fathersName || '',
+            mothersName: pInfo.mothersName || '',
+            qualification: pInfo.qualification || '',
+            workExperience: pInfo.workExperience || '',
+            note: pInfo.note || '',
+            photo: fetchedPhoto || ''
           },
-          employmentDetails: {
-            ...prev.employmentDetails,
-            ...(res.data.employmentDetails || {})
-          },
-          emergencyContact: {
-            ...prev.emergencyContact,
-            ...(res.data.emergencyContact || {})
-          },
-          addressDetails: {
-            ...prev.addressDetails,
-            ...(res.data.addressDetails || {})
-          },
-          bankDetails: {
-            ...prev.bankDetails,
-            ...(res.data.bankDetails || {})
-          },
-          socialMedia: {
-            ...prev.socialMedia,
-            ...(res.data.socialMedia || {})
-          },
-          payroll: {
-            ...prev.payroll,
-            ...(res.data.payroll || {})
-          },
-          leaves: {
-            ...prev.leaves,
-            ...(res.data.leaves || {})
-          },
-          attendance: {
-            ...prev.attendance,
-            ...(res.data.attendance || {})
-          },
-          documents: Array.isArray(res.data.documents) ? res.data.documents : (prev.documents || []),
-          career: Array.isArray(res.data.career) ? res.data.career : (prev.career || []),
-          appraisals: Array.isArray(res.data.appraisals) ? res.data.appraisals : (prev.appraisals || [])
-        }));
+          employmentDetails: fetchedData.employmentDetails || {},
+          emergencyContact: fetchedData.emergencyContact || {},
+          addressDetails: fetchedData.addressDetails || {},
+          bankDetails: fetchedData.bankDetails || {},
+          socialMedia: fetchedData.socialMedia || {},
+          payroll: fetchedData.payroll || { basicSalary: '₹0.00', netSalary: '₹0.00', recentPayslips: [] },
+          leaves: fetchedData.leaves || { balances: [], history: [] },
+          attendance: fetchedData.attendance || { present: 0, absent: 0, late: 0, halfDay: 0, percentage: '0%', logs: [] },
+          documents: Array.isArray(fetchedData.documents) ? fetchedData.documents : [],
+          career: Array.isArray(fetchedData.career) ? fetchedData.career : [],
+          appraisals: Array.isArray(fetchedData.appraisals) ? fetchedData.appraisals : [],
+          qrCode: fetchedData.qrCode || '',
+          barcode: fetchedData.barcode || null
+        });
       }
     } catch (e) {
       console.error('Failed to load profile data:', e);
@@ -580,22 +581,29 @@ const Profile = () => {
             {/* Photo + Name Card */}
             <div className="bg-white border border-gray-200 shadow-sm text-center p-6">
               <div className="relative w-28 h-28 mx-auto mb-4">
-                <div className="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-white text-3xl font-black relative select-none">
+                <div 
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-28 h-28 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-white text-3xl font-black relative select-none cursor-pointer group hover:opacity-95 transition-all"
+                  title="Click to upload / change profile photo"
+                >
                   {personalInfo?.photo ? (
                     <img
                       key={personalInfo.photo ? personalInfo.photo.slice(-25) : 'no-photo'}
                       src={personalInfo.photo}
-                      alt=""
+                      alt={personalInfo?.fullName || "Staff Photo"}
                       className="w-full h-full object-cover absolute inset-0 z-10"
                       onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                   ) : null}
-                  <span className="uppercase">{(personalInfo?.fullName || 'Avani').trim().charAt(0)}</span>
+                  <span className="uppercase">{(personalInfo?.fullName || 'A').trim().charAt(0)}</span>
+                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-20">
+                    <Camera className="w-6 h-6 text-white drop-shadow" />
+                  </div>
                 </div>
                 <button 
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg border-2 border-white cursor-pointer transition-transform active:scale-95"
+                  className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white flex items-center justify-center shadow-lg border-2 border-white cursor-pointer transition-transform active:scale-95 z-30"
                   title="Upload / Change Profile Photo"
                 >
                   <Camera className="w-4 h-4" />
@@ -608,8 +616,8 @@ const Profile = () => {
                   className="hidden" 
                 />
               </div>
-              <h2 className="text-lg font-bold text-gray-800">{personalInfo.fullName}</h2>
-              <p className="text-sm text-gray-500 mt-0.5">{personalInfo.designation}</p>
+              <h2 className="text-lg font-bold text-gray-800">{personalInfo.fullName || 'Avani'}</h2>
+              <p className="text-sm text-gray-500 mt-0.5">{personalInfo.designation || 'Teacher'}</p>
 
               <button 
                 onClick={handleProfileSettings}
@@ -623,13 +631,13 @@ const Profile = () => {
             {/* Info Card */}
             <div className="bg-white border border-gray-200 shadow-sm p-4 space-y-3">
               {[
-                { label: 'Staff ID', value: personalInfo.staffId, cls: 'text-blue-600 font-bold' },
-                { label: 'Biometric ID', value: personalInfo.biometricId || 'BIO-9821', cls: 'text-orange-500 font-semibold' },
-                { label: 'Role', value: personalInfo.role, cls: 'text-orange-500 font-semibold' },
-                { label: 'Designation', value: personalInfo.designation, cls: 'text-orange-500 font-semibold' },
-                { label: 'Department', value: personalInfo.department, cls: 'text-orange-500 font-semibold' },
-                { label: 'Basic Salary', value: payroll.basicSalary || '₹42,000.00', cls: 'text-orange-500 font-semibold' },
-                { label: 'Date Of Joining', value: personalInfo.dateOfJoining, cls: 'text-orange-500 font-semibold' },
+                { label: 'Staff ID', value: personalInfo.staffId || '—', cls: 'text-blue-600 font-bold' },
+                { label: 'Biometric ID', value: personalInfo.biometricId || (personalInfo.staffId ? `BIO-${personalInfo.staffId}` : '—'), cls: 'text-orange-500 font-semibold' },
+                { label: 'Role', value: personalInfo.role || 'Teacher', cls: 'text-orange-500 font-semibold' },
+                { label: 'Designation', value: personalInfo.designation || 'Teacher', cls: 'text-orange-500 font-semibold' },
+                { label: 'Department', value: personalInfo.department || 'Academics', cls: 'text-orange-500 font-semibold' },
+                { label: 'Basic Salary', value: payroll.basicSalary || '₹0.00', cls: 'text-orange-500 font-semibold' },
+                { label: 'Date Of Joining', value: personalInfo.dateOfJoining || '—', cls: 'text-orange-500 font-semibold' },
               ].map(({ label, value, cls }) => (
                 <div key={label} className="flex items-center justify-between py-1.5 border-b border-gray-100 last:border-0">
                   <span className="text-xs text-gray-500 font-medium">{label}</span>
@@ -802,13 +810,13 @@ const Profile = () => {
                 <div>
                   <SectionTitle icon={Banknote} title="Salary Information" />
                   <div className="border border-gray-100">
-                    <InfoRow label="Basic Salary" value={payroll.basicSalary || '₹42,000.00'} valueClass="text-orange-500 font-bold" />
-                    <InfoRow label="HRA" value={payroll.hra || '₹10,500.00'} valueClass="text-green-600 font-semibold" />
-                    <InfoRow label="TA Allowance" value={payroll.taAllowance || '₹2,500.00'} valueClass="text-green-600 font-semibold" />
-                    <InfoRow label="Medical Allowance" value={payroll.medicalAllowance || '₹2,000.00'} valueClass="text-green-600 font-semibold" />
-                    <InfoRow label="PF Deduction" value={payroll.pfDeduction || '₹4,800.00'} valueClass="text-red-500 font-semibold" />
-                    <InfoRow label="TDS Deduction" value={payroll.tdsDeduction || '₹2,200.00'} />
-                    <InfoRow label="Net Salary" value={payroll.netSalary || '₹50,000.00'} valueClass="text-indigo-700 font-bold text-base" />
+                    <InfoRow label="Basic Salary" value={payroll.basicSalary || '₹0.00'} valueClass="text-orange-500 font-bold" />
+                    <InfoRow label="HRA" value={payroll.hra || '₹0.00'} valueClass="text-green-600 font-semibold" />
+                    <InfoRow label="TA Allowance" value={payroll.taAllowance || '₹0.00'} valueClass="text-green-600 font-semibold" />
+                    <InfoRow label="Medical Allowance" value={payroll.medicalAllowance || '₹0.00'} valueClass="text-green-600 font-semibold" />
+                    <InfoRow label="PF Deduction" value={payroll.pfDeduction || '₹0.00'} valueClass="text-red-500 font-semibold" />
+                    <InfoRow label="TDS Deduction" value={payroll.tdsDeduction || '₹0.00'} />
+                    <InfoRow label="Net Salary" value={payroll.netSalary || '₹0.00'} valueClass="text-indigo-700 font-bold text-base" />
                   </div>
 
                   <SectionTitle icon={CreditCard} title="Recent Payslips" />
@@ -825,30 +833,33 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(Array.isArray(payroll?.recentPayslips) && payroll.recentPayslips.length > 0 ? payroll.recentPayslips : [
-                          { month: 'September, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
-                          { month: 'August, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
-                          { month: 'July, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' },
-                          { month: 'June, 2026', gross: '₹57,000.00', ded: '₹7,000.00', net: '₹50,000.00', status: 'Paid' }
-                        ]).map((row, i) => (
-                          <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                            <td className="px-4 py-3 text-gray-800 font-medium">{row.month}</td>
-                            <td className="px-4 py-3 text-green-600 font-semibold">{row.gross}</td>
-                            <td className="px-4 py-3 text-red-500 font-medium">-{row.ded}</td>
-                            <td className="px-4 py-3 text-gray-800 font-bold">{row.net}</td>
-                            <td className="px-4 py-3">
-                              <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-none">{row.status}</span>
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <button 
-                                onClick={() => handleViewPayslipModal(row)}
-                                className="text-xs text-orange-600 hover:text-orange-700 font-bold cursor-pointer"
-                              >
-                                View Slip
-                              </button>
+                        {Array.isArray(payroll?.recentPayslips) && payroll.recentPayslips.length > 0 ? (
+                          payroll.recentPayslips.map((row, i) => (
+                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                              <td className="px-4 py-3 text-gray-800 font-medium">{row.month}</td>
+                              <td className="px-4 py-3 text-green-600 font-semibold">{row.gross}</td>
+                              <td className="px-4 py-3 text-red-500 font-medium">-{row.ded}</td>
+                              <td className="px-4 py-3 text-gray-800 font-bold">{row.net}</td>
+                              <td className="px-4 py-3">
+                                <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-none">{row.status}</span>
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <button 
+                                  onClick={() => handleViewPayslipModal(row)}
+                                  className="text-xs text-orange-600 hover:text-orange-700 font-bold cursor-pointer"
+                                >
+                                  View Slip
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="6" className="px-4 py-8 text-center text-xs text-gray-400">
+                              No recent payslip records generated yet for this faculty member.
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -886,15 +897,23 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(Array.isArray(leaves?.history) && leaves.history.length > 0 ? leaves.history : []).map((r, i) => (
-                          <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="px-4 py-3 text-gray-700 font-medium">{r.type}</td>
-                            <td className="px-4 py-3 text-gray-600">{r.from}</td>
-                            <td className="px-4 py-3 text-gray-600">{r.to}</td>
-                            <td className="px-4 py-3 text-gray-800 font-semibold">{r.days}</td>
-                            <td className="px-4 py-3"><span className={`text-xs font-bold px-2 py-0.5 rounded-none ${r.stClass}`}>{r.status}</span></td>
+                        {Array.isArray(leaves?.history) && leaves.history.length > 0 ? (
+                          leaves.history.map((r, i) => (
+                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                              <td className="px-4 py-3 text-gray-700 font-medium">{r.type}</td>
+                              <td className="px-4 py-3 text-gray-600">{r.from}</td>
+                              <td className="px-4 py-3 text-gray-600">{r.to}</td>
+                              <td className="px-4 py-3 text-gray-800 font-semibold">{r.days}</td>
+                              <td className="px-4 py-3"><span className={`text-xs font-bold px-2 py-0.5 rounded-none ${r.stClass}`}>{r.status}</span></td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="5" className="px-4 py-8 text-center text-xs text-gray-400">
+                              No leave applications or history recorded.
+                            </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -907,9 +926,9 @@ const Profile = () => {
                   <SectionTitle icon={Shield} title={`Attendance Summary — ${new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}`} />
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                     {[
-                      { label: 'Present', val: attendance.present || 22, color: 'green' },
-                      { label: 'Absent', val: attendance.absent || 1, color: 'red' },
-                      { label: 'Late', val: attendance.late || 1, color: 'yellow' },
+                      { label: 'Present', val: attendance.present || 0, color: 'green' },
+                      { label: 'Absent', val: attendance.absent || 0, color: 'red' },
+                      { label: 'Late', val: attendance.late || 0, color: 'yellow' },
                       { label: 'Half Day', val: attendance.halfDay || 0, color: 'blue' },
                     ].map(({ label, val, color }) => (
                       <div key={label} className={`bg-${color}-50 border border-${color}-200 p-4 text-center`}>
@@ -922,25 +941,25 @@ const Profile = () => {
                     <div className="flex justify-between items-center mb-4">
                       <h4 className="text-sm font-bold text-gray-800">Attendance Log — Recent Days</h4>
                       <span className="text-xs font-bold text-green-700 bg-green-50 px-2 py-1 border border-green-200">
-                        Monthly Average: {attendance.percentage || '92%'}
+                        Monthly Average: {attendance.percentage || '0%'}
                       </span>
                     </div>
                     <div className="space-y-2">
-                      {[
-                        { date: '16 Oct 2026', day: 'Friday', in: '08:15 AM', out: '03:30 PM', status: 'Present' },
-                        { date: '15 Oct 2026', day: 'Thursday', in: '08:20 AM', out: '03:30 PM', status: 'Present' },
-                        { date: '14 Oct 2026', day: 'Wednesday', in: '08:18 AM', out: '03:30 PM', status: 'Present' },
-                        { date: '13 Oct 2026', day: 'Tuesday', in: '08:35 AM', out: '03:30 PM', status: 'Late' },
-                        { date: '12 Oct 2026', day: 'Monday', in: '08:12 AM', out: '03:30 PM', status: 'Present' }
-                      ].map((item, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2.5 border border-gray-100 bg-gray-50/50 hover:bg-gray-50 text-xs">
-                          <span className="font-semibold text-gray-800">{item.date} ({item.day})</span>
-                          <span className="text-gray-500 font-mono">In: {item.in} • Out: {item.out}</span>
-                          <span className={`px-2 py-0.5 font-bold ${item.status === 'Present' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            {item.status}
-                          </span>
+                      {Array.isArray(attendance?.logs) && attendance.logs.length > 0 ? (
+                        attendance.logs.map((item, idx) => (
+                          <div key={idx} className="flex items-center justify-between p-2.5 border border-gray-100 bg-gray-50/50 hover:bg-gray-50 text-xs">
+                            <span className="font-semibold text-gray-800">{item.date} ({item.day})</span>
+                            <span className="text-gray-500 font-mono">In: {item.in || '—'} • Out: {item.out || '—'}</span>
+                            <span className={`px-2 py-0.5 font-bold ${item.status === 'Present' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                              {item.status}
+                            </span>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-8 text-center text-xs text-gray-400">
+                          No recent biometric or daily attendance entries logged for this period.
                         </div>
-                      ))}
+                      )}
                     </div>
                   </div>
                 </div>
@@ -969,31 +988,33 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(Array.isArray(documents) && documents.length > 0 ? documents : [
-                          { name: 'Aadhaar Card', status: 'Uploaded', date: '15 Jun 2021' },
-                          { name: 'PAN Card', status: 'Uploaded', date: '15 Jun 2021' },
-                          { name: 'Degree Certificate (M.Sc. & B.Ed.)', status: 'Uploaded', date: '20 Jun 2021' },
-                          { name: 'Experience Certificate', status: 'Uploaded', date: '20 Jun 2021' },
-                          { name: 'Police Verification Record', status: 'Uploaded', date: '01 Jul 2021' },
-                        ]).map((d, i) => (
-                          <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="px-4 py-3 text-gray-800 font-medium">{d.name}</td>
-                            <td className="px-4 py-3 text-gray-500 text-xs">{d.date || 'Verified'}</td>
-                            <td className="px-4 py-3">
-                              <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-none">
-                                {d.status}
-                              </span>
-                            </td>
-                            <td className="px-4 py-3 text-right">
-                              <button 
-                                onClick={() => handleViewDoc(d)}
-                                className="text-xs text-blue-600 hover:underline font-bold cursor-pointer"
-                              >
-                                View Document
-                              </button>
+                        {Array.isArray(documents) && documents.length > 0 ? (
+                          documents.map((d, i) => (
+                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                              <td className="px-4 py-3 text-gray-800 font-medium">{d.name}</td>
+                              <td className="px-4 py-3 text-gray-500 text-xs">{d.date || 'Verified'}</td>
+                              <td className="px-4 py-3">
+                                <span className="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-none">
+                                  {d.status || 'Uploaded'}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                <button 
+                                  onClick={() => handleViewDoc(d)}
+                                  className="text-xs text-blue-600 hover:underline font-bold cursor-pointer"
+                                >
+                                  View Document
+                                </button>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="4" className="px-4 py-8 text-center text-xs text-gray-400">
+                              No uploaded faculty documents found. Click "Upload Document" to add verified files.
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
@@ -1005,20 +1026,22 @@ const Profile = () => {
                 <div>
                   <SectionTitle icon={Briefcase} title="Career Timeline" />
                   <div className="space-y-4">
-                    {(Array.isArray(career) && career.length > 0 ? career : [
-                      { year: '2023 - Present', role: 'Senior PGT Mathematics', org: 'ALL CORE SOLUTION', dept: 'Mathematics Department', type: 'Full Time' },
-                      { year: '2019 - 2023', role: 'TGT Science & Mathematics', org: 'Apex International Academy', dept: 'Secondary Wing', type: 'Full Time' },
-                      { year: '2016 - 2019', role: 'Assistant Lecturer', org: 'Kendriya Vidyalaya', dept: 'Mathematics Wing', type: 'Full Time' },
-                    ]).map((c, i) => (
-                      <div key={i} className="flex gap-4 border-l-4 border-indigo-500 pl-4 py-2">
-                        <div>
-                          <p className="text-xs font-bold text-indigo-500 mb-1">{c.year}</p>
-                          <p className="text-sm font-bold text-gray-800">{c.role}</p>
-                          <p className="text-xs text-gray-500">{c.org} — {c.dept}</p>
-                          <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 font-semibold mt-1 inline-block">{c.type}</span>
+                    {Array.isArray(career) && career.length > 0 ? (
+                      career.map((c, i) => (
+                        <div key={i} className="flex gap-4 border-l-4 border-indigo-500 pl-4 py-2">
+                          <div>
+                            <p className="text-xs font-bold text-indigo-500 mb-1">{c.year}</p>
+                            <p className="text-sm font-bold text-gray-800">{c.role}</p>
+                            <p className="text-xs text-gray-500">{c.org} — {c.dept}</p>
+                            <span className="text-[10px] bg-gray-100 text-gray-600 px-2 py-0.5 font-semibold mt-1 inline-block">{c.type}</span>
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="p-8 text-center text-xs text-gray-400 border border-gray-100">
+                        No previous institution career history recorded.
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
               )}
@@ -1038,22 +1061,26 @@ const Profile = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {(Array.isArray(appraisals) && appraisals.length > 0 ? appraisals : [
-                          { year: '2025-26', rating: '4.8 / 5', inc: '₹5,000', status: 'Completed' },
-                          { year: '2024-25', rating: '4.6 / 5', inc: '₹4,500', status: 'Completed' },
-                          { year: '2026-27', rating: 'Outstanding', inc: 'Annual Review', status: 'In Progress' },
-                        ]).map((r, i) => (
-                          <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
-                            <td className="px-4 py-3 text-gray-800 font-semibold">{r.year}</td>
-                            <td className="px-4 py-3 text-indigo-600 font-bold">{r.rating}</td>
-                            <td className="px-4 py-3 text-green-600 font-semibold">{r.inc}</td>
-                            <td className="px-4 py-3">
-                              <span className={`text-xs font-bold px-2 py-0.5 rounded-none ${
-                                r.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                              }`}>{r.status}</span>
+                        {Array.isArray(appraisals) && appraisals.length > 0 ? (
+                          appraisals.map((r, i) => (
+                            <tr key={i} className="border-b border-gray-100 hover:bg-gray-50">
+                              <td className="px-4 py-3 text-gray-800 font-semibold">{r.year}</td>
+                              <td className="px-4 py-3 text-indigo-600 font-bold">{r.rating}</td>
+                              <td className="px-4 py-3 text-green-600 font-semibold">{r.inc}</td>
+                              <td className="px-4 py-3">
+                                <span className={`text-xs font-bold px-2 py-0.5 rounded-none ${
+                                  r.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                }`}>{r.status}</span>
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan="4" className="px-4 py-8 text-center text-xs text-gray-400">
+                              No annual performance appraisal reviews published yet.
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>
