@@ -10,7 +10,7 @@ import {
   Bus, BookOpen, Building2, HeartPulse, FolderOpen, Image,
   CalendarCheck, Bot, LogOut, Search, Globe, Grid3X3, ChevronDown,
   ChevronLeft, ChevronRight, Menu, Target, FileWarning, Check, X, ArrowRight,
-  Home, Bell, User, FileQuestion
+  Home, Bell, User, FileQuestion, Camera
 } from 'lucide-react';
 const getMediaUrl = (photoPath) => {
   if (!photoPath) return null;
@@ -365,6 +365,27 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
   const langDropdownRef = useRef(null);
   const avatarDropdownRef = useRef(null);
   const topChildDropdownRef = useRef(null);
+  const headerPhotoRef = useRef(null);
+
+  const handleHeaderPhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result;
+      try {
+        const studentId = current?._id || current?.id || activeChild;
+        await parentService.uploadStudentPhoto({
+          studentId,
+          photoBase64: base64Data
+        });
+        window.location.reload();
+      } catch (err) {
+        console.error('Failed to upload photo:', err);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   // Close dropdowns on outside click
   useEffect(() => {
@@ -1251,7 +1272,26 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                     </div>
                   </div>
 
+                  <input 
+                    type="file" 
+                    ref={headerPhotoRef} 
+                    onChange={handleHeaderPhotoUpload} 
+                    accept="image/*" 
+                    className="hidden" 
+                  />
+
                   <div className="py-2 space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAvatarOpen(false);
+                        headerPhotoRef.current?.click();
+                      }}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-amber-700 hover:text-amber-800 hover:bg-amber-50/80 rounded-xl transition-colors cursor-pointer"
+                    >
+                      <Camera className="w-4 h-4 text-amber-600" />
+                      <span>{currentLang === 'hi' ? 'प्रोफ़ाइल फ़ोटो बदलें' : 'Change Profile Photo'}</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => {

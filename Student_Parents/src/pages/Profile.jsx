@@ -752,11 +752,8 @@ export default function Profile({ activeChild }) {
             <div className="relative shrink-0">
               <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/90 shadow-xl bg-white/20 overflow-hidden flex items-center justify-center">
                 <img 
-                  src={
-                    student.photo 
-                      ? (student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo}`) 
-                      : '/kabir_singh.png'
-                  } 
+                  key={student.photo ? `${student.photo.length}-${student.photo.slice(0, 30)}` : 'photo-none'}
+                  src={getMediaUrl(student.photo) || '/kabir_singh.png'} 
                   alt={student.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1094,11 +1091,8 @@ export default function Profile({ activeChild }) {
             <div className="p-6 flex flex-col items-center text-center">
               <div className="w-24 h-24 rounded-full border-4 border-[#2563EB]/25 bg-slate-100 flex items-center justify-center overflow-hidden shadow-md relative">
                 <img 
-                  src={
-                    student.photo 
-                      ? (student.photo.startsWith('http') || student.photo.startsWith('data:') ? student.photo : `http://localhost:5050${student.photo}`) 
-                      : '/kabir_singh.png'
-                  } 
+                  key={student.photo ? `${student.photo.length}-${student.photo.slice(0, 30)}` : 'photo-none'}
+                  src={getMediaUrl(student.photo) || '/kabir_singh.png'} 
                   alt={student.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {

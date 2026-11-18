@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
 import {
@@ -7,7 +7,7 @@ import {
   Clock, CheckCircle2, AlertCircle, Megaphone, Info, Dumbbell,
   BadgeCheck, HelpCircle, X, ChevronLeft, CalendarDays, Star,
   BookOpen, Sparkles, Award, Shield, FileText, Phone, School, QrCode,
-  Bus, Users, Handshake
+  Bus, Users, Handshake, Camera, Edit3
 } from 'lucide-react';
 import { parentService } from '../api/parentService';
 
@@ -240,6 +240,45 @@ export default function Dashboard({ activeChild, setActiveChild }) {
   const [activeNoticeModal, setActiveNoticeModal] = useState(null);
   const [showSchoolModal, setShowSchoolModal] = useState(false);
   const [showIdCardModal, setShowIdCardModal] = useState(false);
+  const photoInputRef = useRef(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file (JPG, PNG).');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64Data = reader.result;
+      setUploadingPhoto(true);
+      try {
+        const studentId = dashboardData?.student?._id || dashboardData?.student?.id || activeChild;
+        const res = await parentService.uploadStudentPhoto({
+          studentId,
+          photoBase64: base64Data
+        });
+        const savedPhoto = res?.data?.studentPhoto || res?.photoUrl || base64Data;
+        setDashboardData(prev => prev ? {
+          ...prev,
+          student: {
+            ...prev.student,
+            photo: savedPhoto,
+            studentPhoto: savedPhoto
+          }
+        } : prev);
+        alert(currentLang === 'hi' ? 'प्रोफ़ाइल फ़ोटो सफलतापूर्वक अपडेट हो गई!' : 'Profile photo updated successfully!');
+      } catch (err) {
+        console.error('Failed to upload photo:', err);
+        alert(currentLang === 'hi' ? 'फ़ोटो अपडेट करने में त्रुटि' : 'Failed to update photo');
+      } finally {
+        setUploadingPhoto(false);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
 
   const y = curDate.getFullYear();
   const m = curDate.getMonth();
@@ -404,20 +443,45 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
 
             <div className="flex items-center gap-2.5 sm:gap-3.5 relative z-10">
-              {/* Avatar with Online Status Dot (NEVER CLIPPED) */}
-              <div className="relative shrink-0">
-                <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0">
+              {/* Avatar with Photo Upload & Online Status Dot */}
+              <div className="relative shrink-0 group">
+                <input 
+                  type="file" 
+                  ref={photoInputRef} 
+                  onChange={handlePhotoUpload} 
+                  accept="image/*" 
+                  className="hidden" 
+                />
+                <div 
+                  onClick={() => photoInputRef.current?.click()}
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer relative"
+                  title={currentLang === 'hi' ? 'फ़ोटो बदलें' : 'Change Profile Photo'}
+                >
                   <img 
+                    key={student.photo ? `${student.photo.length}-${student.photo.slice(0, 30)}` : 'def'}
                     src={getMediaUrl(student.photo) || '/kabir_singh.png'} 
                     alt={student.name}
                     className="w-full h-full object-cover shrink-0"
                     onError={(e) => { e.target.src = '/kabir_singh.png'; }}
                   />
+                  {uploadingPhoto ? (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <RefreshCw className="w-4 h-4 text-white animate-spin" />
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Camera className="w-4 h-4 text-white" />
+                    </div>
+                  )}
                 </div>
-                <span 
-                  className="absolute bottom-0 right-0 w-3 h-3 bg-[#10B981] rounded-full border-2 border-white shadow-xs" 
-                  title="Enrolled Active Student"
-                />
+                <button
+                  type="button"
+                  onClick={() => photoInputRef.current?.click()}
+                  title={currentLang === 'hi' ? 'फ़ोटो बदलें' : 'Change Profile Photo'}
+                  className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white text-blue-600 shadow-md border border-blue-600 flex items-center justify-center hover:scale-110 active:scale-95 cursor-pointer z-10"
+                >
+                  <Camera className="w-2.5 h-2.5" />
+                </button>
               </div>
 
               {/* Identity info */}
@@ -428,15 +492,27 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                       ? (currentLang === 'hi' ? '🎓 विद्यार्थी वर्कस्पेस' : '🎓 Student Workspace')
                       : (currentLang === 'hi' ? '👨‍👩‍👧 अभिभावक डेस्क' : '👨‍👩‍👧 Parent Portal Desk')}
                   </p>
-                  <button
-                    onClick={() => setShowIdCardModal(true)}
-                    className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-slate-900 px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
-                  >
-                    {isStudent 
-                      ? (currentLang === 'hi' ? 'पहचान पत्र देखें →' : 'View ID Card →')
-                      : (currentLang === 'hi' ? 'विद्यार्थी आईडी →' : 'Student ID →')
-                    }
-                  </button>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => navigate('/my-profile')}
+                      className="text-[10px] font-bold bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded-full transition-transform active:scale-95 cursor-pointer flex items-center gap-1"
+                      title={currentLang === 'hi' ? 'प्रोफ़ाइल बदलें' : 'Edit Profile'}
+                    >
+                      <Edit3 className="w-2.5 h-2.5" />
+                      <span>{currentLang === 'hi' ? 'बदलें' : 'Edit'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowIdCardModal(true)}
+                      className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-slate-900 px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
+                    >
+                      {isStudent 
+                        ? (currentLang === 'hi' ? 'पहचान पत्र →' : 'ID Card →')
+                        : (currentLang === 'hi' ? 'विद्यार्थी आईडी →' : 'Student ID →')
+                      }
+                    </button>
+                  </div>
                 </div>
                 <h2 className="text-base sm:text-xl font-black text-white font-serif tracking-tight truncate leading-tight mt-0.5">
                   {isStudent ? student.name : `${currentLang === 'hi' ? 'नमस्ते' : 'Welcome'}, ${parentUserName}`}
