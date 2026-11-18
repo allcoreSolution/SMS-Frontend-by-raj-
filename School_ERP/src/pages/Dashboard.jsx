@@ -8,6 +8,7 @@ import { studentService } from '../api/studentService';
 import { financeService } from '../api/financeService';
 import { attendanceService } from '../api/attendanceService';
 import { hrService } from '../api/hrService';
+import { noticeService } from '../api/noticeService';
 import axiosInstance from '../api/axios';
 import { getTranslation } from '../utils/translations';
 

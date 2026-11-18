@@ -274,6 +274,7 @@ function App() {
         <Route path="/" element={<MainLayout />}>
         {/* Dashboard will be rendered inside the Outlet of MainLayout */}
         <Route index element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/portals" element={<PortalHub />} />
 
         {/* Global Navigation Hub, Profile & Messages */}

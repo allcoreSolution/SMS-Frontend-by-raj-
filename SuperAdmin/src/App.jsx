@@ -140,6 +140,7 @@ function AppRoutes() {
             <Routes>
               {/* Core */}
               <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/profile" element={<MyProfile />} />
               <Route path="/notifications" element={<Notifications />} />
 
