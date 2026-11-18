@@ -10,7 +10,19 @@ import hrService from '../../api/hrService';
 import QRCode from 'qrcode';
 import { getCode128Bars } from '../../utils/barcodeGenerator';
 
-const API_BASE = (import.meta.env.VITE_API_URL || 'http://localhost:5050/api').replace(/\/api\/?$/, '');
+const getBackendOrigin = () => {
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://localhost:5050';
+    }
+  }
+  const envUrl = import.meta.env.VITE_API_URL || '';
+  if (envUrl && !envUrl.includes('localhost:5050')) {
+    return envUrl.replace(/\/api\/?$/, '');
+  }
+  return 'https://sms-backend-by-raj-1.onrender.com';
+};
 
 export default function HRStaffProfile() {
   const navigate = useNavigate();
@@ -19,6 +31,7 @@ export default function HRStaffProfile() {
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [imgError, setImgError] = useState(false);
   const [activeTab, setActiveTab] = useState('Profile');
   const [qrDataUrl, setQrDataUrl] = useState('');
   const [showQrModal, setShowQrModal] = useState(false);
@@ -33,11 +46,30 @@ export default function HRStaffProfile() {
       try {
         setLoading(true);
         setError(null);
-        const res = await hrService.getStaffById(id);
+        setImgError(false);
+
+        let s = null;
+        try {
+          const res = await hrService.getStaffById(id);
+          s = res?.data || (res && res._id ? res : null);
+        } catch (fetchErr) {
+          console.warn('Single staff fetch error, falling back to directory lookup:', fetchErr?.message);
+        }
+
+        // Resilient fallback: If direct fetch failed or was restricted, lookup in staff directory
+        if (!s) {
+          try {
+            const listRes = await hrService.getStaff({ limit: 100 });
+            const list = Array.isArray(listRes) ? listRes : (listRes?.data || []);
+            s = list.find(item => String(item._id) === String(id) || String(item.staffId) === String(id));
+          } catch (listErr) {
+            console.warn('Directory fallback search error:', listErr?.message);
+          }
+        }
+
         if (!isMounted) return;
 
-        if (res?.data) {
-          const s = res.data;
+        if (s) {
           setStaff(s);
 
           // Generate real 2D QR Code data payload
@@ -103,10 +135,12 @@ export default function HRStaffProfile() {
 
   const photoUrl = useMemo(() => {
     if (!staff?.photo) return null;
-    if (staff.photo.startsWith('http://') || staff.photo.startsWith('https://') || staff.photo.startsWith('data:')) {
-      return staff.photo;
+    const p = String(staff.photo).trim();
+    if (p.startsWith('http://') || p.startsWith('https://') || p.startsWith('data:')) {
+      return p;
     }
-    return `${API_BASE}/${staff.photo.replace(/^\/+/, '')}`;
+    const origin = getBackendOrigin();
+    return `${origin}/${p.replace(/^\/+/, '')}`;
   }, [staff]);
 
   const formatDate = (dateStr) => {
@@ -198,23 +232,18 @@ export default function HRStaffProfile() {
             {/* Top Photo & Identity */}
             <div className="p-6 flex flex-col items-center border-b border-slate-100 text-center relative bg-gradient-to-b from-purple-50/50 to-white">
               <div className="w-28 h-28 rounded-lg border-2 border-[#6f42c1] overflow-hidden mb-3 bg-slate-100 flex items-center justify-center shadow-sm relative group">
-                {photoUrl ? (
+                {photoUrl && !imgError ? (
                   <img 
                     src={photoUrl} 
                     alt={staff.fullName} 
+                    onError={() => setImgError(true)}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
-                    }}
                   />
-                ) : null}
-                <div 
-                  style={{ display: photoUrl ? 'none' : 'flex' }}
-                  className="w-full h-full bg-gradient-to-tr from-[#6f42c1] to-purple-400 text-white font-black text-3xl items-center justify-center"
-                >
-                  {staff.fullName ? staff.fullName.charAt(0).toUpperCase() : 'S'}
-                </div>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-tr from-[#6f42c1] to-purple-400 text-white font-black text-3xl flex items-center justify-center">
+                    {staff.fullName ? staff.fullName.trim().split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'S'}
+                  </div>
+                )}
               </div>
               <h2 className="text-lg font-bold text-slate-800 leading-tight">{staff.fullName}</h2>
               <p className="text-[12px] font-semibold text-[#6f42c1] mt-0.5">{staff.designation || 'Staff Member'}</p>
@@ -753,10 +782,10 @@ export default function HRStaffProfile() {
             {/* Modal Body / ID Card Canvas */}
             <div className="p-6 flex flex-col items-center bg-gradient-to-b from-purple-50/40 to-white text-center">
               <div className="w-20 h-20 rounded-full border-2 border-[#6f42c1] overflow-hidden mb-2 bg-slate-100 flex items-center justify-center shadow-sm">
-                {photoUrl ? (
-                  <img src={photoUrl} alt={staff.fullName} className="w-full h-full object-cover" />
+                {photoUrl && !imgError ? (
+                  <img src={photoUrl} alt={staff.fullName} onError={() => setImgError(true)} className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-2xl font-black text-[#6f42c1]">{staff.fullName?.charAt(0)}</span>
+                  <span className="text-2xl font-black text-[#6f42c1]">{staff.fullName ? staff.fullName.trim().split(/\s+/).map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'S'}</span>
                 )}
               </div>
               <h4 className="text-base font-bold text-slate-800">{staff.fullName}</h4>
