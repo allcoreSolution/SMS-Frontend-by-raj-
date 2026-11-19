@@ -55,6 +55,23 @@ export default function Dashboard() {
     return () => clearInterval(timer);
   }, []);
 
+  // Synchronize school & tenant from URL parameters (e.g. from Branch Admin or Super Admin)
+  useEffect(() => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const tid = urlParams.get('schoolId') || urlParams.get('tenant') || urlParams.get('branchId');
+      const sname = urlParams.get('schoolName') || urlParams.get('name');
+      if (tid) {
+        localStorage.setItem('schoolId', tid);
+        localStorage.setItem('active_school_id', tid);
+      }
+      if (sname) {
+        localStorage.setItem('schoolName', sname);
+        setCurrentSchoolName(sname);
+      }
+    } catch (_) {}
+  }, []);
+
   // Active School Name State
   const [currentSchoolName, setCurrentSchoolName] = useState(() => {
     const s = localStorage.getItem('schoolName');

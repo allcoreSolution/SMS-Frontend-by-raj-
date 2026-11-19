@@ -1,6 +1,19 @@
 import axiosInstance from './axios';
 import branchLocalDb from './branchLocalDb';
 
+const resolveBranchPortalUrl = (b) => {
+  if (b.domain && !b.domain.includes('schoolerp.com') && (b.domain.startsWith('http://') || b.domain.startsWith('https://'))) {
+    return b.domain;
+  }
+  const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const adminBase = isProduction
+    ? (import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-serp.onrender.com')
+    : (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5173');
+  const branchId = b._id || b.id || b.code || b.branchCode || '';
+  const branchName = b.name || b.branchName || 'School Campus';
+  return `${adminBase.replace(/\/+$/, '')}/dashboard?schoolId=${encodeURIComponent(branchId)}&schoolName=${encodeURIComponent(branchName)}`;
+};
+
 const normalizeBranch = (b, index = 0) => {
   const students = Number(b.students) || 0;
   const staff = Number(b.staff) || 0;
@@ -30,7 +43,7 @@ const normalizeBranch = (b, index = 0) => {
     sub: b.sub || '',
     renews: b.renews || '—',
     status: b.status || (b.isActive === false ? 'Inactive' : 'Active'),
-    domain: b.domain || `${(b.code || b.branchCode || 'branch').toLowerCase().replace(/[^a-z0-9]/g, '')}.schoolerp.com`
+    domain: resolveBranchPortalUrl(b)
   };
 };
 

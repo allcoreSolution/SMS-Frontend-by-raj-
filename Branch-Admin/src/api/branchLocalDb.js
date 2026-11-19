@@ -4,7 +4,7 @@ import axiosInstance from './axios';
 const STORAGE_PREFIX = 'branch_admin_db_';
 
 // â”€â”€ One-time purge of old dummy/seeded data from localStorage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-const DATA_VERSION = 'v3_clean_real'; // bump this to force another purge
+const DATA_VERSION = 'v4_branch_portal_link'; // bump this to force another purge
 if (typeof window !== 'undefined' && localStorage.getItem('branch_admin_data_version') !== DATA_VERSION) {
   const keys = ['branches', 'payments', 'templates', 'collections', 'login_logs', 'profile', 'notifications'];
   keys.forEach(k => localStorage.removeItem(STORAGE_PREFIX + k));
@@ -84,7 +84,9 @@ export const branchLocalDb = {
           sub: b.sub || '',
           renews: b.renews || '',
           status: b.status || (b.isActive === false ? 'Inactive' : 'Active'),
-          domain: b.domain || `${(b.branchCode || b.code || 'branch').toLowerCase()}.schoolerp.com`
+          domain: b.domain && !b.domain.includes('schoolerp.com') && (b.domain.startsWith('http://') || b.domain.startsWith('https://'))
+            ? b.domain
+            : `${(import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-serp.onrender.com').replace(/\/+$/, '')}/dashboard?schoolId=${encodeURIComponent(b._id || b.id || b.branchCode || b.code || '')}&schoolName=${encodeURIComponent(b.branchName || b.name || '')}`
         }));
         setStore('branches', mapped);
         return mapped;

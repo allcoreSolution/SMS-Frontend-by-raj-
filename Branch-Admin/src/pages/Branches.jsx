@@ -239,6 +239,25 @@ const Branches = () => {
     });
   };
 
+  const handleOpenBranchPortal = (branch) => {
+    setOpenDropdown(null);
+    const branchId = branch._id || branch.id || branch.code || '';
+    const branchName = branch.name || branch.branchName || 'School Campus';
+    const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const adminBase = isProduction
+      ? (import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-serp.onrender.com')
+      : (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5173');
+
+    try {
+      localStorage.setItem('active_school_id', branchId);
+      localStorage.setItem('schoolId', branchId);
+      localStorage.setItem('schoolName', branchName);
+    } catch (_) {}
+
+    const targetUrl = `${adminBase.replace(/\/+$/, '')}/dashboard?schoolId=${encodeURIComponent(branchId)}&schoolName=${encodeURIComponent(branchName)}`;
+    window.open(targetUrl, '_blank', 'noopener,noreferrer');
+  };
+
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-[1600px] mx-auto min-h-[calc(100vh-70px)] bg-[#f4f7fa]">
@@ -556,14 +575,13 @@ const Branches = () => {
                               >
                                 <Edit3 className="w-3.5 h-3.5 text-blue-600" /> Edit Campus Details
                               </button>
-                              <a
-                                href={`http://${branch.domain || 'localhost:5173'}`}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="w-full px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2 font-medium"
+                              <button
+                                type="button"
+                                onClick={() => handleOpenBranchPortal(branch)}
+                                className="w-full px-4 py-2 text-xs text-gray-700 hover:bg-gray-50 flex items-center gap-2 font-medium text-left cursor-pointer"
                               >
                                 <ExternalLink className="w-3.5 h-3.5 text-emerald-600" /> Open Branch Portal
-                              </a>
+                              </button>
                             </div>
 
                             <div className="py-1">
