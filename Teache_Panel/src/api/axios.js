@@ -41,8 +41,8 @@ axiosInstance.interceptors.request.use((config) => {
     }
   }
 
-  const token = localStorage.getItem('token');
-  const schoolId = localStorage.getItem('schoolId'); // Tenant SaaS ID
+  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+  const schoolId = sessionStorage.getItem('schoolId') || localStorage.getItem('schoolId'); // Tenant SaaS ID
   
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

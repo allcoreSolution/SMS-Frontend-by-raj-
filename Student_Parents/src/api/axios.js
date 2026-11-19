@@ -41,7 +41,7 @@ axiosInstance.interceptors.request.use(
       if (dynamicBase) config.baseURL = dynamicBase;
     }
 
-    const token = localStorage.getItem('parent_token') || localStorage.getItem('token');
+    const token = sessionStorage.getItem('parent_token') || localStorage.getItem('parent_token') || sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

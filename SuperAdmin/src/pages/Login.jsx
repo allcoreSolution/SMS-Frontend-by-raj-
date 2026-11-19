@@ -22,8 +22,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('superadmin_token');
-    const user = localStorage.getItem('sa_user');
+    const token = sessionStorage.getItem('superadmin_token');
+    const user = sessionStorage.getItem('sa_user');
     if (token && user) {
       navigate('/');
     }

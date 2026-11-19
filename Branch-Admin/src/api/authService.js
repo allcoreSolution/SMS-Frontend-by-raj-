@@ -25,6 +25,8 @@ export const authService = {
           _id: userData._id,
         };
 
+        sessionStorage.setItem('branch_admin_token', token);
+        sessionStorage.setItem('branch_admin_user', JSON.stringify(user));
         localStorage.setItem('branch_admin_token', token);
         localStorage.setItem('token', token);
         localStorage.setItem('branch_admin_user', JSON.stringify(user));
@@ -52,6 +54,8 @@ export const authService = {
           role: 'Branch Admin',
           token: 'demo_token_branch_admin_' + Date.now(),
         };
+        sessionStorage.setItem('branch_admin_token', user.token);
+        sessionStorage.setItem('branch_admin_user', JSON.stringify(user));
         localStorage.setItem('branch_admin_token', user.token);
         localStorage.setItem('branch_admin_user', JSON.stringify(user));
         return {
@@ -73,18 +77,24 @@ export const authService = {
   },
 
   logout: () => {
+    sessionStorage.removeItem('branch_admin_token');
+    sessionStorage.removeItem('branch_admin_user');
     localStorage.removeItem('branch_admin_token');
     localStorage.removeItem('token');
     localStorage.removeItem('branch_admin_user');
   },
 
   getCurrentUser: () => {
-    const user = localStorage.getItem('branch_admin_user');
-    return user ? JSON.parse(user) : null;
+    try {
+      const user = sessionStorage.getItem('branch_admin_user') || localStorage.getItem('branch_admin_user');
+      return user ? JSON.parse(user) : null;
+    } catch {
+      return null;
+    }
   },
 
   isAuthenticated: () => {
-    return !!localStorage.getItem('branch_admin_token') && !!localStorage.getItem('branch_admin_user');
+    return !!sessionStorage.getItem('branch_admin_token') && !!sessionStorage.getItem('branch_admin_user');
   },
 
   ensureDemoSession: () => {

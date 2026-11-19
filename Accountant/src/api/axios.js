@@ -33,7 +33,7 @@ axiosInstance.interceptors.request.use(
       config.baseURL = dynamicUrl;
     }
 
-    const token = localStorage.getItem('accountant_token') || localStorage.getItem('token');
+    const token = sessionStorage.getItem('accountant_token') || localStorage.getItem('accountant_token') || sessionStorage.getItem('token') || localStorage.getItem('token');
     const schoolId = localStorage.getItem('schoolId');
 
     if (token) {

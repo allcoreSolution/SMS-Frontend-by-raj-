@@ -25,7 +25,7 @@ axiosInstance.interceptors.request.use((config) => {
       config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
     }
   }
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
   const schoolId = localStorage.getItem('schoolId'); // Tenant SaaS ID
   
   if (token) {
@@ -55,7 +55,7 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       const isLoginRequest = error.config?.url?.includes('/auth/login');
       const isAlreadyOnLogin = window.location.pathname === '/login';
-      const token = localStorage.getItem('token');
+      const token = sessionStorage.getItem('token') || localStorage.getItem('token');
       const isDemoSession = token && token.startsWith('demo-');
 
       if (!isLoginRequest && !isAlreadyOnLogin && !isDemoSession) {

@@ -103,8 +103,8 @@ export default function App() {
 
   const hasAuth = () => {
     try {
-      const token = localStorage.getItem('parent_token');
-      const user = localStorage.getItem('parent_user');
+      const token = sessionStorage.getItem('parent_token');
+      const user = sessionStorage.getItem('parent_user');
       return !!(token && user);
     } catch (e) {
       return false;

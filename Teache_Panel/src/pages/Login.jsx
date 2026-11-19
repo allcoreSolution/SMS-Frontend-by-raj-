@@ -74,8 +74,8 @@ const Login = () => {
   const [serverUrl, setServerUrl] = useState(getApiBaseUrl());
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+    const user = sessionStorage.getItem('user');
     if (token && user) {
       navigate('/');
     }
@@ -182,16 +182,21 @@ const Login = () => {
       });
 
       if (res.data?.success) {
-        localStorage.setItem('token', res.data.data.token);
+        const token = res.data.data.token;
+        const userData = {
+          ...res.data.data,
+          role: selectedRole === 'staff' ? 'Staff' : (res.data.data.role || 'Teacher')
+        };
+        sessionStorage.setItem('token', token);
+        sessionStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('token', token);
         if (res.data.data.photo || res.data.data.avatar) {
           localStorage.setItem('teacher_user_avatar', res.data.data.photo || res.data.data.avatar);
         }
-        localStorage.setItem('user', JSON.stringify({
-          ...res.data.data,
-          role: selectedRole === 'staff' ? 'Staff' : (res.data.data.role || 'Teacher')
-        }));
+        localStorage.setItem('user', JSON.stringify(userData));
         if (res.data.data.tenantId) {
           localStorage.setItem('schoolId', res.data.data.tenantId);
+          sessionStorage.setItem('schoolId', res.data.data.tenantId);
         }
         if (res.data.data.school || res.data.data.schoolName) {
           const sInfo = res.data.data.school || { name: res.data.data.schoolName, logo: res.data.data.schoolLogo };
@@ -245,7 +250,10 @@ const Login = () => {
           avatar: localStorage.getItem('teacher_user_avatar') || ''
         };
 
-        localStorage.setItem('token', `demo_token_${Date.now()}`);
+        const demoTok = `demo_token_${Date.now()}`;
+        sessionStorage.setItem('token', demoTok);
+        sessionStorage.setItem('user', JSON.stringify(dummyUser));
+        localStorage.setItem('token', demoTok);
         localStorage.setItem('user', JSON.stringify(dummyUser));
         localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
         localStorage.setItem('schoolName', 'All core');

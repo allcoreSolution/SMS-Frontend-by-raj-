@@ -17,12 +17,12 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
-      const token = localStorage.getItem('superadmin_token');
-      const saved = localStorage.getItem('sa_user');
+      const token = sessionStorage.getItem('superadmin_token');
+      const saved = sessionStorage.getItem('sa_user');
       if (!token || !saved) return null;
       const parsed = saved ? JSON.parse(saved) : null;
       if (parsed) {
-        const storedAvatar = localStorage.getItem('superadmin_user_avatar');
+        const storedAvatar = sessionStorage.getItem('superadmin_user_avatar') || localStorage.getItem('superadmin_user_avatar');
         if (storedAvatar && !parsed.avatar) {
           parsed.avatar = storedAvatar;
         }
@@ -55,6 +55,9 @@ export const AuthProvider = ({ children }) => {
           avatar: authData.avatar || storedAvatar || '',
         };
 
+        sessionStorage.setItem('sa_user', JSON.stringify(userData));
+        sessionStorage.setItem('superadmin_token', token);
+        sessionStorage.setItem('superadmin_user', JSON.stringify(authData));
         localStorage.setItem('sa_user', JSON.stringify(userData));
         localStorage.setItem('superadmin_token', token);
         localStorage.setItem('superadmin_user', JSON.stringify(authData));
@@ -73,6 +76,8 @@ export const AuthProvider = ({ children }) => {
           role: 'superadmin',
           avatar: storedAvatar,
         };
+        sessionStorage.setItem('sa_user', JSON.stringify(demoUser));
+        sessionStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
         localStorage.setItem('sa_user', JSON.stringify(demoUser));
         localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
         setUser(demoUser);
@@ -83,6 +88,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    sessionStorage.removeItem('sa_user');
+    sessionStorage.removeItem('superadmin_token');
+    sessionStorage.removeItem('superadmin_user');
     localStorage.removeItem('sa_user');
     localStorage.removeItem('superadmin_token');
     localStorage.removeItem('superadmin_user');

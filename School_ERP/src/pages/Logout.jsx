@@ -4,6 +4,7 @@ import { Loader2 } from 'lucide-react';
 const Logout = () => {
   useEffect(() => {
     // Clear everything
+    sessionStorage.clear();
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('schoolId');

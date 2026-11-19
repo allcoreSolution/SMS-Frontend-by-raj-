@@ -26,7 +26,7 @@ axiosInstance.interceptors.request.use(
         config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
       }
     }
-    const token = localStorage.getItem('branch_admin_token') || localStorage.getItem('token');
+    const token = sessionStorage.getItem('branch_admin_token') || localStorage.getItem('branch_admin_token') || sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

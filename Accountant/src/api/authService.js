@@ -30,6 +30,8 @@ export const authService = {
           tenant: userData.tenant,
         };
 
+        sessionStorage.setItem('accountant_token', token);
+        sessionStorage.setItem('accountant_user', JSON.stringify(user));
         localStorage.setItem('accountant_token', token);
         localStorage.setItem('token', token);
         localStorage.setItem('accountant_user', JSON.stringify(user));
@@ -55,6 +57,8 @@ export const authService = {
           role: profile.role || 'Accountant',
           staffId: profile.staffId || '',
         };
+        sessionStorage.setItem('accountant_token', user.token);
+        sessionStorage.setItem('accountant_user', JSON.stringify(user));
         localStorage.setItem('accountant_token', user.token);
         localStorage.setItem('accountant_user', JSON.stringify(user));
         return { success: true, data: user, message: 'Login successful (Offline Demo Mode)' };
@@ -91,6 +95,8 @@ export const authService = {
   },
 
   logout: () => {
+    sessionStorage.removeItem('accountant_token');
+    sessionStorage.removeItem('accountant_user');
     localStorage.removeItem('accountant_token');
     localStorage.removeItem('token');
     localStorage.removeItem('accountant_user');
@@ -98,14 +104,14 @@ export const authService = {
 
   getCurrentUser: () => {
     try {
-      const user = localStorage.getItem('accountant_user');
+      const user = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
       return user ? JSON.parse(user) : null;
     } catch {
       return null;
     }
   },
 
-  isAuthenticated: () => !!(localStorage.getItem('accountant_token') && localStorage.getItem('accountant_user')),
+  isAuthenticated: () => !!(sessionStorage.getItem('accountant_token') && sessionStorage.getItem('accountant_user')),
 };
 
 export default authService;

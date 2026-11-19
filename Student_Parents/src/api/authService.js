@@ -13,6 +13,8 @@ export const authService = {
           role: response.data.data.role || (credentials.role === 'student' ? 'Student' : 'Parent'),
         };
         const token = udata.token || 'demo-jwt-token-active-session';
+        sessionStorage.setItem('parent_token', token);
+        sessionStorage.setItem('parent_user', JSON.stringify(udata));
         localStorage.setItem('parent_token', token);
         localStorage.setItem('token', token);
         localStorage.setItem('parent_user', JSON.stringify(udata));
@@ -82,6 +84,8 @@ export const authService = {
       token: 'demo-parent-token-active-session'
     };
 
+    sessionStorage.setItem('parent_token', fallbackUser.token);
+    sessionStorage.setItem('parent_user', JSON.stringify(fallbackUser));
     localStorage.setItem('parent_token', fallbackUser.token);
     localStorage.setItem('token', fallbackUser.token);
     localStorage.setItem('parent_user', JSON.stringify(fallbackUser));
@@ -92,14 +96,18 @@ export const authService = {
   },
   
   logout: () => {
+    sessionStorage.removeItem('parent_token');
+    sessionStorage.removeItem('parent_user');
+    sessionStorage.removeItem('active_child');
     localStorage.removeItem('parent_token');
+    localStorage.removeItem('token');
     localStorage.removeItem('parent_user');
     localStorage.removeItem('active_child');
   },
   
   getCurrentUser: () => {
     try {
-      const user = localStorage.getItem('parent_user');
+      const user = sessionStorage.getItem('parent_user') || localStorage.getItem('parent_user');
       return user ? JSON.parse(user) : null;
     } catch {
       return null;

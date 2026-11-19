@@ -28,13 +28,13 @@ const FALLBACK_DRIVERS = [
 export const AuthProvider = ({ children }) => {
   const [driver, setDriver] = useState(() => {
     try {
-      const saved = localStorage.getItem('driver_profile');
+      const saved = sessionStorage.getItem('driver_profile');
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
     }
   });
-  const [token, setToken] = useState(() => localStorage.getItem('driver_token') || null);
+  const [token, setToken] = useState(() => sessionStorage.getItem('driver_token') || null);
   const [vehicle, setVehicle] = useState(null);
   const [route, setRoute] = useState(null);
   const [activeTrip, setActiveTrip] = useState(null);
@@ -97,6 +97,8 @@ export const AuthProvider = ({ children }) => {
         setRoute(d.route || null);
         setActiveTrip(d.activeTrip || null);
         if (d.photo) saveDriverPhoto(d, d.photo);
+        sessionStorage.setItem('driver_token', tok);
+        sessionStorage.setItem('driver_profile', JSON.stringify(d));
         localStorage.setItem('driver_token', tok);
         localStorage.setItem('token', tok);
         localStorage.setItem('driver_profile', JSON.stringify(d));
@@ -132,6 +134,8 @@ export const AuthProvider = ({ children }) => {
         setToken(tok);
         setDriver(fallbackDriver);
         setVehicle(fallbackDriver.vehicle);
+        sessionStorage.setItem('driver_token', tok);
+        sessionStorage.setItem('driver_profile', JSON.stringify(fallbackDriver));
         localStorage.setItem('driver_token', tok);
         localStorage.setItem('token', tok);
         localStorage.setItem('driver_profile', JSON.stringify(fallbackDriver));
@@ -151,6 +155,8 @@ export const AuthProvider = ({ children }) => {
     setVehicle(null);
     setRoute(null);
     setActiveTrip(null);
+    sessionStorage.removeItem('driver_token');
+    sessionStorage.removeItem('driver_profile');
     localStorage.removeItem('driver_token');
     localStorage.removeItem('token');
     localStorage.removeItem('driver_profile');

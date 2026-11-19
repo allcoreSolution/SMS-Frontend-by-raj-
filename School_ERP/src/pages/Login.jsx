@@ -11,8 +11,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
+    const token = sessionStorage.getItem('token');
+    const user = sessionStorage.getItem('user');
     if (token && user) {
       navigate('/');
     }
@@ -30,6 +30,8 @@ const Login = () => {
         plan: 'Enterprise Pro Suite'
       }
     };
+    sessionStorage.setItem('token', dummyUser.token);
+    sessionStorage.setItem('user', JSON.stringify(dummyUser));
     localStorage.setItem('token', dummyUser.token);
     localStorage.setItem('user', JSON.stringify(dummyUser));
     localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
@@ -61,6 +63,8 @@ const Login = () => {
       });
 
       if (res.data?.success) {
+        sessionStorage.setItem('token', res.data.data.token);
+        sessionStorage.setItem('user', JSON.stringify(res.data.data));
         localStorage.setItem('token', res.data.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.data));
         if (res.data.data.tenant?._id) {

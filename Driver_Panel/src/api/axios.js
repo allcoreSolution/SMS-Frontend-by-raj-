@@ -42,7 +42,7 @@ axiosInstance.interceptors.request.use(
     // Dynamically update baseURL on every request to pick up user/APK IP changes
     config.baseURL = getApiBaseUrl();
 
-    const token = localStorage.getItem('driver_token') || localStorage.getItem('token') || 'demo-driver-token-drv-101';
+    const token = sessionStorage.getItem('driver_token') || localStorage.getItem('driver_token') || sessionStorage.getItem('token') || localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

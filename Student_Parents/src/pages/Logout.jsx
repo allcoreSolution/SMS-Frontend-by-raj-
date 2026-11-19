@@ -8,6 +8,9 @@ export default function Logout() {
 
   useEffect(() => {
     // Cleanup all session keys
+    sessionStorage.removeItem('parent_token');
+    sessionStorage.removeItem('parent_user');
+    sessionStorage.removeItem('active_child');
     localStorage.removeItem('parent_token');
     localStorage.removeItem('parent_user');
     localStorage.removeItem('token');
