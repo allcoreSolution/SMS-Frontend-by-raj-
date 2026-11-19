@@ -62,18 +62,18 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
       const storedSchool = localStorage.getItem('school_info');
       if (storedSchool) {
         const parsed = JSON.parse(storedSchool);
-        if (parsed?.name) return parsed;
+        if (parsed?.name && !parsed.name.includes('Xavier')) return parsed;
       }
       const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user');
       if (rawUser) {
         const u = JSON.parse(rawUser);
-        if (u.school?.name) return u.school;
-        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+        if (u.school?.name && !u.school.name.includes('Xavier')) return u.school;
+        if (u.schoolName && !u.schoolName.includes('Xavier')) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
       }
       const rawSchoolName = localStorage.getItem('schoolName');
-      if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+      if (rawSchoolName && !rawSchoolName.includes('Xavier')) return { name: rawSchoolName, logo: null, shortName: '' };
       const appSettings = localDb.getAll('settings')?.appearance;
-      if (appSettings?.schoolName) return { name: appSettings.schoolName, logo: null, shortName: '' };
+      if (appSettings?.schoolName && !appSettings.schoolName.includes('Xavier')) return { name: appSettings.schoolName, logo: null, shortName: '' };
     } catch (_) {}
     return { name: 'All core', logo: null, shortName: 'allcore' };
   };
@@ -96,22 +96,6 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
     window.addEventListener('school_info_updated', handleSchoolSync);
     window.addEventListener('storage', handleSchoolSync);
     window.addEventListener('storage', handleProfileSync);
-
-    // Initial async verification if school profile is available on backend
-    axiosInstance.get('/compliance/school-profile')
-      .then(res => {
-        if (res.data?.success && res.data.data?.schoolName) {
-          const sObj = {
-            name: res.data.data.schoolName,
-            logo: res.data.data.logoUrl || null,
-            shortName: res.data.data.shortName || res.data.data.schoolName.slice(0, 10)
-          };
-          setSchoolInfo(sObj);
-          localStorage.setItem('school_info', JSON.stringify(sObj));
-          localStorage.setItem('schoolName', sObj.name);
-        }
-      })
-      .catch(() => {});
 
     return () => {
       window.removeEventListener('accountant_profile_updated', handleProfileSync);

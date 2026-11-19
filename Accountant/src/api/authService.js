@@ -20,10 +20,12 @@ export const authService = {
       if (response.data && response.data.success) {
         const userData = response.data.data;
         const token = userData.token;
-        const schoolObj = userData.school || {
-          name: userData.schoolName || 'All core',
-          shortName: userData.schoolShortName || 'allcore',
-          logo: userData.schoolLogo || null,
+        const rawSchoolName = userData.schoolName || userData.school?.name;
+        const safeSchoolName = (rawSchoolName && !rawSchoolName.includes('Xavier')) ? rawSchoolName : 'All core';
+        const schoolObj = {
+          name: safeSchoolName,
+          shortName: userData.schoolShortName || userData.school?.shortName || 'allcore',
+          logo: userData.schoolLogo || userData.school?.logo || null,
         };
         const user = {
           token,
@@ -34,9 +36,9 @@ export const authService = {
           staffId: userData.staffId || '',
           tenant: userData.tenant,
           school: schoolObj,
-          schoolName: userData.schoolName || schoolObj.name || 'All core',
+          schoolName: safeSchoolName,
           schoolLogo: userData.schoolLogo || schoolObj.logo || null,
-          schoolShortName: userData.schoolShortName || schoolObj.shortName || 'allcore',
+          schoolShortName: schoolObj.shortName,
         };
 
         sessionStorage.setItem('accountant_token', token);

@@ -242,16 +242,16 @@ const Dashboard = () => {
       const stored = localStorage.getItem('school_info');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (parsed?.name) return parsed;
+        if (parsed?.name && !parsed.name.includes('Xavier')) return parsed;
       }
       const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
       if (rawUser) {
         const u = JSON.parse(rawUser);
-        if (u.school?.name) return u.school;
-        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+        if (u.school?.name && !u.school.name.includes('Xavier')) return u.school;
+        if (u.schoolName && !u.schoolName.includes('Xavier')) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
       }
       const rawName = localStorage.getItem('schoolName');
-      if (rawName) return { name: rawName, logo: null, shortName: '' };
+      if (rawName && !rawName.includes('Xavier')) return { name: rawName, logo: null, shortName: '' };
     } catch (_) {}
     return { name: 'All core', logo: null, shortName: 'allcore' };
   };
@@ -275,7 +275,7 @@ const Dashboard = () => {
       const raw = localStorage.getItem('acc_live_dashboard_stats');
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance || parsed.recentVouchers?.length)) {
+        if (parsed && parsed.collectedToday !== 545400 && parsed.incomeMonth !== 1030400 && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance || parsed.recentVouchers?.length)) {
           return parsed;
         }
       }

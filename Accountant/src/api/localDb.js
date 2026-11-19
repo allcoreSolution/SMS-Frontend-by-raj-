@@ -10,7 +10,7 @@ const PREFIX = 'acc_';
 (function clearLegacyDemoData() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    const isCleaned = localStorage.getItem('acc_demo_cleaned_v3');
+    const isCleaned = localStorage.getItem('acc_demo_cleaned_v4');
     if (!isCleaned) {
       const collectionsToClear = [
         'incomes', 'expenses', 'students', 'collections',
@@ -21,7 +21,19 @@ const PREFIX = 'acc_';
         localStorage.removeItem(PREFIX + col);
         localStorage.setItem(PREFIX + col, JSON.stringify([]));
       });
-      localStorage.setItem('acc_demo_cleaned_v3', 'true');
+      localStorage.removeItem('acc_live_dashboard_stats');
+      
+      const sInfo = localStorage.getItem('school_info');
+      if (sInfo && sInfo.includes('Xavier')) {
+        localStorage.removeItem('school_info');
+        localStorage.setItem('school_info', JSON.stringify({ name: 'All core', logo: null, shortName: 'allcore' }));
+      }
+      const sName = localStorage.getItem('schoolName');
+      if (sName && sName.includes('Xavier')) {
+        localStorage.setItem('schoolName', 'All core');
+      }
+
+      localStorage.setItem('acc_demo_cleaned_v4', 'true');
     }
   } catch (_) {}
 })();
@@ -236,7 +248,7 @@ export const localDb = {
 
   async syncFromBackend() {
     try {
-      const [feeTypesRes, feeGroupsRes, studentsRes, incomesRes, expensesRes, incomeHeadsRes, expenseHeadsRes, collectionsRes, schoolProfileRes] = await Promise.allSettled([
+      const [feeTypesRes, feeGroupsRes, studentsRes, incomesRes, expensesRes, incomeHeadsRes, expenseHeadsRes, collectionsRes] = await Promise.allSettled([
         axiosInstance.get('/fee-types'),
         axiosInstance.get('/fee-groups'),
         axiosInstance.get('/students'),
@@ -245,7 +257,6 @@ export const localDb = {
         axiosInstance.get('/income-heads'),
         axiosInstance.get('/expense-heads'),
         axiosInstance.get('/collect-fees'),
-        axiosInstance.get('/compliance/school-profile'),
       ]);
 
       if (feeTypesRes.status === 'fulfilled' && feeTypesRes.value.data?.data?.length > 0) {
@@ -352,22 +363,6 @@ export const localDb = {
           note: c.note || '',
         }));
         write('collections', mapped);
-      }
-
-      if (schoolProfileRes?.status === 'fulfilled' && schoolProfileRes.value.data?.data) {
-        const prof = schoolProfileRes.value.data.data;
-        if (prof.schoolName) {
-          const sObj = {
-            name: prof.schoolName,
-            logo: prof.logoUrl || null,
-            shortName: prof.shortName || prof.schoolName.slice(0, 10),
-          };
-          localStorage.setItem('school_info', JSON.stringify(sObj));
-          localStorage.setItem('schoolName', sObj.name);
-          try {
-            window.dispatchEvent(new CustomEvent('school_info_updated', { detail: sObj }));
-          } catch (_) {}
-        }
       }
 
       return true;

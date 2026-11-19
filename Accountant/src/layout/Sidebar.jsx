@@ -113,16 +113,16 @@ const getSchoolMeta = () => {
     const storedSchool = localStorage.getItem('school_info');
     if (storedSchool) {
       const parsed = JSON.parse(storedSchool);
-      if (parsed?.name) return parsed;
+      if (parsed?.name && !parsed.name.includes('Xavier')) return parsed;
     }
     const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user');
     if (rawUser) {
       const u = JSON.parse(rawUser);
-      if (u.school?.name) return u.school;
-      if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+      if (u.school?.name && !u.school.name.includes('Xavier')) return u.school;
+      if (u.schoolName && !u.schoolName.includes('Xavier')) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
     }
     const rawSchoolName = localStorage.getItem('schoolName');
-    if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+    if (rawSchoolName && !rawSchoolName.includes('Xavier')) return { name: rawSchoolName, logo: null, shortName: '' };
   } catch (_) {}
   return { name: 'All core', logo: null, shortName: 'allcore' };
 };

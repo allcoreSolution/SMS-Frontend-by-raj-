@@ -190,13 +190,15 @@ export const accountantService = {
         const stats = d.stats || {};
 
         if (d.school || d.schoolName) {
-          const sObj = d.school || {
-            name: d.schoolName,
-            logo: d.schoolLogo || null,
-            shortName: d.schoolShortName || '',
+          const rawName = d.school?.name || d.schoolName;
+          const sName = (rawName && !rawName.includes('Xavier')) ? rawName : 'All core';
+          const sObj = {
+            name: sName,
+            logo: d.school?.logo || d.schoolLogo || null,
+            shortName: d.school?.shortName || d.schoolShortName || 'allcore',
           };
           localStorage.setItem('school_info', JSON.stringify(sObj));
-          localStorage.setItem('schoolName', sObj.name || d.schoolName);
+          localStorage.setItem('schoolName', sObj.name);
           try {
             window.dispatchEvent(new CustomEvent('school_info_updated', { detail: sObj }));
           } catch (_) {}
