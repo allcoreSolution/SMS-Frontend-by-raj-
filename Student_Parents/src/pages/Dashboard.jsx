@@ -309,8 +309,8 @@ export default function Dashboard({ activeChild, setActiveChild }) {
       if (res && res.success && res.data) {
         setDashboardData(res.data);
         if ((!activeChild || activeChild === '1') && res.data.student && res.data.student._id && setActiveChild) {
-          if (activeChild !== res.data.student._id) {
-            setActiveChild(res.data.student._id);
+          if (String(activeChild) !== String(res.data.student._id)) {
+            setActiveChild(String(res.data.student._id));
           }
         }
       }

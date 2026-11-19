@@ -1263,9 +1263,9 @@ const Dashboard = () => {
       </div>
 
       {/* ── SECTION 3: SCHOOL NOTICE BOARD (FULL-WIDTH BROADCAST CAROUSEL) ── */}
-      <div 
+      <div )
         className="bg-white shadow-sm rounded-[3px] overflow-hidden border border-gray-200 mb-6"
-        onMouseEnter={() => setIsSliderPaused(true)}
+        onMouseEnter={() => setIsSliderPaused(true}
         onMouseLeave={() => setIsSliderPaused(false)}
       >
         {/* Notice Board Header */}

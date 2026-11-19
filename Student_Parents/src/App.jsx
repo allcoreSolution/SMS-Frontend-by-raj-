@@ -9,6 +9,7 @@ import ComingSoon    from './pages/ComingSoon';
 import Logout        from './pages/Logout';
 import Login         from './pages/Login';
 import ErrorBoundary from './components/ErrorBoundary';
+import { authService } from './api/authService';
 
 // Academics
 import CalendarPage  from './pages/academics/CalendarPage';
@@ -54,7 +55,6 @@ const pages = [
   { path: '/all-services',    El: AllModules      },
   { path: '/profile',         El: Profile         },
   { path: '/my-profile',      El: Profile         },
-  { path: '/logout',          El: Logout          },
   // Academics
   { path: '/calendar',        El: CalendarPage    },
   { path: '/timetable',       El: Timetable       },
@@ -89,6 +89,21 @@ const pages = [
   { path: '/ai-assistant',    El: AIAssistant     },
 ];
 
+// Smart dynamic AuthGate
+const AuthGate = () => {
+  const isAuth = authService.isAuthenticated();
+  return isAuth ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />;
+};
+
+// Smart dynamic ProtectedRoute
+const ProtectedRoute = ({ children }) => {
+  const isAuth = authService.isAuthenticated();
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
+
 export default function App() {
   const [activeChild, setActiveChildState] = useState(() => {
     return localStorage.getItem('active_child') || '';
@@ -101,41 +116,30 @@ export default function App() {
     }
   };
 
-  const hasAuth = () => {
-    try {
-      const token = sessionStorage.getItem('parent_token');
-      const user = sessionStorage.getItem('parent_user');
-      return !!(token && user);
-    } catch (e) {
-      return false;
-    }
-  };
-
   return (
     <LanguageProvider>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
-          <Route path="/" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
-          <Route path="/index.html" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
+          <Route path="/" element={<AuthGate />} />
+          <Route path="/index.html" element={<AuthGate />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/logout" element={<Logout />} />
           {pages.map(({ path, El }) => (
             <Route
               key={path}
               path={path}
               element={
-                hasAuth() ? (
+                <ProtectedRoute>
                   <ErrorBoundary>
                     <Layout activeChild={activeChild} setActiveChild={setActiveChild}>
                       <El activeChild={activeChild} setActiveChild={setActiveChild} />
                     </Layout>
                   </ErrorBoundary>
-                ) : (
-                  <Navigate to="/login" replace />
-                )
+                </ProtectedRoute>
               }
             />
           ))}
-          <Route path="*" element={<Navigate to={hasAuth() ? "/dashboard" : "/login"} replace />} />
+          <Route path="*" element={<AuthGate />} />
         </Routes>
       </BrowserRouter>
     </LanguageProvider>

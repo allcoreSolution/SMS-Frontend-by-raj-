@@ -59,9 +59,7 @@ export default function Login() {
 
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
-    const token = sessionStorage.getItem('parent_token');
-    const user = sessionStorage.getItem('parent_user');
-    if (token && user) {
+    if (authService.isAuthenticated()) {
       navigate('/dashboard', { replace: true });
     }
   }, [navigate]);
@@ -71,8 +69,8 @@ export default function Login() {
     setError('');
     localStorage.removeItem('active_child');
     if (role === 'student') {
-      setUserId('YIS-2024-101');
-      setPassword('secret_access_24');
+      setUserId('ADM-2026-3588');
+      setPassword('raj123');
     } else {
       setUserId('P-1920-KABIR');
       setPassword('secret_access_24');
@@ -81,7 +79,7 @@ export default function Login() {
 
   const handleQuickDemo = (role) => {
     handleRoleChange(role);
-    setAutofillNotice(`Demo loaded for ${role === 'student' ? 'Student (Kabir)' : 'Parent (Vikram)'}`);
+    setAutofillNotice(`Loaded for ${role === 'student' ? 'Student (RAJ YADAV)' : 'Parent (Vikram Singh)'}`);
     setTimeout(() => setAutofillNotice(''), 2500);
   };
 
@@ -91,16 +89,12 @@ export default function Login() {
     setLoading(true);
 
     try {
-      localStorage.removeItem('active_child');
-      localStorage.removeItem('parent_user');
-      localStorage.removeItem('parent_token');
-      
       const res = await authService.login({ userId, password, role: roleTab });
       if (res && res.success) {
         Swal.fire({
           icon: 'success',
           title: isStudentRole ? 'Student Login Successful' : 'Parent Login Successful',
-          text: `Welcome back, ${res.data?.name || (isStudentRole ? 'Kabir Singh' : 'Vikram Singh')}!`,
+          text: `Welcome back, ${res.data?.name || (isStudentRole ? 'Student' : 'Parent')}!`,
           toast: true,
           position: 'top-end',
           showConfirmButton: false,

@@ -450,11 +450,11 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           if (res.data.children && res.data.children.length > 0) {
             setChildrenList(res.data.children);
             if (!isStudent) {
-              const hasValidChild = res.data.children.some(c => (c.id === activeChild || c._id === activeChild));
+              const hasValidChild = res.data.children.some(c => String(c.id || c._id) === String(activeChild));
               if (!hasValidChild) {
                 const firstChildId = res.data.children[0].id || res.data.children[0]._id;
-                if (setActiveChild && firstChildId) {
-                  setActiveChild(firstChildId);
+                if (setActiveChild && firstChildId && String(activeChild) !== String(firstChildId)) {
+                  setActiveChild(String(firstChildId));
                 }
               }
             }
@@ -476,8 +476,8 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     loadPortalChildren();
 
     const handleChildChanged = (e) => {
-      if (e.detail && setActiveChild) {
-        setActiveChild(e.detail);
+      if (e.detail && setActiveChild && String(activeChild) !== String(e.detail)) {
+        setActiveChild(String(e.detail));
       }
     };
     window.addEventListener('portal_child_changed', handleChildChanged);
@@ -488,8 +488,8 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
 
   // Auto-sync student ID if student logged in
   useEffect(() => {
-    if (isStudent && studentSelfId && activeChild !== studentSelfId && setActiveChild) {
-      setActiveChild(studentSelfId);
+    if (isStudent && studentSelfId && String(activeChild) !== String(studentSelfId) && setActiveChild) {
+      setActiveChild(String(studentSelfId));
     }
   }, [isStudent, studentSelfId, activeChild, setActiveChild]);
 

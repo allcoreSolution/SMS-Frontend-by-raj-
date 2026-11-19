@@ -105,6 +105,16 @@ export const authService = {
     localStorage.removeItem('active_child');
   },
   
+  isAuthenticated: () => {
+    try {
+      const token = sessionStorage.getItem('parent_token') || localStorage.getItem('parent_token');
+      const user = sessionStorage.getItem('parent_user') || localStorage.getItem('parent_user');
+      return !!(token && user);
+    } catch {
+      return false;
+    }
+  },
+
   getCurrentUser: () => {
     try {
       const user = sessionStorage.getItem('parent_user') || localStorage.getItem('parent_user');
