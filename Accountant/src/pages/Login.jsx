@@ -2,19 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { 
   LogIn, Lock, User, Mail, ShieldCheck, 
   GraduationCap, Eye, EyeOff, ArrowRight, 
-  Sparkles, Sun, Moon
+  Sparkles, Users, BookOpen, BarChart3, 
+  MessageCircle, Sun, Moon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { authService } from '../api/authService';
 
-// Authentic 3D Assets directly matched from reference design
-import floatingBadgeImg from '../assets/floating_mortarboard_badge.png';
-import cardStudentImg from '../assets/card1_student_rounded.png';
-import cardAcademicImg from '../assets/card2_academic_rounded.png';
-import cardFeesImg from '../assets/card3_fees_rounded.png';
-import cardCommImg from '../assets/card4_comm_rounded.png';
-import capBooksCupImg from '../assets/cap_books_cup_feathered.png';
+// High-Resolution 3D Assets (100% clean, zero text artifacts)
+import campusTwilightBg from '../assets/campus_twilight_bg.jpg';
+import educationHero3dImg from '../assets/education_hero_3d.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -200,34 +197,45 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen max-h-screen w-full overflow-hidden bg-gradient-to-br from-[#010c26] via-[#031d4e] to-[#01091d] text-slate-100 font-sans flex flex-col justify-between selection:bg-blue-500 selection:text-white relative select-none">
+    <div className="h-screen max-h-screen w-full overflow-hidden bg-[#010a20] text-slate-100 font-sans flex flex-col justify-between selection:bg-blue-500 selection:text-white relative select-none">
 
-      {/* Atmospheric Ambient Lighting & Pattern (STRICTLY 100% TEXT-FREE) */}
+      {/* Atmospheric Photorealistic Campus Background (100% Clean - Zero Ghost Text) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {/* Cinematic Campus Backdrop */}
+        <img 
+          src={campusTwilightBg} 
+          alt="School Campus" 
+          className="w-full h-full object-cover object-center opacity-30 mix-blend-luminosity scale-105 transition-transform duration-1000"
+        />
+
+        {/* Luminous Royal Navy Gradient Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#010e2e]/95 via-[#021844]/80 to-[#01091d]/90"></div>
+        <div className="absolute inset-0 bg-radial from-transparent via-[#010e2e]/30 to-[#010e2e]/90"></div>
+
         {/* Subtle Architectural Dot Grid */}
         <div 
-          className="absolute inset-0 opacity-15"
+          className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: 'radial-gradient(rgba(56, 189, 248, 0.25) 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(rgba(56, 189, 248, 0.3) 1px, transparent 1px)',
             backgroundSize: '24px 24px'
           }}
         />
 
-        {/* Luminous Glowing Light Orbs */}
-        <div className="absolute -top-24 -left-24 w-[450px] h-[450px] bg-blue-600/20 rounded-full blur-[120px]"></div>
-        <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[550px] h-[550px] bg-sky-500/15 rounded-full blur-[140px]"></div>
-        <div className="absolute -bottom-24 right-1/4 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[130px]"></div>
+        {/* Luminous Ambient Glowing Light Orbs */}
+        <div className="absolute -top-32 -left-32 w-[550px] h-[550px] bg-blue-600/20 rounded-full blur-[130px]"></div>
+        <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[600px] bg-sky-500/15 rounded-full blur-[150px]"></div>
+        <div className="absolute -bottom-32 right-1/4 w-[500px] h-[500px] bg-indigo-600/20 rounded-full blur-[140px]"></div>
         
         {/* Sleek Top & Bottom Glow Lines */}
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/30 to-transparent"></div>
-        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent"></div>
+        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-sky-400/35 to-transparent"></div>
+        <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blue-500/25 to-transparent"></div>
       </div>
 
       {/* Top Header Bar */}
-      <header className="relative z-20 w-full px-6 sm:px-10 lg:px-14 py-3 sm:py-4 flex items-center justify-between max-w-7xl mx-auto shrink-0">
+      <header className="relative z-20 w-full px-6 sm:px-10 lg:px-14 py-3 sm:py-3.5 flex items-center justify-between max-w-7xl mx-auto shrink-0">
         {/* School ERP Brand Logo */}
         <div className="flex items-center gap-2.5 group cursor-pointer">
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 p-[1.5px] shadow-lg shadow-blue-500/25">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 via-sky-400 to-indigo-600 p-[1.5px] shadow-lg shadow-blue-500/30">
             <div className="w-full h-full bg-[#051c44] rounded-[9px] flex items-center justify-center">
               <GraduationCap className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-sky-400 group-hover:scale-110 transition-transform" />
             </div>
@@ -260,7 +268,7 @@ const Login = () => {
         <div className="w-full lg:w-[55%] flex flex-col justify-center text-left py-1 shrink-0 lg:shrink">
           
           {/* Main Headline */}
-          <div className="mb-2 sm:mb-3">
+          <div className="mb-2 sm:mb-2.5">
             <h1 className="text-2xl sm:text-4xl lg:text-[44px] font-black tracking-tight text-white leading-[1.12]">
               Next Generation <br />
               <span className="bg-gradient-to-r from-sky-400 via-blue-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-sm">
@@ -273,52 +281,64 @@ const Login = () => {
             </p>
           </div>
 
-          {/* 4 Feature Cards Row - Exact Reference 3D Badges */}
-          <div className="grid grid-cols-4 gap-2 sm:gap-2.5 w-full max-w-lg my-2 sm:my-3">
+          {/* 4 Feature Cards Row - Glassmorphic with Vibrant 3D Badges */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 w-full max-w-xl my-2 sm:my-2.5">
             {/* 1. Student Management */}
-            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-cyan-500/20 border border-blue-400/20 hover:border-sky-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
-              <img 
-                src={cardStudentImg} 
-                alt="Student Management" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
-              />
+            <div className="group bg-gradient-to-b from-[#0a2350]/85 to-[#051736]/90 hover:from-[#0d2d66] hover:to-[#071f4a] border border-blue-400/25 hover:border-sky-400/60 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-lg shadow-blue-950/40 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-sky-500 to-cyan-400 flex items-center justify-center shadow-md shadow-sky-500/30 mb-1.5 group-hover:scale-110 transition-transform">
+                <Users className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white drop-shadow" />
+              </div>
+              <span className="text-[10.5px] sm:text-[11px] font-bold text-slate-100 leading-tight">
+                Student<br />Management
+              </span>
             </div>
 
             {/* 2. Academic Records */}
-            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-amber-500/20 border border-blue-400/20 hover:border-amber-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
-              <img 
-                src={cardAcademicImg} 
-                alt="Academic Records" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
-              />
+            <div className="group bg-gradient-to-b from-[#0a2350]/85 to-[#051736]/90 hover:from-[#0d2d66] hover:to-[#071f4a] border border-blue-400/25 hover:border-amber-400/60 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-lg shadow-blue-950/40 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 flex items-center justify-center shadow-md shadow-amber-500/30 mb-1.5 group-hover:scale-110 transition-transform">
+                <BookOpen className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white drop-shadow" />
+              </div>
+              <span className="text-[10.5px] sm:text-[11px] font-bold text-slate-100 leading-tight">
+                Academic<br />Records
+              </span>
             </div>
 
-            {/* 3. Fees & Accounts */}
-            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-emerald-500/20 border border-emerald-400/40 hover:border-emerald-400/70 ring-1 ring-sky-400/40 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
-              <img 
-                src={cardFeesImg} 
-                alt="Fees & Accounts" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
-              />
+            {/* 3. Fees & Accounts (Highlight Ring!) */}
+            <div className="group bg-gradient-to-b from-[#0e2f69]/90 to-[#061e46]/95 hover:from-[#11397e] hover:to-[#09285c] border-2 border-cyan-400 hover:border-cyan-300 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-lg shadow-cyan-950/50 ring-2 ring-cyan-400/30 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-cyan-600 via-teal-500 to-emerald-400 flex items-center justify-center shadow-md shadow-cyan-500/40 mb-1.5 group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white drop-shadow" />
+              </div>
+              <span className="text-[10.5px] sm:text-[11px] font-bold text-cyan-300 leading-tight">
+                Fees &amp;<br />Accounts
+              </span>
             </div>
 
-            {/* 4. Communication */}
-            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-cyan-500/20 border border-blue-400/20 hover:border-cyan-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
-              <img 
-                src={cardCommImg} 
-                alt="Communication" 
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
-              />
+            {/* 4. Communication Desk */}
+            <div className="group bg-gradient-to-b from-[#0a2350]/85 to-[#051736]/90 hover:from-[#0d2d66] hover:to-[#071f4a] border border-blue-400/25 hover:border-sky-400/60 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-lg shadow-blue-950/40 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-blue-500 via-sky-400 to-cyan-300 flex items-center justify-center shadow-md shadow-sky-500/30 mb-1.5 group-hover:scale-110 transition-transform">
+                <MessageCircle className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white drop-shadow" />
+              </div>
+              <span className="text-[10.5px] sm:text-[11px] font-bold text-slate-100 leading-tight">
+                Communication<br />Desk
+              </span>
             </div>
           </div>
 
-          {/* Bottom 3D Artwork Showcase (Cap, Stacked Books, Pencil Cup, Wave & Cursive Tagline) */}
-          <div className="w-full max-w-sm mt-1 flex items-center">
+          {/* Bottom 3D Artwork Showcase (Cap, Stacked Books, Pencil Cup, Wave & Holograms) */}
+          <div className="w-full max-w-lg mt-1 flex flex-col items-start">
             <img 
-              src={capBooksCupImg} 
+              src={educationHero3dImg} 
               alt="Build a Better Education Future" 
-              className="w-full max-h-32 sm:max-h-36 object-contain object-left drop-shadow-[0_12px_28px_rgba(0,102,255,0.4)]"
+              className="w-full max-h-32 sm:max-h-36 lg:max-h-38 object-contain object-left drop-shadow-[0_15px_30px_rgba(0,102,255,0.45)]"
             />
+            <div className="w-full flex items-center justify-between px-1 pt-1">
+              <span className="font-serif italic text-amber-200/90 text-xs sm:text-sm tracking-wide flex items-center gap-1.5">
+                Build a Better Education Future <span className="text-amber-400">✨</span>
+              </span>
+              <span className="text-[10px] text-sky-400/70 font-semibold tracking-wider uppercase font-mono">
+                Institutional Financial Suite
+              </span>
+            </div>
           </div>
 
         </div>
@@ -328,16 +348,22 @@ const Login = () => {
           
           <div className="w-full bg-white text-gray-900 rounded-[28px] sm:rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,102,255,0.45)] border border-white/95 px-6 sm:px-7 py-5 sm:py-6 relative flex flex-col">
 
-            {/* Top Center Floating 3D Badge (Exact 3D Glass Emblem from Reference) */}
+            {/* Top Center Floating 3D Badge (Luminous Vector 3D Emblem with Glass Highlight) */}
             <div className="w-full flex justify-center -mt-12 sm:-mt-14 mb-2">
-              <div className="relative group">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500 rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#051c44] shadow-2xl flex items-center justify-center overflow-hidden border-2 border-white/95 ring-2 ring-sky-400/30">
-                  <img 
-                    src={floatingBadgeImg} 
-                    alt="Accountant Portal Badge" 
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform"
-                  />
+              <div className="relative group cursor-pointer">
+                {/* Multi-layer Neon Glow Ring */}
+                <div className="absolute -inset-2 bg-gradient-to-r from-blue-600 via-cyan-400 to-indigo-600 rounded-full blur-md opacity-80 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute -inset-0.5 bg-gradient-to-b from-cyan-300 to-blue-600 rounded-full blur-xs opacity-90"></div>
+                
+                {/* Glossy 3D Circle Emblem */}
+                <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-gradient-to-b from-[#0066ff] via-[#0240b0] to-[#011a54] p-[3px] shadow-[0_15px_35px_rgba(0,102,255,0.6)] flex items-center justify-center border-2 border-white/95">
+                  {/* Top Gloss Reflection */}
+                  <div className="absolute top-1 inset-x-2.5 h-3.5 bg-gradient-to-b from-white/50 to-transparent rounded-full pointer-events-none"></div>
+                  
+                  {/* Center 3D Cap */}
+                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-400 flex items-center justify-center shadow-inner">
+                    <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.5)] transform -rotate-3" />
+                  </div>
                 </div>
               </div>
             </div>
