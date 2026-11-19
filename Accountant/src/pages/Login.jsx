@@ -3,7 +3,8 @@ import {
   LogIn, Lock, User, Mail, ShieldCheck, 
   GraduationCap, Eye, EyeOff, ArrowRight, 
   Sparkles, Receipt, Landmark, Wallet, 
-  FileCheck, CheckCircle2, HelpCircle
+  FileCheck, CheckCircle2, Building2, 
+  TrendingUp, CreditCard, Clock
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -192,154 +193,182 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 text-slate-800 font-sans flex flex-col justify-between selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen lg:h-screen lg:max-h-screen lg:overflow-hidden w-full bg-slate-50 text-slate-800 font-sans flex flex-col justify-between selection:bg-blue-600 selection:text-white">
 
-      {/* Top Header */}
-      <header className="w-full bg-white border-b border-slate-200/80 px-6 sm:px-10 lg:px-12 py-3.5 flex items-center justify-between">
+      {/* Top Header Bar */}
+      <header className="w-full bg-white border-b border-slate-200/90 px-6 sm:px-10 lg:px-12 py-3 flex items-center justify-between shrink-0 shadow-2xs">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
-            <GraduationCap className="w-6 h-6" />
+          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <Landmark className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-1.5">
-              School <span className="text-blue-600">ERP</span>
-            </span>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-              Finance &amp; Accounts Portal
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-black text-slate-900 tracking-tight leading-none">
+                School <span className="text-blue-600">ERP</span>
+              </span>
+              <span className="px-2 py-0.5 rounded-md bg-blue-50 border border-blue-200 text-blue-700 text-[10.5px] font-bold uppercase tracking-wider">
+                Accounts Desk
+              </span>
+            </div>
+            <span className="text-[11px] font-medium text-slate-500 block leading-tight mt-0.5">
+              Multi-Branch Institutional Finance &amp; Ledger Platform
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200/60">
+            <Clock className="w-3.5 h-3.5 text-blue-600" />
+            <span>Fiscal Year: 2026–2027</span>
+          </div>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            System Online &bull; Secure
+            System Live
           </span>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-12 flex items-center justify-center">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+      {/* Main Content Area (Balanced 2-Column Fixed Grid) */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-12 py-4 lg:py-6 flex items-center justify-center overflow-hidden min-h-0">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
 
-          {/* Left Column: Information & 4 Proper Cards */}
+          {/* Left Column: Polished Content & 4 Balanced Cards */}
           <div className="lg:col-span-7 flex flex-col justify-center">
             
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold w-fit mb-4">
-              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-              <span>Institutional Financial Management Suite</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold w-fit mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+              <span>Smart School Accounting &bull; Automated Ledger Engine</span>
             </div>
 
             {/* Primary Heading */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-slate-900 tracking-tight leading-[1.2] mb-3">
-              Streamlined School Accounts &amp;{' '}
-              <span className="text-blue-600">Fee Administration</span>
+            <h1 className="text-2xl sm:text-3xl lg:text-[40px] font-extrabold text-slate-900 tracking-tight leading-[1.2] mb-2.5">
+              Complete Financial Control for{' '}
+              <span className="text-blue-600">Educational Institutions</span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed max-w-2xl mb-8">
-              A comprehensive financial management platform designed for accountants and administrators. Collect fees, monitor daily transactions, manage payroll, and generate audit-compliant ledgers with zero friction.
+            <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-xl mb-5">
+              Empower school accountants and bursars with automated fee management, real-time day book reconciliation, instant voucher disbursement, and tax-ready audit compliance.
             </p>
 
-            {/* 4 Feature Cards (Clean, White, High-DPI Cards) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mb-8">
+            {/* 4 Proper Cards - Equal Heights & Clean Alignment */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl mb-5">
               
               {/* Card 1: Student Fee Collection */}
-              <div className="bg-white border border-slate-200/90 rounded-xl p-4.5 shadow-xs hover:border-blue-400 hover:shadow-md transition-all duration-200 flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                  <Receipt className="w-5 h-5" />
+              <div className="bg-white border border-slate-200/90 hover:border-blue-500/60 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-200 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                  <Receipt className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-snug">Fee Collection &amp; Invoices</h3>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Collect dues, apply scholarship discounts, issue digital receipts, and track payment gateways.
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
+                      Fee Collection &amp; Invoices
+                    </h3>
+                  </div>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5 leading-snug">
+                    Multi-mode fee collection, sibling discount rules, instant SMS/email receipts &amp; pending dues alerts.
                   </p>
                 </div>
               </div>
 
               {/* Card 2: Income & Day Book */}
-              <div className="bg-white border border-slate-200/90 rounded-xl p-4.5 shadow-xs hover:border-emerald-400 hover:shadow-md transition-all duration-200 flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-                  <Landmark className="w-5 h-5" />
+              <div className="bg-white border border-slate-200/90 hover:border-emerald-500/60 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-200 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                  <TrendingUp className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-snug">Income &amp; Day Book</h3>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Real-time daily transaction logs, cash book balances, and automated ledger reconciliations.
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
+                      Day Book &amp; Cash Flow
+                    </h3>
+                  </div>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5 leading-snug">
+                    Real-time daily transaction logs, multi-head income classification, bank reconciliations &amp; closing balances.
                   </p>
                 </div>
               </div>
 
               {/* Card 3: Expense & Payroll */}
-              <div className="bg-white border border-slate-200/90 rounded-xl p-4.5 shadow-xs hover:border-amber-400 hover:shadow-md transition-all duration-200 flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-                  <Wallet className="w-5 h-5" />
+              <div className="bg-white border border-slate-200/90 hover:border-amber-500/60 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-200 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0">
+                  <Wallet className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-snug">Expense &amp; Payroll</h3>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Track vendor vouchers, departmental spending, staff salaries, and petty cash dispensations.
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
+                      Expense &amp; Staff Payroll
+                    </h3>
+                  </div>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5 leading-snug">
+                    Vendor payment vouchers, departmental expense tracking, teacher salary disbursals &amp; petty cash records.
                   </p>
                 </div>
               </div>
 
               {/* Card 4: Audit & Balance Sheet */}
-              <div className="bg-white border border-slate-200/90 rounded-xl p-4.5 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all duration-200 flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
-                  <FileCheck className="w-5 h-5" />
+              <div className="bg-white border border-slate-200/90 hover:border-indigo-500/60 rounded-xl p-3.5 shadow-2xs hover:shadow-md transition-all duration-200 flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+                  <FileCheck className="w-4.5 h-4.5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 leading-snug">Financial Audits &amp; Reports</h3>
-                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Generate instant balance sheets, annual P&amp;L summaries, and export statutory audit spreadsheets.
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-xs sm:text-[13px] font-bold text-slate-900 leading-snug">
+                      Audit &amp; Balance Sheets
+                    </h3>
+                  </div>
+                  <p className="text-[11.5px] text-slate-500 mt-0.5 leading-snug">
+                    Generate instant P&amp;L statements, quarterly balance sheets, statutory compliance &amp; Excel/PDF exports.
                   </p>
                 </div>
               </div>
 
             </div>
 
-            {/* Bottom Security Highlights */}
-            <div className="flex flex-wrap items-center gap-5 text-xs text-slate-500 font-medium">
+            {/* Bottom Trust Indicators */}
+            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 font-medium pt-1">
               <span className="flex items-center gap-1.5 text-slate-700">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" /> Bank-grade 256-bit Encryption
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Bank-grade 256-bit SSL</span>
               </span>
               <span>&bull;</span>
               <span className="flex items-center gap-1.5 text-slate-700">
-                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" /> Multi-Branch Ledger Sync
+                <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
+                <span>Multi-Campus Ledger Sync</span>
               </span>
               <span>&bull;</span>
               <span className="flex items-center gap-1.5 text-slate-700">
-                <Lock className="w-4 h-4 text-indigo-600 shrink-0" /> Verified Role Privilege
+                <CheckCircle2 className="w-4 h-4 text-indigo-600 shrink-0" />
+                <span>Role-Based Audit Logs</span>
               </span>
             </div>
 
           </div>
 
-          {/* Right Column: Clean, Normal, Crisp White Login Card */}
+          {/* Right Column: Clean, Normal, Compact White Login Card */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="w-full max-w-[440px] bg-white rounded-2xl shadow-xl shadow-slate-200/70 border border-slate-200/90 p-7 sm:p-9">
+            <div className="w-full max-w-[420px] bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-200/90 p-6 sm:p-7.5">
               
               {/* Form Title & Icon */}
-              <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center mb-4 shadow-xs">
-                  <GraduationCap className="w-6 h-6" />
+              <div className="mb-5">
+                <div className="w-11 h-11 rounded-xl bg-blue-600 text-white flex items-center justify-center mb-3 shadow-md shadow-blue-500/25">
+                  <Landmark className="w-5 h-5" />
                 </div>
-                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
                   Accountant Sign In
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-                  Enter your credentials to securely access your institutional finance desk.
+                <p className="text-xs text-slate-500 font-medium mt-0.5 leading-relaxed">
+                  Enter your credentials to securely access your financial desk.
                 </p>
               </div>
 
               {/* Login Form */}
-              <form onSubmit={handleLogin} className="space-y-4">
+              <form onSubmit={handleLogin} className="space-y-3.5">
                 
                 {/* Field 1: Email Address / Username */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Email Address / Username
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Official Email / Username
                   </label>
                   <div className="relative group">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-600 transition-colors">
@@ -350,16 +379,16 @@ const Login = () => {
                       required
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder="e.g. accountant@allcoresolution.com"
-                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white text-slate-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
+                      placeholder="accountant@allcoresolution.com"
+                      className="w-full pl-10 pr-4 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white text-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
                     />
                   </div>
                 </div>
 
                 {/* Field 2: Password */}
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
                       Account Password
                     </label>
                     <button
@@ -380,7 +409,7 @@ const Login = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-10 pr-11 py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white text-slate-900 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
+                      className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl border border-slate-200 bg-slate-50/70 focus:bg-white text-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-600 transition-all placeholder:text-slate-400"
                     />
                     <button
                       type="button"
@@ -409,11 +438,11 @@ const Login = () => {
                 </div>
 
                 {/* Submit Action Button */}
-                <div className="pt-2">
+                <div className="pt-1.5">
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3.5 px-6 rounded-xl font-bold text-sm shadow-md shadow-blue-600/25 hover:shadow-lg hover:shadow-blue-600/35 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
+                    className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-blue-600/25 hover:shadow-lg hover:shadow-blue-600/35 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed"
                   >
                     <LogIn className="w-4 h-4" />
                     <span>{loading ? 'Authenticating...' : 'Sign In to Dashboard'}</span>
@@ -424,22 +453,22 @@ const Login = () => {
               </form>
 
               {/* Instant One-Click Demo Access */}
-              <div className="mt-6 pt-5 border-t border-slate-100 flex flex-col items-center">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
-                  Or One-Click Demo Access
+              <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col items-center">
+                <span className="text-[10.5px] font-bold text-slate-400 uppercase tracking-wider mb-2">
+                  Instant One-Click Demo Access
                 </span>
                 <button
                   type="button"
                   onClick={fillDemo}
-                  className="w-full py-2.5 px-4 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-2xs active:scale-[0.99] cursor-pointer"
+                  className="w-full py-2 px-3.5 rounded-xl border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-700 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-2xs active:scale-[0.99] cursor-pointer"
                 >
-                  <Sparkles className="w-4 h-4 text-blue-600" />
+                  <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                   <span>Quick Demo: accountant@allcoresolution.com</span>
                 </button>
               </div>
 
               {/* Card Footer Credit */}
-              <div className="mt-5 pt-3 border-t border-slate-100 text-center flex items-center justify-center gap-1.5 text-xs font-medium text-slate-500">
+              <div className="mt-4 pt-3 border-t border-slate-100 text-center flex items-center justify-center gap-1.5 text-[11px] font-medium text-slate-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-slate-400" />
                 <span>
                   Built with <span className="text-red-500 font-bold">❤️</span> by{' '}
@@ -455,9 +484,9 @@ const Login = () => {
       </main>
 
       {/* Global Minimal Bottom Footer */}
-      <footer className="w-full bg-white border-t border-slate-200/80 py-3.5 px-6 text-center">
-        <p className="text-xs text-slate-500 font-medium">
-          &copy; {new Date().getFullYear()} School ERP &bull; Next Generation Institutional Finance Platform &bull; All Rights Reserved
+      <footer className="w-full bg-white border-t border-slate-200/90 py-2.5 px-6 text-center shrink-0">
+        <p className="text-[11px] text-slate-500 font-medium">
+          &copy; {new Date().getFullYear()} School ERP &bull; Institutional Financial Suite &bull; All Rights Reserved
         </p>
       </footer>
 
