@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import localDb from '../api/localDb';
+import axiosInstance from '../api/axios';
 
 const SYSTEM_PAGES = [
   { label: 'Dashboard', path: '/accounts/dashboard', category: 'Navigation', icon: Gauge, desc: 'Overview, stats & calendar' },
@@ -46,7 +47,8 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
                      localStorage.getItem('user_avatar') || 
                      localDb.getProfile()?.avatar || '';
       const p = localDb.getProfile();
-      const u = JSON.parse(localStorage.getItem('accountant_user') || '{}');
+      const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || '{}';
+      const u = JSON.parse(rawUser);
       const name = p?.name || u?.name || u?.username || 'Hari Kumar';
       const initials = name.trim().split(/\s+/).filter(Boolean).map(n => n[0]).join('').slice(0, 2).toUpperCase() || 'HK';
       return { avatar, name, initials };
@@ -55,19 +57,67 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
     }
   };
 
+  const getSchoolMeta = () => {
+    try {
+      const storedSchool = localStorage.getItem('school_info');
+      if (storedSchool) {
+        const parsed = JSON.parse(storedSchool);
+        if (parsed?.name) return parsed;
+      }
+      const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user');
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        if (u.school?.name) return u.school;
+        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+      }
+      const rawSchoolName = localStorage.getItem('schoolName');
+      if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+      const appSettings = localDb.getAll('settings')?.appearance;
+      if (appSettings?.schoolName) return { name: appSettings.schoolName, logo: null, shortName: '' };
+    } catch (_) {}
+    return { name: 'All core', logo: null, shortName: 'allcore' };
+  };
+
   const [profileMeta, setProfileMeta] = useState(getProfileMeta);
+  const [schoolInfo, setSchoolInfo] = useState(getSchoolMeta);
+  const [logoImgError, setLogoImgError] = useState(false);
 
   useEffect(() => {
     const handleProfileSync = () => {
       setProfileMeta(getProfileMeta());
       setImgError(false);
     };
+    const handleSchoolSync = () => {
+      setSchoolInfo(getSchoolMeta());
+      setLogoImgError(false);
+    };
     window.addEventListener('accountant_profile_updated', handleProfileSync);
     window.addEventListener('user_profile_updated', handleProfileSync);
+    window.addEventListener('school_info_updated', handleSchoolSync);
+    window.addEventListener('storage', handleSchoolSync);
     window.addEventListener('storage', handleProfileSync);
+
+    // Initial async verification if school profile is available on backend
+    axiosInstance.get('/compliance/school-profile')
+      .then(res => {
+        if (res.data?.success && res.data.data?.schoolName) {
+          const sObj = {
+            name: res.data.data.schoolName,
+            logo: res.data.data.logoUrl || null,
+            shortName: res.data.data.shortName || res.data.data.schoolName.slice(0, 10)
+          };
+          setSchoolInfo(sObj);
+          localStorage.setItem('school_info', JSON.stringify(sObj));
+          localStorage.setItem('schoolName', sObj.name);
+        }
+      })
+      .catch(() => {});
+
     return () => {
       window.removeEventListener('accountant_profile_updated', handleProfileSync);
       window.removeEventListener('user_profile_updated', handleProfileSync);
+      window.removeEventListener('school_info_updated', handleSchoolSync);
+      window.removeEventListener('storage', handleSchoolSync);
       window.removeEventListener('storage', handleProfileSync);
     };
   }, []);
@@ -185,29 +235,38 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         {/* Brand Unit */}
         <Link
           to="/accounts/dashboard"
-          className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none no-underline"
-          title="Accountant Portal • Multi-School ERP"
+          className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none no-underline transition-opacity hover:opacity-95"
+          title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
         >
           {/* School Emblem Icon */}
           <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 shadow-xs group-hover:shadow-md transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center shrink-0">
             <div className="w-full h-full bg-[#131927] rounded-[10px] flex items-center justify-center overflow-hidden relative">
-              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 group-hover:text-orange-300 transition-transform group-hover:rotate-6 duration-300" />
+              {schoolInfo.logo && !logoImgError ? (
+                <img
+                  src={schoolInfo.logo}
+                  alt={schoolInfo.name}
+                  onError={() => setLogoImgError(true)}
+                  className="w-full h-full object-contain p-0.5"
+                />
+              ) : (
+                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 group-hover:text-orange-300 transition-transform group-hover:rotate-6 duration-300" />
+              )}
               <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-white animate-pulse" />
             </div>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-black text-slate-800 tracking-tight text-[15px] sm:text-[17px] leading-tight group-hover:text-[#ff5c0a] transition-all">
-                ALL CORE SOLUTION
+              <span className="font-black text-slate-800 tracking-tight text-[15px] sm:text-[17px] leading-tight group-hover:text-[#ff5c0a] transition-all truncate max-w-[200px] sm:max-w-[340px]">
+                {schoolInfo.name || 'School ERP'}
               </span>
-              <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-xs">
+              <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-xs shrink-0">
                 <Sparkles className="w-2.5 h-2.5 text-[#ff5c0a]" />
                 <span>ACCOUNTANT</span>
               </span>
             </div>
-            <span className="text-[10px] text-slate-400 hidden sm:block font-medium tracking-wide">
-              Financial & Fee Management • Session 2026-27
+            <span className="text-[10px] text-slate-400 hidden sm:block font-medium tracking-wide truncate max-w-[320px]">
+              {schoolInfo.shortName ? `${schoolInfo.shortName} • ` : ''}Financial & Fee Management • Session 2026-27
             </span>
           </div>
         </Link>

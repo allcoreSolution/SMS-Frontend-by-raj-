@@ -20,14 +20,23 @@ export const authService = {
       if (response.data && response.data.success) {
         const userData = response.data.data;
         const token = userData.token;
+        const schoolObj = userData.school || {
+          name: userData.schoolName || 'All core',
+          shortName: userData.schoolShortName || 'allcore',
+          logo: userData.schoolLogo || null,
+        };
         const user = {
           token,
           _id: userData._id,
-          name: userData.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : (userData.username || 'Accountant'),
+          name: userData.firstName ? `${userData.firstName} ${userData.lastName || ''}`.trim() : (userData.name || userData.username || 'Accountant'),
           email: userData.email,
           role: typeof userData.role === 'object' ? userData.role?.name : userData.role || 'Accountant',
           staffId: userData.staffId || '',
           tenant: userData.tenant,
+          school: schoolObj,
+          schoolName: userData.schoolName || schoolObj.name || 'All core',
+          schoolLogo: userData.schoolLogo || schoolObj.logo || null,
+          schoolShortName: userData.schoolShortName || schoolObj.shortName || 'allcore',
         };
 
         sessionStorage.setItem('accountant_token', token);
@@ -35,6 +44,17 @@ export const authService = {
         localStorage.setItem('accountant_token', token);
         localStorage.setItem('token', token);
         localStorage.setItem('accountant_user', JSON.stringify(user));
+        if (user.schoolName) {
+          localStorage.setItem('schoolName', user.schoolName);
+        }
+        if (user.school) {
+          localStorage.setItem('school_info', JSON.stringify(user.school));
+        }
+
+        try {
+          window.dispatchEvent(new CustomEvent('school_info_updated', { detail: user.school }));
+          window.dispatchEvent(new CustomEvent('accountant_profile_updated', { detail: user }));
+        } catch (_) {}
 
         // Trigger background initial sync with central MongoDB database
         if (typeof localDb.syncFromBackend === 'function') {
@@ -50,17 +70,39 @@ export const authService = {
         (identifier === 'admin123@gmail.com' && password === DEMO_PASSWORD)
       ) {
         const profile = localDb.getProfile();
+        let existingSchool = null;
+        try {
+          existingSchool = JSON.parse(localStorage.getItem('school_info'));
+        } catch (_) {}
+        const defaultSchool = existingSchool || {
+          name: localStorage.getItem('schoolName') || 'All core',
+          shortName: 'allcore',
+          logo: null,
+        };
         const user = {
           token: 'offline-token-' + Date.now(),
           name: profile.name || 'Accountant',
           email: profile.email || DEMO_EMAIL,
           role: profile.role || 'Accountant',
           staffId: profile.staffId || '',
+          school: defaultSchool,
+          schoolName: defaultSchool.name,
+          schoolLogo: defaultSchool.logo,
+          schoolShortName: defaultSchool.shortName,
         };
         sessionStorage.setItem('accountant_token', user.token);
         sessionStorage.setItem('accountant_user', JSON.stringify(user));
         localStorage.setItem('accountant_token', user.token);
         localStorage.setItem('accountant_user', JSON.stringify(user));
+        if (user.schoolName) {
+          localStorage.setItem('schoolName', user.schoolName);
+        }
+        if (user.school) {
+          localStorage.setItem('school_info', JSON.stringify(user.school));
+        }
+        try {
+          window.dispatchEvent(new CustomEvent('school_info_updated', { detail: user.school }));
+        } catch (_) {}
         return { success: true, data: user, message: 'Login successful (Offline Demo Mode)' };
       }
 

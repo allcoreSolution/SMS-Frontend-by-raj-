@@ -108,11 +108,56 @@ const MENU_SECTIONS = [
   }
 ];
 
+const getSchoolMeta = () => {
+  try {
+    const storedSchool = localStorage.getItem('school_info');
+    if (storedSchool) {
+      const parsed = JSON.parse(storedSchool);
+      if (parsed?.name) return parsed;
+    }
+    const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user');
+    if (rawUser) {
+      const u = JSON.parse(rawUser);
+      if (u.school?.name) return u.school;
+      if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+    }
+    const rawSchoolName = localStorage.getItem('schoolName');
+    if (rawSchoolName) return { name: rawSchoolName, logo: null, shortName: '' };
+  } catch (_) {}
+  return { name: 'All core', logo: null, shortName: 'allcore' };
+};
+
+const getSchoolInitials = (name) => {
+  if (!name) return 'ERP';
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length >= 2) {
+    return (parts[0][0] + parts[1][0]).toUpperCase();
+  }
+  return name.slice(0, 3).toUpperCase();
+};
+
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
   const [menuSearch, setMenuSearch] = useState('');
   const [openCategory, setOpenCategory] = useState('Main Navigation');
   const [openSubmenu, setOpenSubmenu] = useState(null);
+  const [schoolInfo, setSchoolInfo] = useState(getSchoolMeta);
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    const handleSchoolSync = () => {
+      setSchoolInfo(getSchoolMeta());
+      setLogoError(false);
+    };
+    window.addEventListener('school_info_updated', handleSchoolSync);
+    window.addEventListener('accountant_profile_updated', handleSchoolSync);
+    window.addEventListener('storage', handleSchoolSync);
+    return () => {
+      window.removeEventListener('school_info_updated', handleSchoolSync);
+      window.removeEventListener('accountant_profile_updated', handleSchoolSync);
+      window.removeEventListener('storage', handleSchoolSync);
+    };
+  }, []);
 
   useEffect(() => {
     for (const section of MENU_SECTIONS) {
@@ -170,42 +215,35 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Brand Logo Area */}
       <NavLink 
         to="/accounts/dashboard"
-        className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 hover:brightness-110 transition-all group"
+        className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 hover:brightness-110 transition-all group no-underline cursor-pointer"
+        title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
       >
         <div 
           className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 group-hover:scale-105 transition-transform shrink-0 overflow-hidden"
           translate="no"
         >
           <div className="w-full h-full bg-[#131927] rounded-[9px] flex items-center justify-center overflow-hidden">
-            <svg 
-              viewBox="0 0 36 36" 
-              className="w-full h-full notranslate select-none pointer-events-none" 
-              translate="no" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <rect width="36" height="36" rx="9" fill="#131927"/>
-              <text 
-                x="18" 
-                y="18.5" 
-                dominantBaseline="central" 
-                textAnchor="middle" 
-                fill="#ff5c0a" 
-                fontSize="11" 
-                fontWeight="900" 
-                fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-                letterSpacing="0.5px"
-              >
-                ERP
-              </text>
-            </svg>
+            {schoolInfo.logo && !logoError ? (
+              <img
+                src={schoolInfo.logo}
+                alt={schoolInfo.name}
+                onError={() => setLogoError(true)}
+                className="w-full h-full object-contain p-1"
+              />
+            ) : (
+              <span className="text-[#ff5c0a] text-xs font-black tracking-wider uppercase select-none font-mono">
+                {getSchoolInitials(schoolInfo.name)}
+              </span>
+            )}
           </div>
         </div>
-        <div className="flex flex-col">
-          <span className="font-bold text-[14px] tracking-wide leading-tight group-hover:text-orange-400 transition-colors">
-            Accountant Portal
+        <div className="flex flex-col min-w-0">
+          <span className="font-bold text-[14px] tracking-wide leading-tight group-hover:text-orange-400 transition-colors truncate max-w-[155px]">
+            {schoolInfo.name || 'Accountant Portal'}
           </span>
-          <span className="text-[10px] text-slate-400 font-medium">Multi-School ERP v3.7</span>
+          <span className="text-[10px] text-slate-400 font-medium truncate max-w-[155px]">
+            {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accountant Portal • ERP'}
+          </span>
         </div>
       </NavLink>
 

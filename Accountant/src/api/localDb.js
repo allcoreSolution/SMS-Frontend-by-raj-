@@ -236,14 +236,16 @@ export const localDb = {
 
   async syncFromBackend() {
     try {
-      const [feeTypesRes, feeGroupsRes, studentsRes, incomesRes, expensesRes, incomeHeadsRes, expenseHeadsRes] = await Promise.allSettled([
+      const [feeTypesRes, feeGroupsRes, studentsRes, incomesRes, expensesRes, incomeHeadsRes, expenseHeadsRes, collectionsRes, schoolProfileRes] = await Promise.allSettled([
         axiosInstance.get('/fee-types'),
         axiosInstance.get('/fee-groups'),
         axiosInstance.get('/students'),
         axiosInstance.get('/incomes'),
         axiosInstance.get('/expenses'),
         axiosInstance.get('/income-heads'),
-        axiosInstance.get('/expense-heads')
+        axiosInstance.get('/expense-heads'),
+        axiosInstance.get('/collect-fees'),
+        axiosInstance.get('/compliance/school-profile'),
       ]);
 
       if (feeTypesRes.status === 'fulfilled' && feeTypesRes.value.data?.data?.length > 0) {
@@ -331,6 +333,41 @@ export const localDb = {
           description: h.description || ''
         }));
         write('expenseHeads', mapped);
+      }
+
+      if (collectionsRes?.status === 'fulfilled' && (collectionsRes.value.data?.data?.length > 0 || collectionsRes.value.data?.receipts?.length > 0)) {
+        const rawList = collectionsRes.value.data?.data || collectionsRes.value.data?.receipts || [];
+        const mapped = rawList.map(c => ({
+          id: c._id,
+          _id: c._id,
+          receiptNo: c.receiptNo || `REC-${(c._id || '').slice(-5)}`,
+          studentId: c.student?._id || c.student,
+          studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student'),
+          feeGroupId: c.feeGroup?._id || c.feeGroup,
+          amount: Number(c.amountPaid || c.amount || 0),
+          fine: Number(c.fineAmount || 0),
+          discount: Number(c.discountAmount || 0),
+          date: c.paymentDate ? new Date(c.paymentDate).toISOString().slice(0, 10) : (c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
+          mode: c.paymentMode || 'Cash',
+          note: c.note || '',
+        }));
+        write('collections', mapped);
+      }
+
+      if (schoolProfileRes?.status === 'fulfilled' && schoolProfileRes.value.data?.data) {
+        const prof = schoolProfileRes.value.data.data;
+        if (prof.schoolName) {
+          const sObj = {
+            name: prof.schoolName,
+            logo: prof.logoUrl || null,
+            shortName: prof.shortName || prof.schoolName.slice(0, 10),
+          };
+          localStorage.setItem('school_info', JSON.stringify(sObj));
+          localStorage.setItem('schoolName', sObj.name);
+          try {
+            window.dispatchEvent(new CustomEvent('school_info_updated', { detail: sObj }));
+          } catch (_) {}
+        }
       }
 
       return true;

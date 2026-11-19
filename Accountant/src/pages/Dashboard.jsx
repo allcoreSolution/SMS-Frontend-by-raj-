@@ -237,6 +237,39 @@ const Dashboard = () => {
     avatar: ''
   });
 
+  const getSchoolMeta = () => {
+    try {
+      const stored = localStorage.getItem('school_info');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.name) return parsed;
+      }
+      const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        if (u.school?.name) return u.school;
+        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo || null, shortName: u.schoolShortName || '' };
+      }
+      const rawName = localStorage.getItem('schoolName');
+      if (rawName) return { name: rawName, logo: null, shortName: '' };
+    } catch (_) {}
+    return { name: 'All core', logo: null, shortName: 'allcore' };
+  };
+
+  const [schoolInfo, setSchoolInfo] = useState(getSchoolMeta);
+
+  useEffect(() => {
+    const handleSchoolSync = () => {
+      setSchoolInfo(getSchoolMeta());
+    };
+    window.addEventListener('school_info_updated', handleSchoolSync);
+    window.addEventListener('storage', handleSchoolSync);
+    return () => {
+      window.removeEventListener('school_info_updated', handleSchoolSync);
+      window.removeEventListener('storage', handleSchoolSync);
+    };
+  }, []);
+
   const [stats, setStats] = useState({
     collectedToday: 0,
     incomeMonth: 0,
@@ -371,6 +404,9 @@ const Dashboard = () => {
       const res = await accountantService.getDashboardStats();
       if (res.success && res.data) {
         setStats(res.data);
+        if (res.data.school) {
+          setSchoolInfo(res.data.school);
+        }
       }
       const pRes = await accountantService.getProfile();
       if (pRes?.data) {
@@ -378,6 +414,13 @@ const Dashboard = () => {
       } else {
         const p = localDb.getProfile();
         if (p) setProfile(p);
+      }
+
+      // Background central sync from backend
+      if (typeof localDb.syncFromBackend === 'function') {
+        localDb.syncFromBackend().then(() => {
+          loadStudents();
+        }).catch(() => {});
       }
     } catch (e) {
       console.error('Error loading dashboard stats:', e);
@@ -486,11 +529,17 @@ const Dashboard = () => {
       {/* Top Header & Quick Actions */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#333] flex items-center gap-2">
-            <Gauge className="w-6 h-6 text-[#f39c12]" /> Accountant Dashboard
-          </h1>
-          <p className="text-[13px] text-gray-500 mt-0.5">
-            Financial summary, daybook transactions, fee collections, staff loans and institutional calendar.
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-2xl font-bold text-[#333] flex items-center gap-2">
+              <Gauge className="w-6 h-6 text-[#f39c12]" /> Accountant Dashboard
+            </h1>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-2xs">
+              <Building2 className="w-3.5 h-3.5 text-[#ff5c0a]" />
+              <span>{schoolInfo.name || 'School ERP'}</span>
+            </span>
+          </div>
+          <p className="text-[13px] text-gray-500 mt-1">
+            Financial summary, daybook transactions, fee collections, and staff loans for <span className="font-semibold text-slate-700">{schoolInfo.name || 'All core'}</span>.
           </p>
         </div>
 

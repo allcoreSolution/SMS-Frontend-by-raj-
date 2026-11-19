@@ -183,6 +183,60 @@ export const accountantService = {
 
   // ── Dashboard ──────────────────────────────────────────────
   getDashboardStats: async () => {
+    try {
+      const res = await axiosInstance.get('/accounts/dashboard');
+      if (res.data && res.data.success) {
+        const d = res.data;
+        const stats = d.stats || {};
+
+        if (d.school || d.schoolName) {
+          const sObj = d.school || {
+            name: d.schoolName,
+            logo: d.schoolLogo || null,
+            shortName: d.schoolShortName || '',
+          };
+          localStorage.setItem('school_info', JSON.stringify(sObj));
+          localStorage.setItem('schoolName', sObj.name || d.schoolName);
+          try {
+            window.dispatchEvent(new CustomEvent('school_info_updated', { detail: sObj }));
+          } catch (_) {}
+        }
+
+        const chartData = (Array.isArray(d.chartData) ? d.chartData : []).map((c) => ({
+          name: c.name || c.month || 'Month',
+          Income: Number(c.Income ?? c.income ?? 0),
+          Expense: Number(c.Expense ?? c.expense ?? 0),
+        }));
+
+        const recentVouchers = (Array.isArray(d.recentVouchers) ? d.recentVouchers : []).map((v) => ({
+          id: v.id || v._id,
+          head: v.category || v.head || (String(v.type).toUpperCase() === 'INCOME' ? 'General Income' : 'General Expense'),
+          name: v.name || v.title || 'Voucher Record',
+          amount: Number(v.amount || 0),
+          date: v.date ? new Date(v.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+          type: String(v.type || '').toUpperCase() === 'INCOME' ? 'Income' : (String(v.type || '').toUpperCase() === 'EXPENSE' ? 'Expense' : (v.type || 'Income')),
+          invoiceNo: v.voucherNo || v.invoiceNo || `VCH-${(v.id || v._id || '').toString().slice(-4)}`,
+          paymentMode: v.paymentMode || 'Cash',
+        }));
+
+        const collectedToday = Number(stats.todaysCollection ?? stats.collectedToday ?? 0);
+        const incomeMonth = Number(stats.monthIncome ?? stats.incomeMonth ?? 0);
+        const expenseMonth = Number(stats.monthExpense ?? stats.expenseMonth ?? 0);
+        const cashBankBalance = Number(stats.cashAndBank ?? stats.cashBankBalance ?? (incomeMonth - expenseMonth));
+
+        return ok({
+          collectedToday,
+          incomeMonth,
+          expenseMonth,
+          cashBankBalance,
+          chartData,
+          recentVouchers,
+          school: d.school || null,
+        });
+      }
+    } catch (err) {
+      console.warn('Dashboard backend sync notice, using local DB:', err.message);
+    }
     const incomes = localDb.getAll('incomes');
     const expenses = localDb.getAll('expenses');
     const collections = localDb.getAll('collections');
