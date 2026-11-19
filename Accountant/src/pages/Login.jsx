@@ -12,8 +12,8 @@ import { authService } from '../api/authService';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState('accountant@allcoresolution.com');
-  const [password, setPassword] = useState('admin@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -121,7 +121,7 @@ const Login = () => {
           const { value: formValues } = await Swal.fire({
             title: 'Enter OTP & New Password',
             html: `
-              <p style="font-size: 13px; color: #555; margin-bottom: 12px;">OTP code sent to <b>${resetEmail}</b>. (Demo OTP: 123456)</p>
+              <p style="font-size: 13px; color: #555; margin-bottom: 12px;">OTP verification code sent to <b>${resetEmail}</b></p>
               <input id="swal-otp" class="swal2-input" placeholder="6-digit OTP" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 4px; font-weight: bold;">
               <input id="swal-newpass" type="password" class="swal2-input" placeholder="Enter New Password (min 6 chars)">
             `,
@@ -173,23 +173,9 @@ const Login = () => {
           Swal.fire('Account Note', res.message || 'Could not verify email', 'warning');
         }
       } catch (err) {
-        Swal.fire('Connection Note', 'Demo mode: Please use standard credentials to log in.', 'info');
+        Swal.fire('Error', 'Could not reach server. Please try again.', 'error');
       }
     }
-  };
-
-  const fillDemo = () => {
-    setIdentifier('accountant@allcoresolution.com');
-    setPassword('admin@123');
-    Swal.fire({
-      icon: 'info',
-      title: 'Demo Credentials Loaded',
-      text: 'accountant@allcoresolution.com / admin@123',
-      toast: true,
-      position: 'top-end',
-      timer: 2000,
-      showConfirmButton: false
-    });
   };
 
   return (
@@ -451,21 +437,6 @@ const Login = () => {
                 </div>
 
               </form>
-
-              {/* Instant One-Click Demo Access */}
-              <div className="mt-3.5 pt-3 border-t border-slate-100 flex flex-col items-center">
-                <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Instant One-Click Demo Access
-                </span>
-                <button
-                  type="button"
-                  onClick={fillDemo}
-                  className="w-full py-1.5 px-3 rounded-lg border border-blue-200 bg-blue-50/70 hover:bg-blue-100 text-blue-700 text-[11px] font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-[0.99] cursor-pointer"
-                >
-                  <Sparkles className="w-3 h-3 text-blue-600" />
-                  <span>Quick Demo: accountant@allcoresolution.com</span>
-                </button>
-              </div>
 
               {/* Card Footer Credit */}
               <div className="mt-3 pt-2 border-t border-slate-100 text-center flex items-center justify-center gap-1 text-[10px] font-medium text-slate-500">

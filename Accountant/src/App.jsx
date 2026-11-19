@@ -94,6 +94,9 @@ function App() {
           <Route path="/leads/dashboard" element={<LeadDashboard />} />
           <Route path="/leads/pipeline" element={<LeadPipeline />} />
           <Route path="/leads/sources" element={<LeadSources />} />
+          <Route path="/lead-dashboard" element={<Navigate to="/leads/dashboard" replace />} />
+          <Route path="/lead-pipeline" element={<Navigate to="/leads/pipeline" replace />} />
+          <Route path="/lead-sources" element={<Navigate to="/leads/sources" replace />} />
 
           <Route path="/settings" element={<Settings />} />
           <Route path="/notifications" element={<Notifications />} />

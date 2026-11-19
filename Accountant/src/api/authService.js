@@ -64,48 +64,6 @@ export const authService = {
         return { success: true, data: user, message: 'Login successful' };
       }
     } catch (err) {
-      // If error is invalid credentials or offline network
-      if (
-        (identifier.toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) ||
-        (identifier === 'admin123@gmail.com' && password === DEMO_PASSWORD)
-      ) {
-        const profile = localDb.getProfile();
-        let existingSchool = null;
-        try {
-          existingSchool = JSON.parse(localStorage.getItem('school_info'));
-        } catch (_) {}
-        const defaultSchool = existingSchool || {
-          name: localStorage.getItem('schoolName') || 'All core',
-          shortName: 'allcore',
-          logo: null,
-        };
-        const user = {
-          token: 'offline-token-' + Date.now(),
-          name: profile.name || 'Accountant',
-          email: profile.email || DEMO_EMAIL,
-          role: profile.role || 'Accountant',
-          staffId: profile.staffId || '',
-          school: defaultSchool,
-          schoolName: defaultSchool.name,
-          schoolLogo: defaultSchool.logo,
-          schoolShortName: defaultSchool.shortName,
-        };
-        sessionStorage.setItem('accountant_token', user.token);
-        sessionStorage.setItem('accountant_user', JSON.stringify(user));
-        localStorage.setItem('accountant_token', user.token);
-        localStorage.setItem('accountant_user', JSON.stringify(user));
-        if (user.schoolName) {
-          localStorage.setItem('schoolName', user.schoolName);
-        }
-        if (user.school) {
-          localStorage.setItem('school_info', JSON.stringify(user.school));
-        }
-        try {
-          window.dispatchEvent(new CustomEvent('school_info_updated', { detail: user.school }));
-        } catch (_) {}
-        return { success: true, data: user, message: 'Login successful (Offline Demo Mode)' };
-      }
-
       return {
         success: false,
         message: err.response?.data?.message || 'Invalid credentials. Please enter valid Accountant credentials.',

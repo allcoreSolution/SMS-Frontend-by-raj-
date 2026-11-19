@@ -224,7 +224,7 @@ export const accountantService = {
         const expenseMonth = Number(stats.monthExpense ?? stats.expenseMonth ?? 0);
         const cashBankBalance = Number(stats.cashAndBank ?? stats.cashBankBalance ?? (incomeMonth - expenseMonth));
 
-        return ok({
+        const resultData = {
           collectedToday,
           incomeMonth,
           expenseMonth,
@@ -232,10 +232,25 @@ export const accountantService = {
           chartData,
           recentVouchers,
           school: d.school || null,
-        });
+        };
+
+        try {
+          localStorage.setItem('acc_live_dashboard_stats', JSON.stringify(resultData));
+        } catch (_) {}
+
+        return ok(resultData);
       }
     } catch (err) {
-      console.warn('Dashboard backend sync notice, using local DB:', err.message);
+      console.warn('Dashboard backend sync notice, checking cached live stats:', err.message);
+      const cached = localStorage.getItem('acc_live_dashboard_stats');
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance)) {
+            return ok(parsed);
+          }
+        } catch (_) {}
+      }
     }
     const incomes = localDb.getAll('incomes');
     const expenses = localDb.getAll('expenses');

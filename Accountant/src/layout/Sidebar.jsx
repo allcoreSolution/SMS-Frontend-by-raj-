@@ -212,14 +212,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
         }
       `}
     >
-      {/* Brand Logo Area */}
-      <NavLink 
-        to="/accounts/dashboard"
-        className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 hover:brightness-110 transition-all group no-underline cursor-pointer"
+      {/* Brand Logo Area (Static Display, No Redirection) */}
+      <div 
+        className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 select-none"
         title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
       >
         <div 
-          className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 group-hover:scale-105 transition-transform shrink-0 overflow-hidden"
+          className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 shrink-0 overflow-hidden"
           translate="no"
         >
           <div className="w-full h-full bg-[#131927] rounded-[9px] flex items-center justify-center overflow-hidden">
@@ -238,14 +237,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="font-bold text-[14px] tracking-wide leading-tight group-hover:text-orange-400 transition-colors truncate max-w-[155px]">
+          <span className="font-bold text-[14px] tracking-wide leading-tight truncate max-w-[155px]">
             {schoolInfo.name || 'Accountant Portal'}
           </span>
           <span className="text-[10px] text-slate-400 font-medium truncate max-w-[155px]">
             {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accountant Portal • ERP'}
           </span>
         </div>
-      </NavLink>
+      </div>
 
       {/* Scrollable Navigation Menu */}
       <div className="flex-1 overflow-y-auto custom-scrollbar py-2">

@@ -232,14 +232,13 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
           <Menu className={`w-[20px] h-[20px] transition-transform duration-300 ${!isSidebarOpen ? 'rotate-90 text-[#ff5c0a]' : 'group-hover:scale-105'}`} />
         </button>
 
-        {/* Brand Unit */}
-        <Link
-          to="/accounts/dashboard"
-          className="flex items-center gap-2 sm:gap-2.5 group cursor-pointer select-none no-underline transition-opacity hover:opacity-95"
+        {/* Brand Unit (Static Display, No Redirection) */}
+        <div
+          className="flex items-center gap-2 sm:gap-2.5 select-none"
           title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
         >
           {/* School Emblem Icon */}
-          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 shadow-xs group-hover:shadow-md transition-all duration-300 transform group-hover:scale-105 flex items-center justify-center shrink-0">
+          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 shadow-xs flex items-center justify-center shrink-0">
             <div className="w-full h-full bg-[#131927] rounded-[10px] flex items-center justify-center overflow-hidden relative">
               {schoolInfo.logo && !logoImgError ? (
                 <img
@@ -249,7 +248,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
                   className="w-full h-full object-contain p-0.5"
                 />
               ) : (
-                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400 group-hover:text-orange-300 transition-transform group-hover:rotate-6 duration-300" />
+                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
               )}
               <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-white animate-pulse" />
             </div>
@@ -257,7 +256,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
 
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-black text-slate-800 tracking-tight text-[15px] sm:text-[17px] leading-tight group-hover:text-[#ff5c0a] transition-all truncate max-w-[200px] sm:max-w-[340px]">
+              <span className="font-black text-slate-800 tracking-tight text-[15px] sm:text-[17px] leading-tight truncate max-w-[200px] sm:max-w-[340px]">
                 {schoolInfo.name || 'School ERP'}
               </span>
               <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-xs shrink-0">
@@ -269,7 +268,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
               {schoolInfo.shortName ? `${schoolInfo.shortName} • ` : ''}Financial & Fee Management • Session 2026-27
             </span>
           </div>
-        </Link>
+        </div>
       </div>
 
       <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-auto pr-0.5 sm:pr-1">

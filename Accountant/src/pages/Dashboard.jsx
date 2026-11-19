@@ -67,7 +67,7 @@ const ClassicStatCard = ({
   return (
     <div 
       style={{ animation: `riseUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms both` }}
-      className="bg-white rounded-lg p-2 sm:px-2.5 sm:py-2 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group cursor-pointer"
+      className="bg-white rounded-lg p-2 sm:px-2.5 sm:py-2 shadow-xs border border-slate-100 hover:shadow-md hover:border-slate-200 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group"
     >
       {/* Live Indicator */}
       <div className="absolute top-1 right-1.5 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -270,14 +270,27 @@ const Dashboard = () => {
     };
   }, []);
 
-  const [stats, setStats] = useState({
-    collectedToday: 0,
-    incomeMonth: 0,
-    expenseMonth: 0,
-    cashBankBalance: 0,
-    chartData: [],
-    recentVouchers: []
-  });
+  const getInitialStats = () => {
+    try {
+      const raw = localStorage.getItem('acc_live_dashboard_stats');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance || parsed.recentVouchers?.length)) {
+          return parsed;
+        }
+      }
+    } catch (_) {}
+    return {
+      collectedToday: 0,
+      incomeMonth: 0,
+      expenseMonth: 0,
+      cashBankBalance: 0,
+      chartData: [],
+      recentVouchers: []
+    };
+  };
+
+  const [stats, setStats] = useState(getInitialStats);
 
   // Fast Fee Collection Terminal state
   const [studentsList, setStudentsList] = useState([]);
@@ -404,6 +417,7 @@ const Dashboard = () => {
       const res = await accountantService.getDashboardStats();
       if (res.success && res.data) {
         setStats(res.data);
+        localStorage.setItem('acc_live_dashboard_stats', JSON.stringify(res.data));
         if (res.data.school) {
           setSchoolInfo(res.data.school);
         }
