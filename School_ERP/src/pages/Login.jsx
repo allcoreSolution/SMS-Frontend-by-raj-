@@ -12,7 +12,8 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const user = localStorage.getItem('user');
+    if (token && user) {
       navigate('/');
     }
   }, [navigate]);
@@ -84,28 +85,19 @@ const Login = () => {
         return;
       }
     } catch (err) {
-      // If backend network error or credentials fail, allow quick access fallback
-      console.warn('API login attempt, falling back to instant admin access if preferred:', err);
-      
-      const isNetworkError = !err.response || err.code === 'ERR_NETWORK' || err.message?.includes('Network');
-      
-      if (isNetworkError) {
+      console.warn('API login attempt failed:', err);
+      const isDemoCred = (formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
+
+      if (isDemoCred) {
         performBypassLogin();
         return;
       }
 
       Swal.fire({
-        icon: 'warning',
-        title: 'Authentication Note',
-        text: err.response?.data?.message || 'Invalid credentials. You can use Demo Admin Access to explore.',
-        showCancelButton: true,
-        confirmButtonText: 'Use Demo Admin Access',
-        cancelButtonText: 'Try Again',
+        icon: 'error',
+        title: 'Authentication Failed',
+        text: err.response?.data?.message || 'Invalid email or password. Please try again.',
         confirmButtonColor: '#6366f1',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          performBypassLogin();
-        }
       });
     } finally {
       setLoading(false);

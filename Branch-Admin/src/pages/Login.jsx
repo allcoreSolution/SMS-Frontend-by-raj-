@@ -44,9 +44,7 @@ const Login = ({ onLogin }) => {
         Swal.fire('Error', res?.message || 'Login failed', 'error');
       }
     } catch (err) {
-      // In case of unexpected rejection, bypass for demo
-      authService.login({ username: email, email, password });
-      onLogin();
+      Swal.fire('Login Error', err.response?.data?.message || err.message || 'Unable to authenticate. Please check your credentials.', 'error');
     } finally {
       setLoading(false);
     }

@@ -59,7 +59,7 @@ export default function Login() {
 
   useEffect(() => {
     // If user is already authenticated, redirect to dashboard
-    const token = localStorage.getItem('parent_token') || localStorage.getItem('token');
+    const token = localStorage.getItem('parent_token');
     const user = localStorage.getItem('parent_user');
     if (token && user) {
       navigate('/dashboard', { replace: true });

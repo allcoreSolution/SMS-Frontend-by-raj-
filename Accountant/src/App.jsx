@@ -26,10 +26,20 @@ import Notifications from './pages/Notifications';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import MainLayout from './layout/MainLayout';
+import { authService } from './api/authService';
+
 // Smart AuthGate: redirect to dashboard if authenticated, or login if not
 const AuthGate = () => {
-  const isAuth = typeof window !== 'undefined' && !!(localStorage.getItem('accountant_token') || localStorage.getItem('token'));
+  const isAuth = authService.isAuthenticated();
   return isAuth ? <Navigate to="/accounts/dashboard" replace /> : <Navigate to="/login" replace />;
+};
+
+const ProtectedRoute = ({ children }) => {
+  const isAuth = authService.isAuthenticated();
+  if (!isAuth) {
+    return <Navigate to="/login" replace />;
+  }
+  return children ? children : <MainLayout />;
 };
 
 function App() {
@@ -46,8 +56,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         
-        {/* Dashboard Routes (With Header/Sidebar) */}
-        <Route element={<MainLayout />}>
+        {/* Dashboard Routes (With Header/Sidebar) Protected */}
+        <Route element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route path="/accounts/dashboard" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/accounts" element={<Navigate to="/accounts/dashboard" replace />} />
@@ -89,8 +99,8 @@ function App() {
           <Route path="/notifications" element={<Notifications />} />
         </Route>
 
-        {/* Global Catch-all to eliminate any 404 Route Not Found */}
-        <Route path="*" element={<Navigate to="/accounts/dashboard" replace />} />
+        {/* Global Catch-all: check auth before redirect */}
+        <Route path="*" element={<AuthGate />} />
       </Routes>
     </Router>
   );

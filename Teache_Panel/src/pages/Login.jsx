@@ -75,7 +75,8 @@ const Login = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const user = localStorage.getItem('user');
+    if (token && user) {
       navigate('/');
     }
   }, [navigate]);
@@ -218,7 +219,7 @@ const Login = () => {
       const isTeacherCred = (formData.identifier === 'avanikumari@gmail.com' || formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
       const isStaffCred = (formData.identifier === 'staff@school.edu' || formData.identifier === 'admin@school.edu') && formData.password === 'admin@123';
 
-      if (isTeacherCred || isStaffCred || !err.response) {
+      if (isTeacherCred || isStaffCred) {
         const dummyUser = selectedRole === 'staff' ? {
           id: 'staff_101',
           name: 'Priya Sharma (Staff Admin)',

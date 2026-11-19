@@ -17,7 +17,9 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     try {
+      const token = localStorage.getItem('superadmin_token');
       const saved = localStorage.getItem('sa_user');
+      if (!token || !saved) return null;
       const parsed = saved ? JSON.parse(saved) : null;
       if (parsed) {
         const storedAvatar = localStorage.getItem('superadmin_user_avatar');

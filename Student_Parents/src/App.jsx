@@ -103,9 +103,9 @@ export default function App() {
 
   const hasAuth = () => {
     try {
-      const token = localStorage.getItem('parent_token') || localStorage.getItem('token');
+      const token = localStorage.getItem('parent_token');
       const user = localStorage.getItem('parent_user');
-      return !!(token || user);
+      return !!(token && user);
     } catch (e) {
       return false;
     }

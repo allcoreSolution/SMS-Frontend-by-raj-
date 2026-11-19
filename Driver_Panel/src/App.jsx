@@ -37,6 +37,10 @@ function ScrollToTop() {
 }
 
 function ProtectedRoute({ children }) {
+  const { driver, token } = useAuth();
+  if (!token || !driver) {
+    return <Navigate to="/login" replace />;
+  }
   return children;
 }
 

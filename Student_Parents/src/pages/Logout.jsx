@@ -10,6 +10,8 @@ export default function Logout() {
     // Cleanup all session keys
     localStorage.removeItem('parent_token');
     localStorage.removeItem('parent_user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     localStorage.removeItem('active_child');
 
     // Switch to done state instead of bouncing back to '/'

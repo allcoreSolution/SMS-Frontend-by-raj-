@@ -6,6 +6,8 @@ const Logout = () => {
     // Clear everything
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('schoolId');
+    localStorage.removeItem('schoolName');
     
     // Hard refresh into login
     setTimeout(() => {

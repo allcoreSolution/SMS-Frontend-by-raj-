@@ -42,7 +42,7 @@ class ErrorBoundary extends Component {
     try {
       localStorage.removeItem('branch_admin_token');
       localStorage.removeItem('branch_admin_user');
-      authService.ensureDemoSession();
+      authService.logout();
     } catch (_) {}
     window.location.href = '/';
   };
@@ -548,10 +548,7 @@ const App = () => {
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    try {
-      authService.ensureDemoSession();
-    } catch (_) {}
-    return true;
+    return authService.isAuthenticated();
   });
 
   useEffect(() => {

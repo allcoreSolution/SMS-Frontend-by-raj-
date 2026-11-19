@@ -11,8 +11,9 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('accountant_token') || localStorage.getItem('token');
-    if (token) {
+    const token = localStorage.getItem('accountant_token');
+    const user = localStorage.getItem('accountant_user');
+    if (token && user) {
       navigate('/accounts/dashboard', { replace: true });
     }
   }, [navigate]);

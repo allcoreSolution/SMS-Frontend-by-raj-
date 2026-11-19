@@ -42,54 +42,33 @@ export const authService = {
         return { success: true, data: user, message: 'Login successful' };
       }
     } catch (err) {
-      // If error is invalid credentials returned explicitly by backend (400/401)
-      if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        // Allow fallback to offline demo credentials if explicitly matched
-        if (
-          (identifier.toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) ||
-          (identifier === 'admin123@gmail.com' && password === DEMO_PASSWORD)
-        ) {
-          const profile = localDb.getProfile();
-          const user = {
-            token: 'offline-token-' + Date.now(),
-            name: profile.name || 'Accountant',
-            email: profile.email || DEMO_EMAIL,
-            role: profile.role || 'Accountant',
-            staffId: profile.staffId || '',
-          };
-          localStorage.setItem('accountant_token', user.token);
-          localStorage.setItem('accountant_user', JSON.stringify(user));
-          return { success: true, data: user, message: 'Login successful (Offline Demo Mode)' };
-        }
-        return {
-          success: false,
-          message: err.response.data?.message || 'Invalid credentials. Use accountant@allcoresolution.com / admin@123',
+      // If error is invalid credentials or offline network
+      if (
+        (identifier.toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) ||
+        (identifier === 'admin123@gmail.com' && password === DEMO_PASSWORD)
+      ) {
+        const profile = localDb.getProfile();
+        const user = {
+          token: 'offline-token-' + Date.now(),
+          name: profile.name || 'Accountant',
+          email: profile.email || DEMO_EMAIL,
+          role: profile.role || 'Accountant',
+          staffId: profile.staffId || '',
         };
+        localStorage.setItem('accountant_token', user.token);
+        localStorage.setItem('accountant_user', JSON.stringify(user));
+        return { success: true, data: user, message: 'Login successful (Offline Demo Mode)' };
       }
-    }
 
-    // Offline / Network fallback
-    if (
-      (identifier.toLowerCase() === DEMO_EMAIL && password === DEMO_PASSWORD) ||
-      (identifier === 'admin123@gmail.com' && password === DEMO_PASSWORD) ||
-      (identifier && password)
-    ) {
-      const profile = localDb.getProfile();
-      const user = {
-        token: 'offline-token-' + Date.now(),
-        name: profile.name || 'Accountant',
-        email: profile.email || DEMO_EMAIL,
-        role: profile.role || 'Accountant',
-        staffId: profile.staffId || '',
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Invalid credentials. Please enter valid Accountant credentials.',
       };
-      localStorage.setItem('accountant_token', user.token);
-      localStorage.setItem('accountant_user', JSON.stringify(user));
-      return { success: true, data: user, message: 'Login successful (Offline Fallback)' };
     }
 
     return {
       success: false,
-      message: 'Invalid credentials. Use accountant@allcoresolution.com / admin@123',
+      message: 'Invalid credentials. Please enter valid Accountant credentials.',
     };
   },
 
@@ -111,7 +90,6 @@ export const authService = {
     }
   },
 
-
   logout: () => {
     localStorage.removeItem('accountant_token');
     localStorage.removeItem('token');
@@ -127,7 +105,7 @@ export const authService = {
     }
   },
 
-  isAuthenticated: () => !!(localStorage.getItem('accountant_token') || localStorage.getItem('token')),
+  isAuthenticated: () => !!(localStorage.getItem('accountant_token') && localStorage.getItem('accountant_user')),
 };
 
 export default authService;

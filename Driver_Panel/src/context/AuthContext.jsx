@@ -29,12 +29,12 @@ export const AuthProvider = ({ children }) => {
   const [driver, setDriver] = useState(() => {
     try {
       const saved = localStorage.getItem('driver_profile');
-      return saved ? JSON.parse(saved) : DEFAULT_DRIVER;
+      return saved ? JSON.parse(saved) : null;
     } catch {
-      return DEFAULT_DRIVER;
+      return null;
     }
   });
-  const [token, setToken] = useState(() => localStorage.getItem('driver_token') || 'demo-driver-token-drv-101');
+  const [token, setToken] = useState(() => localStorage.getItem('driver_token') || null);
   const [vehicle, setVehicle] = useState(null);
   const [route, setRoute] = useState(null);
   const [activeTrip, setActiveTrip] = useState(null);
@@ -49,6 +49,7 @@ export const AuthProvider = ({ children }) => {
 
   // Load driver profile from /api/driver/me on init if token exists
   useEffect(() => {
+    if (!token) return;
     let mounted = true;
     const fetchMe = async () => {
       try {

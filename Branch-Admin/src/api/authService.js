@@ -41,46 +41,34 @@ export const authService = {
         };
       }
     } catch (err) {
-      // If server responded with 400/401 invalid credentials
-      if (err.response && (err.response.status === 400 || err.response.status === 401)) {
-        if (
-          (identifier === 'admin@branch.com' && password === 'admin@123') ||
-          (identifier === 'admin123@gmail.com' && password === 'admin@123')
-        ) {
-          const user = {
-            name: 'Branch General Manager',
-            email: identifier,
-            role: 'Branch Admin',
-            token: 'demo_token_branch_admin_' + Date.now(),
-          };
-          localStorage.setItem('branch_admin_token', user.token);
-          localStorage.setItem('branch_admin_user', JSON.stringify(user));
-          return {
-            success: true,
-            message: 'Logged in successfully (Offline Verified)',
-            data: user,
-          };
-        }
+      // If server responded with 400/401 invalid credentials or offline
+      if (
+        (identifier === 'admin@branch.com' && password === 'admin@123') ||
+        (identifier === 'admin123@gmail.com' && password === 'admin@123')
+      ) {
+        const user = {
+          name: 'Branch General Manager',
+          email: identifier,
+          role: 'Branch Admin',
+          token: 'demo_token_branch_admin_' + Date.now(),
+        };
+        localStorage.setItem('branch_admin_token', user.token);
+        localStorage.setItem('branch_admin_user', JSON.stringify(user));
         return {
-          success: false,
-          message: err.response.data?.message || 'Invalid credentials. Use admin@branch.com or admin123@gmail.com with admin@123',
+          success: true,
+          message: 'Logged in successfully (Offline Verified)',
+          data: user,
         };
       }
+      return {
+        success: false,
+        message: err.response?.data?.message || 'Invalid credentials. Please enter valid Branch Admin credentials.',
+      };
     }
 
-    // Fallback demo session so user is never locked out during offline testing
-    const user = {
-      name: 'Branch General Manager',
-      email: identifier || 'admin@branch.com',
-      role: 'Branch Admin',
-      token: 'demo_token_branch_admin_' + Date.now(),
-    };
-    localStorage.setItem('branch_admin_token', user.token);
-    localStorage.setItem('branch_admin_user', JSON.stringify(user));
     return {
-      success: true,
-      message: 'Logged in successfully (Verified Branch Admin Session)',
-      data: user,
+      success: false,
+      message: 'Invalid credentials. Please enter valid Branch Admin credentials.',
     };
   },
 
@@ -96,21 +84,12 @@ export const authService = {
   },
 
   isAuthenticated: () => {
-    return !!localStorage.getItem('branch_admin_token') || !!localStorage.getItem('token');
+    return !!localStorage.getItem('branch_admin_token') && !!localStorage.getItem('branch_admin_user');
   },
 
   ensureDemoSession: () => {
-    if (!localStorage.getItem('branch_admin_token')) {
-      const user = {
-        name: 'Branch General Manager',
-        email: 'admin@branch.com',
-        role: 'Branch Admin',
-        token: 'demo_token_branch_admin_' + Date.now(),
-      };
-      localStorage.setItem('branch_admin_token', user.token);
-      localStorage.setItem('branch_admin_user', JSON.stringify(user));
-    }
-    return true;
+    // Disabled to strictly require manual login
+    return false;
   },
 };
 
