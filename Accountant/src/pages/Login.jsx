@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { 
   LogIn, Lock, User, Mail, ShieldCheck, 
   GraduationCap, Eye, EyeOff, ArrowRight, 
-  Sparkles, Users, BookOpen, BarChart3, 
-  MessageCircle, Sun, Moon
+  Sparkles, Sun, Moon
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { authService } from '../api/authService';
 
-// Assets
-import campusBackdropImg from '../assets/campus_backdrop_clean.png';
-import education3dShowcaseImg from '../assets/education_3d_showcase.png';
+// Authentic 3D Assets directly matched from reference design
+import floatingBadgeImg from '../assets/floating_mortarboard_badge.png';
+import cardStudentImg from '../assets/card1_student_rounded.png';
+import cardAcademicImg from '../assets/card2_academic_rounded.png';
+import cardFeesImg from '../assets/card3_fees_rounded.png';
+import cardCommImg from '../assets/card4_comm_rounded.png';
+import capBooksCupImg from '../assets/cap_books_cup_feathered.png';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -197,9 +200,9 @@ const Login = () => {
   };
 
   return (
-    <div className="h-screen max-h-screen w-full overflow-hidden bg-gradient-to-br from-[#010e2b] via-[#031d4e] to-[#010a22] text-slate-100 font-sans flex flex-col justify-between selection:bg-blue-500 selection:text-white relative select-none">
+    <div className="h-screen max-h-screen w-full overflow-hidden bg-gradient-to-br from-[#010c26] via-[#031d4e] to-[#01091d] text-slate-100 font-sans flex flex-col justify-between selection:bg-blue-500 selection:text-white relative select-none">
 
-      {/* Atmospheric Ambient Lighting & Pattern (Strictly Text-Free) */}
+      {/* Atmospheric Ambient Lighting & Pattern (STRICTLY 100% TEXT-FREE) */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         {/* Subtle Architectural Dot Grid */}
         <div 
@@ -209,15 +212,6 @@ const Login = () => {
             backgroundSize: '24px 24px'
           }}
         />
-
-        {/* Soft Campus Silhouette Center Backdrop */}
-        <div className="absolute inset-y-0 right-1/4 w-[480px] lg:w-[600px] flex items-center justify-center opacity-20 mix-blend-screen pointer-events-none">
-          <img 
-            src={campusBackdropImg} 
-            alt="School Campus" 
-            className="w-full h-auto object-contain filter blur-[0.5px]"
-          />
-        </div>
 
         {/* Luminous Glowing Light Orbs */}
         <div className="absolute -top-24 -left-24 w-[450px] h-[450px] bg-blue-600/20 rounded-full blur-[120px]"></div>
@@ -259,7 +253,7 @@ const Login = () => {
         </div>
       </header>
 
-      {/* Main Content Showcase (Fit 100vh with no scrollbar) */}
+      {/* Main Content Showcase (Strictly Fit 100vh - Zero Scrollbar) */}
       <main className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-14 flex-1 flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-10 overflow-hidden min-h-0 py-1 sm:py-2">
 
         {/* Left Side - Next Gen Hero Showcase */}
@@ -279,55 +273,51 @@ const Login = () => {
             </p>
           </div>
 
-          {/* 4 Feature Cards Row */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 w-full max-w-lg my-2">
+          {/* 4 Feature Cards Row - Exact Reference 3D Badges */}
+          <div className="grid grid-cols-4 gap-2 sm:gap-2.5 w-full max-w-lg my-2 sm:my-3">
             {/* 1. Student Management */}
-            <div className="group bg-[#041d47]/80 hover:bg-[#072a68] border border-blue-400/25 hover:border-sky-400/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-md shadow-blue-950/40 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-blue-500/20 text-sky-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
-                <Users className="w-4 h-4" />
-              </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-slate-200 leading-tight">
-                Student<br />Management
-              </span>
+            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-cyan-500/20 border border-blue-400/20 hover:border-sky-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
+              <img 
+                src={cardStudentImg} 
+                alt="Student Management" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
+              />
             </div>
 
             {/* 2. Academic Records */}
-            <div className="group bg-[#041d47]/80 hover:bg-[#072a68] border border-blue-400/25 hover:border-amber-400/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-md shadow-blue-950/40 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
-                <BookOpen className="w-4 h-4" />
-              </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-slate-200 leading-tight">
-                Academic<br />Records
-              </span>
+            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-amber-500/20 border border-blue-400/20 hover:border-amber-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
+              <img 
+                src={cardAcademicImg} 
+                alt="Academic Records" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
+              />
             </div>
 
             {/* 3. Fees & Accounts */}
-            <div className="group bg-[#041d47]/80 hover:bg-[#072a68] border border-blue-400/25 hover:border-emerald-400/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-md shadow-blue-950/40 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5 ring-1 ring-sky-400/40">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
-                <BarChart3 className="w-4 h-4" />
-              </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-emerald-300 leading-tight">
-                Fees &amp;<br />Accounts
-              </span>
+            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-emerald-500/20 border border-emerald-400/40 hover:border-emerald-400/70 ring-1 ring-sky-400/40 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
+              <img 
+                src={cardFeesImg} 
+                alt="Fees & Accounts" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
+              />
             </div>
 
             {/* 4. Communication */}
-            <div className="group bg-[#041d47]/80 hover:bg-[#072a68] border border-blue-400/25 hover:border-cyan-400/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-md shadow-blue-950/40 backdrop-blur-md transition-all duration-200 hover:-translate-y-0.5">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-1.5 group-hover:scale-105 transition-transform">
-                <MessageCircle className="w-4 h-4" />
-              </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-slate-200 leading-tight">
-                Communication<br />Desk
-              </span>
+            <div className="group rounded-xl overflow-hidden shadow-md shadow-blue-950/50 hover:shadow-cyan-500/20 border border-blue-400/20 hover:border-cyan-400/60 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer bg-[#041d47]/70 backdrop-blur-md">
+              <img 
+                src={cardCommImg} 
+                alt="Communication" 
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform" 
+              />
             </div>
           </div>
 
-          {/* Bottom 3D Artwork Showcase (Cap, Books, Glowing Holograms & Cursive Tagline) */}
-          <div className="w-full max-w-lg mt-1 pt-1 flex items-center">
+          {/* Bottom 3D Artwork Showcase (Cap, Stacked Books, Pencil Cup, Wave & Cursive Tagline) */}
+          <div className="w-full max-w-sm mt-1 flex items-center">
             <img 
-              src={education3dShowcaseImg} 
-              alt="Education 3D Assets - Build a Better Education Future" 
-              className="w-full max-h-32 sm:max-h-36 lg:max-h-40 object-contain object-left drop-shadow-[0_12px_28px_rgba(0,102,255,0.4)]"
+              src={capBooksCupImg} 
+              alt="Build a Better Education Future" 
+              className="w-full max-h-32 sm:max-h-36 object-contain object-left drop-shadow-[0_12px_28px_rgba(0,102,255,0.4)]"
             />
           </div>
 
@@ -338,14 +328,16 @@ const Login = () => {
           
           <div className="w-full bg-white text-gray-900 rounded-[28px] sm:rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,102,255,0.45)] border border-white/95 px-6 sm:px-7 py-5 sm:py-6 relative flex flex-col">
 
-            {/* Top Center Floating 3D Badge */}
+            {/* Top Center Floating 3D Badge (Exact 3D Glass Emblem from Reference) */}
             <div className="w-full flex justify-center -mt-12 sm:-mt-14 mb-2">
               <div className="relative group">
-                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-sky-400 rounded-full blur-md opacity-70 group-hover:opacity-100 transition-opacity"></div>
-                <div className="relative w-15 h-15 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-blue-600 to-indigo-700 p-0.5 shadow-2xl flex items-center justify-center overflow-hidden border-2 border-white">
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
-                    <GraduationCap className="w-8 h-8 text-white drop-shadow-md" />
-                  </div>
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500 via-sky-400 to-indigo-500 rounded-full blur-md opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-full bg-[#051c44] shadow-2xl flex items-center justify-center overflow-hidden border-2 border-white/95 ring-2 ring-sky-400/30">
+                  <img 
+                    src={floatingBadgeImg} 
+                    alt="Accountant Portal Badge" 
+                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform"
+                  />
                 </div>
               </div>
             </div>
