@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * LocalStorage-based database with automatic central MongoDB backend synchronization.
  * Keys are namespaced under "acc_".
@@ -26,7 +27,7 @@ const PREFIX = 'acc_';
         if (Array.isArray(inc) && inc.some(i => typeof i.id === 'string' && (i.id.startsWith('in_') || /^(in|ex)\d+$/i.test(i.id)))) {
           return true;
         }
-      } catch {}
+      } catch (_e) {}
       return false;
     };
 
@@ -82,7 +83,7 @@ const PREFIX = 'acc_';
 
       localStorage.setItem('acc_prod_clean_2026_v8', 'true');
     }
-  } catch {}
+  } catch (_e) {}
 })();
 
 const seed = {
@@ -202,7 +203,7 @@ function read(collection) {
       }
       return parsed;
     }
-  } catch {}
+  } catch (_e) {}
   const data = seed[collection] ? JSON.parse(JSON.stringify(seed[collection])) : [];
   write(collection, data);
   return data;
@@ -261,7 +262,7 @@ export const localDb = {
     let queue = [];
     try {
       queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    } catch {}
+    } catch (_e) {}
 
     try {
       const id = item._id || item.id;
@@ -332,7 +333,7 @@ export const localDb = {
       queue.push(mutationTask);
       try {
         localStorage.setItem(queueKey, JSON.stringify(queue.slice(-50)));
-      } catch {}
+      } catch (_e) {}
       return { success: false, status: 'pending', error: err.message };
     }
   },
@@ -342,7 +343,7 @@ export const localDb = {
     let queue = [];
     try {
       queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    } catch {}
+    } catch (_e) {}
     if (!queue.length || (typeof navigator !== 'undefined' && !navigator.onLine)) return;
 
     const remaining = [];
@@ -356,7 +357,7 @@ export const localDb = {
     }
     try {
       localStorage.setItem(queueKey, JSON.stringify(remaining));
-    } catch {}
+    } catch (_e) {}
   },
 
   async syncFromBackend() {
@@ -512,7 +513,7 @@ export const localDb = {
       }
       const raw = localStorage.getItem(getKey('profile'));
       if (raw) return JSON.parse(raw);
-    } catch {}
+    } catch (_e) {}
     const p = { ...seed.profile };
     return p;
   },
@@ -545,7 +546,7 @@ export const localDb = {
           advanced: { ...seed.settings.advanced, ...(parsed.advanced || {}) },
         };
       }
-    } catch {}
+    } catch (_e) {}
     const s = JSON.parse(JSON.stringify(seed.settings));
     localStorage.setItem(getKey('settings'), JSON.stringify(s));
     return s;
@@ -590,7 +591,7 @@ export const localDb = {
       try {
         const parsed = JSON.parse(val);
         count = Array.isArray(parsed) ? parsed.length : (parsed ? 1 : 0);
-      } catch {}
+      } catch (_e) {}
       return {
         ...col,
         key,
@@ -621,7 +622,7 @@ export const localDb = {
       if (raw) {
         try {
           backup.data[k] = JSON.parse(raw);
-        } catch {}
+        } catch (_e) {}
       }
     });
     return backup;

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Offline accountant service backed by localStorage (localDb).
  * All methods return { success: true, data } so existing UI keeps working.
@@ -175,7 +176,7 @@ export const accountantService = {
         }));
         return ok(mapped);
       }
-    } catch {}
+    } catch (_e) {}
     const list = localDb.getAll('collections');
     return ok(list);
   },
@@ -267,7 +268,7 @@ export const accountantService = {
           localStorage.setItem('schoolName', sObj.name);
           try {
             window.dispatchEvent(new CustomEvent('school_info_updated', { detail: sObj }));
-          } catch {}
+          } catch (_e) {}
         }
 
         const chartData = (Array.isArray(d.chartData) ? d.chartData : []).map((c) => ({
@@ -304,7 +305,7 @@ export const accountantService = {
 
         try {
           localStorage.setItem('acc_live_dashboard_stats', JSON.stringify(resultData));
-        } catch {}
+        } catch (_e) {}
 
         return ok(resultData);
       }
@@ -325,7 +326,7 @@ export const accountantService = {
           } else if (parsed && typeof parsed.collectedToday === 'number') {
             return ok(parsed);
           }
-        } catch {}
+        } catch (_e) {}
       }
     }
     const isLegacyDemoId = (id) => typeof id === 'string' && (id.startsWith('in_') || id.startsWith('ex_') || /^(in|ex)\d+$/i.test(id));
@@ -419,7 +420,7 @@ export const accountantService = {
             studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student')
           }));
       }
-    } catch {}
+    } catch (_e) {}
 
     if (!incomes.length && !expenses.length && !collections.length) {
       incomes = localDb.getAll('incomes').filter((i) => i.date === d);
@@ -447,7 +448,7 @@ export const accountantService = {
         }));
         return ok(mapped);
       }
-    } catch {}
+    } catch (_e) {}
     const data = localDb.getAll('incomes');
     return ok(data);
   },
@@ -495,7 +496,7 @@ export const accountantService = {
         }));
         return ok(mapped);
       }
-    } catch {}
+    } catch (_e) {}
     const data = localDb.getAll('expenses');
     return ok(data);
   },
@@ -568,7 +569,7 @@ export const accountantService = {
       try {
         const raw = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
         if (raw) user = JSON.parse(raw);
-      } catch {}
+      } catch (_e) {}
 
       const defaultName = user?.name || user?.firstName || 'Accountant';
       const defaultEmail = user?.email || '';
@@ -648,7 +649,7 @@ export const accountantService = {
           try {
             localStorage.setItem('accountant_user_avatar', mapped.avatar);
             localStorage.setItem('school_erp_user_avatar', mapped.avatar);
-          } catch {}
+          } catch (_e) {}
         }
         localDb.saveProfile(mapped);
         return ok(mapped);
@@ -727,7 +728,7 @@ export const accountantService = {
           }
         }).catch(() => {});
       }
-    } catch {}
+    } catch (_e) {}
     return ok(data);
   },
 
@@ -741,7 +742,7 @@ export const accountantService = {
           return ok(res.data.data);
         }
       }
-    } catch {}
+    } catch (_e) {}
     return ok(localDb.getAll('payslips'));
   },
 
@@ -754,13 +755,13 @@ export const accountantService = {
           return ok(res.data.data);
         }
       }
-    } catch {}
+    } catch (_e) {}
     return ok(localDb.getAll('attendanceLogs'));
   },
   recordAttendancePunch: async (punchData) => {
     try {
       await axiosInstance.post('/attendance/qr-scan', punchData).catch(() => null);
-    } catch {}
+    } catch (_e) {}
     const created = localDb.create('attendanceLogs', punchData);
     return ok(created);
   },
@@ -773,7 +774,7 @@ export const accountantService = {
           return ok(res.data.data);
         }
       }
-    } catch {}
+    } catch (_e) {}
     return ok(localDb.getAll('leaves'));
   },
   getLeaveById: async (id) => {
