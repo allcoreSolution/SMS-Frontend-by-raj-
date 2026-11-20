@@ -11,6 +11,11 @@ export const academicService = {
     return response.data;
   },
 
+  createSubject: async (subjectData) => {
+    const response = await axiosInstance.post('/academics/subjects', subjectData);
+    return response.data;
+  },
+
   getSections: async () => {
     const response = await axiosInstance.get('/academics/sections');
     return response.data;

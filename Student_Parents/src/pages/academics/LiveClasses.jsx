@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { 
   Video, VideoOff, History, Archive, List, Calendar as CalIcon, 
-  ExternalLink, Clock, User, CheckCircle2, Copy, Check, 
-  PlayCircle, RefreshCw, GraduationCap, Search, Sparkles
+  ExternalLink, Clock, User, Copy, Check, 
+  PlayCircle, RefreshCw, GraduationCap, Search
 } from 'lucide-react';
 import { parentService } from '../../api/parentService';
 
-export default function LiveClasses() {
+export default function LiveClasses({ activeChild: activeChildProp }) {
   const [view, setView] = useState('List View'); // 'List View' | 'Calendar View'
   const [activeClasses, setActiveClasses] = useState([]);
   const [pastClasses, setPastClasses] = useState([]);
@@ -16,27 +16,43 @@ export default function LiveClasses() {
 
   // Filters
   const [selectedSubject, setSelectedSubject] = useState('All');
+  const [classFilter, setClassFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState(null);
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [activeChildProp]);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const kids = await parentService.getChildren();
       let currentChild = null;
-      if (kids && kids.length > 0) {
-        currentChild = kids[0];
-        setActiveChild(currentChild);
-      } else {
-        currentChild = { firstName: 'Aarav', lastName: 'Sharma', className: 'Class I', section: 'A' };
-        setActiveChild(currentChild);
+      const targetId = activeChildProp || localStorage.getItem('active_child');
+      if (targetId) {
+        try {
+          const dash = await parentService.getDashboard({ studentId: targetId });
+          if (dash?.data?.student) {
+            currentChild = dash.data.student;
+          }
+        } catch (_) {}
       }
 
-      await fetchClasses(currentChild?.className || 'Class I');
+      if (!currentChild) {
+        try {
+          const kids = await parentService.getChildren();
+          if (kids && kids.length > 0) {
+            currentChild = kids[0];
+          }
+        } catch (_) {}
+      }
+
+      if (!currentChild) {
+        currentChild = { firstName: 'RAJ', lastName: 'YADAV', className: 'Class XI', section: 'A' };
+      }
+      setActiveChild(currentChild);
+
+      await fetchClasses();
     } catch (err) {
       console.error('Error in live classes load:', err);
     } finally {
@@ -44,9 +60,10 @@ export default function LiveClasses() {
     }
   };
 
-  const fetchClasses = async (clsName) => {
+  const fetchClasses = async () => {
     try {
-      const res = await parentService.getLiveClasses({ className: clsName || activeChild?.className || 'Class I' });
+      // Query without hardcoded restrictive class filter so all teacher-scheduled sessions are visible
+      const res = await parentService.getLiveClasses({});
       if (res?.success && Array.isArray(res.data)) {
         const act = [];
         const pst = [];
@@ -67,7 +84,7 @@ export default function LiveClasses() {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await fetchClasses(activeChild?.className || 'Class I');
+    await fetchClasses();
     setTimeout(() => setRefreshing(false), 500);
   };
 
@@ -88,34 +105,48 @@ export default function LiveClasses() {
     return ['All', ...Array.from(set)];
   }, [activeClasses, pastClasses]);
 
+  // Distinct classes
+  const classesList = useMemo(() => {
+    const set = new Set();
+    if (activeChild?.className) set.add(activeChild.className);
+    [...activeClasses, ...pastClasses].forEach(c => {
+      if (c.className) set.add(c.className);
+    });
+    return ['All', ...Array.from(set)];
+  }, [activeClasses, pastClasses, activeChild]);
+
   // Filtered Active
   const filteredActive = useMemo(() => {
     return activeClasses.filter(c => {
       const sName = c.subjectName || c.subject?.subjectName || '';
       const matchSubject = selectedSubject === 'All' || sName.toLowerCase() === selectedSubject.toLowerCase();
+      const matchClass = classFilter === 'All' || (c.className && c.className.toLowerCase().includes(classFilter.toLowerCase()));
       const q = searchQuery.toLowerCase().trim();
       const matchSearch = !q || 
         c.title?.toLowerCase().includes(q) ||
         c.description?.toLowerCase().includes(q) ||
         c.teacherName?.toLowerCase().includes(q) ||
+        c.className?.toLowerCase().includes(q) ||
         sName.toLowerCase().includes(q);
-      return matchSubject && matchSearch;
+      return matchSubject && matchClass && matchSearch;
     });
-  }, [activeClasses, selectedSubject, searchQuery]);
+  }, [activeClasses, selectedSubject, classFilter, searchQuery]);
 
   // Filtered Past
   const filteredPast = useMemo(() => {
     return pastClasses.filter(c => {
       const sName = c.subjectName || c.subject?.subjectName || '';
       const matchSubject = selectedSubject === 'All' || sName.toLowerCase() === selectedSubject.toLowerCase();
+      const matchClass = classFilter === 'All' || (c.className && c.className.toLowerCase().includes(classFilter.toLowerCase()));
       const q = searchQuery.toLowerCase().trim();
       const matchSearch = !q || 
         c.title?.toLowerCase().includes(q) ||
         c.teacherName?.toLowerCase().includes(q) ||
+        c.className?.toLowerCase().includes(q) ||
         sName.toLowerCase().includes(q);
-      return matchSubject && matchSearch;
+      return matchSubject && matchClass && matchSearch;
     });
-  }, [pastClasses, selectedSubject, searchQuery]);
+  }, [pastClasses, selectedSubject, classFilter, searchQuery]);
 
   // Live Now Count
   const liveNowCount = activeClasses.filter(c => c.status === 'Live').length;
@@ -232,6 +263,17 @@ export default function LiveClasses() {
               className="w-full pl-9 pr-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 outline-none focus:border-blue-500 focus:bg-white"
             />
           </div>
+
+          {/* Class Filter */}
+          <select
+            value={classFilter}
+            onChange={(e) => setClassFilter(e.target.value)}
+            className="py-1.5 px-3 bg-gray-50 border border-gray-200 rounded-lg text-xs font-semibold text-gray-700 outline-none focus:border-blue-500"
+          >
+            {classesList.map(cls => (
+              <option key={cls} value={cls}>{cls === 'All' ? 'All Classes' : cls}</option>
+            ))}
+          </select>
 
           {/* Subject Filter */}
           <select

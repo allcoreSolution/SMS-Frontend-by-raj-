@@ -78,6 +78,77 @@ const ManageOnlineExams = () => {
     }
   };
 
+  const handleAddNewSubjectModal = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Add New Academic Subject',
+      html: `
+        <div class="text-left space-y-3 font-sans text-sm p-2">
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Name *</label>
+            <input id="swal-sub-name" class="swal2-input !m-0 !w-full !text-sm" placeholder="e.g. Artificial Intelligence, Robotics">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Code (Optional)</label>
+            <input id="swal-sub-code" class="swal2-input !m-0 !w-full !text-sm" placeholder="e.g. AI-101 (Auto-generated if empty)">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Type</label>
+            <select id="swal-sub-type" class="swal2-select !m-0 !w-full !text-sm">
+              <option value="theory">Theory</option>
+              <option value="practical">Practical</option>
+              <option value="both">Both (Theory + Practical)</option>
+            </select>
+          </div>
+        </div>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Add Subject',
+      confirmButtonColor: '#7C3AED',
+      preConfirm: () => {
+        const name = document.getElementById('swal-sub-name').value?.trim();
+        const code = document.getElementById('swal-sub-code').value?.trim();
+        const type = document.getElementById('swal-sub-type').value;
+        if (!name) {
+          Swal.showValidationMessage('Please enter a subject name');
+          return false;
+        }
+        return { name, code, type };
+      }
+    });
+
+    if (formValues) {
+      try {
+        const subjectCode = formValues.code || `${formValues.name.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
+        const res = await academicService.createSubject({
+          subjectName: formValues.name,
+          subjectCode: subjectCode,
+          subjectType: formValues.type || 'theory',
+          status: 'active'
+        });
+
+        const newSubName = res?.data?.subjectName || formValues.name;
+        setSubjects(prev => {
+          if (!prev.includes(newSubName)) return [...prev, newSubName];
+          return prev;
+        });
+        setForm(prev => ({ ...prev, subject: newSubName }));
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Subject Added!',
+          text: `"${newSubName}" has been added to database.`,
+          timer: 2000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end'
+        });
+      } catch (err) {
+        Swal.fire('Error', err?.response?.data?.message || 'Failed to create subject', 'error');
+      }
+    }
+  };
+
   const fetchExams = async () => {
     try {
       setLoading(true);
@@ -209,6 +280,7 @@ const ManageOnlineExams = () => {
         Swal.fire('Success!', `Exam created and saved as ${targetStatus}.`, 'success');
       }
 
+      setSelectedExam(null);
       await fetchExams();
       setActiveView('list');
     } catch (err) {
@@ -534,7 +606,7 @@ const ManageOnlineExams = () => {
                 <PenTool className="w-5 h-5 text-purple-600" /> {selectedExam ? 'Edit Exam' : 'Create New Exam'}
               </h2>
               <button 
-                onClick={() => setActiveView('list')} 
+                onClick={() => { setSelectedExam(null); setActiveView('list'); }} 
                 className="p-1.5 hover:bg-gray-200 text-gray-500 rounded-sm font-semibold flex gap-1 items-center px-3 cursor-pointer"
               >
                 <X className="w-4 h-4" /> Cancel
@@ -553,7 +625,16 @@ const ManageOnlineExams = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Subject</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-gray-500 uppercase">Subject *</label>
+                  <button
+                    type="button"
+                    onClick={handleAddNewSubjectModal}
+                    className="text-xs font-bold text-purple-600 hover:text-purple-800 flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> + Add Subject
+                  </button>
+                </div>
                 <select 
                   value={form.subject} 
                   onChange={e => setForm({ ...form, subject: e.target.value })}
@@ -663,7 +744,7 @@ const ManageOnlineExams = () => {
                 {saving ? 'Publishing...' : 'Publish Now'}
               </button>
               <button 
-                onClick={() => setActiveView('list')} 
+                onClick={() => { setSelectedExam(null); setActiveView('list'); }} 
                 className="px-5 border border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 cursor-pointer"
               >
                 Cancel

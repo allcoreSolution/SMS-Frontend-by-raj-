@@ -106,7 +106,26 @@ const ProtectedRoute = ({ children }) => {
 
 export default function App() {
   const [activeChild, setActiveChildState] = useState(() => {
-    return localStorage.getItem('active_child') || '';
+    const direct = localStorage.getItem('active_child');
+    if (direct) return direct;
+    try {
+      const u = JSON.parse(localStorage.getItem('parent_user') || '{}');
+      if (u.role === 'Student') {
+        const id = u.studentId || u._id || u.id;
+        if (id) {
+          localStorage.setItem('active_child', String(id));
+          return String(id);
+        }
+      } else if (u.children && u.children.length > 0) {
+        const first = u.children[0];
+        const id = typeof first === 'object' ? (first._id || first.id) : first;
+        if (id) {
+          localStorage.setItem('active_child', String(id));
+          return String(id);
+        }
+      }
+    } catch (_) {}
+    return '';
   });
 
   const setActiveChild = (childId) => {

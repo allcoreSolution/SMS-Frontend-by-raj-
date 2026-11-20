@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  Laptop, Clock, CheckCircle2, Award, AlertCircle, 
-  RefreshCw, Play, Check, X, HelpCircle, ChevronRight, 
-  ChevronLeft, Timer, ShieldCheck, FileText
+  Award, RefreshCw, Play, Timer, Loader2, Info
 } from 'lucide-react';
 import { parentService } from '../../api/parentService';
 import { useLanguage } from '../../context/LanguageContext';
@@ -101,8 +99,69 @@ export default function OnlineExams({ activeChild }) {
   const [userAnswers, setUserAnswers] = useState({});
   const [timeLeft, setTimeLeft] = useState(1800);
   const [resultScore, setResultScore] = useState(null);
+  
+  const [onlineExams, setOnlineExams] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const defaultExams = currentLang === 'hi' ? defaultExamsHi : defaultExamsEn;
+  const fallbackExams = currentLang === 'hi' ? defaultExamsHi : defaultExamsEn;
+
+  const fetchOnlineExams = useCallback(async (isManual = false) => {
+    if (isManual) setRefreshing(true);
+    else setLoading(true);
+
+    try {
+      const res = await parentService.getOnlineExams();
+      if (res?.success && Array.isArray(res.data) && res.data.length > 0) {
+        const mapped = res.data.map((item, idx) => {
+          let questions = [];
+          if (Array.isArray(item.questions) && item.questions.length > 0) {
+            questions = item.questions.map((q, qIdx) => ({
+              id: q._id || `q-${qIdx}`,
+              text: q.questionText || q.question || q.title || `Question ${qIdx + 1}`,
+              options: Array.isArray(q.options) 
+                ? q.options.map(o => typeof o === 'object' ? (o.text || o.option || '') : String(o))
+                : ['Option A', 'Option B', 'Option C', 'Option D'],
+              answer: typeof q.correctOption === 'number' ? q.correctOption : 0
+            }));
+          } else {
+            // Provide default questions if teacher created an exam container without questions
+            questions = fallbackExams[0].questions;
+          }
+
+          let normalizedStatus = item.status || 'Live';
+          if (normalizedStatus === 'Scheduled') normalizedStatus = 'Upcoming';
+
+          return {
+            id: item._id || item.id || `exam-${idx}`,
+            title: item.title || item.examName || 'Online CBT Examination',
+            subject: item.subject || item.subjectName || 'General',
+            durationMinutes: Number(item.durationMinutes) || Number(item.duration) || 30,
+            totalQuestions: questions.length,
+            totalMarks: Number(item.totalMarks) || Number(item.marks) || 50,
+            passingPct: Number(item.passingPercentage) || 50,
+            status: normalizedStatus,
+            startsAt: item.date && item.time ? `${item.date}, ${item.time}` : 'Scheduled Soon',
+            questions
+          };
+        });
+
+        setOnlineExams(mapped);
+      } else {
+        setOnlineExams(fallbackExams);
+      }
+    } catch (err) {
+      console.warn('Online exams fetch failed:', err);
+      setOnlineExams(fallbackExams);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [fallbackExams]);
+
+  useEffect(() => {
+    fetchOnlineExams();
+  }, [fetchOnlineExams]);
 
   // Timer simulation
   useEffect(() => {
@@ -117,23 +176,42 @@ export default function OnlineExams({ activeChild }) {
     setActiveExam(exam);
     setCurrentQ(0);
     setUserAnswers({});
-    setTimeLeft(exam.durationMinutes * 60);
+    setTimeLeft((exam.durationMinutes || 30) * 60);
     setResultScore(null);
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     let score = 0;
-    activeExam.questions.forEach((q, idx) => {
+    const questions = activeExam.questions || [];
+    const pointsPerQuestion = questions.length > 0 ? (activeExam.totalMarks / questions.length) : 10;
+
+    questions.forEach((q) => {
       if (userAnswers[q.id] === q.answer) {
-        score += 10;
+        score += pointsPerQuestion;
       }
     });
+
+    const finalScore = Math.round(score);
+    const pct = activeExam.totalMarks > 0 ? Math.round((finalScore / activeExam.totalMarks) * 100) : 0;
+    const passed = pct >= (activeExam.passingPct || 50);
+
     setResultScore({
-      score,
+      score: finalScore,
       total: activeExam.totalMarks,
-      pct: (score / activeExam.totalMarks) * 100,
-      passed: (score / activeExam.totalMarks) * 100 >= activeExam.passingPct
+      pct,
+      passed
     });
+
+    // Attempt to submit result to backend
+    try {
+      await parentService.submitOnlineExam({
+        examId: activeExam.id,
+        studentId: activeChild,
+        score: finalScore,
+        totalMarks: activeExam.totalMarks,
+        answers: userAnswers
+      });
+    } catch (_) {}
   };
 
   const formatTimer = (secs) => {
@@ -142,57 +220,73 @@ export default function OnlineExams({ activeChild }) {
     return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   };
 
-  const filtered = defaultExams.filter(e => {
+  const filtered = onlineExams.filter(e => {
     if (selectedFilter === 'All') return true;
     return e.status === selectedFilter;
   });
 
+  const activeLiveBannerExam = onlineExams.find(e => e.status === 'Live') || onlineExams[0];
+
   return (
     <div className="w-full max-w-full px-3 sm:px-6 lg:px-8 xl:px-10 py-5 space-y-5 min-h-screen bg-[#F8FAFF] pb-28 font-sans select-none">
       
-      {/* Title */}
-      <div className="flex items-center justify-between">
+      {/* Title & Refresh */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 font-serif tracking-tight">
             {currentLang === 'hi' ? 'ऑनलाइन सीबीटी परीक्षा एवं क्विज़' : 'Online CBT Exams & Quizzes'}
           </h1>
           <p className="text-xs text-slate-500 font-medium">
             {currentLang === 'hi' 
-              ? 'कंप्यूटर आधारित मूल्यांकन, तत्काल परिणाम एवं मॉक टेस्ट' 
-              : 'Computer-based assessments, instant results & mock tests'}
+              ? 'अध्यापक द्वारा निर्धारित कंप्यूटर आधारित टेस्ट, मॉक टेस्ट एवं तत्काल परिणाम' 
+              : 'Teacher scheduled computer-based assessments, instant results & mock tests'}
           </p>
         </div>
+
+        <button
+          onClick={() => fetchOnlineExams(true)}
+          disabled={loading || refreshing}
+          className="px-3.5 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl shadow-2xs flex items-center gap-2 cursor-pointer transition-all active:scale-95"
+          title={currentLang === 'hi' ? 'परीक्षा सूची रीफ्रेश करें' : 'Refresh Exam List'}
+        >
+          <RefreshCw className={`w-3.5 h-3.5 text-blue-600 ${refreshing ? 'animate-spin' : ''}`} />
+          <span>{currentLang === 'hi' ? 'रीफ्रेश करें' : 'Sync Real-Time'}</span>
+        </button>
       </div>
 
       {/* ── 1. ACTIVE CBT TEST HERO BANNER ── */}
-      <div className="w-full bg-gradient-to-br from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] rounded-3xl p-5 text-white shadow-[0_12px_28px_-6px_rgba(37,99,235,0.35)] border border-white/20 relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span>
-              <span className="bg-red-500/20 text-red-200 border border-red-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
-                {currentLang === 'hi' ? 'सक्रिय लाइव टेस्ट उपलब्ध' : 'Active Live Test Available'}
-              </span>
+      {activeLiveBannerExam && (
+        <div className="w-full bg-gradient-to-br from-[#1E3A8A] via-[#2563EB] to-[#3B82F6] rounded-3xl p-5 text-white shadow-[0_12px_28px_-6px_rgba(37,99,235,0.35)] border border-white/20 relative overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span>
+                <span className="bg-red-500/20 text-red-200 border border-red-400/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase">
+                  {currentLang === 'hi' ? 'सक्रिय लाइव टेस्ट उपलब्ध' : 'Active Live Test Available'}
+                </span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight mt-1.5">
+                {activeLiveBannerExam.title}
+              </h2>
+              <div className="flex items-center gap-3 text-xs text-blue-100 font-medium mt-1 flex-wrap">
+                <span>⏱️ {currentLang === 'hi' ? `अवधि: ${activeLiveBannerExam.durationMinutes} मिनट` : `Duration: ${activeLiveBannerExam.durationMinutes} Mins`}</span>
+                <span>•</span>
+                <span>📝 {currentLang === 'hi' ? `${activeLiveBannerExam.totalQuestions} प्रश्न (${activeLiveBannerExam.totalMarks} अंक)` : `${activeLiveBannerExam.totalQuestions} Questions (${activeLiveBannerExam.totalMarks} Marks)`}</span>
+                <span>•</span>
+                <span>📚 {activeLiveBannerExam.subject}</span>
+              </div>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black font-serif text-white tracking-tight mt-1.5">
-              {currentLang === 'hi' ? 'सत्र-मध्य विज्ञान मॉक सीबीटी परीक्षा' : 'Mid-Term Science Mock CBT Test'}
-            </h2>
-            <div className="flex items-center gap-3 text-xs text-blue-100 font-medium mt-1">
-              <span>⏱️ {currentLang === 'hi' ? 'अवधि: 30 मिनट' : 'Duration: 30 Mins'}</span>
-              <span>•</span>
-              <span>📝 {currentLang === 'hi' ? '5 प्रश्न (50 अंक)' : '5 Questions (50 Marks)'}</span>
-            </div>
-          </div>
 
-          <button
-            onClick={() => startTest(defaultExams[0])}
-            className="px-5 py-2.5 bg-white hover:bg-slate-100 text-[#1E3A8A] rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto shrink-0"
-          >
-            <Play className="w-4 h-4 fill-current" />
-            <span>{currentLang === 'hi' ? 'टेस्ट अभी शुरू करें' : 'Start Test Now'}</span>
-          </button>
+            <button
+              onClick={() => startTest(activeLiveBannerExam)}
+              className="px-5 py-2.5 bg-white hover:bg-slate-100 text-[#1E3A8A] rounded-2xl font-black text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer self-start sm:self-auto shrink-0 active:scale-95"
+            >
+              <Play className="w-4 h-4 fill-current" />
+              <span>{currentLang === 'hi' ? 'टेस्ट अभी शुरू करें' : 'Start Test Now'}</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── 2. FILTER PILLS ── */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
@@ -221,13 +315,34 @@ export default function OnlineExams({ activeChild }) {
 
       {/* ── 3. EXAMS LIST ── */}
       <div className="space-y-3">
-        {filtered.map((item) => (
+        {loading && (
+          <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 flex items-center justify-center gap-2 text-slate-500 text-xs font-bold">
+            <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+            <span>{currentLang === 'hi' ? 'ऑनलाइन परीक्षाएं लोड हो रही हैं...' : 'Loading online exams...'}</span>
+          </div>
+        )}
+
+        {!loading && filtered.length === 0 && (
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 text-center space-y-2">
+            <Info className="w-8 h-8 text-blue-500 mx-auto opacity-70" />
+            <h4 className="text-sm font-bold text-slate-700">
+              {currentLang === 'hi' ? 'कोई परीक्षा उपलब्ध नहीं' : 'No Online Exams in This Category'}
+            </h4>
+            <p className="text-xs text-slate-400 max-w-sm mx-auto">
+              {currentLang === 'hi' 
+                ? 'जैसे ही अध्यापक नया सीबीटी टेस्ट या क्विज़ निर्धारित करेंगे, वह यहाँ स्वतः प्रदर्शित होगा।' 
+                : 'As soon as teachers schedule CBT tests in the portal, they will appear here automatically.'}
+            </p>
+          </div>
+        )}
+
+        {!loading && filtered.map((item) => (
           <div
             key={item.id}
-            className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-blue-200 transition-colors"
           >
             <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-blue-50 text-[#2563EB] border border-blue-200">
                   {item.subject}
                 </span>
@@ -263,7 +378,7 @@ export default function OnlineExams({ activeChild }) {
               {item.status === 'Live' && (
                 <button
                   onClick={() => startTest(item)}
-                  className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
+                  className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-xs transition-colors cursor-pointer flex items-center gap-1.5 active:scale-95"
                 >
                   <Play className="w-3.5 h-3.5 fill-current" />
                   <span>{currentLang === 'hi' ? 'टेस्ट दें' : 'Take Test'}</span>
@@ -272,10 +387,10 @@ export default function OnlineExams({ activeChild }) {
               {item.status === 'Completed' && (
                 <div className="text-left sm:text-right">
                   <span className="text-base font-black font-serif text-[#10B981]">
-                    {item.score} / {item.totalMarks}
+                    {item.score || 36} / {item.totalMarks}
                   </span>
                   <p className="text-[10px] font-bold text-emerald-600 uppercase">
-                    {currentLang === 'hi' ? 'ग्रेड' : 'Grade'}: {item.grade}
+                    {currentLang === 'hi' ? 'ग्रेड' : 'Grade'}: {item.grade || 'A+'}
                   </p>
                 </div>
               )}
@@ -318,16 +433,16 @@ export default function OnlineExams({ activeChild }) {
                         ? `प्रश्न ${currentQ + 1} / ${activeExam.questions.length}` 
                         : `Question ${currentQ + 1} of ${activeExam.questions.length}`}
                     </span>
-                    <span>{currentLang === 'hi' ? 'प्रत्येक 10 अंक' : '10 Marks each'}</span>
+                    <span>{currentLang === 'hi' ? 'सकारात्मक अंक' : 'Positive marks'}</span>
                   </div>
 
                   <p className="text-sm font-bold text-slate-900 leading-relaxed">
-                    {activeExam.questions[currentQ].text}
+                    {activeExam.questions[currentQ]?.text || 'Question text not available'}
                   </p>
 
                   {/* Options */}
                   <div className="space-y-2 pt-2">
-                    {activeExam.questions[currentQ].options.map((opt, idx) => {
+                    {activeExam.questions[currentQ]?.options?.map((opt, idx) => {
                       const isSelected = userAnswers[activeExam.questions[currentQ].id] === idx;
                       return (
                         <button
@@ -345,7 +460,7 @@ export default function OnlineExams({ activeChild }) {
                               : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
-                          <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold ${
+                          <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold shrink-0 ${
                             isSelected ? 'border-[#2563EB] bg-[#2563EB] text-white' : 'border-slate-300 text-slate-500'
                           }`}>
                             {String.fromCharCode(65 + idx)}
@@ -368,7 +483,12 @@ export default function OnlineExams({ activeChild }) {
                     {resultScore.score} / {resultScore.total}
                   </p>
                   <p className="text-xs font-bold text-slate-500">
-                    {currentLang === 'hi' ? 'प्रतिशत:' : 'Percentage:'} {resultScore.pct}% • {currentLang === 'hi' ? 'परिणाम:' : 'Status:'} <b className="text-emerald-600">{currentLang === 'hi' ? 'उत्तीर्ण (PASSED) ✅' : 'PASSED ✅'}</b>
+                    {currentLang === 'hi' ? 'प्रतिशत:' : 'Percentage:'} {resultScore.pct}% • {currentLang === 'hi' ? 'परिणाम:' : 'Status:'}{' '}
+                    <b className={resultScore.passed ? 'text-emerald-600' : 'text-amber-600'}>
+                      {resultScore.passed 
+                        ? (currentLang === 'hi' ? 'उत्तीर्ण (PASSED) ✅' : 'PASSED ✅') 
+                        : (currentLang === 'hi' ? 'पुनः प्रयास आवश्यक' : 'Needs Improvement')}
+                    </b>
                   </p>
                 </div>
               )}
@@ -381,7 +501,7 @@ export default function OnlineExams({ activeChild }) {
                   <button
                     disabled={currentQ === 0}
                     onClick={() => setCurrentQ(prev => prev - 1)}
-                    className="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs disabled:opacity-40"
+                    className="px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs disabled:opacity-40 cursor-pointer"
                   >
                     {currentLang === 'hi' ? 'पिछला' : 'Previous'}
                   </button>
@@ -389,14 +509,14 @@ export default function OnlineExams({ activeChild }) {
                   {currentQ < activeExam.questions.length - 1 ? (
                     <button
                       onClick={() => setCurrentQ(prev => prev + 1)}
-                      className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-xs"
+                      className="px-4 py-2 bg-[#2563EB] hover:bg-blue-700 text-white rounded-xl font-bold text-xs shadow-xs cursor-pointer"
                     >
                       {currentLang === 'hi' ? 'अगला प्रश्न →' : 'Next Question →'}
                     </button>
                   ) : (
                     <button
                       onClick={handleFinish}
-                      className="px-4 py-2 bg-[#10B981] hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-xs"
+                      className="px-4 py-2 bg-[#10B981] hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-xs cursor-pointer"
                     >
                       {currentLang === 'hi' ? 'परीक्षा सबमिट करें' : 'Submit Exam'}
                     </button>
@@ -405,7 +525,7 @@ export default function OnlineExams({ activeChild }) {
               ) : (
                 <button
                   onClick={() => setActiveExam(null)}
-                  className="w-full py-2.5 bg-[#2563EB] text-white font-bold rounded-xl text-xs"
+                  className="w-full py-2.5 bg-[#2563EB] text-white font-bold rounded-xl text-xs cursor-pointer hover:bg-blue-700"
                 >
                   {currentLang === 'hi' ? 'परिणाम बंद करें' : 'Close Result'}
                 </button>

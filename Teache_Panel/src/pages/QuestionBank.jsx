@@ -82,6 +82,77 @@ const QuestionBank = () => {
     }
   };
 
+  const handleAddNewSubjectModal = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Add New Academic Subject',
+      html: `
+        <div class="text-left space-y-3 font-sans text-sm p-2">
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Name *</label>
+            <input id="swal-sub-name-qb" class="swal2-input !m-0 !w-full !text-sm" placeholder="e.g. Artificial Intelligence, Robotics">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Code (Optional)</label>
+            <input id="swal-sub-code-qb" class="swal2-input !m-0 !w-full !text-sm" placeholder="e.g. AI-101 (Auto-generated if empty)">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">Subject Type</label>
+            <select id="swal-sub-type-qb" class="swal2-select !m-0 !w-full !text-sm">
+              <option value="theory">Theory</option>
+              <option value="practical">Practical</option>
+              <option value="both">Both (Theory + Practical)</option>
+            </select>
+          </div>
+        </div>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: 'Add Subject',
+      confirmButtonColor: '#0891B2',
+      preConfirm: () => {
+        const name = document.getElementById('swal-sub-name-qb').value?.trim();
+        const code = document.getElementById('swal-sub-code-qb').value?.trim();
+        const type = document.getElementById('swal-sub-type-qb').value;
+        if (!name) {
+          Swal.showValidationMessage('Please enter a subject name');
+          return false;
+        }
+        return { name, code, type };
+      }
+    });
+
+    if (formValues) {
+      try {
+        const subjectCode = formValues.code || `${formValues.name.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase()}-${Math.floor(100 + Math.random() * 900)}`;
+        const res = await academicService.createSubject({
+          subjectName: formValues.name,
+          subjectCode: subjectCode,
+          subjectType: formValues.type || 'theory',
+          status: 'active'
+        });
+
+        const newSubName = res?.data?.subjectName || formValues.name;
+        setSubjects(prev => {
+          if (!prev.includes(newSubName)) return [...prev, newSubName];
+          return prev;
+        });
+        setForm(prev => ({ ...prev, subject: newSubName }));
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Subject Added!',
+          text: `"${newSubName}" has been added to database.`,
+          timer: 2000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end'
+        });
+      } catch (err) {
+        Swal.fire('Error', err?.response?.data?.message || 'Failed to create subject', 'error');
+      }
+    }
+  };
+
   const fetchQuestions = async () => {
     try {
       setLoading(true);
@@ -540,7 +611,16 @@ const QuestionBank = () => {
             </div>
             <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-500 uppercase mb-1.5">Subject</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-gray-500 uppercase">Subject *</label>
+                  <button
+                    type="button"
+                    onClick={handleAddNewSubjectModal}
+                    className="text-xs font-bold text-cyan-600 hover:text-cyan-800 flex items-center gap-1 hover:underline cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> + Add Subject
+                  </button>
+                </div>
                 <select 
                   value={form.subject} 
                   onChange={e => setForm({ ...form, subject: e.target.value })} 
