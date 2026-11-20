@@ -11,7 +11,7 @@ import { useAuth } from '../context/AuthContext';
 import superAdminHeroImg from '../assets/superadmin_login_hero.png';
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, user: authUser } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ 
     identifier: 'ryadavy498@gmail.com', 
@@ -22,12 +22,12 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('superadmin_token');
-    const user = sessionStorage.getItem('sa_user');
-    if (token && user) {
-      navigate('/');
+    const token = sessionStorage.getItem('superadmin_token') || localStorage.getItem('superadmin_token');
+    const user = sessionStorage.getItem('sa_user') || localStorage.getItem('sa_user');
+    if ((token && user) || authUser) {
+      navigate('/', { replace: true });
     }
-  }, [navigate]);
+  }, [authUser, navigate]);
 
   const performBypassLogin = async () => {
     setLoading(true);
@@ -41,42 +41,21 @@ const Login = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1600,
           timerProgressBar: true
         });
-        navigate('/');
+        navigate('/', { replace: true });
         return;
       }
     } catch (e) {
-      // Local fallback for offline/demo evaluation
-      const demoUser = {
-        id: 'root_superadmin',
-        name: 'Super Admin Master',
-        email: 'ryadavy498@gmail.com',
-        role: 'superadmin',
-      };
-      localStorage.setItem('sa_user', JSON.stringify(demoUser));
-      localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token_valid');
-      localStorage.setItem('superadmin_user', JSON.stringify(demoUser));
-      
-      Swal.fire({
-        icon: 'success',
-        title: 'Demo Access Granted',
-        text: 'SuperAdmin Session Initialized',
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 1800,
-        timerProgressBar: true
-      });
-      navigate('/');
+      console.warn('Demo login notice:', e);
     } finally {
       setLoading(false);
     }
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!formData.identifier.trim() || !formData.password.trim()) {
       return Swal.fire('Error', 'Please enter your Master ID and Password.', 'warning');
     }
@@ -93,10 +72,10 @@ const Login = () => {
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 1800,
+          timer: 1600,
           timerProgressBar: true
         });
-        navigate('/');
+        navigate('/', { replace: true });
         return;
       }
       

@@ -14,24 +14,34 @@ const API_URL = getApiUrl();
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    try {
-      const token = sessionStorage.getItem('superadmin_token');
-      const saved = sessionStorage.getItem('sa_user');
-      if (!token || !saved) return null;
-      const parsed = saved ? JSON.parse(saved) : null;
-      if (parsed) {
-        const storedAvatar = sessionStorage.getItem('superadmin_user_avatar') || localStorage.getItem('superadmin_user_avatar');
-        if (storedAvatar && !parsed.avatar) {
-          parsed.avatar = storedAvatar;
-        }
+const getUserFromStorage = () => {
+  try {
+    const token = sessionStorage.getItem('superadmin_token') || localStorage.getItem('superadmin_token');
+    const saved = sessionStorage.getItem('sa_user') || localStorage.getItem('sa_user');
+    if (!token || !saved) return null;
+    const parsed = typeof saved === 'string' ? JSON.parse(saved) : saved;
+    if (parsed) {
+      const storedAvatar = sessionStorage.getItem('superadmin_user_avatar') || localStorage.getItem('superadmin_user_avatar');
+      if (storedAvatar && !parsed.avatar) {
+        parsed.avatar = storedAvatar;
+      }
+      // Ensure session and local are in sync
+      if (!sessionStorage.getItem('superadmin_token')) {
+        try {
+          sessionStorage.setItem('superadmin_token', token);
+          sessionStorage.setItem('sa_user', JSON.stringify(parsed));
+        } catch (_) {}
       }
       return parsed;
-    } catch {
-      return null;
     }
-  });
+  } catch (e) {
+    console.warn('Failed to parse user from storage:', e);
+  }
+  return null;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(getUserFromStorage);
 
   const login = async (email, password) => {
     try {
@@ -48,19 +58,33 @@ export const AuthProvider = ({ children }) => {
 
         const storedAvatar = localStorage.getItem('superadmin_user_avatar') || '';
         const userData = {
-          id: authData._id,
+          id: authData._id || authData.id,
           name: authData.username || authData.name || 'Super Admin',
           email: authData.email || email,
           role: (authData.role || 'superadmin').toString().toLowerCase(),
-          avatar: authData.avatar || storedAvatar || '',
+          avatar: (authData.avatar && authData.avatar.length < 50000 ? authData.avatar : '') || storedAvatar || '',
         };
 
-        sessionStorage.setItem('sa_user', JSON.stringify(userData));
-        sessionStorage.setItem('superadmin_token', token);
-        sessionStorage.setItem('superadmin_user', JSON.stringify(authData));
-        localStorage.setItem('sa_user', JSON.stringify(userData));
-        localStorage.setItem('superadmin_token', token);
-        localStorage.setItem('superadmin_user', JSON.stringify(authData));
+        // Safety: strip huge base64 photos to prevent localStorage quota exhaustion
+        const safeAuthData = { ...authData };
+        if (safeAuthData.photo && safeAuthData.photo.length > 50000) {
+          safeAuthData.photo = '';
+        }
+        if (safeAuthData.avatar && safeAuthData.avatar.length > 50000) {
+          safeAuthData.avatar = '';
+        }
+
+        try {
+          sessionStorage.setItem('sa_user', JSON.stringify(userData));
+          sessionStorage.setItem('superadmin_token', token);
+          sessionStorage.setItem('superadmin_user', JSON.stringify(safeAuthData));
+          localStorage.setItem('sa_user', JSON.stringify(userData));
+          localStorage.setItem('superadmin_token', token);
+          localStorage.setItem('superadmin_user', JSON.stringify(safeAuthData));
+        } catch (e) {
+          console.warn('Storage setItem notice:', e);
+        }
+
         setUser(userData);
         return true;
       }
@@ -76,10 +100,14 @@ export const AuthProvider = ({ children }) => {
           role: 'superadmin',
           avatar: storedAvatar,
         };
-        sessionStorage.setItem('sa_user', JSON.stringify(demoUser));
-        sessionStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
-        localStorage.setItem('sa_user', JSON.stringify(demoUser));
-        localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
+        try {
+          sessionStorage.setItem('sa_user', JSON.stringify(demoUser));
+          sessionStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
+          sessionStorage.setItem('superadmin_user', JSON.stringify(demoUser));
+          localStorage.setItem('sa_user', JSON.stringify(demoUser));
+          localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
+          localStorage.setItem('superadmin_user', JSON.stringify(demoUser));
+        } catch (_) {}
         setUser(demoUser);
         return true;
       }
@@ -88,12 +116,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    sessionStorage.removeItem('sa_user');
-    sessionStorage.removeItem('superadmin_token');
-    sessionStorage.removeItem('superadmin_user');
-    localStorage.removeItem('sa_user');
-    localStorage.removeItem('superadmin_token');
-    localStorage.removeItem('superadmin_user');
+    try {
+      sessionStorage.removeItem('sa_user');
+      sessionStorage.removeItem('superadmin_token');
+      sessionStorage.removeItem('superadmin_user');
+      localStorage.removeItem('sa_user');
+      localStorage.removeItem('superadmin_token');
+      localStorage.removeItem('superadmin_user');
+    } catch (_) {}
     setUser(null);
   };
 
@@ -116,8 +146,12 @@ export const AuthProvider = ({ children }) => {
     });
   };
 
+  const isAuthenticated = () => {
+    return !!(user || sessionStorage.getItem('superadmin_token') || localStorage.getItem('superadmin_token'));
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );

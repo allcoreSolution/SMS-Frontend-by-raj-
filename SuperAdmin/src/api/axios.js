@@ -23,7 +23,7 @@ axiosInstance.interceptors.request.use((config) => {
       config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
     }
   }
-  const token = localStorage.getItem('superadmin_token');
+  const token = localStorage.getItem('superadmin_token') || sessionStorage.getItem('superadmin_token');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 }, (e) => Promise.reject(e));
@@ -35,6 +35,9 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('superadmin_token');
       localStorage.removeItem('superadmin_user');
       localStorage.removeItem('sa_user');
+      sessionStorage.removeItem('superadmin_token');
+      sessionStorage.removeItem('superadmin_user');
+      sessionStorage.removeItem('sa_user');
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login';
       }
