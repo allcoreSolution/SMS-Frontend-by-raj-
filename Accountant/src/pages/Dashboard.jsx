@@ -275,7 +275,15 @@ const Dashboard = () => {
       const raw = localStorage.getItem('acc_live_dashboard_stats');
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.collectedToday !== 545400 && parsed.incomeMonth !== 1030400 && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance || parsed.recentVouchers?.length)) {
+        const isFakeData = parsed && (
+          parsed.collectedToday === 545400 ||
+          parsed.incomeMonth === 1030400 ||
+          parsed.expenseMonth === 128100 ||
+          parsed.cashBankBalance === 3010300
+        );
+        if (isFakeData) {
+          localStorage.removeItem('acc_live_dashboard_stats');
+        } else if (parsed && typeof parsed.collectedToday === 'number') {
           return parsed;
         }
       }
@@ -1263,9 +1271,9 @@ const Dashboard = () => {
       </div>
 
       {/* ── SECTION 3: SCHOOL NOTICE BOARD (FULL-WIDTH BROADCAST CAROUSEL) ── */}
-      <div )
+      <div 
         className="bg-white shadow-sm rounded-[3px] overflow-hidden border border-gray-200 mb-6"
-        onMouseEnter={() => setIsSliderPaused(true}
+        onMouseEnter={() => setIsSliderPaused(true)}
         onMouseLeave={() => setIsSliderPaused(false)}
       >
         {/* Notice Board Header */}

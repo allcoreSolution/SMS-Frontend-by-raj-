@@ -248,15 +248,24 @@ export const accountantService = {
       if (cached) {
         try {
           const parsed = JSON.parse(cached);
-          if (parsed && (parsed.incomeMonth || parsed.collectedToday || parsed.cashBankBalance)) {
+          const isFake = parsed && (
+            parsed.collectedToday === 545400 ||
+            parsed.incomeMonth === 1030400 ||
+            parsed.expenseMonth === 128100 ||
+            parsed.cashBankBalance === 3010300
+          );
+          if (isFake) {
+            localStorage.removeItem('acc_live_dashboard_stats');
+          } else if (parsed && typeof parsed.collectedToday === 'number') {
             return ok(parsed);
           }
         } catch (_) {}
       }
     }
-    const incomes = localDb.getAll('incomes');
-    const expenses = localDb.getAll('expenses');
-    const collections = localDb.getAll('collections');
+    const isLegacyDemoId = (id) => typeof id === 'string' && (id.startsWith('in_') || id.startsWith('ex_') || /^(in|ex)\d+$/i.test(id));
+    const incomes = localDb.getAll('incomes').filter(i => i && !isLegacyDemoId(i.id || i._id));
+    const expenses = localDb.getAll('expenses').filter(e => e && !isLegacyDemoId(e.id || e._id));
+    const collections = localDb.getAll('collections').filter(c => c && !isLegacyDemoId(c.id || c._id));
     const today = new Date().toISOString().slice(0, 10);
     const thisMonth = today.slice(0, 7);
 

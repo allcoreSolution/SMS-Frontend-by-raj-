@@ -10,8 +10,27 @@ const PREFIX = 'acc_';
 (function clearLegacyDemoData() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    const isCleaned = localStorage.getItem('acc_demo_cleaned_v4');
-    if (!isCleaned) {
+    const isCleaned = localStorage.getItem('acc_demo_cleaned_v6');
+    const hasLegacyData = () => {
+      try {
+        const stats = JSON.parse(localStorage.getItem('acc_live_dashboard_stats') || '{}');
+        if (
+          stats.collectedToday === 545400 ||
+          stats.incomeMonth === 1030400 ||
+          stats.expenseMonth === 128100 ||
+          stats.cashBankBalance === 3010300
+        ) {
+          return true;
+        }
+        const inc = JSON.parse(localStorage.getItem(PREFIX + 'incomes') || '[]');
+        if (Array.isArray(inc) && inc.some(i => typeof i.id === 'string' && (i.id.startsWith('in_') || /^(in|ex)\d+$/i.test(i.id)))) {
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    };
+
+    if (!isCleaned || hasLegacyData()) {
       const collectionsToClear = [
         'incomes', 'expenses', 'students', 'collections',
         'feeGroups', 'feeTypes', 'incomeHeads', 'expenseHeads',
@@ -33,7 +52,7 @@ const PREFIX = 'acc_';
         localStorage.setItem('schoolName', 'All core');
       }
 
-      localStorage.setItem('acc_demo_cleaned_v4', 'true');
+      localStorage.setItem('acc_demo_cleaned_v6', 'true');
     }
   } catch (_) {}
 })();
@@ -259,7 +278,7 @@ export const localDb = {
         axiosInstance.get('/collect-fees'),
       ]);
 
-      if (feeTypesRes.status === 'fulfilled' && feeTypesRes.value.data?.data?.length > 0) {
+      if (feeTypesRes.status === 'fulfilled' && Array.isArray(feeTypesRes.value.data?.data)) {
         const mapped = feeTypesRes.value.data.data.map(ft => ({
           id: ft._id,
           _id: ft._id,
@@ -270,7 +289,7 @@ export const localDb = {
         write('feeTypes', mapped);
       }
 
-      if (feeGroupsRes.status === 'fulfilled' && feeGroupsRes.value.data?.data?.length > 0) {
+      if (feeGroupsRes.status === 'fulfilled' && Array.isArray(feeGroupsRes.value.data?.data)) {
         const mapped = feeGroupsRes.value.data.data.map(fg => ({
           id: fg._id,
           _id: fg._id,
@@ -284,13 +303,13 @@ export const localDb = {
         write('feeGroups', mapped);
       }
 
-      if (studentsRes.status === 'fulfilled' && studentsRes.value.data?.data?.length > 0) {
+      if (studentsRes.status === 'fulfilled' && Array.isArray(studentsRes.value.data?.data)) {
         const mapped = studentsRes.value.data.data.map(s => ({
           id: s._id,
           _id: s._id,
           name: `${s.firstName || ''} ${s.lastName || ''}`.trim() || s.name || 'Student',
           class: s.classId?.className || s.class || 'Class 1',
-          roll: s.admissionNo || s.aparId || s.roll || `STU-${s._id.slice(-4)}`,
+          roll: s.admissionNo || s.aparId || s.roll || `STU-${(s._id || '').slice(-4)}`,
           father: s.fatherName || s.father || '',
           phone: s.phone || s.studentPhone || '',
           due: Number(s.due || 0)
@@ -298,7 +317,7 @@ export const localDb = {
         write('students', mapped);
       }
 
-      if (incomesRes.status === 'fulfilled' && incomesRes.value.data?.data?.length > 0) {
+      if (incomesRes.status === 'fulfilled' && Array.isArray(incomesRes.value.data?.data)) {
         const mapped = incomesRes.value.data.data.map(inc => ({
           id: inc._id,
           _id: inc._id,
@@ -306,13 +325,13 @@ export const localDb = {
           note: inc.description || inc.name || '',
           amount: inc.amount,
           date: inc.date ? new Date(inc.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-          invoiceNo: inc.invoiceNumber || `INC-${inc._id.slice(-5)}`,
+          invoiceNo: inc.invoiceNumber || `INC-${(inc._id || '').slice(-5)}`,
           mode: inc.paymentMode || 'Cash'
         }));
         write('incomes', mapped);
       }
 
-      if (expensesRes.status === 'fulfilled' && expensesRes.value.data?.data?.length > 0) {
+      if (expensesRes.status === 'fulfilled' && Array.isArray(expensesRes.value.data?.data)) {
         const mapped = expensesRes.value.data.data.map(exp => ({
           id: exp._id,
           _id: exp._id,
@@ -320,13 +339,13 @@ export const localDb = {
           note: exp.description || exp.name || '',
           amount: exp.amount,
           date: exp.date ? new Date(exp.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-          invoiceNo: exp.invoiceNumber || `EXP-${exp._id.slice(-5)}`,
+          invoiceNo: exp.invoiceNumber || `EXP-${(exp._id || '').slice(-5)}`,
           mode: exp.paymentMode || 'Cash'
         }));
         write('expenses', mapped);
       }
 
-      if (incomeHeadsRes.status === 'fulfilled' && incomeHeadsRes.value.data?.data?.length > 0) {
+      if (incomeHeadsRes.status === 'fulfilled' && Array.isArray(incomeHeadsRes.value.data?.data)) {
         const mapped = incomeHeadsRes.value.data.data.map(h => ({
           id: h._id,
           _id: h._id,
@@ -336,7 +355,7 @@ export const localDb = {
         write('incomeHeads', mapped);
       }
 
-      if (expenseHeadsRes.status === 'fulfilled' && expenseHeadsRes.value.data?.data?.length > 0) {
+      if (expenseHeadsRes.status === 'fulfilled' && Array.isArray(expenseHeadsRes.value.data?.data)) {
         const mapped = expenseHeadsRes.value.data.data.map(h => ({
           id: h._id,
           _id: h._id,
@@ -346,23 +365,25 @@ export const localDb = {
         write('expenseHeads', mapped);
       }
 
-      if (collectionsRes?.status === 'fulfilled' && (collectionsRes.value.data?.data?.length > 0 || collectionsRes.value.data?.receipts?.length > 0)) {
+      if (collectionsRes?.status === 'fulfilled') {
         const rawList = collectionsRes.value.data?.data || collectionsRes.value.data?.receipts || [];
-        const mapped = rawList.map(c => ({
-          id: c._id,
-          _id: c._id,
-          receiptNo: c.receiptNo || `REC-${(c._id || '').slice(-5)}`,
-          studentId: c.student?._id || c.student,
-          studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student'),
-          feeGroupId: c.feeGroup?._id || c.feeGroup,
-          amount: Number(c.amountPaid || c.amount || 0),
-          fine: Number(c.fineAmount || 0),
-          discount: Number(c.discountAmount || 0),
-          date: c.paymentDate ? new Date(c.paymentDate).toISOString().slice(0, 10) : (c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
-          mode: c.paymentMode || 'Cash',
-          note: c.note || '',
-        }));
-        write('collections', mapped);
+        if (Array.isArray(rawList)) {
+          const mapped = rawList.map(c => ({
+            id: c._id,
+            _id: c._id,
+            receiptNo: c.receiptNo || `REC-${(c._id || '').slice(-5)}`,
+            studentId: c.student?._id || c.student,
+            studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student'),
+            feeGroupId: c.feeGroup?._id || c.feeGroup,
+            amount: Number(c.amountPaid || c.amount || 0),
+            fine: Number(c.fineAmount || 0),
+            discount: Number(c.discountAmount || 0),
+            date: c.paymentDate ? new Date(c.paymentDate).toISOString().slice(0, 10) : (c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
+            mode: c.paymentMode || 'Cash',
+            note: c.note || '',
+          }));
+          write('collections', mapped);
+        }
       }
 
       return true;
