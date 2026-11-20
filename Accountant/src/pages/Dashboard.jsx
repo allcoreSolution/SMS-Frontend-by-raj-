@@ -3,13 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { accountantService } from '../api/accountantService';
 import localDb from '../api/localDb';
 import { 
-  Printer, ArrowDown, ArrowUp, Wallet, BarChart, BarChart3, LineChart,
+  Printer, ArrowDown, ArrowUp, Wallet, BarChart3,
   Megaphone, User, FileText, Send, Users,
   HandCoins, FileSearch, UserPlus, Layers, Tags, Tag, Gauge, 
   LayoutDashboard, SlidersHorizontal, RefreshCw, Plus, 
   ArrowRight, X, UserCircle2, ChevronLeft, ChevronRight, TrendingUp,
-  DollarSign, Clock, Pin, Play, Pause, Bell, Sparkles, CheckCircle2,
-  Coins, Building2, CalendarCheck, Target, Zap, Receipt, Check, ShieldCheck
+  Clock, Building2, CalendarCheck, Target, Zap, Receipt, Check, ShieldCheck
 } from 'lucide-react';
 import { 
   BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, 
@@ -252,7 +251,7 @@ const Dashboard = () => {
       }
       const rawName = localStorage.getItem('schoolName');
       if (rawName && !rawName.includes('Xavier')) return { name: rawName, logo: null, shortName: '' };
-    } catch (_) {}
+    } catch {}
     return { name: 'All core', logo: null, shortName: 'allcore' };
   };
 
@@ -287,7 +286,7 @@ const Dashboard = () => {
           return parsed;
         }
       }
-    } catch (_) {}
+    } catch {}
     return {
       collectedToday: 0,
       incomeMonth: 0,
@@ -939,8 +938,8 @@ const Dashboard = () => {
                     required
                   >
                     <option value="">-- Choose Student --</option>
-                    {(studentsList || []).filter(Boolean).map((stu) => (
-                      <option key={stu.id || stu._id || Math.random()} value={stu.id || stu._id || ''}>
+                    {(studentsList || []).filter(Boolean).map((stu, sIdx) => (
+                      <option key={stu.id || stu._id || sIdx} value={stu.id || stu._id || ''}>
                         {stu.name || 'Student'} ({stu.class || ''} {stu.section ? `- ${stu.section}` : ''}) • Roll: {stu.rollNo || stu.admissionNo || '-'} {Number(stu.due || 0) > 0 ? `[Due ₹${stu.due}]` : '[Clear]'}
                       </option>
                     ))}

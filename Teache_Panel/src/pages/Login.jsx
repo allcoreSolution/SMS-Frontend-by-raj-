@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axiosInstance, { getApiBaseUrl } from '../api/axios';
+import axiosInstance from '../api/axios';
 import { 
   Mail, 
   Lock, 
@@ -14,17 +14,10 @@ import {
   CheckSquare, 
   Bell, 
   School, 
-  Globe, 
-  Building2,
-  CheckCircle,
-  HelpCircle,
   Sparkles,
-  Wifi,
-  ShieldCheck,
   GraduationCap
 } from 'lucide-react';
 import Swal from 'sweetalert2';
-import { useLanguage } from '../context/LanguageContext';
 
 // High-Res 3D Assets for Teacher & Staff
 import SchoolLogo3D from '../components/SchoolLogo3D';
@@ -46,7 +39,6 @@ const GoogleIcon = () => (
 
 const Login = () => {
   const navigate = useNavigate();
-  const { currentLang, changeLanguage, t } = useLanguage();
 
   // Screen Stepper: 'welcome' | 'role' | 'login'
   const [currentStep, setCurrentStep] = useState(() => {
@@ -71,7 +63,6 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [autofillNotice, setAutofillNotice] = useState('');
-  const [serverUrl, setServerUrl] = useState(getApiBaseUrl());
 
   useEffect(() => {
     const token = sessionStorage.getItem('token');
@@ -106,67 +97,6 @@ const Login = () => {
     handleSelectRole(role);
     setAutofillNotice(`Demo loaded for ${role === 'teacher' ? 'Teacher' : 'Staff'}`);
     setTimeout(() => setAutofillNotice(''), 2500);
-  };
-
-  // Configure Server IP Dynamically (SweetAlert)
-  const handleConfigServerIp = async () => {
-    const { value: newIp } = await Swal.fire({
-      title: 'Configure Teacher Server IP',
-      text: "Enter your PC's Wi-Fi IPv4 address or Full API URL:",
-      input: 'text',
-      inputValue: serverUrl,
-      showCancelButton: true,
-      confirmButtonText: 'Save & Reconnect',
-      confirmButtonColor: '#15803d',
-      cancelButtonText: 'Cancel',
-      inputValidator: (value) => {
-        if (!value) return 'Please enter a valid IP or URL!';
-      }
-    });
-
-    if (newIp) {
-      let formatted = newIp.trim().replace(/\/+$/, '');
-      // Strip existing trailing /api for clean re-composition
-      if (formatted.endsWith('/api')) {
-        formatted = formatted.slice(0, -4);
-      }
-
-      // Add protocol if missing
-      if (!formatted.startsWith('http://') && !formatted.startsWith('https://')) {
-        // If domain or onrender.com, use https, otherwise http for local IPs
-        if (formatted.includes('.onrender.com') || formatted.includes('.com') || formatted.includes('.net') || formatted.includes('.app')) {
-          formatted = `https://${formatted}`;
-        } else {
-          formatted = `http://${formatted}`;
-        }
-      }
-
-      // Check if port already exists or if it's a cloud domain
-      const isCloudOrHttps = formatted.startsWith('https://') || formatted.includes('.onrender.com') || formatted.includes('.vercel.app');
-      const hasPort = /:\d+$/.test(formatted);
-
-      // Only append default port 5050 for raw local addresses without port
-      if (!hasPort && !isCloudOrHttps) {
-        formatted = `${formatted}:5050`;
-      }
-
-      // Always guarantee clean /api endpoint
-      formatted = `${formatted}/api`;
-      localStorage.setItem('api_override_url', formatted);
-      localStorage.setItem('api_base_url', formatted);
-      if (typeof window !== 'undefined') {
-        window.__ERP_API_BASE_URL__ = formatted;
-        window.__API_BASE_URL__ = formatted;
-      }
-      setServerUrl(formatted);
-      Swal.fire({
-        icon: 'success',
-        title: 'Server IP Updated!',
-        text: `Target API set to ${formatted}`,
-        timer: 1800,
-        showConfirmButton: false
-      });
-    }
   };
 
   const handleLogin = async (e) => {
@@ -362,7 +292,7 @@ const Login = () => {
             }
           }
         }
-      } catch (err) {
+      } catch {
         Swal.fire('Connection Error', 'Could not reach server to reset password', 'error');
       }
     }

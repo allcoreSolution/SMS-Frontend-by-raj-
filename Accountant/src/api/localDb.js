@@ -10,7 +10,7 @@ const PREFIX = 'acc_';
 (function clearLegacyDemoData() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    const isCleaned = localStorage.getItem('acc_demo_cleaned_v6');
+    const isCleaned = localStorage.getItem('acc_prod_clean_2026_v8');
     const hasLegacyData = () => {
       try {
         const stats = JSON.parse(localStorage.getItem('acc_live_dashboard_stats') || '{}');
@@ -26,7 +26,7 @@ const PREFIX = 'acc_';
         if (Array.isArray(inc) && inc.some(i => typeof i.id === 'string' && (i.id.startsWith('in_') || /^(in|ex)\d+$/i.test(i.id)))) {
           return true;
         }
-      } catch (_) {}
+      } catch {}
       return false;
     };
 
@@ -52,9 +52,37 @@ const PREFIX = 'acc_';
         localStorage.setItem('schoolName', 'All core');
       }
 
-      localStorage.setItem('acc_demo_cleaned_v6', 'true');
+      // Check accountant_user in localStorage and sessionStorage
+      ['accountant_user', 'user'].forEach(key => {
+        const rawLocal = localStorage.getItem(key);
+        if (rawLocal && rawLocal.includes('Xavier')) {
+          try {
+            const parsed = JSON.parse(rawLocal);
+            if (parsed.schoolName && parsed.schoolName.includes('Xavier')) parsed.schoolName = 'All core';
+            if (parsed.school?.name && parsed.school.name.includes('Xavier')) parsed.school.name = 'All core';
+            localStorage.setItem(key, JSON.stringify(parsed));
+          } catch {
+            localStorage.removeItem(key);
+          }
+        }
+        if (typeof sessionStorage !== 'undefined') {
+          const rawSession = sessionStorage.getItem(key);
+          if (rawSession && rawSession.includes('Xavier')) {
+            try {
+              const parsed = JSON.parse(rawSession);
+              if (parsed.schoolName && parsed.schoolName.includes('Xavier')) parsed.schoolName = 'All core';
+              if (parsed.school?.name && parsed.school.name.includes('Xavier')) parsed.school.name = 'All core';
+              sessionStorage.setItem(key, JSON.stringify(parsed));
+            } catch {
+              sessionStorage.removeItem(key);
+            }
+          }
+        }
+      });
+
+      localStorage.setItem('acc_prod_clean_2026_v8', 'true');
     }
-  } catch (_) {}
+  } catch {}
 })();
 
 const seed = {
@@ -174,7 +202,7 @@ function read(collection) {
       }
       return parsed;
     }
-  } catch (_) {}
+  } catch {}
   const data = seed[collection] ? JSON.parse(JSON.stringify(seed[collection])) : [];
   write(collection, data);
   return data;
@@ -233,7 +261,7 @@ export const localDb = {
     let queue = [];
     try {
       queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    } catch (_) {}
+    } catch {}
 
     try {
       const id = item._id || item.id;
@@ -304,7 +332,7 @@ export const localDb = {
       queue.push(mutationTask);
       try {
         localStorage.setItem(queueKey, JSON.stringify(queue.slice(-50)));
-      } catch (_) {}
+      } catch {}
       return { success: false, status: 'pending', error: err.message };
     }
   },
@@ -314,21 +342,21 @@ export const localDb = {
     let queue = [];
     try {
       queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
-    } catch (_) {}
+    } catch {}
     if (!queue.length || (typeof navigator !== 'undefined' && !navigator.onLine)) return;
 
     const remaining = [];
     for (const task of queue) {
       try {
         await this._syncMutation(task.action, task.collection, task.item);
-      } catch (e) {
+      } catch {
         task.retryCount = (task.retryCount || 0) + 1;
         if (task.retryCount < 5) remaining.push(task);
       }
     }
     try {
       localStorage.setItem(queueKey, JSON.stringify(remaining));
-    } catch (_) {}
+    } catch {}
   },
 
   async syncFromBackend() {
@@ -484,7 +512,7 @@ export const localDb = {
       }
       const raw = localStorage.getItem(getKey('profile'));
       if (raw) return JSON.parse(raw);
-    } catch (_) {}
+    } catch {}
     const p = { ...seed.profile };
     return p;
   },
@@ -517,7 +545,7 @@ export const localDb = {
           advanced: { ...seed.settings.advanced, ...(parsed.advanced || {}) },
         };
       }
-    } catch (_) {}
+    } catch {}
     const s = JSON.parse(JSON.stringify(seed.settings));
     localStorage.setItem(getKey('settings'), JSON.stringify(s));
     return s;
@@ -562,7 +590,7 @@ export const localDb = {
       try {
         const parsed = JSON.parse(val);
         count = Array.isArray(parsed) ? parsed.length : (parsed ? 1 : 0);
-      } catch (_) {}
+      } catch {}
       return {
         ...col,
         key,
@@ -593,7 +621,7 @@ export const localDb = {
       if (raw) {
         try {
           backup.data[k] = JSON.parse(raw);
-        } catch (_) {}
+        } catch {}
       }
     });
     return backup;

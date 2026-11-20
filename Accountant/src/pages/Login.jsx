@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  LogIn, Lock, User, Mail, ShieldCheck, 
-  GraduationCap, Eye, EyeOff, ArrowRight, 
+  LogIn, Lock, Mail, ShieldCheck, 
+  Eye, EyeOff, ArrowRight, 
   Sparkles, Receipt, Landmark, Wallet, 
   FileCheck, CheckCircle2, Building2, 
-  TrendingUp, CreditCard, Clock
+  TrendingUp, Clock
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -172,7 +172,7 @@ const Login = () => {
         } else {
           Swal.fire('Account Note', res.message || 'Could not verify email', 'warning');
         }
-      } catch (err) {
+      } catch {
         Swal.fire('Error', 'Could not reach server. Please try again.', 'error');
       }
     }
@@ -457,7 +457,7 @@ const Login = () => {
       {/* Global Minimal Bottom Footer */}
       <footer className="w-full bg-white border-t border-slate-200/90 py-2.5 px-6 text-center shrink-0">
         <p className="text-[11px] text-slate-500 font-medium">
-          &copy; {new Date().getFullYear()} School ERP &bull; Institutional Financial Suite &bull; All Rights Reserved
+          &copy; 2026 School ERP &bull; Institutional Financial Suite &bull; All Rights Reserved
         </p>
       </footer>
 
