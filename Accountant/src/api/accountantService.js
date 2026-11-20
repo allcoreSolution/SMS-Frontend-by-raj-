@@ -153,32 +153,98 @@ export const accountantService = {
   },
 
   getCollections: async () => {
+    try {
+      const res = await axiosInstance.get('/collect-fees');
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        const mapped = res.data.data.map(c => ({
+          id: c._id,
+          _id: c._id,
+          receiptNo: c.receiptNo,
+          studentId: c.student?._id || c.student,
+          studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student'),
+          feeGroupId: c.feeGroup?._id || c.feeGroup,
+          amount: Number(c.amountPaid || c.amount || 0),
+          fine: Number(c.fineAmount || 0),
+          discount: Number(c.discountAmount || 0),
+          date: c.paymentDate ? new Date(c.paymentDate).toISOString().slice(0, 10) : (c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10)),
+          mode: c.paymentMode || 'Cash',
+          refNo: c.referenceNo || '',
+          note: c.note || '',
+          status: c.status || 'Paid',
+          syncStatus: 'synced'
+        }));
+        return ok(mapped);
+      }
+    } catch (_) {}
     const list = localDb.getAll('collections');
     return ok(list);
   },
 
   collectFee: async (data) => {
-    const amount = Number(data.amount) || 0;
-    const studentId = data.studentId || data._id;
-    // reduce due on student
+    const amount = Number(data.amountPaid ?? data.amount) || 0;
+    const studentId = data.studentId || data.student || data._id;
+    const idempotencyKey = data.idempotencyKey || `idem_${studentId}_${Date.now()}`;
     const student = localDb.getById('students', studentId);
+
+    const payload = {
+      student: studentId,
+      studentId,
+      studentName: data.studentName || student?.name || '',
+      className: data.className || student?.class || '',
+      feeGroup: data.feeGroup || data.feeGroupId || undefined,
+      amountPaid: amount,
+      amount,
+      fineAmount: Number(data.fineAmount || 0),
+      discount: data.discount || null,
+      paymentMode: data.mode || data.paymentMode || 'Cash',
+      referenceNo: data.refNo || data.referenceNo || '',
+      note: data.note || '',
+      date: data.date || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date()),
+      idempotencyKey
+    };
+
+    try {
+      const res = await axiosInstance.post('/collect-fees', payload);
+      if (res.data?.success && res.data.data) {
+        const serverReceipt = res.data.data;
+        const receiptItem = {
+          id: serverReceipt._id,
+          _id: serverReceipt._id,
+          receiptNo: serverReceipt.receiptNo,
+          studentId,
+          studentName: payload.studentName,
+          className: payload.className,
+          amount,
+          date: payload.date,
+          mode: payload.paymentMode,
+          refNo: payload.referenceNo,
+          note: payload.note,
+          status: serverReceipt.status || 'Paid',
+          syncStatus: 'synced'
+        };
+        localDb.create('collections', receiptItem);
+        if (student) {
+          const newDue = Math.max(0, (student.due || 0) - amount);
+          localDb.update('students', studentId, { due: newDue });
+        }
+        return ok(receiptItem);
+      }
+    } catch (err) {
+      console.warn('Backend fee collection unreachable, queuing offline:', err.message);
+    }
+
+    // Offline / fallback path
     if (student) {
       const newDue = Math.max(0, (student.due || 0) - amount);
       localDb.update('students', studentId, { due: newDue });
     }
-    const receipt = `RCP-${Date.now().toString().slice(-6)}`;
-    const item = localDb.create('collections', {
-      studentId,
-      studentName: data.studentName || student?.name || '',
-      className: data.className || student?.class || '',
-      amount,
-      date: data.date || new Date().toISOString().slice(0, 10),
-      mode: data.mode || data.paymentMode || 'Cash',
-      receipt,
-      refNo: data.refNo || '',
-      note: data.note || '',
+    const receipt = `REC-${Date.now().toString().slice(-4)}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const offlineItem = localDb.create('collections', {
+      ...payload,
+      receiptNo: receipt,
+      syncStatus: 'pending'
     });
-    return ok(item);
+    return ok(offlineItem);
   },
 
   // ── Dashboard ──────────────────────────────────────────────
@@ -324,15 +390,64 @@ export const accountantService = {
   },
 
   getDayBook: async (date) => {
-    const d = date || new Date().toISOString().slice(0, 10);
-    const incomes = localDb.getAll('incomes').filter((i) => i.date === d);
-    const expenses = localDb.getAll('expenses').filter((e) => e.date === d);
-    const collections = localDb.getAll('collections').filter((c) => c.date === d);
+    const d = date || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
+    let incomes = [];
+    let expenses = [];
+    let collections = [];
+    try {
+      const [incRes, expRes, colRes] = await Promise.allSettled([
+        axiosInstance.get(`/incomes?startDate=${d}&endDate=${d}`),
+        axiosInstance.get(`/expenses?startDate=${d}&endDate=${d}`),
+        axiosInstance.get('/collect-fees')
+      ]);
+      if (incRes.status === 'fulfilled' && Array.isArray(incRes.value.data?.data)) {
+        incomes = incRes.value.data.data.map(i => ({ ...i, id: i._id, head: i.incomeHead?.name || i.name, amount: Number(i.amount) || 0 }));
+      }
+      if (expRes.status === 'fulfilled' && Array.isArray(expRes.value.data?.data)) {
+        expenses = expRes.value.data.data.map(e => ({ ...e, id: e._id, head: e.expenseHead?.name || e.name, amount: Number(e.amount) || 0 }));
+      }
+      if (colRes.status === 'fulfilled' && Array.isArray(colRes.value.data?.data)) {
+        collections = colRes.value.data.data
+          .filter(c => {
+            const cDate = c.paymentDate ? new Date(c.paymentDate).toISOString().slice(0, 10) : (c.createdAt ? new Date(c.createdAt).toISOString().slice(0, 10) : '');
+            return cDate === d;
+          })
+          .map(c => ({
+            ...c,
+            id: c._id,
+            amount: Number(c.amountPaid || c.amount || 0),
+            studentName: c.student?.firstName ? `${c.student.firstName} ${c.student.lastName || ''}`.trim() : (c.studentName || 'Student')
+          }));
+      }
+    } catch (_) {}
+
+    if (!incomes.length && !expenses.length && !collections.length) {
+      incomes = localDb.getAll('incomes').filter((i) => i.date === d);
+      expenses = localDb.getAll('expenses').filter((e) => e.date === d);
+      collections = localDb.getAll('collections').filter((c) => c.date === d);
+    }
     return ok({ date: d, incomes, expenses, collections });
   },
 
   // ── Incomes ────────────────────────────────────────────────
   getIncomes: async () => {
+    try {
+      const res = await axiosInstance.get('/incomes');
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        const mapped = res.data.data.map(inc => ({
+          id: inc._id,
+          _id: inc._id,
+          head: inc.incomeHead?.name || inc.name || 'General Income',
+          note: inc.description || inc.name || '',
+          amount: Number(inc.amount) || 0,
+          date: inc.date ? new Date(inc.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+          invoiceNo: inc.invoiceNumber || `INC-${(inc._id || '').slice(-5)}`,
+          paymentMode: inc.paymentMode || 'Cash',
+          syncStatus: 'synced'
+        }));
+        return ok(mapped);
+      }
+    } catch (_) {}
     const data = localDb.getAll('incomes');
     return ok(data);
   },
@@ -342,7 +457,7 @@ export const accountantService = {
       head: data.head || data.incomeHead || 'General',
       name: data.name || data.entityName || data.note || 'Income Received',
       amount: Number(data.amount) || 0,
-      date: data.date || new Date().toISOString().slice(0, 10),
+      date: data.date || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date()),
       paymentMode: data.paymentMode || data.mode || 'Cash',
       note: data.note || data.description || '',
       invoiceNo,
@@ -364,6 +479,23 @@ export const accountantService = {
 
   // ── Expenses ───────────────────────────────────────────────
   getExpenses: async () => {
+    try {
+      const res = await axiosInstance.get('/expenses');
+      if (res.data?.success && Array.isArray(res.data.data)) {
+        const mapped = res.data.data.map(exp => ({
+          id: exp._id,
+          _id: exp._id,
+          head: exp.expenseHead?.name || exp.name || 'General Expense',
+          note: exp.description || exp.name || '',
+          amount: Number(exp.amount) || 0,
+          date: exp.date ? new Date(exp.date).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
+          voucherNo: exp.invoiceNumber || `EXP-${(exp._id || '').slice(-5)}`,
+          paymentMode: exp.paymentMode || 'Cash',
+          syncStatus: 'synced'
+        }));
+        return ok(mapped);
+      }
+    } catch (_) {}
     const data = localDb.getAll('expenses');
     return ok(data);
   },
@@ -373,7 +505,7 @@ export const accountantService = {
       head: data.head || data.expenseHead || 'General',
       name: data.name || data.entityName || data.note || 'Expense Paid',
       amount: Number(data.amount) || 0,
-      date: data.date || new Date().toISOString().slice(0, 10),
+      date: data.date || new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date()),
       paymentMode: data.paymentMode || data.mode || 'Cash',
       note: data.note || data.description || '',
       voucherNo,
@@ -446,9 +578,14 @@ export const accountantService = {
     try {
       let user = null;
       try {
-        const raw = localStorage.getItem('accountant_user');
+        const raw = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
         if (raw) user = JSON.parse(raw);
       } catch (_) {}
+
+      const defaultName = user?.name || user?.firstName || 'Accountant';
+      const defaultEmail = user?.email || '';
+      const defaultPhone = user?.phone || '';
+      const defaultStaffId = user?.staffId || '';
 
       let staffDoc = null;
       if (user?._id) {
@@ -461,19 +598,8 @@ export const accountantService = {
           staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
         }
       }
-      // Target the active institutional Accountant record (Hari Kumar)
-      if (!staffDoc) {
-        const res = await axiosInstance.get('/staff/6afd359fd082c0a36c4f4ab3').catch(() => null);
-        if (res?.data?.data) staffDoc = res.data.data;
-      }
       if (!staffDoc) {
         const res = await axiosInstance.get('/staff?designation=Accountant').catch(() => null);
-        if (res?.data?.data) {
-          staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
-        }
-      }
-      if (!staffDoc) {
-        const res = await axiosInstance.get('/staff').catch(() => null);
         if (res?.data?.data) {
           staffDoc = Array.isArray(res.data.data) ? res.data.data[0] : res.data.data;
         }
@@ -482,20 +608,20 @@ export const accountantService = {
       if (staffDoc) {
         const mapped = {
           _id: staffDoc._id,
-          name: staffDoc.fullName || 'Hari Kumar',
-          fullName: staffDoc.fullName || 'Hari Kumar',
-          staffId: staffDoc.staffId || staffDoc.employeeCode || '112',
-          role: typeof staffDoc.role === 'object' ? staffDoc.role?.name : staffDoc.role || 'Accountant',
+          name: staffDoc.fullName || defaultName,
+          fullName: staffDoc.fullName || defaultName,
+          staffId: staffDoc.staffId || staffDoc.employeeCode || defaultStaffId,
+          role: typeof staffDoc.role === 'object' ? staffDoc.role?.name : staffDoc.role || user?.role || 'Accountant',
           designation: staffDoc.designation || 'Accountant',
           department: staffDoc.department || 'Finance & Accounts',
-          basicSalary: staffDoc.basicSalary || staffDoc.additionalInfo?.basicSalary || '35000',
-          dateOfJoining: staffDoc.dateOfJoining ? staffDoc.dateOfJoining.slice(0, 10) : '2026-12-18',
-          confirmationDate: staffDoc.confirmationDate ? staffDoc.confirmationDate.slice(0, 10) : '2026-12-18',
-          email: staffDoc.email || 'harikumar@gmail.com',
-          phone: staffDoc.phone || '8400563229',
-          address: staffDoc.currentAddress || 'MP',
-          permanentAddress: staffDoc.currentAddress || 'MP',
-          bio: staffDoc.note || 'Staff Accountant managing student fees, daybook vouchers, institutional collections, and accounts.',
+          basicSalary: staffDoc.basicSalary || staffDoc.additionalInfo?.basicSalary || '',
+          dateOfJoining: staffDoc.dateOfJoining ? staffDoc.dateOfJoining.slice(0, 10) : '',
+          confirmationDate: staffDoc.confirmationDate ? staffDoc.confirmationDate.slice(0, 10) : '',
+          email: staffDoc.email || defaultEmail,
+          phone: staffDoc.phone || defaultPhone,
+          address: staffDoc.currentAddress || '',
+          permanentAddress: staffDoc.permanentAddress || staffDoc.currentAddress || '',
+          bio: staffDoc.note || 'Staff Accountant managing institutional collections, fee desk, and ledgers.',
           avatar: (() => {
             if (staffDoc.photo && (staffDoc.photo.startsWith('http') || staffDoc.photo.startsWith('data:'))) {
               return staffDoc.photo;
@@ -506,28 +632,27 @@ export const accountantService = {
                 : 'https://sms-backend-by-raj-1.onrender.com';
               return `${backendOrigin}/${staffDoc.photo.replace(/^\/+/, '')}`;
             }
-            const localSaved = typeof window !== 'undefined' ? (localStorage.getItem('accountant_user_avatar') || localStorage.getItem('school_erp_user_avatar') || localStorage.getItem('user_avatar') || '') : '';
-            return localSaved || '';
+            return user?.avatar || '';
           })(),
-          gender: staffDoc.gender || 'Male',
-          dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '1999-10-12',
-          maritalStatus: staffDoc.maritalStatus || 'Married',
-          fatherName: staffDoc.fathersName || 'Mr. Prakash Kumar',
-          motherName: staffDoc.mothersName || 'Ms. Ranjana Devi',
-          qualification: staffDoc.qualification || 'B.Tech',
-          workExperience: staffDoc.workExperience ? `${staffDoc.workExperience} Years` : '2 Years',
-          bloodGroup: staffDoc.bloodGroup || 'A+',
-          emergencyContact: staffDoc.emergencyContactName || staffDoc.phone || '8400563229',
-          emergencyPhone: staffDoc.emergencyContactPhone || staffDoc.phone || '8400563229',
-          bankName: staffDoc.bankDetails?.bankName || 'SBI',
+          gender: staffDoc.gender || 'Not Specified',
+          dob: staffDoc.dateOfBirth ? staffDoc.dateOfBirth.slice(0, 10) : '',
+          maritalStatus: staffDoc.maritalStatus || '',
+          fatherName: staffDoc.fathersName || '',
+          motherName: staffDoc.mothersName || '',
+          qualification: staffDoc.qualification || '',
+          workExperience: staffDoc.workExperience ? `${staffDoc.workExperience} Years` : '',
+          bloodGroup: staffDoc.bloodGroup || '',
+          emergencyContact: staffDoc.emergencyContactName || '',
+          emergencyPhone: staffDoc.emergencyContactPhone || '',
+          bankName: staffDoc.bankDetails?.bankName || '',
           accountNo: staffDoc.bankDetails?.accountNumber || '',
           ifsc: staffDoc.bankDetails?.ifscCode || '',
           branchName: staffDoc.bankDetails?.branchName || '',
-          accountTitle: staffDoc.bankDetails?.accountTitle || staffDoc.fullName || 'Hari Kumar',
+          accountTitle: staffDoc.bankDetails?.accountTitle || staffDoc.fullName || defaultName,
           panNo: staffDoc.statutoryIds?.panNumber || '',
           aadhaarNo: staffDoc.statutoryIds?.aadhaarNumber || '',
           uanNo: staffDoc.statutoryIds?.uanNumber || '',
-          biometricId: staffDoc.biometricId || staffDoc.deviceMappingId || '112',
+          biometricId: staffDoc.biometricId || staffDoc.deviceMappingId || '',
           shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
         };
 
@@ -539,6 +664,49 @@ export const accountantService = {
         }
         localDb.saveProfile(mapped);
         return ok(mapped);
+      }
+
+      if (user) {
+        const fallbackUser = {
+          _id: user._id || '',
+          name: defaultName,
+          fullName: defaultName,
+          staffId: defaultStaffId,
+          role: user.role || 'Accountant',
+          designation: 'Accountant',
+          department: 'Finance & Accounts',
+          basicSalary: '',
+          dateOfJoining: '',
+          confirmationDate: '',
+          email: defaultEmail,
+          phone: defaultPhone,
+          address: '',
+          permanentAddress: '',
+          bio: 'Staff Accountant managing institutional collections, fee desk, and ledgers.',
+          avatar: user.avatar || '',
+          gender: 'Not Specified',
+          dob: '',
+          maritalStatus: '',
+          fatherName: '',
+          motherName: '',
+          qualification: '',
+          workExperience: '',
+          bloodGroup: '',
+          emergencyContact: '',
+          emergencyPhone: '',
+          bankName: '',
+          accountNo: '',
+          ifsc: '',
+          branchName: '',
+          accountTitle: defaultName,
+          panNo: '',
+          aadhaarNo: '',
+          uanNo: '',
+          biometricId: '',
+          shiftTiming: '08:30 AM – 04:30 PM (General Shift)',
+        };
+        localDb.saveProfile(fallbackUser);
+        return ok(fallbackUser);
       }
     } catch (e) {
       console.warn('Real staff profile fetch failed, using local profile:', e);

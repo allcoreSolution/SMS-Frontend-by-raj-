@@ -67,18 +67,18 @@ const seed = {
   students: [],
   collections: [],
   profile: {
-    name: 'Hari Kumar',
-    staffId: '112',
+    name: '',
+    staffId: '',
     role: 'Accountant',
-    designation: 'Accountant',
+    designation: 'Staff Accountant',
     department: 'Finance & Accounts',
-    basicSalary: '35000',
-    dateOfJoining: '2026-12-18',
-    confirmationDate: '2026-12-18',
-    email: 'harikumar@gmail.com',
-    phone: '8400563229',
-    address: 'MP',
-    permanentAddress: 'MP',
+    basicSalary: '',
+    dateOfJoining: '',
+    confirmationDate: '',
+    email: '',
+    phone: '',
+    address: '',
+    permanentAddress: '',
     bio: 'Staff Accountant managing student fees, daybook vouchers, institutional collections, and accounts.',
     avatar: '',
   },
@@ -184,8 +184,10 @@ function write(collection, data) {
   localStorage.setItem(getKey(collection), JSON.stringify(data));
 }
 
-function genId(prefix = 'id') {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+function genObjectId() {
+  const timestamp = Math.floor(Date.now() / 1000).toString(16).padStart(8, '0');
+  const random = Array.from({ length: 16 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  return timestamp + random;
 }
 
 export const localDb = {
@@ -198,7 +200,8 @@ export const localDb = {
   },
   create(collection, item) {
     const list = read(collection);
-    const newItem = { ...item, id: item.id || genId(collection.slice(0, 2)), _id: item.id || genId(collection.slice(0, 2)) };
+    const newId = item._id || item.id || genObjectId();
+    const newItem = { ...item, id: newId, _id: newId, syncStatus: 'pending' };
     list.push(newItem);
     write(collection, list);
     this._syncMutation('create', collection, newItem);
@@ -208,7 +211,7 @@ export const localDb = {
     const list = read(collection);
     const idx = list.findIndex((x) => x.id === id || x._id === id);
     if (idx === -1) return null;
-    list[idx] = { ...list[idx], ...updates, id: list[idx].id || id, _id: list[idx]._id || id };
+    list[idx] = { ...list[idx], ...updates, id: list[idx].id || id, _id: list[idx]._id || id, syncStatus: 'pending' };
     write(collection, list);
     this._syncMutation('update', collection, list[idx]);
     return list[idx];
@@ -224,45 +227,108 @@ export const localDb = {
     return true;
   },
 
-  // Central MongoDB Backend Synchronization
+  // Central MongoDB Backend Synchronization with status tracking & retry queue
   async _syncMutation(action, collection, item) {
+    const queueKey = 'acc_sync_mutation_queue';
+    let queue = [];
+    try {
+      queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
+    } catch (_) {}
+
     try {
       const id = item._id || item.id;
+      let res = null;
       if (collection === 'feeTypes') {
-        if (action === 'create') await axiosInstance.post('/fee-types', { name: item.feeType || item.name, code: item.feeCode || item.code, description: item.description });
-        else if (action === 'update' && id) await axiosInstance.put(`/fee-types/${id}`, { name: item.feeType || item.name, code: item.feeCode || item.code, description: item.description });
-        else if (action === 'delete' && id) await axiosInstance.delete(`/fee-types/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/fee-types', { name: item.feeType || item.name, code: item.feeCode || item.code, description: item.description });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/fee-types/${id}`, { name: item.feeType || item.name, code: item.feeCode || item.code, description: item.description });
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/fee-types/${id}`);
       } else if (collection === 'feeGroups') {
-        if (action === 'create') await axiosInstance.post('/fee-groups', { name: item.name, description: item.description, amount: item.total || item.amount });
-        else if (action === 'update' && id) await axiosInstance.put(`/fee-groups/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/fee-groups/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/fee-groups', { name: item.name, description: item.description, amount: item.total || item.amount });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/fee-groups/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/fee-groups/${id}`);
       } else if (collection === 'incomes') {
-        if (action === 'create') await axiosInstance.post('/incomes', { name: item.name || item.title || item.note, amount: item.amount, date: item.date, invoiceNumber: item.invoiceNo, paymentMode: item.mode || 'Cash', description: item.note || item.description });
-        else if (action === 'update' && id) await axiosInstance.put(`/incomes/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/incomes/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/incomes', { name: item.name || item.title || item.note, amount: item.amount, date: item.date, invoiceNumber: item.invoiceNo, paymentMode: item.mode || 'Cash', description: item.note || item.description });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/incomes/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/incomes/${id}`);
       } else if (collection === 'incomeHeads') {
-        if (action === 'create') await axiosInstance.post('/income-heads', { name: item.name || item.head, description: item.description });
-        else if (action === 'update' && id) await axiosInstance.put(`/income-heads/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/income-heads/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/income-heads', { name: item.name || item.head, description: item.description });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/income-heads/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/income-heads/${id}`);
       } else if (collection === 'expenses') {
-        if (action === 'create') await axiosInstance.post('/expenses', { name: item.name || item.title || item.note, amount: item.amount, date: item.date, invoiceNumber: item.invoiceNo, paymentMode: item.mode || 'Cash', description: item.note || item.description });
-        else if (action === 'update' && id) await axiosInstance.put(`/expenses/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/expenses/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/expenses', { name: item.name || item.title || item.note, amount: item.amount, date: item.date, invoiceNumber: item.invoiceNo, paymentMode: item.mode || 'Cash', description: item.note || item.description });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/expenses/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/expenses/${id}`);
       } else if (collection === 'expenseHeads') {
-        if (action === 'create') await axiosInstance.post('/expense-heads', { name: item.name || item.head, description: item.description });
-        else if (action === 'update' && id) await axiosInstance.put(`/expense-heads/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/expense-heads/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/expense-heads', { name: item.name || item.head, description: item.description });
+        else if (action === 'update' && id) res = await axiosInstance.put(`/expense-heads/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/expense-heads/${id}`);
       } else if (collection === 'students') {
-        if (action === 'create') await axiosInstance.post('/students', item);
-        else if (action === 'update' && id) await axiosInstance.put(`/students/${id}`, item);
-        else if (action === 'delete' && id) await axiosInstance.delete(`/students/${id}`);
+        if (action === 'create') res = await axiosInstance.post('/students', item);
+        else if (action === 'update' && id) res = await axiosInstance.put(`/students/${id}`, item);
+        else if (action === 'delete' && id) res = await axiosInstance.delete(`/students/${id}`);
       } else if (collection === 'collections') {
-        if (action === 'create') await axiosInstance.post('/collect-fees', item);
+        if (action === 'create') res = await axiosInstance.post('/collect-fees', item);
       }
+
+      // Mark locally as synced and update id if server generated real MongoDB ObjectId
+      if (res?.data?.data?._id && action === 'create') {
+        const realId = res.data.data._id;
+        const currentList = read(collection);
+        const itemIdx = currentList.findIndex(x => (x.id === item.id || x._id === item._id));
+        if (itemIdx !== -1) {
+          currentList[itemIdx]._id = realId;
+          currentList[itemIdx].id = realId;
+          currentList[itemIdx].syncStatus = 'synced';
+          write(collection, currentList);
+        }
+      } else {
+        const currentList = read(collection);
+        const itemIdx = currentList.findIndex(x => (x.id === item.id || x._id === item._id));
+        if (itemIdx !== -1) {
+          currentList[itemIdx].syncStatus = 'synced';
+          write(collection, currentList);
+        }
+      }
+      return { success: true, status: 'synced' };
     } catch (err) {
-      // Gracefully silent on network failure - local state already saved
-      console.warn('Backend sync mutation notice:', err.message);
+      console.warn('Backend mutation queued for background retry:', err.message);
+      const mutationTask = {
+        id: genObjectId(),
+        action,
+        collection,
+        item,
+        timestamp: Date.now(),
+        status: 'pending',
+        retryCount: 0
+      };
+      queue.push(mutationTask);
+      try {
+        localStorage.setItem(queueKey, JSON.stringify(queue.slice(-50)));
+      } catch (_) {}
+      return { success: false, status: 'pending', error: err.message };
     }
+  },
+
+  async retryPendingMutations() {
+    const queueKey = 'acc_sync_mutation_queue';
+    let queue = [];
+    try {
+      queue = JSON.parse(localStorage.getItem(queueKey) || '[]');
+    } catch (_) {}
+    if (!queue.length || (typeof navigator !== 'undefined' && !navigator.onLine)) return;
+
+    const remaining = [];
+    for (const task of queue) {
+      try {
+        await this._syncMutation(task.action, task.collection, task.item);
+      } catch (e) {
+        task.retryCount = (task.retryCount || 0) + 1;
+        if (task.retryCount < 5) remaining.push(task);
+      }
+    }
+    try {
+      localStorage.setItem(queueKey, JSON.stringify(remaining));
+    } catch (_) {}
   },
 
   async syncFromBackend() {
@@ -396,11 +462,30 @@ export const localDb = {
   // convenience
   getProfile() {
     try {
+      const rawUser = sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user');
+      if (rawUser) {
+        const u = JSON.parse(rawUser);
+        return {
+          name: u.name || 'Accountant',
+          staffId: u.staffId || '',
+          role: u.role || 'Accountant',
+          email: u.email || '',
+          phone: u.phone || '',
+          department: 'Finance & Accounts',
+          designation: 'Staff Accountant',
+          basicSalary: '',
+          dateOfJoining: '',
+          confirmationDate: '',
+          address: '',
+          permanentAddress: '',
+          bio: 'Staff Accountant managing student fees, daybook vouchers, institutional collections, and accounts.',
+          avatar: u.avatar || '',
+        };
+      }
       const raw = localStorage.getItem(getKey('profile'));
       if (raw) return JSON.parse(raw);
     } catch (_) {}
     const p = { ...seed.profile };
-    localStorage.setItem(getKey('profile'), JSON.stringify(p));
     return p;
   },
   saveProfile(data) {
@@ -575,5 +660,13 @@ export const localDb = {
     Object.keys(seed).forEach((k) => localStorage.removeItem(getKey(k)));
   },
 };
+
+// Automatic online retry handler for deferred offline mutations
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    localDb.retryPendingMutations();
+    localDb.syncFromBackend();
+  });
+}
 
 export default localDb;
