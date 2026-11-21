@@ -86,7 +86,7 @@ export const branchLocalDb = {
           status: b.status || (b.isActive === false ? 'Inactive' : 'Active'),
           domain: b.domain && !b.domain.includes('schoolerp.com') && (b.domain.startsWith('http://') || b.domain.startsWith('https://'))
             ? b.domain
-            : `${(import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-serp.onrender.com').replace(/\/+$/, '')}/dashboard?schoolId=${encodeURIComponent(b._id || b.id || b.branchCode || b.code || '')}&schoolName=${encodeURIComponent(b.branchName || b.name || '')}`
+            : `${(import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-school-erp.onrender.com').replace(/\/+$/, '')}/dashboard?schoolId=${encodeURIComponent(b._id || b.id || b.branchCode || b.code || '')}&schoolName=${encodeURIComponent(b.branchName || b.name || '')}`
         }));
         setStore('branches', mapped);
         return mapped;

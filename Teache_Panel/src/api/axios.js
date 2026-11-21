@@ -10,7 +10,7 @@ export const getApiBaseUrl = () => {
       if (override && override.startsWith('https://') && !override.includes('localhost')) {
         return override;
       }
-      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api';
     }
 
     if (window.__ERP_API_BASE_URL__) return window.__ERP_API_BASE_URL__;
@@ -32,7 +32,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
     if (!config.baseURL || config.baseURL.includes('localhost') || config.baseURL.includes('192.168.') || config.baseURL.startsWith('http://')) {
-      config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
+      config.baseURL = 'https://sms-backend-by-raj-s7dt.onrender.com/api';
     }
   } else {
     const dynamicBase = getApiBaseUrl();

@@ -7,7 +7,7 @@ const getApiUrl = () => {
       return 'http://localhost:5050/api';
     }
   }
-  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api';
 };
 
 const axiosInstance = axios.create({
@@ -22,7 +22,7 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
   if (typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname)) {
     if (!config.baseURL || config.baseURL.includes('localhost:5050')) {
-      config.baseURL = 'https://sms-backend-by-raj-1.onrender.com/api';
+      config.baseURL = 'https://sms-backend-by-raj-s7dt.onrender.com/api';
     }
   }
   const token = sessionStorage.getItem('token') || localStorage.getItem('token');

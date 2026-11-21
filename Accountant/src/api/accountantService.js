@@ -618,7 +618,7 @@ export const accountantService = {
             if (staffDoc.photo) {
               const backendOrigin = (typeof window !== 'undefined' && ['localhost', '127.0.0.1'].includes(window.location.hostname))
                 ? 'http://localhost:5050'
-                : 'https://sms-backend-by-raj-1.onrender.com';
+                : 'https://sms-backend-by-raj-s7dt.onrender.com';
               return `${backendOrigin}/${staffDoc.photo.replace(/^\/+/, '')}`;
             }
             return user?.avatar || '';

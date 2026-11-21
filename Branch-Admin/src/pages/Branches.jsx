@@ -245,7 +245,7 @@ const Branches = () => {
     const branchName = branch.name || branch.branchName || 'School Campus';
     const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
     const adminBase = isProduction
-      ? (import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-serp.onrender.com')
+      ? (import.meta.env.VITE_ADMIN_URL || 'https://sms-frontend-by-raj-school-erp.onrender.com')
       : (import.meta.env.VITE_ADMIN_URL || 'http://localhost:5173');
 
     try {

@@ -20,7 +20,7 @@ const getStudentMediaUrl = (photoPath, fullName = 'Student') => {
     }
     const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
     const backendBase = isProduction
-      ? 'https://sms-backend-by-raj-1.onrender.com'
+      ? 'https://sms-backend-by-raj-s7dt.onrender.com'
       : (localStorage.getItem('api_base_url') || 'http://localhost:5050');
     const cleanBase = backendBase.replace(/\/api\/?$/, '');
     return `${cleanBase}${trimmed.startsWith('/') ? '' : '/'}${trimmed}`;

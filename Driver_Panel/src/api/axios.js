@@ -20,7 +20,7 @@ export const getApiBaseUrl = () => {
     // Auto-detect Render deployment / Production domain
     const isProduction = !['localhost', '127.0.0.1'].includes(window.location.hostname);
     if (isProduction) {
-      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+      return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api';
     }
   }
   return import.meta.env.VITE_API_URL || `http://${defaultHost}:5050/api`;

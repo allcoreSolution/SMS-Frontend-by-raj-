@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const LIVE_BACKEND_URL = 'https://sms-backend-by-raj-1.onrender.com/api';
+const LIVE_BACKEND_URL = 'https://sms-backend-by-raj-s7dt.onrender.com/api';
 
 export const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {

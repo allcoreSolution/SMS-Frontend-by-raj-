@@ -286,7 +286,7 @@ export default function SchoolDetail() {
       localStorage.setItem('schoolId', school.rawId);
       localStorage.setItem('schoolName', school.name);
     } catch (_) {}
-    window.open('https://sms-frontend-by-raj-serp.onrender.com/dashboard', '_blank');
+    window.open('https://sms-frontend-by-raj-school-erp.onrender.com/dashboard', '_blank');
   };
 
   const handleSendNotice = async () => {
@@ -682,7 +682,7 @@ export default function SchoolDetail() {
                   try {
                     localStorage.setItem('active_school_id', school.rawId);
                   } catch (_) {}
-                  window.open('https://sms-frontend-by-raj-serp.onrender.com/hr/staff', '_blank');
+                  window.open('https://sms-frontend-by-raj-school-erp.onrender.com/hr/staff', '_blank');
                 }}
                 className="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-between bg-purple-50 hover:bg-purple-100 text-purple-700 cursor-pointer"
               >

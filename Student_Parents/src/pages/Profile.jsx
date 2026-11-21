@@ -17,7 +17,7 @@ const getMediaUrl = (photoPath) => {
   if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
   const baseUrl = (typeof window !== 'undefined' && window.__API_BASE_URL__) 
     || (typeof window !== 'undefined' && localStorage.getItem('api_base_url'))
-    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'https://sms-backend-by-raj-1.onrender.com');
+    || (typeof window !== 'undefined' && window.location.hostname === 'localhost' ? 'http://localhost:5050' : 'https://sms-backend-by-raj-s7dt.onrender.com');
   const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
   return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;
 };

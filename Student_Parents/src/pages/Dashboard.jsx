@@ -16,7 +16,7 @@ const getMediaUrl = (photoPath) => {
   if (photoPath.startsWith('http') || photoPath.startsWith('data:')) return photoPath;
   const isProduction = typeof window !== 'undefined' && !['localhost', '127.0.0.1'].includes(window.location.hostname);
   const baseUrl = isProduction 
-    ? 'https://sms-backend-by-raj-1.onrender.com'
+    ? 'https://sms-backend-by-raj-s7dt.onrender.com'
     : ((typeof window !== 'undefined' && window.__API_BASE_URL__) || (typeof window !== 'undefined' && localStorage.getItem('api_base_url')) || 'http://localhost:5050');
   const serverOrigin = String(baseUrl).replace(/\/api\/?$/, '');
   return `${serverOrigin}${photoPath.startsWith('/') ? '' : '/'}${photoPath}`;

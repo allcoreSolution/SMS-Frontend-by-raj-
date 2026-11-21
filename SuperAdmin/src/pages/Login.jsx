@@ -367,7 +367,7 @@ const Login = () => {
             </p>
             <div className="grid grid-cols-2 gap-2 text-xs">
               <a 
-                href="https://sms-frontend-by-raj-serp.onrender.com" 
+                href="https://sms-frontend-by-raj-school-erp.onrender.com" 
                 target="_blank" 
                 rel="noreferrer"
                 className="p-2 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/50 flex items-center justify-between font-bold text-slate-700 transition-colors group"
@@ -376,7 +376,7 @@ const Login = () => {
                 <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-orange-500 transition-colors" />
               </a>
               <a 
-                href="https://sms-frontend-by-raj-4.onrender.com" 
+                href="https://sms-frontend-by-raj-multilanding.onrender.com" 
                 target="_blank" 
                 rel="noreferrer"
                 className="p-2 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50/50 flex items-center justify-between font-bold text-slate-700 transition-colors group"

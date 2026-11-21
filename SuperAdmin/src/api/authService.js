@@ -7,7 +7,7 @@ const getApiUrl = () => {
       return 'http://localhost:5050/api';
     }
   }
-  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
+  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api';
 };
 const API_URL = getApiUrl();
 

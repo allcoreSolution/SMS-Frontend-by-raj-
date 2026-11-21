@@ -137,11 +137,11 @@ export default function PortalModal() {
 
       let res;
       try {
-        const primaryApi = PORTAL_URLS.api || 'https://sms-backend-by-raj-1.onrender.com/api';
+        const primaryApi = PORTAL_URLS.api || 'https://sms-backend-by-raj-s7dt.onrender.com/api';
         res = await axios.post(`${primaryApi}/leads`, payload);
       } catch (postErr) {
         console.warn('Primary endpoint failed, falling back to cloud backend:', postErr.message);
-        res = await axios.post('https://sms-backend-by-raj-1.onrender.com/api/leads', payload);
+        res = await axios.post('https://sms-backend-by-raj-s7dt.onrender.com/api/leads', payload);
       }
       const leadId = res.data?.data?._id || 'ACS-' + Math.floor(10000 + Math.random() * 90000);
       setSubmittedLead({

@@ -21,7 +21,7 @@ const getBackendOrigin = () => {
   if (envUrl && !envUrl.includes('localhost:5050')) {
     return envUrl.replace(/\/api\/?$/, '');
   }
-  return 'https://sms-backend-by-raj-1.onrender.com';
+  return 'https://sms-backend-by-raj-s7dt.onrender.com';
 };
 
 export default function HRStaffProfile() {

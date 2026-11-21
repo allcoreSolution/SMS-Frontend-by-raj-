@@ -46,8 +46,8 @@ function buildPanel(panelName, subpath, targetFolder) {
     env: {
       ...process.env,
       VITE_BASE_PATH: subpath,
-      VITE_API_URL: process.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api',
-      VITE_BASE_URL: process.env.VITE_BASE_URL || 'https://sms-backend-by-raj-1.onrender.com',
+      VITE_API_URL: process.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api',
+      VITE_BASE_URL: process.env.VITE_BASE_URL || 'https://sms-backend-by-raj-s7dt.onrender.com',
     }
   });
 
