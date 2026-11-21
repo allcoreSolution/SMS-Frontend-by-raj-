@@ -4,25 +4,25 @@ export default function Testimonials() {
   const reviews = [
     {
       stars: 5,
-      text: "We deployed it for 12 schools in our chain. The multi-tenancy just works — one codebase, one server, each school sees only their data. Saved us months of development.",
+      text: "We onboarded 12 branch campuses onto MultiSchool ERP. The multi-school management is seamless — our management trust monitors fees, staff attendance, and academic performance across all branches in real-time.",
       author: "Rajesh Kumar",
-      role: "CTO, EduTech Solutions",
+      role: "Managing Director, Progressive Public School Chain",
       initials: "RK",
       bgClass: "bg-teal-50"
     },
     {
       stars: 5,
-      text: "The biometric sync agent was the clincher for us. Our schools use ZKTeco devices and this is the only ERP script where attendance just flows into the cloud automatically.",
+      text: "The biometric sync and live bus GPS gave our parents immense peace of mind. Daily attendance notification reaches parents instantly via the mobile app, reducing office calls by 80%.",
       author: "Sunita Patel",
-      role: "School Administrator",
+      role: "School Administrator & Principal",
       initials: "SP",
       bgClass: "bg-lime-50"
     },
     {
       stars: 5,
-      text: "I was skeptical about the AI assistant but it genuinely queries my school's data. Parents love the mobile app — fee payments went up 40% since we enabled in-app UPI.",
+      text: "The AI exam question generator and fee collection desk transformed our operations. Fee recovery improved significantly in the first term because parents can pay securely via UPI right inside the app.",
       author: "Amit Mishra",
-      role: "Founder, LearnFirst Academy",
+      role: "Founder & Chairman, LearnFirst Academy",
       initials: "AM",
       bgClass: "bg-amber-50"
     }
@@ -34,10 +34,10 @@ export default function Testimonials() {
       {/* Clean Header Box */}
       <div className="relative z-10 text-center mb-12 flex flex-col items-center max-w-3xl mx-auto py-4 sm:p-5">
         <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[8px] sm:text-[9px] px-2.5 py-1 mb-3 rounded-full shadow-sm">
-          TRUSTED BY DEVELOPERS
+          TRUSTED BY PRINCIPALS & TRUSTEES
         </span>
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-[1.1] tracking-tighter">
-          What buyers say after <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-700">deploying.</span>
+          What educators &amp; school leaders say after <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-700">joining.</span>
         </h2>
       </div>
 
@@ -74,13 +74,13 @@ export default function Testimonials() {
          <div className="max-w-[1400px] w-full flex flex-wrap justify-center items-center gap-x-8 lg:gap-x-12 gap-y-6">
             
             <div className="flex items-center gap-3 group cursor-pointer">
-               <div className="bg-white border border-gray-200 shadow-sm rounded-full w-9 h-9 flex items-center justify-center text-[15px] group-hover:-translate-y-1 transition-transform">🔓</div>
-               <span className="text-[#09B48E] font-black uppercase text-[9px] sm:text-[11px] tracking-widest mt-1">100% Unencrypted <br className="hidden sm:block" /> No obfuscation</span>
+               <div className="bg-white border border-gray-200 shadow-sm rounded-full w-9 h-9 flex items-center justify-center text-[15px] group-hover:-translate-y-1 transition-transform">🔒</div>
+               <span className="text-[#09B48E] font-black uppercase text-[9px] sm:text-[11px] tracking-widest mt-1">100% Data Isolation <br className="hidden sm:block" /> Secure Cloud Backup</span>
             </div>
             
             <div className="flex items-center gap-3 group cursor-pointer">
-               <div className="bg-white border border-gray-200 shadow-sm rounded-full w-9 h-9 flex items-center justify-center text-[15px] group-hover:-translate-y-1 transition-transform">♾️</div>
-               <span className="text-[#09B48E] font-black uppercase text-[9px] sm:text-[11px] tracking-widest mt-1">Deploy on <br className="hidden sm:block" /> unlimited servers</span>
+               <div className="bg-white border border-gray-200 shadow-sm rounded-full w-9 h-9 flex items-center justify-center text-[15px] group-hover:-translate-y-1 transition-transform">⚡</div>
+               <span className="text-[#09B48E] font-black uppercase text-[9px] sm:text-[11px] tracking-widest mt-1">Instant Onboarding <br className="hidden sm:block" /> Go Live in 24 Hours</span>
             </div>
             
             <div className="flex items-center gap-3 group cursor-pointer">

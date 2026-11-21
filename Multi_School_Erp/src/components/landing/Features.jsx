@@ -5,73 +5,81 @@ export default function Features() {
     <section className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto overflow-hidden">
         
         {/* Core Title */}
-        <div className="text-center mb-8 sm:mb-10 flex flex-col items-center px-2">
-           <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[9px] sm:text-[10px] px-3 py-1 border-[2px] border-gray-900 mb-2.5 sm:mb-3 shadow-[2px_2px_0_0_#111827]">
+        <div className="text-center mb-10 sm:mb-16 flex flex-col items-center px-2">
+           <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[9.5px] sm:text-[11px] px-3.5 py-1 mb-3 rounded-full border border-emerald-200 shadow-xs">
              Enterprise Architecture
            </span>
-           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 tracking-tighter mb-2 leading-tight">
-             Not a prototype. <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">A production-grade ERP.</span>
+           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-3 leading-tight">
+             Not a prototype. <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-amber-700">A battle-tested ERP.</span>
            </h2>
-           <p className="text-gray-500 font-bold max-w-2xl mx-auto leading-relaxed text-xs sm:text-sm">
-             From multi-channel fee collection to biometric attendance orchestration — everything a sophisticated school chain needs is already built and battle-tested at scale.
+           <p className="text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed text-xs sm:text-base">
+             From multi-channel fee collection to biometric attendance orchestration — everything an institution or school chain needs is engineered for high reliability.
            </p>
         </div>
 
         {/* Feature 1: Web Dashboard */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center mb-16 sm:mb-28">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center mb-16 sm:mb-28">
            <div className="order-2 lg:order-1">
-             <span className="inline-block bg-amber-100 text-amber-800 font-black uppercase tracking-widest text-[9px] sm:text-[10px] px-2.5 py-1 border-[1.5px] border-gray-900 mb-3 sm:mb-5 shadow-[2px_2px_0_0_#111827]">
+             <span className="inline-block bg-amber-50 text-amber-800 font-black uppercase tracking-widest text-[10px] sm:text-xs px-3 py-1 rounded-full border border-amber-200 mb-3 sm:mb-4 shadow-xs">
                Platform Intelligence
              </span>
-             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-[1.15] tracking-tight mb-3 sm:mb-5">
-               Six dashboard variants.<br/>Instant control.
+             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-[1.15] tracking-tight mb-3 sm:mb-4">
+               Six dashboard variants.<br/>Instant institutional control.
              </h3>
-             <p className="text-gray-600 font-medium text-xs sm:text-[15px] mb-5 sm:mb-8 leading-relaxed">
+             <p className="text-slate-600 font-medium text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed">
                Monitor total student cohorts, structural capacities, and revenue trajectories. Drill down into human resources, academic performances, and transportation logistics with a single centralized click.
              </p>
-             <ul className="space-y-2.5 sm:space-y-4 text-gray-800 font-bold text-xs sm:text-[14px]">
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Real-time stat telemetry with trend indicators</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Financial charts displaying 15/30/90 day inflows</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Complete RBAC enforcing per-role dashboard visibility</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Micro-actions for daily heavy-lifting tasks</li>
+             <ul className="space-y-3 text-slate-800 font-bold text-xs sm:text-[14px]">
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Real-time stat telemetry with trend indicators</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Financial charts displaying daily, monthly &amp; term fee inflows</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Complete RBAC enforcing per-role dashboard visibility</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Micro-actions for daily attendance, marks &amp; admissions</li>
              </ul>
            </div>
            
-           <div className="order-1 lg:order-2 relative group w-full h-[280px] sm:h-[360px] lg:h-[400px]">
-             {/* Offset Shadow */}
-             <div className="absolute inset-0 bg-gray-900 translate-x-2 sm:translate-x-3 translate-y-2 sm:translate-y-3 transition-transform group-hover:translate-x-4 group-hover:translate-y-4 rounded-sm" />
-             {/* Main Graphic Box */}
-             <div className="relative w-full h-full bg-slate-50 border-[2.5px] border-gray-900 flex flex-col pt-2 px-2 overflow-hidden bg-grid-pattern rounded-sm">
-                 <div className="w-full h-4 border-b-[2px] border-gray-900 mb-2 flex items-center justify-end px-2 gap-1.5 flex-shrink-0">
-                    <div className="w-2 h-2 rounded-full bg-gray-900" />
-                    <div className="w-2 h-2 rounded-full bg-gray-900" />
-                    <div className="w-2 h-2 rounded-full bg-gray-900" />
-                 </div>
-                 <div className="flex-1 flex gap-2 pb-2 overflow-hidden">
-                    {/* Dummy Sidebar */}
-                    <div className="w-1/4 h-full bg-gray-950 text-white p-2 border-[2px] border-gray-900 shadow-inner">
-                       <div className="w-full h-1.5 bg-gray-700 mb-2" />
-                       <div className="w-2/3 h-1.5 bg-gray-700 mb-2" />
-                       <div className="w-1/2 h-1.5 bg-amber-500 mb-2" />
-                       <div className="w-4/5 h-1.5 bg-emerald-500 mb-2" />
-                       <div className="w-3/4 h-1.5 bg-gray-700 mt-4 sm:mt-6 mb-2" />
+           <div className="order-1 lg:order-2 relative w-full">
+             <div className="w-full bg-white border border-slate-200/90 rounded-2xl shadow-xl p-4 sm:p-5 flex flex-col gap-3">
+                 <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2">
+                       <div className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                       <div className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                       <span className="text-[10px] font-black text-slate-700 ml-2">ALL CORE SOLUTION • Analytics</span>
                     </div>
-                    {/* Dummy Content */}
-                    <div className="flex-1 h-full flex flex-col gap-2">
-                       <div className="w-full h-1/4 grid grid-cols-2 gap-2">
-                          <div className="bg-amber-100 border-[2px] border-gray-900 shadow-[2px_2px_0_0_#111827] group-hover:-translate-y-1 transition-transform" />
-                          <div className="bg-emerald-100 border-[2px] border-gray-900 shadow-[2px_2px_0_0_#111827] group-hover:-translate-y-1 transition-transform delay-75" />
-                       </div>
-                       <div className="w-full flex-1 bg-white border-[2px] border-gray-900 p-2 flex flex-col justify-end shadow-[2px_2px_0_0_#111827] relative overflow-hidden group-hover:bg-slate-50 transition-colors">
-                            <div className="absolute top-2 left-2 w-1/4 h-2 bg-gray-200" />
-                            <div className="w-full h-1/2 bg-gray-50 border-t-[2px] border-gray-900 relative">
-                                <div className="absolute inset-0 flex items-end">
-                                  <svg className="w-full h-[80%] group-hover:scale-y-110 transition-transform origin-bottom" preserveAspectRatio="none" viewBox="0 0 100 100">
-                                     <path d="M0,100 L0,60 L20,70 L40,30 L60,80 L80,20 L100,40 L100,100 Z" fill="#F59E0B" fillOpacity="0.3" stroke="#F59E0B" strokeWidth="2" />
-                                  </svg>
-                                </div>
-                            </div>
-                       </div>
+                    <span className="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">99.9% Cloud SLA</span>
+                 </div>
+
+                 {/* Visual Analytics Preview */}
+                 <div className="grid grid-cols-2 gap-2.5">
+                    <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-3">
+                       <span className="text-[9px] font-bold text-slate-500 uppercase">Term Fee Recovery</span>
+                       <div className="text-base sm:text-lg font-black text-slate-900 mt-0.5">₹18,45,000</div>
+                       <span className="text-[8.5px] font-black text-emerald-600">↑ 18.2% vs previous session</span>
+                    </div>
+                    <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-3">
+                       <span className="text-[9px] font-bold text-slate-500 uppercase">Student Attendance</span>
+                       <div className="text-base sm:text-lg font-black text-slate-900 mt-0.5">98.4% Present</div>
+                       <span className="text-[8.5px] font-black text-indigo-600">Synced with RFID &amp; Biometric</span>
+                    </div>
+                 </div>
+
+                 {/* Smooth Analytics Trend Chart */}
+                 <div className="bg-gradient-to-b from-slate-50 to-white border border-slate-200/60 rounded-xl p-3">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-600 mb-2">
+                       <span>Monthly Admissions &amp; Inflow Trajectory</span>
+                       <span className="text-amber-600">Session 2026-27</span>
+                    </div>
+                    <div className="h-28 w-full flex items-end">
+                       <svg className="w-full h-full" viewBox="0 0 400 100" preserveAspectRatio="none">
+                          <defs>
+                             <linearGradient id="gradFeat" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.35" />
+                                <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.02" />
+                             </linearGradient>
+                          </defs>
+                          <path d="M0,100 L0,70 Q50,40 100,55 T200,30 T300,45 T400,15 L400,100 Z" fill="url(#gradFeat)" />
+                          <path d="M0,70 Q50,40 100,55 T200,30 T300,45 T400,15" fill="none" stroke="#F59E0B" strokeWidth="2.5" />
+                       </svg>
                     </div>
                  </div>
              </div>
@@ -79,58 +87,67 @@ export default function Features() {
         </div>
 
         {/* Feature 2: Mobile Apps */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-20 items-center">
-           <div className="relative group w-full h-[300px] sm:h-[400px] lg:h-[450px]">
-             {/* Offset Shadow */}
-             <div className="absolute inset-y-4 inset-x-2 sm:inset-y-6 sm:inset-x-4 lg:inset-x-6 bg-gray-900 -translate-x-2 translate-y-3 sm:-translate-x-3 sm:translate-y-4 transition-transform group-hover:-translate-x-4 group-hover:translate-y-5 rounded-sm" />
-             {/* Main Graphic Box */}
-             <div className="relative w-full h-full bg-slate-100 border-[2.5px] border-gray-900 p-4 sm:p-6 flex justify-center items-center gap-3 sm:gap-6 bg-grid-pattern overflow-hidden rounded-sm">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
+           <div className="relative w-full">
+             <div className="w-full bg-slate-50 border border-slate-200/90 rounded-2xl p-6 sm:p-8 flex justify-center items-center gap-4 sm:gap-8 shadow-xl overflow-hidden">
                 
-                {/* Mobile Phone 1 */}
-                <div className="w-28 sm:w-1/3 max-w-[130px] sm:max-w-[140px] h-[85%] bg-white border-[2.5px] border-gray-900 rounded-[18px] sm:rounded-[20px] shadow-[3px_3px_0_0_#111827] flex flex-col -translate-y-2 sm:-translate-y-4 transform transition-transform group-hover:-translate-y-6 duration-500">
-                   <div className="w-full h-7 sm:h-10 bg-amber-400 rounded-t-[14px] sm:rounded-t-[16px] border-b-[2px] border-gray-900 flex justify-center pt-2">
-                      <div className="w-4 h-[3px] bg-gray-900 rounded-full" />
+                {/* Mobile Phone 1: Parent App */}
+                <div className="w-36 sm:w-44 bg-white border border-slate-200 rounded-2xl shadow-lg p-3 flex flex-col gap-2 transform -rotate-1 hover:rotate-0 transition-transform duration-300">
+                   <div className="flex items-center justify-between pb-1.5 border-b border-slate-100">
+                      <span className="text-[9px] font-black text-slate-800">Parent Portal</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                    </div>
-                   <div className="flex-1 p-1.5 sm:p-2 grid grid-cols-2 gap-1.5 sm:gap-2 mt-1 sm:mt-2">
-                      <div className="w-full aspect-square bg-blue-100 border-[1.5px] border-gray-900 rounded-xl relative overflow-hidden"><div className="absolute inset-x-0 bottom-0 h-1/2 bg-blue-200" /></div>
-                      <div className="w-full aspect-square bg-pink-100 border-[1.5px] border-gray-900 rounded-xl relative overflow-hidden"><div className="absolute inset-x-0 bottom-0 h-1/2 bg-pink-200" /></div>
-                      <div className="w-full aspect-square bg-amber-100 border-[1.5px] border-gray-900 rounded-xl relative overflow-hidden"><div className="absolute inset-x-0 bottom-0 h-1/2 bg-amber-200" /></div>
-                      <div className="w-full aspect-square bg-emerald-100 border-[1.5px] border-gray-900 rounded-xl relative overflow-hidden"><div className="absolute inset-x-0 bottom-0 h-1/2 bg-emerald-200" /></div>
+                   <div className="bg-emerald-50 border border-emerald-200/60 rounded-xl p-2 text-center">
+                      <span className="text-[8px] font-bold text-emerald-800 block">Fee Receipt #8942</span>
+                      <span className="text-xs font-black text-emerald-950">₹14,500 Paid</span>
+                      <span className="text-[7.5px] text-emerald-700 block mt-0.5">UPI Instant Acknowledged</span>
                    </div>
+                   <div className="bg-slate-50 rounded-lg p-2 text-[8px] font-medium text-slate-600 space-y-1">
+                      <div className="flex justify-between"><span>Aarav Sharma</span><strong className="text-slate-800">Class 8-B</strong></div>
+                      <div className="flex justify-between"><span>Attendance</span><strong className="text-emerald-600">Present (08:14)</strong></div>
+                   </div>
+                   <a href="/apk/Student_Parents.apk" download="Student_Parents.apk" className="w-full bg-emerald-600 text-white rounded-lg py-1.5 text-center text-[8.5px] font-black uppercase tracking-wider block">
+                      Parent APK ⬇
+                   </a>
                 </div>
                 
-                {/* Mobile Phone 2 */}
-                <div className="w-28 sm:w-1/3 max-w-[130px] sm:max-w-[140px] h-[85%] bg-white border-[2.5px] border-gray-900 rounded-[18px] sm:rounded-[20px] shadow-[3px_3px_0_0_#111827] flex flex-col transform transition-transform group-hover:-translate-y-2 duration-500 delay-100">
-                   <div className="w-full h-7 sm:h-10 bg-gray-900 rounded-t-[14px] sm:rounded-t-[16px] border-b-[2px] border-gray-900 flex justify-center pt-2">
-                      <div className="w-4 h-[3px] bg-gray-600 rounded-full" />
+                {/* Mobile Phone 2: Driver GPS App */}
+                <div className="w-36 sm:w-44 bg-slate-950 text-white border border-slate-800 rounded-2xl shadow-lg p-3 flex flex-col gap-2 transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                   <div className="flex items-center justify-between pb-1.5 border-b border-slate-800">
+                      <span className="text-[9px] font-black text-amber-400">Driver Telemetry</span>
+                      <span className="text-[8px] font-bold text-emerald-400">● LIVE GPS</span>
                    </div>
-                   <div className="flex-1 p-1.5 sm:p-2 flex flex-col justify-center items-center gap-2 sm:gap-4 mt-1 sm:mt-2 bg-slate-900 rounded-b-[14px] sm:rounded-b-[16px]">
-                      <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-full border-[4px] sm:border-[6px] border-emerald-400 rotate-45 relative">
-                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 sm:w-3 h-2 sm:h-3 bg-emerald-400 rounded-full animate-ping" />
-                      </div>
-                      <div className="w-full h-7 sm:h-8 bg-emerald-400 border-[1.5px] border-white flex items-center justify-center text-[7.5px] sm:text-[9px] font-black uppercase tracking-wider sm:tracking-widest text-gray-950">
-                        Start Trip
-                      </div>
+                   <div className="bg-slate-900 border border-slate-800 rounded-xl p-2 text-center">
+                      <span className="text-[8px] font-bold text-slate-400 block">Bus #04 • Route B</span>
+                      <span className="text-xs font-black text-white">42 km/h</span>
+                      <span className="text-[7.5px] text-amber-400 block mt-0.5">Next: Sector 14 Gate</span>
                    </div>
+                   <div className="bg-slate-900 rounded-lg p-2 text-[8px] font-medium text-slate-300 space-y-1">
+                      <div className="flex justify-between"><span>Students Onboard</span><strong className="text-white">24 / 28</strong></div>
+                      <div className="flex justify-between"><span>SOS Hotline</span><strong className="text-emerald-400">Ready</strong></div>
+                   </div>
+                   <a href="/apk/Driver.apk" download="Driver.apk" className="w-full bg-amber-400 text-slate-950 rounded-lg py-1.5 text-center text-[8.5px] font-black uppercase tracking-wider block">
+                      Driver APK ⬇
+                   </a>
                 </div>
              </div>
            </div>
 
            <div>
-             <span className="inline-block bg-amber-100 text-amber-800 font-black uppercase tracking-widest text-[9px] sm:text-[10px] px-2.5 py-1 border-[1.5px] border-gray-900 mb-3 sm:mb-5 shadow-[2px_2px_0_0_#111827]">
+             <span className="inline-block bg-amber-50 text-amber-800 font-black uppercase tracking-widest text-[10px] sm:text-xs px-3 py-1 rounded-full border border-amber-200 mb-3 sm:mb-4 shadow-xs">
                Mobile Ecosystem
              </span>
-             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-gray-900 leading-[1.15] tracking-tight mb-3 sm:mb-5">
+             <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-[1.15] tracking-tight mb-3 sm:mb-4">
                Parents, Staff, and Drivers.<br/>Triple-app synergy.
              </h3>
-             <p className="text-gray-600 font-medium text-xs sm:text-[15px] mb-5 sm:mb-8 leading-relaxed">
-               Completely native Dart/Flutter codebase for high-fps execution on iOS and Android. Empower parents to pay fees from their couches. Empower teachers to mark biometric attendance. Empower drivers to live-cast bus coordinates.
+             <p className="text-slate-600 font-medium text-xs sm:text-base mb-5 sm:mb-6 leading-relaxed">
+               Completely native mobile experience for high-speed execution on Android. Empower parents to pay fees from home. Empower teachers to mark attendance anywhere. Empower drivers to live-cast bus coordinates.
              </p>
-             <ul className="space-y-2.5 sm:space-y-4 text-gray-800 font-bold text-xs sm:text-[14px]">
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Live CBT exam scores and digital report cards</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Staff Gradebook execution natively on mobile</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> SOS triggers and live map routing for fleets</li>
-               <li className="flex items-center gap-2.5 sm:gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-[#09B48E] border border-gray-900 text-white rounded-full text-xs">✓</span> Bi-directional instant chat messaging</li>
+             <ul className="space-y-3 text-slate-800 font-bold text-xs sm:text-[14px]">
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Live CBT exam scores and digital report cards for parents</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Staff Gradebook, lesson planners &amp; leave management</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> SOS triggers, live route telemetry &amp; passenger rosters for buses</li>
+               <li className="flex items-center gap-3"><span className="w-5 h-5 flex-shrink-0 flex items-center justify-center bg-emerald-500 text-white rounded-full text-xs shadow-xs">✓</span> Instant fee payment with zero manual receipt reconciliation</li>
              </ul>
            </div>
         </div>

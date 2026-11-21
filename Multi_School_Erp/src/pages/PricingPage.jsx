@@ -20,18 +20,18 @@ export default function PricingPage() {
            <div className="max-w-4xl mx-auto text-center relative z-10 flex flex-col items-center">
               <span className="inline-flex items-center gap-2 bg-transparent text-cyan-400 font-bold uppercase tracking-widest text-[9px] px-2 py-1 border border-cyan-500/40 mb-3 rounded-full shadow-[0_0_10px_rgba(6,182,212,0.2)]">
                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_rgba(6,182,212,1)]" />
-                 Transparent One-Time Pricing
+                 Transparent School Subscriptions
               </span>
               
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tighter mb-3 text-white leading-[1.1]">
-                 Own the source code.<br /> 
-                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">No monthly SaaS taxes.</span>
+                 Digitalize your entire school.<br /> 
+                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Zero hardware costs. Complete cloud peace.</span>
               </h1>
               
               <div className="h-0.5 w-12 bg-gray-800 mb-3" />
               
               <p className="text-gray-400 font-medium text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mt-2">
-                 Get the entire 38-module Multi-School ERP, Android/iOS Flutter apps, and Node.js backend. Pay once. Host anywhere. Scale limitlessly.
+                 Get the full 38-module Multi-School ERP, Android mobile apps for parents/staff/drivers, and high-speed Node.js cloud backend. Complete onboarding and dedicated institutional support.
               </p>
            </div>
         </section>
@@ -40,43 +40,50 @@ export default function PricingPage() {
         <section className="py-16 px-4 sm:px-6 lg:px-12 max-w-5xl mx-auto">
           <div className="bg-[#1F2937] border-2 border-gray-700 shadow-[8px_8px_0_0_#F59E0B]">
              <div className="bg-amber-400 px-6 py-3 flex justify-between border-b-2 border-gray-700">
-               <span className="font-black text-gray-900 tracking-widest uppercase text-xs sm:text-sm">Full Commercial License</span>
-               <span className="font-black text-gray-900 animate-pulse text-xs sm:text-sm">Save ₹5,000 Today</span>
+               <span className="font-black text-gray-900 tracking-widest uppercase text-xs sm:text-sm">Comprehensive Institutional Subscription</span>
+               <span className="font-black text-gray-900 animate-pulse text-xs sm:text-sm">Free School Onboarding</span>
              </div>
              
              <div className="p-6 sm:p-12 text-white flex flex-col md:flex-row gap-8 sm:gap-12">
                 <div className="flex-1 flex flex-col">
                    <div className="flex items-end gap-3 mb-2">
-                     <span className="text-gray-500 font-bold text-2xl line-through decoration-2">₹15,000</span>
-                     <span className="text-white font-black text-5xl sm:text-6xl tracking-tight leading-none">₹10,000</span>
+                     <span className="text-gray-500 font-bold text-2xl line-through decoration-2">₹30/mo</span>
+                     <span className="text-white font-black text-5xl sm:text-6xl tracking-tight leading-none">₹15</span>
+                     <span className="text-gray-400 font-bold text-sm uppercase tracking-wider mb-2">/ student / month</span>
                    </div>
                    <div className="text-gray-400 font-medium text-sm border-b border-gray-700 pb-6 mb-6">
-                     One-time payment. Instant Download & GitHub Access.
+                     Complete SaaS Platform. Instant Cloud Deployment & Mobile Apps.
                    </div>
                    
                    <ul className="space-y-3.5 text-gray-200 font-bold text-[14px] sm:text-[15px] mb-8">
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> Unencrypted Source Code Included (Zero Obfuscation)
+                       <span className="text-[#09B48E] text-xl">✓</span> School Admin & Principal ERP Portal (Academics & HR)
                      </li>
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> All 3 Flutter Apps (Parent, Staff, Driver)
+                       <span className="text-[#09B48E] text-xl">✓</span> Teacher Panel with AI Exam Generator & Smart Attendance
                      </li>
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> React JS Super Admin + Tenant Panels
+                       <span className="text-[#09B48E] text-xl">✓</span> Accountant Portal with Razorpay Fee Gateways & Auto-Receipts
                      </li>
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> Biometric Cloud Sync (.EXE included)
+                       <span className="text-[#09B48E] text-xl">✓</span> Student & Parent App (Android APK & Responsive Web)
                      </li>
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> 1 Year Technical Support & Free Updates
+                       <span className="text-[#09B48E] text-xl">✓</span> Driver GPS Fleet App (Real-time live bus tracking for parents)
                      </li>
                      <li className="flex items-center gap-3">
-                       <span className="text-[#09B48E] text-xl">✓</span> Unlimited School Onboarding & 0% Royalties
+                       <span className="text-[#09B48E] text-xl">✓</span> Zero Biometric Hardware Cost (Smart Camera & QR code attendance)
+                     </li>
+                     <li className="flex items-center gap-3">
+                       <span className="text-[#09B48E] text-xl">✓</span> SuperAdmin SaaS Multi-Campus Support for School Groups
+                     </li>
+                     <li className="flex items-center gap-3">
+                       <span className="text-[#09B48E] text-xl">✓</span> 1-Click Student Roster Import & 24/7 Dedicated Support
                      </li>
                    </ul>
                    
                    <button 
-                     onClick={() => openModal('purchase', { plan: '₹10,000 — Full Commercial Source Code' })}
+                     onClick={() => openModal('purchase', { plan: 'Book Free School Demo & Consultation' })}
                      className="relative group w-full liquid-btn cursor-pointer focus:outline-none" 
                      style={{ '--liquid-bg': '#0f172a', '--liquid-text': '#ffffff' }}
                    >
@@ -84,7 +91,7 @@ export default function PricingPage() {
                      <div className="relative bg-amber-500 border-[2px] border-white py-4 sm:py-5 flex items-center justify-center transition-transform hover:-translate-y-0.5">
                        <span className="text-gray-900 font-black uppercase tracking-widest text-base sm:text-lg z-10 relative flex items-center gap-2">
                          <Sparkles className="w-5 h-5 text-gray-900" />
-                         <span>Purchase Now — ₹10,000</span>
+                         <span>Book Free School Demo & Get Quote</span>
                        </span>
                      </div>
                    </button>
@@ -113,7 +120,7 @@ export default function PricingPage() {
                    <div>
                      <h4 className="font-black text-gray-100 uppercase tracking-widest text-xs mb-3">Direct Support</h4>
                      <a 
-                       href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20purchase%20Multi-School%20ERP%20Source%20Code" 
+                       href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20book%20a%20live%20demo%20for%20my%20school%20ERP" 
                        target="_blank" 
                        rel="noreferrer" 
                        className="flex items-center gap-3 text-xs font-bold text-gray-300 hover:text-green-400 transition-colors mb-3"

@@ -60,10 +60,10 @@ export default function Deliverables() {
       modal: 'hardware'
     },
     { 
-      title: 'Full Commercial License', 
-      sub: '100% OPEN SOURCE', 
-      desc: 'Unencrypted access to all repositories. No IonCube, no hidden API callbacks, no domain locks. White-label and sell it completely as your own software property.', 
-      icon: '📑',
+      title: 'High-Availability Cloud Hosting & SLA', 
+      sub: '99.9% UPTIME • DEDICATED CLOUD', 
+      desc: 'Enterprise-grade cloud infrastructure with automatic daily backups, SSL security, fast CDN assets, and zero hardware maintenance requirements.', 
+      icon: '☁️',
       modal: 'doc',
       docTab: 'license'
     },
@@ -85,61 +85,57 @@ export default function Deliverables() {
   };
 
   return (
-    <section className="py-14 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-12 max-w-[1400px] mx-auto border-t-[3px] border-gray-900 bg-[#FBFBFB]">
+    <section className="py-8 sm:py-12 lg:py-14 px-4 sm:px-6 lg:px-10 max-w-[1400px] mx-auto border-t border-slate-200 bg-slate-50/50">
       
       {/* Top Tech Stack Banner */}
-      <div className="w-full mb-10 sm:mb-16">
-        <div className="flex flex-wrap sm:flex-nowrap justify-center items-center bg-gray-950 text-white px-3 sm:px-6 py-2.5 sm:py-3 font-black uppercase text-[9px] sm:text-[11px] tracking-widest gap-2.5 sm:gap-8 rounded shadow-[3px_3px_0_0_#111827] text-center">
-          <span className="flex items-center gap-1.5 text-cyan-400">✓ 100% Unencrypted Source</span>
-          <span className="flex items-center gap-1.5 text-emerald-400">✓ Perpetual Commercial License</span>
-          <span className="flex items-center gap-1.5 text-amber-400">✓ Deploy Anywhere</span>
+      <div className="w-full mb-6 sm:mb-8">
+        <div className="flex flex-wrap sm:flex-nowrap justify-center items-center bg-slate-900 text-white px-4 sm:px-6 py-2.5 font-bold uppercase text-[9.5px] sm:text-[11px] tracking-wider gap-3 sm:gap-8 rounded-xl shadow-md text-center max-w-3xl mx-auto border border-slate-800">
+          <span className="flex items-center gap-1.5 text-cyan-400">✓ 99.9% Cloud Uptime SLA</span>
+          <span className="flex items-center gap-1.5 text-emerald-400">✓ Zero Server Hardware Cost</span>
+          <span className="flex items-center gap-1.5 text-amber-400">✓ Dedicated 24/7 School Support</span>
         </div>
       </div>
 
-      <div className="mb-10 sm:mb-14 text-center mx-auto flex flex-col items-center max-w-4xl px-2">
-         <span className="inline-block bg-white text-gray-900 font-black uppercase tracking-widest text-[9.5px] sm:text-[11px] px-3 sm:px-4 py-1 sm:py-1.5 border-[2px] border-gray-900 mb-4 sm:mb-6 shadow-[2px_2px_0_0_#111827]">
-           Complete Architectural Package
+      <div className="mb-6 sm:mb-10 text-center mx-auto flex flex-col items-center max-w-3xl px-2">
+         <span className="inline-block bg-amber-50 text-amber-800 font-black uppercase tracking-widest text-[9.5px] sm:text-[11px] px-3 py-0.5 mb-2 rounded-full border border-amber-200 shadow-xs">
+           Complete Institutional Package
          </span>
-         <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-gray-900 tracking-tight leading-[1.15] mb-3 sm:mb-6">
-           One payment. <span className="text-amber-500 underline decoration-gray-900 decoration-[3px] sm:decoration-[4px]">Eight deliverables.</span>
+         <h2 className="text-xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight mb-2 sm:mb-3">
+           One complete platform. <span className="text-amber-500">Eight connected portals &amp; apps.</span>
          </h2>
-         <p className="text-xs sm:text-base text-gray-600 font-bold leading-relaxed max-w-2xl px-2">
-           We don't lock core features behind recurring SaaS taxes. You receive the complete frontend, backend, and all dedicated role panels. Click any deliverable below to inspect its live screen.
+         <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed max-w-2xl px-2">
+           No separate subscriptions for apps, SMS, or hardware sync. Every school tenant gets full access to all web portals, mobile apps, and biometric integration. Click any deliverable below to inspect its live screen.
          </p>
       </div>
 
       {/* Luxury 2-Column Responsive Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 lg:gap-4 max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5 max-w-6xl mx-auto">
         {items.map((item, i) => (
           <div 
             key={i} 
             onClick={() => handleCardClick(item)}
-            className="relative group cursor-pointer select-none"
+            className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-row items-start gap-4 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-1 transition-all duration-300 group cursor-pointer select-none text-left"
             title={`Click to open ${item.title}`}
           >
-            <div className="absolute inset-0 bg-gray-900 translate-x-[2px] sm:translate-x-[3px] translate-y-[2px] sm:translate-y-[3px] transition-transform group-hover:translate-x-[3px] group-hover:translate-y-[3px] rounded-sm" />
+            <div className="flex-shrink-0 w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-xl sm:text-2xl shadow-xs group-hover:scale-105 group-hover:bg-amber-50 group-hover:border-amber-200 transition-all duration-300">
+              {item.icon}
+            </div>
             
-            <div className="relative border-[2px] border-gray-900 p-3 sm:p-4 flex flex-row items-start gap-3 sm:gap-4 bg-white hover:-translate-x-[1px] hover:-translate-y-[1px] transition-all h-full rounded-sm text-left">
-              
-              <div className="flex-shrink-0 w-10 h-10 sm:w-12 sm:h-12 bg-gray-50 border-[2px] border-gray-900 flex items-center justify-center text-xl sm:text-2xl shadow-[2px_2px_0_0_#111827] transition-transform duration-700 ease-in-out group-hover:rotate-[360deg] mt-0.5">
-                {item.icon}
-              </div>
-              
-              <div className="flex flex-col flex-1 min-w-0 pl-2.5 sm:pl-3 border-l-2 border-gray-100 border-dashed">
-                 <div className="flex items-center justify-between gap-1">
-                   <p className="font-black tracking-widest uppercase text-amber-500 text-[8px] sm:text-[9px] mb-0.5 truncate">
-                     {item.sub}
-                   </p>
-                   <span className="text-[9px] sm:text-[10px] text-gray-500 group-hover:text-amber-600 font-bold whitespace-nowrap flex-shrink-0">{item.isDownload ? 'Download ⬇' : 'Launch ➜'}</span>
-                 </div>
-                 <h3 className="font-black text-gray-900 leading-tight mb-1 text-[13px] sm:text-[16px] group-hover:text-amber-600 transition-colors">
-                   {item.title}
-                 </h3>
-                 <p className="text-gray-500 font-medium text-[10px] sm:text-[11px] leading-snug">
-                   {item.desc}
-                 </p>
-              </div>
-              
+            <div className="flex flex-col flex-1 min-w-0">
+               <div className="flex items-center justify-between gap-2 mb-1">
+                 <span className="font-black tracking-widest uppercase text-amber-600 bg-amber-50 text-[9px] sm:text-[10px] px-2 py-0.5 rounded-md border border-amber-200/50 truncate">
+                   {item.sub}
+                 </span>
+                 <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 group-hover:text-amber-600 bg-slate-100 group-hover:bg-amber-100/70 px-2.5 py-0.5 rounded-full transition-colors whitespace-nowrap">
+                   {item.isDownload ? 'Download ⬇' : 'Launch ➜'}
+                 </span>
+               </div>
+               <h3 className="font-black text-slate-900 leading-snug mb-1 text-sm sm:text-base group-hover:text-amber-600 transition-colors">
+                 {item.title}
+               </h3>
+               <p className="text-slate-500 font-medium text-xs sm:text-[13px] leading-relaxed">
+                 {item.desc}
+               </p>
             </div>
           </div>
         ))}

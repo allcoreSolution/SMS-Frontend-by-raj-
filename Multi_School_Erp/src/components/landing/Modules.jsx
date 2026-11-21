@@ -57,7 +57,7 @@ export default function Modules() {
   };
 
   return (
-    <section className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 lg:px-12 w-full border-t-[3px] border-gray-900 overflow-hidden bg-white/50 bg-grid-pattern relative">
+    <section className="py-14 sm:py-20 lg:py-28 px-4 sm:px-6 lg:px-12 w-full border-t border-slate-200 overflow-hidden bg-slate-50/40 relative">
       
       {/* Clean Header Block */}
       <div className="relative z-10 text-center mb-6 sm:mb-8 flex flex-col items-center max-w-4xl mx-auto py-2 sm:py-4 px-2 sm:px-8">

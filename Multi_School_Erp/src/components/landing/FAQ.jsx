@@ -1,75 +1,153 @@
 import React, { useState } from 'react';
+import { useModal } from '../../context/ModalContext';
+import { ChevronDown, Sparkles, MessageCircle, HelpCircle, ShieldCheck, Zap } from 'lucide-react';
 
 export default function FAQ() {
+  const { openModal } = useModal();
+
   const faqs = [
     {
-      q: "What license do I get?",
-      a: "You receive a perpetual, commercial license allowing you to legally modify, rebrand, and resell this software as a SaaS product. You own the code for life."
+      q: "How does school onboarding and data migration work?",
+      a: "Our dedicated onboarding engineers handle 100% of the migration for you. We configure your institutional domain, setup academic classes, sections, and fee structures, and bulk-import your entire student, teacher, and parent roster directly from Excel/CSV. Your institution can go fully live in under 24 hours.",
+      icon: "🚀"
     },
     {
-      q: "Can I deploy this for multiple schools / clients?",
-      a: "Yes. The Super Admin panel allows you to create and manage an unlimited number of schools/tenants on a single deployment."
+      q: "Do we need to buy servers or maintain an IT team?",
+      a: "No physical servers or expensive IT personnel are required. ALL CORE SOLUTION MultiSchool ERP runs entirely on enterprise-grade, high-availability cloud infrastructure. Principals, teachers, accountants, and parents simply log in via web browser or native Android mobile apps.",
+      icon: "☁️"
     },
     {
-      q: "Is this refundable?",
-      a: "Because source code is a digital product that cannot be physically returned once downloaded, we generally do not offer refunds. Please test the live demo thoroughly before purchasing."
+      q: "Can we manage multiple school branches or colleges?",
+      a: "Yes! Our centralized SuperAdmin SaaS architecture allows educational trusts, societies, and multi-branch school groups to manage unlimited campuses from one dashboard, switch between branches with 1-click, and analyze consolidated fee collections and academic reports.",
+      icon: "🏢"
     },
     {
-      q: "What does the 1-year support cover?",
-      a: "The included 1 year of support covers technical assistance with bug fixes, security patches, and deployment help for your first setup via WhatsApp and Email.",
+      q: "What training and ongoing support do you provide?",
+      a: "We provide complete live video training for your principal, teachers, and accounting staff, detailed Hindi & English step-by-step user guides, and dedicated priority support via WhatsApp, phone, and email with 99.9% resolution SLA.",
+      icon: "🎓",
       highlight: true
     },
     {
-      q: "What tech stack is this built on?",
-      a: "The core API is built on Node.js/Express with MongoDB. The web dashboards use React 18, and all three mobile apps are built natively in Flutter."
+      q: "How secure is our student and financial data?",
+      a: "Your institutional data is strictly tenant-isolated with 256-bit SSL encryption, automated daily encrypted backups, and granular Role-Based Access Control (RBAC). We never share, monetize, or expose your student, staff, or financial records.",
+      icon: "🔒"
     },
     {
-      q: "Is the code obfuscated or encrypted in any way?",
-      a: "No. You get 100% clean, raw, unencrypted source code without any ionCube, obfuscation, or phone-home tracking. It is completely yours to modify."
+      q: "Can parents pay school fees online through the app?",
+      a: "Yes. Parents can view overdue fee breakdowns, pay instantly using UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, or NetBanking, and instantly download auto-generated, tax-compliant digital fee receipts on their smartphones.",
+      icon: "💳"
     },
     {
-      q: "Can I resell the source code?",
-      a: "No. You can resell access to the software as a SaaS, or deploy it for your direct clients. However, you are strictly prohibited from reselling or redistributing the raw source code itself."
+      q: "Does bus live GPS tracking require special devices?",
+      a: "No expensive hardware needed! School bus drivers can simply run our dedicated Driver Android APK on any budget Android smartphone to livestream real-time GPS coordinates directly to parents, or you can seamlessly link vehicle OBD GPS trackers via our cloud API.",
+      icon: "🚌"
     }
   ];
 
-  const [openIdx, setOpenIdx] = useState(3); // Default open (support question)
+  const [openIdx, setOpenIdx] = useState(0); // Default first question open
 
   return (
-    <section className="py-8 lg:py-10 px-4 sm:px-6 lg:px-12 max-w-4xl mx-auto bg-white">
+    <section id="faq" className="py-14 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
       
-      {/* Clean Header Box */}
-      <div className="relative z-10 text-center mb-6 flex flex-col items-center max-w-3xl mx-auto py-2 sm:p-3">
-        <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[8px] sm:text-[9px] px-2.5 py-1 mb-2 rounded-full shadow-sm">
-          GOT QUESTIONS?
+      {/* Header Block */}
+      <div className="text-center mb-10 sm:mb-14 flex flex-col items-center max-w-3xl mx-auto px-2">
+        <span className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-900 border border-amber-200/80 font-black uppercase tracking-widest text-[10px] sm:text-xs px-3.5 py-1 mb-3 rounded-full shadow-xs">
+          <HelpCircle className="w-3.5 h-3.5 text-amber-600" />
+          <span>Frequently Asked Questions</span>
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-gray-900 leading-[1.1] tracking-tighter">
-          Before you buy
+        
+        <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.15] mb-3">
+          Everything You <span className="text-amber-500">Need to Know.</span>
         </h2>
+        
+        <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed max-w-2xl">
+          Got questions about implementing ALL CORE SOLUTION ERP for your school or college? Find clear answers below or connect directly with our engineering team.
+        </p>
       </div>
 
-      <div className="flex flex-col border-t border-gray-100">
-        {faqs.map((faq, i) => (
-          <div key={i} className="border-b border-gray-100">
-            <button 
-              className="w-full py-3 flex justify-between items-center text-left focus:outline-none group"
-              onClick={() => setOpenIdx(openIdx === i ? -1 : i)}
+      {/* Modern Accordion Cards List */}
+      <div className="space-y-3.5 sm:space-y-4">
+        {faqs.map((faq, i) => {
+          const isOpen = openIdx === i;
+          return (
+            <div 
+              key={i} 
+              className={`rounded-2xl transition-all duration-300 border ${
+                isOpen 
+                  ? 'bg-amber-50/20 border-amber-400 shadow-md ring-1 ring-amber-400/30' 
+                  : 'bg-white border-slate-200/90 shadow-xs hover:border-slate-300 hover:shadow-sm'
+              }`}
             >
-              <span className={`text-[12px] sm:text-[13px] font-bold pr-6 transition-colors ${faq.highlight || openIdx === i ? 'text-[#09B48E]' : 'text-gray-900 group-hover:text-[#09B48E]'}`}>
-                {faq.q}
-              </span>
-              <span className={`w-5 h-5 rounded-full flex flex-shrink-0 items-center justify-center text-[10px] font-black transition-colors ${openIdx === i ? 'bg-[#09B48E] text-white' : 'bg-gray-50 text-gray-400 group-hover:bg-[#E8F8F5] group-hover:text-[#09B48E]'}`}>
-                {openIdx === i ? '−' : '+'}
-              </span>
-            </button>
-            
-            {openIdx === i && (
-              <div className="pb-3 pr-10 text-gray-500 font-[500] text-[11px] sm:text-[12px] leading-snug animate-[slideUp_0.2s_ease-out]">
-                {faq.a}
-              </div>
-            )}
+              <button 
+                className="w-full p-4 sm:p-5 flex items-center justify-between text-left focus:outline-none group cursor-pointer gap-3"
+                onClick={() => setOpenIdx(isOpen ? -1 : i)}
+              >
+                <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl shrink-0 transition-colors ${
+                    isOpen ? 'bg-amber-100 text-amber-900' : 'bg-slate-100 text-slate-700 group-hover:bg-amber-50'
+                  }`}>
+                    {faq.icon}
+                  </div>
+                  
+                  <span className={`text-sm sm:text-base lg:text-[17px] font-black leading-snug transition-colors ${
+                    isOpen ? 'text-amber-950' : 'text-slate-900 group-hover:text-amber-600'
+                  }`}>
+                    {faq.q}
+                  </span>
+                </div>
+
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
+                  isOpen 
+                    ? 'bg-amber-500 text-slate-950 rotate-180 shadow-xs' 
+                    : 'bg-slate-100 text-slate-500 group-hover:bg-amber-100 group-hover:text-amber-800'
+                }`}>
+                  <ChevronDown className="w-4 h-4 font-bold" />
+                </div>
+              </button>
+              
+              {isOpen && (
+                <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0">
+                  <div className="pt-3 border-t border-slate-200/70 text-slate-600 font-medium text-xs sm:text-sm lg:text-[15px] leading-relaxed pl-12 sm:pl-14">
+                    {faq.a}
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bottom Help Banner */}
+      <div className="mt-10 sm:mt-14 bg-slate-950 text-white rounded-2xl p-5 sm:p-6 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center gap-3.5 text-center sm:text-left">
+          <div className="w-11 h-11 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center text-xl shrink-0 font-black shadow-md">
+            💬
           </div>
-        ))}
+          <div>
+            <h4 className="text-sm sm:text-base font-black text-white">Have more questions about migration or features?</h4>
+            <p className="text-xs sm:text-sm text-slate-400 font-medium">Talk directly with our school onboarding experts on WhatsApp or phone.</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2.5 w-full sm:w-auto">
+          <a
+            href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20have%20questions%20about%20MultiSchool%20ERP"
+            target="_blank"
+            rel="noreferrer"
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md whitespace-nowrap cursor-pointer"
+          >
+            <span>WhatsApp Us</span>
+            <span>📱</span>
+          </a>
+          
+          <button
+            onClick={() => openModal('purchase', { plan: 'Book Free School Demo & Consultation' })}
+            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md whitespace-nowrap cursor-pointer"
+          >
+            <span>Book Free Demo</span>
+            <Sparkles className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
 
     </section>

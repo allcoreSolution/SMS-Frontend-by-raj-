@@ -4,7 +4,7 @@ import {
   X, ExternalLink, Shield, School, User, Bot, 
   CreditCard, CheckCircle2, Cpu, Navigation, FileText, 
   Phone, Mail, Building, Send, Radio, Terminal, Award, HelpCircle,
-  Briefcase, DollarSign, BookOpen, GraduationCap, LayoutDashboard, Download
+  Briefcase, DollarSign, BookOpen, GraduationCap, LayoutDashboard, Download, Sparkles
 } from 'lucide-react';
 import axios from 'axios';
 import { PORTAL_URLS } from '../config/portals';
@@ -21,7 +21,7 @@ export default function PortalModal() {
     email: '',
     phone: '',
     schoolName: '',
-    plan: '₹10,000 — Full Commercial Source Code',
+    plan: 'Starter Cloud — ₹15 / student / month',
     notes: ''
   });
   const [submitting, setSubmitting] = useState(false);
@@ -160,33 +160,39 @@ export default function PortalModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-gray-900/80 backdrop-blur-sm animate-[fadeIn_0.2s_ease-out]">
-      {/* Modal Container */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 lg:p-8 bg-slate-950/75 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]">
+      {/* Modern Luxury SaaS Modal Container */}
       <div 
-        className="relative w-full max-w-5xl bg-white border-[3px] border-gray-900 shadow-[8px_8px_0_0_#111827] flex flex-col max-h-[94vh] overflow-hidden"
+        className="relative w-full max-w-6xl bg-white rounded-3xl shadow-[0_25px_80px_rgba(15,23,42,0.35)] border border-slate-200/90 flex flex-col max-h-[92vh] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Header Bar */}
-        <div className="bg-[#0F172A] text-white px-4 sm:px-6 py-3.5 border-b-[3px] border-gray-900 flex items-center justify-between">
+        <div className="bg-slate-950 text-white px-5 sm:px-7 py-3.5 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-sm bg-amber-400 border-[1.5px] border-gray-900 flex items-center justify-center text-gray-900 font-black text-sm shadow-[1.5px_1.5px_0_0_#fff]">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shadow-md">
               ACS
             </div>
             <div>
-              <div className="font-black text-sm sm:text-base uppercase tracking-tight flex items-center gap-2">
+              <div className="font-black text-sm sm:text-base tracking-tight flex items-center gap-2">
                 <span>ALL CORE SOLUTION</span>
-                <span className="text-amber-400 text-xs px-2 py-0.5 border border-amber-400/40 bg-amber-400/10">MULTI-PANEL ECOSYSTEM</span>
+                <span className="bg-amber-400/10 text-amber-400 border border-amber-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Live Portals Hub
+                </span>
               </div>
-              <div className="text-[11px] text-gray-400 font-medium hidden sm:block">
-                All 7 Distinct School Portals Active on Dedicated Local Ports
+              <div className="text-[11px] text-slate-400 font-medium hidden sm:block">
+                All 8 Connected Portals &amp; Mobile APKs Running Live
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>8 Portals Online</span>
+            </span>
             <button 
               onClick={closeModal}
-              className="w-8 h-8 bg-gray-800 hover:bg-rose-600 text-white border border-gray-700 flex items-center justify-center transition-colors text-sm font-bold cursor-pointer"
+              className="w-8 h-8 rounded-xl bg-slate-800/80 hover:bg-rose-500 text-slate-300 hover:text-white flex items-center justify-center transition-colors text-sm font-bold cursor-pointer"
               title="Close modal"
             >
               <X className="w-4 h-4" />
@@ -194,15 +200,15 @@ export default function PortalModal() {
           </div>
         </div>
 
-        {/* Tab Navigation Controls */}
-        <div className="bg-gray-100 border-b-[2px] border-gray-900 px-4 sm:px-6 py-2 flex flex-wrap gap-2 items-center justify-between text-xs font-black">
+        {/* Modern Tab Navigation Controls */}
+        <div className="bg-slate-50 border-b border-slate-200 px-4 sm:px-7 py-2 flex flex-wrap gap-1.5 sm:gap-2 items-center justify-between text-xs">
           <div className="flex flex-wrap gap-1.5 sm:gap-2">
             <button
               onClick={() => openModal('portals')}
-              className={`px-3 py-1.5 border-[1.5px] border-gray-900 uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-black uppercase text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                 mode === 'portals' 
-                  ? 'bg-amber-400 text-gray-900 shadow-[2px_2px_0_0_#111827]' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs' 
+                  : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
               }`}
             >
               <School className="w-3.5 h-3.5" />
@@ -211,22 +217,22 @@ export default function PortalModal() {
 
             <button
               onClick={() => openModal('purchase')}
-              className={`px-3 py-1.5 border-[1.5px] border-gray-900 uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-black uppercase text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                 mode === 'purchase' 
-                  ? 'bg-amber-400 text-gray-900 shadow-[2px_2px_0_0_#111827]' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs' 
+                  : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
               }`}
             >
               <CreditCard className="w-3.5 h-3.5" />
-              <span>Buy Source Code (₹10K)</span>
+              <span>Book Demo &amp; Pricing</span>
             </button>
 
             <button
               onClick={() => openModal('hardware')}
-              className={`px-3 py-1.5 border-[1.5px] border-gray-900 uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-black uppercase text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                 mode === 'hardware' 
-                  ? 'bg-amber-400 text-gray-900 shadow-[2px_2px_0_0_#111827]' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs' 
+                  : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
               }`}
             >
               <Cpu className="w-3.5 h-3.5" />
@@ -235,10 +241,10 @@ export default function PortalModal() {
 
             <button
               onClick={() => openModal('gps')}
-              className={`px-3 py-1.5 border-[1.5px] border-gray-900 uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-black uppercase text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                 mode === 'gps' 
-                  ? 'bg-amber-400 text-gray-900 shadow-[2px_2px_0_0_#111827]' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs' 
+                  : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
               }`}
             >
               <Navigation className="w-3.5 h-3.5" />
@@ -247,120 +253,124 @@ export default function PortalModal() {
 
             <button
               onClick={() => openModal('doc')}
-              className={`px-3 py-1.5 border-[1.5px] border-gray-900 uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl font-black uppercase text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
                 mode === 'doc' 
-                  ? 'bg-amber-400 text-gray-900 shadow-[2px_2px_0_0_#111827]' 
-                  : 'bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs' 
+                  : 'bg-white hover:bg-slate-200/70 text-slate-700 border border-slate-200/80'
               }`}
             >
               <FileText className="w-3.5 h-3.5" />
-              <span>Docs & License</span>
+              <span>Docs &amp; License</span>
             </button>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 text-[11px] font-bold text-gray-500">
+          <div className="hidden lg:flex items-center gap-2 text-[11px] font-bold text-slate-500">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span>API: {PORTAL_URLS.api}</span>
+            <span>API Gateway: Online</span>
           </div>
         </div>
 
         {/* Modal Body with Scrollable Area */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/70">
           
           {/* ======================================================== */}
           {/* 1. PORTALS SWITCHER / QUICK DEMO HUB                      */}
           {/* ======================================================== */}
           {mode === 'portals' && (
-            <div className="space-y-5">
-              <div className="bg-amber-50 border-[2px] border-gray-900 p-3 sm:p-4 shadow-[3px_3px_0_0_#111827] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="space-y-4">
+              
+              {/* Modern Top Information Card */}
+              <div className="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/25 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
                 <div>
-                  <h3 className="font-black text-gray-900 text-base flex items-center gap-2">
-                    <span>⚡ Unified Multi-Panel Launcher</span>
-                    <span className="bg-emerald-100 text-emerald-800 border border-emerald-900/30 text-[10px] px-2 py-0.5 uppercase tracking-wider">
-                      All 7 Portals Running On Distinct Ports
-                    </span>
+                  <h3 className="font-black text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span>Instant Role-Based Demo Portals &amp; Native Mobile Apps</span>
                   </h3>
-                  <p className="text-gray-600 text-xs font-semibold mt-0.5">
-                    Har ek role ka apna dedicated independent project aur port hai. Click karke direct working panel me enter karein.
+                  <p className="text-slate-600 text-xs font-medium mt-0.5">
+                    Har ek stakeholder ka apna dedicated portal aur Android APK hai. Click karke live working screens test karein ya direct APK download karein.
                   </p>
+                </div>
+
+                <div className="flex items-center gap-2 text-[10px] font-bold text-amber-800 bg-amber-100/80 border border-amber-300/80 px-2.5 py-1 rounded-full whitespace-nowrap">
+                  <span>⚡ 100% Pre-Configured</span>
                 </div>
               </div>
 
               {/* Grid of All Dedicated Portals */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4">
                 
                 {/* 1. Teacher & Staff Panel (Teache_Panel) */}
-                <div className="bg-white border-[2.5px] border-indigo-900 p-4 shadow-[4px_4px_0_0_#312e81] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-indigo-100 border-[1.5px] border-indigo-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#312e81]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-indigo-100 transition-all">
                         👩‍🏫
                       </div>
-                      <span className="text-[10px] font-black bg-indigo-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Teacher & Staff Panel
+                      <span className="text-[9.5px] font-black bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Teacher &amp; Staff
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Teacher & Staff Panel</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Teacher &amp; Staff Panel</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Dedicated portal for teachers and educators. Mark attendance, manage online/offline exams, enter marks, apply teacher leave, and lesson planning.
                     </p>
-                    <div className="text-[11px] bg-indigo-50/70 border border-indigo-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
                       <div>Project: <span className="font-bold text-indigo-900">Teache_Panel</span></div>
-                      <div>Default User: <span className="font-bold text-gray-900">admin123@gmail.com</span></div>
-                      <div>Password: <span className="font-bold text-gray-900">admin@123</span></div>
+                      <div>User: <span className="font-bold text-slate-900">admin123@gmail.com</span></div>
+                      <div>Pass: <span className="font-bold text-slate-900">admin@123</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <a 
                       href="/apk/Teacher.apk" 
                       download="Teacher.apk"
-                      className="w-full bg-emerald-600 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
-                      <Download className="w-4 h-4 text-white" />
-                      <span>Download Teacher APK (Android) ⬇</span>
+                      <Download className="w-3.5 h-3.5 text-white" />
+                      <span>Download Teacher APK ⬇</span>
                     </a>
                     <a 
                       href={PORTAL_URLS.teacher} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-indigo-50 text-indigo-900 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-indigo-900 hover:bg-indigo-100 transition-colors flex items-center justify-center gap-1 shadow-[1px_1px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1 shadow-xs"
                     >
                       <span>Launch Teacher Web Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.teacher}/student-attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.teacher}/student-attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Attendance ↗
                       </a>
-                      <a href={`${PORTAL_URLS.teacher}/enter-marks`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Marks Entry ↗
+                      <a href={`${PORTAL_URLS.teacher}/enter-marks`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
+                        Marks ↗
                       </a>
-                      <a href={`${PORTAL_URLS.teacher}/leave`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
-                        Leave Apply ↗
+                      <a href={`${PORTAL_URLS.teacher}/leave`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
+                        Leave ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 2. Accountant & Fee Collection Panel (Web Panel) */}
-                <div className="bg-white border-[2.5px] border-teal-900 p-4 shadow-[4px_4px_0_0_#134e4a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 2. Accountant & Fee Collection Panel */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-teal-100 border-[1.5px] border-teal-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#134e4a]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-teal-50 border border-teal-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-teal-100 transition-all">
                         💰
                       </div>
-                      <span className="text-[10px] font-black bg-teal-700 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Accountant & Fee Desk
+                      <span className="text-[9.5px] font-black bg-teal-50 text-teal-700 border border-teal-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Finance Desk
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Accountant & Fee Desk</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Accountant &amp; Fee Desk</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Specialized finance web portal for live fee collection, search due fees, fee groups, income/expense vouchers, day book ledgers, and accounts dashboard.
                     </p>
-                    <div className="text-[11px] bg-teal-50/70 border border-teal-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Project: <span className="font-bold text-teal-900">Accountant (Web Panel)</span></div>
-                      <div>Default User: <span className="font-bold text-gray-900">accountant@allcoresolution.com</span></div>
-                      <div>Password: <span className="font-bold text-gray-900">admin@123</span></div>
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
+                      <div>Project: <span className="font-bold text-teal-900">Accountant Panel</span></div>
+                      <div>User: <span className="font-bold text-slate-900">accountant@allcoresolution.com</span></div>
+                      <div>Pass: <span className="font-bold text-slate-900">admin@123</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -368,44 +378,44 @@ export default function PortalModal() {
                       href={PORTAL_URLS.accountant} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-teal-700 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-teal-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <span>Launch Accountant Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.accountant}/accounts/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.accountant}/accounts/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Dashboard ↗
                       </a>
-                      <a href={`${PORTAL_URLS.accountant}/collect-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.accountant}/collect-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Collect Fees ↗
                       </a>
-                      <a href={`${PORTAL_URLS.accountant}/search-due-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.accountant}/search-due-fees`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Due Fees ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 3. Main School Admin ERP (School_ERP) */}
-                <div className="bg-white border-[2.5px] border-blue-900 p-4 shadow-[4px_4px_0_0_#1e3a8a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 3. Main School Admin ERP */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-blue-100 border-[1.5px] border-blue-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#1e3a8a]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-blue-100 transition-all">
                         🏫
                       </div>
-                      <span className="text-[10px] font-black bg-blue-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Main School Admin ERP
+                      <span className="text-[9.5px] font-black bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Institutional Core
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Main School Admin ERP</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">School Admin ERP</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       The flagship institutional ERP. Covers Student Admissions, HR Staff Directory, QR Attendance, Biometric Sync, Offline Datesheet, and Report Cards.
                     </p>
-                    <div className="text-[11px] bg-blue-50/70 border border-blue-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
                       <div>Project: <span className="font-bold text-blue-900">School_ERP</span></div>
-                      <div>Features: <span className="font-bold text-gray-900">30+ Core Sub-Systems</span></div>
-                      <div>Scope: <span className="text-blue-700 font-bold">Principal / School Admin</span></div>
+                      <div>Features: <span className="font-bold text-slate-900">38+ Core Modules</span></div>
+                      <div>Scope: <span className="text-blue-700 font-bold">Principal &amp; Management</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -413,44 +423,44 @@ export default function PortalModal() {
                       href={PORTAL_URLS.admin} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-blue-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-blue-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <span>Launch School Admin ERP</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.admin}/finance/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.admin}/finance/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Finance ↗
                       </a>
-                      <a href={`${PORTAL_URLS.admin}/hr/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.admin}/hr/dashboard`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         HR Portal ↗
                       </a>
-                      <a href={`${PORTAL_URLS.admin}/attendance/qr`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.admin}/attendance/qr`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         QR Gate ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 4. SuperAdmin Platform (SuperAdmin) */}
-                <div className="bg-white border-[2.5px] border-purple-900 p-4 shadow-[4px_4px_0_0_#581c87] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 4. SuperAdmin Platform */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-purple-100 border-[1.5px] border-purple-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#581c87]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-purple-100 transition-all">
                         👑
                       </div>
-                      <span className="text-[10px] font-black bg-purple-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        SuperAdmin Platform
+                      <span className="text-[9.5px] font-black bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        SaaS Control
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">SuperAdmin Platform</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">SuperAdmin SaaS Platform</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Global SaaS control platform. Onboard unlimited schools, configure subscription plans, billing gateways, SMS/WhatsApp APIs, and server infrastructure.
                     </p>
-                    <div className="text-[11px] bg-purple-50/70 border border-purple-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
                       <div>Project: <span className="font-bold text-purple-900">SuperAdmin</span></div>
-                      <div>Role: <span className="font-bold text-gray-900">EdTech Founder / Agency Owner</span></div>
-                      <div>Modules: <span className="text-purple-700 font-bold">Global Tenant Billing & Gateways</span></div>
+                      <div>Role: <span className="font-bold text-slate-900">Platform Owner</span></div>
+                      <div>Modules: <span className="text-purple-700 font-bold">Global Tenant Billing</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -458,44 +468,44 @@ export default function PortalModal() {
                       href={PORTAL_URLS.superAdmin} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-purple-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-purple-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <span>Launch SuperAdmin Platform</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.superAdmin}/schools`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.superAdmin}/schools`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Schools ↗
                       </a>
-                      <a href={`${PORTAL_URLS.superAdmin}/plans`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.superAdmin}/plans`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         SaaS Plans ↗
                       </a>
-                      <a href={`${PORTAL_URLS.superAdmin}/server`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.superAdmin}/server`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Server ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 5. Branch Admin Network (Branch-Admin) */}
-                <div className="bg-white border-[2.5px] border-amber-900 p-4 shadow-[4px_4px_0_0_#78350f] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 5. Branch Admin Network */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-amber-100 border-[1.5px] border-amber-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#78350f]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-amber-100 transition-all">
                         🏛️
                       </div>
-                      <span className="text-[10px] font-black bg-amber-500 text-gray-950 px-2 py-0.5 uppercase tracking-wide">
-                        Branch Admin Network
+                      <span className="text-[9.5px] font-black bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Multi-Branch
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Branch Admin Network</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Branch Admin Network</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Multi-branch overview dashboard. Manage cross-campus operations, school usage analytics, login audits, fee aggregates, and print templates.
                     </p>
-                    <div className="text-[11px] bg-amber-50/70 border border-amber-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
                       <div>Project: <span className="font-bold text-amber-900">Branch-Admin</span></div>
-                      <div>Default Session: <span className="font-bold text-gray-900">Branch General Manager</span></div>
-                      <div>Branches: <span className="text-amber-700 font-bold">5 Campuses Live</span></div>
+                      <div>Role: <span className="font-bold text-slate-900">Branch General Manager</span></div>
+                      <div>Campuses: <span className="text-amber-700 font-bold">5 Campuses Live</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -503,97 +513,97 @@ export default function PortalModal() {
                       href={PORTAL_URLS.branch} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-amber-500 text-gray-900 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
-                      <span>Launch Branch Admin Network</span>
+                      <span>Launch Branch Network</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.branch}/branches`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.branch}/branches`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Branches ↗
                       </a>
-                      <a href={`${PORTAL_URLS.branch}/payments`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.branch}/payments`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Payments ↗
                       </a>
-                      <a href={`${PORTAL_URLS.branch}/templates`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.branch}/templates`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Templates ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 6. Student & Parent Mobile App (Student_Parents APK) */}
-                <div className="bg-white border-[2.5px] border-emerald-900 p-4 shadow-[4px_4px_0_0_#064e3b] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 6. Student & Parent Mobile App & Portal */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-emerald-100 border-[1.5px] border-emerald-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#064e3b]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-emerald-100 transition-all">
                         👨‍👩‍👦
                       </div>
-                      <span className="text-[10px] font-black bg-emerald-600 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Android APK • Student & Parent App
+                      <span className="text-[9.5px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        App &amp; Portal
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Student & Parent Portal</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
-                      Native Android APK for students & parents. Features bilingual Hindi & English switch, fee challan payments, AI desk, timetable, homework, and attendance logs.
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Student &amp; Parent App</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
+                      Native Android APK and web portal for students &amp; parents. Bilingual Hindi &amp; English switch, fee payments, AI desk, timetable, and attendance logs.
                     </p>
-                    <div className="text-[11px] bg-emerald-50/70 border border-emerald-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Package: <span className="font-bold text-emerald-900">com.schoolerp.studentparents</span></div>
-                      <div>App Version: <span className="font-bold text-gray-900">v1.0.1 (Android APK)</span></div>
-                      <div>Demo Student: <span className="font-bold text-gray-900">Aarav Sharma (9-A)</span></div>
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
+                      <div>APK: <span className="font-bold text-emerald-900">Student_Parents.apk</span></div>
+                      <div>App Version: <span className="font-bold text-slate-900">v1.0.1 (Android)</span></div>
+                      <div>Demo: <span className="font-bold text-slate-900">Aarav Sharma (9-A)</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <a 
+                      href="/apk/Student_Parents.apk" 
+                      download="Student_Parents.apk"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
+                    >
+                      <Download className="w-3.5 h-3.5 text-white" />
+                      <span>Download Parent APK ⬇</span>
+                    </a>
+                    <a 
                       href={PORTAL_URLS.student} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-emerald-600 text-white py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-emerald-700 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
-                      <span>Launch Student & Parent Portal</span>
+                      <span>Launch Student Web Portal</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <a 
-                      href="/apk/Student_Parents.apk" 
-                      download="Student_Parents.apk"
-                      className="w-full bg-slate-900 text-emerald-400 py-1.5 text-center text-[11px] font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-[1px_1px_0_0_#111827]"
-                    >
-                      <Download className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Download Student & Parent APK (Android)</span>
-                    </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.student}/fees`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.student}/fees`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Fees ↗
                       </a>
-                      <a href={`${PORTAL_URLS.student}/attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.student}/attendance`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Attendance ↗
                       </a>
-                      <a href={`${PORTAL_URLS.student}/online-exams`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.student}/online-exams`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         CBT Exams ↗
                       </a>
                     </div>
                   </div>
                 </div>
 
-                {/* 7. Driver Telematics Panel (Driver_Panel) */}
-                <div className="bg-white border-[2.5px] border-amber-900 p-4 shadow-[4px_4px_0_0_#78350f] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                {/* 7. Driver Telematics Panel */}
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-amber-100 border-[1.5px] border-amber-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#78350f]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-amber-100 transition-all">
                         🚌
                       </div>
-                      <span className="text-[10px] font-black bg-amber-500 text-gray-950 px-2 py-0.5 uppercase tracking-wide">
-                        Driver Telematics Panel
+                      <span className="text-[9.5px] font-black bg-amber-50 text-amber-800 border border-amber-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Fleet Radar
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Driver Telematics Panel</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Driver Telematics Panel</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Production Driver portal with live GPS telemetry, trip management (Start/End), student pickup/drop-off roster, pre-trip vehicle checklist, and SOS incidents.
                     </p>
-                    <div className="text-[11px] bg-amber-50/70 border border-amber-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
                       <div>Project: <span className="font-bold text-amber-900">Driver_Panel</span></div>
-                      <div>Default Driver: <span className="font-bold text-gray-900">DRV-101 (Ramesh Kumar)</span></div>
-                      <div>Secret PIN: <span className="font-bold text-gray-900">1011</span></div>
+                      <div>Driver: <span className="font-bold text-slate-900">DRV-101 (Ramesh Kumar)</span></div>
+                      <div>Secret PIN: <span className="font-bold text-slate-900">1011</span></div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -601,19 +611,19 @@ export default function PortalModal() {
                       href={PORTAL_URLS.driver} 
                       target="_blank" 
                       rel="noreferrer"
-                      className="w-full bg-amber-500 text-gray-950 py-2 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-amber-400 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
                       <span>Launch Driver Panel</span>
                       <ExternalLink className="w-3.5 h-3.5" />
                     </a>
-                    <div className="flex gap-1.5 text-[10.5px] font-bold">
-                      <a href={`${PORTAL_URLS.driver}/trips`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                    <div className="flex gap-1.5 text-[10px] font-bold pt-0.5">
+                      <a href={`${PORTAL_URLS.driver}/trips`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Trips ↗
                       </a>
-                      <a href={`${PORTAL_URLS.driver}/live-tracking`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.driver}/live-tracking`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Live GPS ↗
                       </a>
-                      <a href={`${PORTAL_URLS.driver}/boarding`} target="_blank" rel="noreferrer" className="flex-1 bg-gray-100 hover:bg-gray-200 border border-gray-900 py-1 text-center text-gray-800">
+                      <a href={`${PORTAL_URLS.driver}/boarding`} target="_blank" rel="noreferrer" className="flex-1 bg-slate-100 hover:bg-amber-100 text-slate-700 hover:text-amber-900 py-1 rounded-lg text-center transition-colors">
                         Boarding ↗
                       </a>
                     </div>
@@ -621,23 +631,23 @@ export default function PortalModal() {
                 </div>
 
                 {/* 8. Driver Android Mobile App (Driver.apk) */}
-                <div className="bg-white border-[2.5px] border-slate-900 p-4 shadow-[4px_4px_0_0_#0f172a] flex flex-col justify-between group hover:-translate-y-1 transition-all">
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-xl hover:border-amber-400 hover:-translate-y-0.5 transition-all duration-300 flex flex-col justify-between group">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="w-10 h-10 bg-slate-100 border-[1.5px] border-slate-900 flex items-center justify-center text-xl shadow-[1px_1px_0_0_#0f172a]">
+                    <div className="flex items-center justify-between mb-2.5">
+                      <div className="w-11 h-11 rounded-xl bg-sky-50 border border-sky-100 flex items-center justify-center text-xl shadow-xs group-hover:scale-105 group-hover:bg-sky-100 transition-all">
                         📱
                       </div>
-                      <span className="text-[10px] font-black bg-slate-800 text-white px-2 py-0.5 uppercase tracking-wide">
-                        Android APK • Driver App
+                      <span className="text-[9.5px] font-black bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                        Android APK
                       </span>
                     </div>
-                    <h4 className="font-black text-gray-900 text-base mb-1">Driver Android App</h4>
-                    <p className="text-gray-500 text-xs font-semibold leading-relaxed mb-3">
+                    <h4 className="font-black text-slate-900 text-base mb-1 group-hover:text-amber-600 transition-colors">Driver Android App</h4>
+                    <p className="text-slate-500 text-xs font-medium leading-relaxed mb-3">
                       Native Android APK wrapper with hardware GPS geolocation, offline sync fallback, one-touch SOS incident alert, and camera scanner support.
                     </p>
-                    <div className="text-[11px] bg-slate-50 border border-slate-200 p-2 font-mono text-gray-700 mb-3 rounded-sm space-y-0.5">
-                      <div>Package: <span className="font-bold text-slate-900">com.schoolerp.driver</span></div>
-                      <div>App Version: <span className="font-bold text-gray-900">v1.0.0 (Native Android APK)</span></div>
+                    <div className="text-[11px] bg-slate-50 border border-slate-100 p-2.5 rounded-xl font-mono text-slate-600 mb-3 space-y-0.5">
+                      <div>Package: <span className="font-bold text-sky-900">com.schoolerp.driver</span></div>
+                      <div>App Version: <span className="font-bold text-slate-900">v1.0.0 (Native APK)</span></div>
                       <div>Binary: <span className="font-bold text-emerald-700">Driver.apk (Signed)</span></div>
                     </div>
                   </div>
@@ -645,10 +655,10 @@ export default function PortalModal() {
                     <a 
                       href="/apk/Driver.apk" 
                       download="Driver.apk"
-                      className="w-full bg-slate-900 text-white py-2.5 text-center text-xs font-black uppercase tracking-wider border-[1.5px] border-gray-900 hover:bg-slate-800 transition-colors flex items-center justify-center gap-1.5 shadow-[2px_2px_0_0_#111827]"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-center text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                     >
-                      <Download className="w-4 h-4 text-amber-400" />
-                      <span>Download Driver APK (Android)</span>
+                      <Download className="w-4 h-4 text-white" />
+                      <span>Download Driver APK (Android) ⬇</span>
                     </a>
                   </div>
                 </div>
@@ -658,81 +668,85 @@ export default function PortalModal() {
           )}
 
           {/* ======================================================== */}
-          {/* 2. PURCHASE & LICENSE ENQUIRY (POST /api/leads)           */}
+          {/* 2. SCHOOL DEMO & ONBOARDING ENQUIRY                      */}
           {/* ======================================================== */}
           {mode === 'purchase' && (
             <div className="max-w-2xl mx-auto space-y-4">
               {submittedLead ? (
-                <div className="bg-emerald-50 border-[2px] border-emerald-900 p-6 shadow-[4px_4px_0_0_#065F46] text-center">
-                  <div className="w-14 h-14 bg-emerald-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-[2px_2px_0_0_#065F46]">
+                <div className="bg-white border border-emerald-200 rounded-3xl p-6 sm:p-8 shadow-xl text-center">
+                  <div className="w-14 h-14 bg-emerald-500 text-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-md">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <span className="text-[10px] font-black tracking-widest uppercase bg-emerald-200 text-emerald-900 px-3 py-1 border border-emerald-900">
-                    Lead Registered in Database
+                  <span className="text-[10px] font-black tracking-widest uppercase bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200">
+                    Demo Request Confirmed
                   </span>
-                  <h3 className="font-black text-2xl text-gray-900 mt-2 mb-1">
+                  <h3 className="font-black text-2xl text-slate-900 mt-2 mb-1">
                     Thank You, {submittedLead.name}!
                   </h3>
-                  <p className="text-gray-600 text-xs font-semibold max-w-md mx-auto mb-4">
-                    Your request for the <strong className="text-gray-900">{submittedLead.plan}</strong> has been logged to the central CRM engine.
+                  <p className="text-slate-600 text-xs sm:text-sm font-medium max-w-md mx-auto mb-5">
+                    Your request for <strong className="text-slate-900">{submittedLead.plan}</strong> has been received. Our school onboarding specialist will connect shortly.
                   </p>
 
-                  <div className="bg-white border-[1.5px] border-gray-900 p-4 max-w-md mx-auto text-left text-xs space-y-2 mb-6 shadow-[2px_2px_0_0_#111827]">
-                    <div className="flex justify-between border-b pb-1">
-                      <span className="text-gray-500 font-bold">License Reference:</span>
+                  <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 max-w-md mx-auto text-left text-xs space-y-2 mb-6">
+                    <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                      <span className="text-slate-500 font-bold">Booking Reference:</span>
                       <span className="font-mono font-black text-amber-600">{submittedLead.ref}</span>
                     </div>
-                    <div className="flex justify-between border-b pb-1">
-                      <span className="text-gray-500 font-bold">Email:</span>
-                      <span className="font-bold text-gray-900">{submittedLead.email}</span>
+                    <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                      <span className="text-slate-500 font-bold">School Name:</span>
+                      <span className="font-bold text-slate-900">{submittedLead.schoolName || 'Institution'}</span>
                     </div>
-                    <div className="flex justify-between border-b pb-1">
-                      <span className="text-gray-500 font-bold">Contact Phone:</span>
-                      <span className="font-bold text-gray-900">{submittedLead.phone}</span>
+                    <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                      <span className="text-slate-500 font-bold">Official Email:</span>
+                      <span className="font-bold text-slate-900">{submittedLead.email}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-slate-200 pb-1.5">
+                      <span className="text-slate-500 font-bold">Contact Phone:</span>
+                      <span className="font-bold text-slate-900">{submittedLead.phone}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-gray-500 font-bold">Delivery:</span>
-                      <span className="font-bold text-emerald-600">Unencrypted ZIP + Git Access</span>
+                      <span className="text-slate-500 font-bold">Included:</span>
+                      <span className="font-bold text-emerald-600">Free Live Walkthrough + Trial Access</span>
                     </div>
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
                     <a
-                      href={`https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20have%20submitted%20license%20enquiry%20Ref%3A%20${submittedLead.ref}%20for%20Multi-School%20ERP.`}
+                      href={`https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20have%20submitted%20demo%20booking%20Ref%3A%20${submittedLead.ref}%20for%20my%20school.`}
                       target="_blank"
                       rel="noreferrer"
-                      className="w-full sm:w-auto bg-[#25D366] text-white px-6 py-2.5 font-black text-xs uppercase tracking-wider border-[2px] border-gray-900 shadow-[2px_2px_0_0_#111827] flex items-center justify-center gap-2 hover:bg-[#20ba59]"
+                      className="w-full sm:w-auto bg-[#25D366] text-white px-6 py-2.5 font-black text-xs uppercase tracking-wider rounded-xl shadow-md flex items-center justify-center gap-2 hover:bg-[#20ba59] transition-all"
                     >
                       <Phone className="w-4 h-4" />
                       <span>Chat on WhatsApp</span>
                     </a>
                     <button
                       onClick={() => setSubmittedLead(null)}
-                      className="w-full sm:w-auto bg-white text-gray-800 px-5 py-2.5 font-bold text-xs uppercase tracking-wider border-[2px] border-gray-900 hover:bg-gray-100 cursor-pointer"
+                      className="w-full sm:w-auto bg-slate-100 text-slate-800 px-5 py-2.5 font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-slate-200 transition-colors cursor-pointer"
                     >
                       New Enquiry
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="bg-white border-[2px] border-gray-900 p-5 sm:p-6 shadow-[4px_4px_0_0_#111827]">
-                  <div className="flex items-center justify-between border-b-[2px] border-gray-900 pb-3 mb-4">
+                <div className="bg-white border border-slate-200/90 rounded-3xl p-5 sm:p-7 shadow-xl">
+                  <div className="flex items-center justify-between border-b border-slate-200 pb-3.5 mb-4">
                     <div>
-                      <h3 className="font-black text-gray-900 text-lg uppercase tracking-tight">
-                        Purchase Source Code & Commercial License
+                      <h3 className="font-black text-slate-900 text-lg uppercase tracking-tight">
+                        Book School Demo &amp; Cloud Onboarding
                       </h3>
-                      <p className="text-gray-500 text-xs font-semibold">
-                        Get 100% unencrypted Node.js + React + Flutter apps with zero royalties.
+                      <p className="text-slate-500 text-xs font-medium mt-0.5">
+                        Get live guided walkthrough, student roster setup assistance, and institution pricing.
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-gray-400 line-through">₹15,000</div>
-                      <div className="text-xl font-black text-amber-500 leading-none">₹10,000</div>
+                      <div className="text-xs text-slate-400 font-bold">Cloud SaaS</div>
+                      <div className="text-xl font-black text-amber-500 leading-none">₹15<span className="text-xs text-slate-600 font-semibold">/std/mo</span></div>
                     </div>
                   </div>
 
                   {errorMsg && (
-                    <div className="bg-rose-50 text-rose-700 text-xs font-bold p-2.5 border border-rose-300 mb-4">
+                    <div className="bg-rose-50 text-rose-700 text-xs font-bold p-3 rounded-xl border border-rose-200 mb-4">
                       {errorMsg}
                     </div>
                   )}
@@ -740,35 +754,36 @@ export default function PortalModal() {
                   <form onSubmit={handleLeadSubmit} className="space-y-3.5">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       <div>
-                        <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
-                          Full Name *
+                        <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                          Contact Person Name *
                         </label>
                         <input
                           type="text"
                           required
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="e.g. Ramesh Verma"
-                          className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
+                          placeholder="e.g. Principal / Trustee / Admin"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
-                          Organization / School Name
+                        <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                          School / Institution Name *
                         </label>
                         <input
                           type="text"
+                          required
                           value={formData.schoolName}
                           onChange={(e) => setFormData({ ...formData, schoolName: e.target.value })}
-                          placeholder="e.g. LearnFirst Academy / IT Agency"
-                          className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
+                          placeholder="e.g. St. Xavier Public School"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       <div>
-                        <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
+                        <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
                           Official Email *
                         </label>
                         <input
@@ -776,13 +791,13 @@ export default function PortalModal() {
                           required
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder="ramesh@company.com"
-                          className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
+                          placeholder="principal@school.edu"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
-                          WhatsApp / Phone *
+                        <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                          WhatsApp / Mobile *
                         </label>
                         <input
                           type="tel"
@@ -790,42 +805,45 @@ export default function PortalModal() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+91 9876543210"
-                          className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
+                          className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white focus:ring-2 focus:ring-amber-400"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
-                        Select Licensing Tier
+                      <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                        Select Plan or Requirement
                       </label>
                       <select
                         value={formData.plan}
                         onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
-                        className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-bold text-gray-800 focus:outline-none focus:bg-white"
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:bg-white"
                       >
-                        <option value="₹10,000 — Full Commercial Source Code">
-                          ₹10,000 — Full Commercial Source Code (All 38 Modules + 3 Apps)
+                        <option value="Starter Cloud — ₹15 / student / month">
+                          Starter Cloud — ₹15 / student / month (Full ERP + All Apps)
                         </option>
-                        <option value="₹15,000 — Multi-School Agency Lifetime Bundle">
-                          ₹15,000 — Multi-School Agency Lifetime Bundle (Unlimited Schools)
+                        <option value="Pro School Enterprise — ₹25 / student / month">
+                          Pro School Enterprise — ₹25 / student / month (Dedicated Cloud + SLA)
                         </option>
-                        <option value="Custom Enterprise Deployment & Onboarding">
-                          Custom Enterprise Deployment & White-Label Setup
+                        <option value="Multi-Branch School Group (Custom Package)">
+                          Multi-Branch School Group (Custom Package)
+                        </option>
+                        <option value="Schedule Live Online Demo First (No Commitment)">
+                          Schedule Live Online Demo First (No Commitment)
                         </option>
                       </select>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-black uppercase tracking-wider text-gray-700 mb-1">
-                        Deployment Questions or Custom Notes
+                      <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-1">
+                        Student Strength &amp; Requirements
                       </label>
                       <textarea
                         rows={2}
                         value={formData.notes}
                         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        placeholder="Tell us about your servers, timeline or school requirements..."
-                        className="w-full bg-slate-50 border-[1.5px] border-gray-900 px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white"
+                        placeholder="Approx total students, current ERP software if any, branches or specific needs..."
+                        className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:bg-white"
                       />
                     </div>
 
@@ -833,10 +851,10 @@ export default function PortalModal() {
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full bg-amber-400 text-gray-900 py-3 border-[2px] border-gray-900 font-black text-xs uppercase tracking-widest shadow-[3px_3px_0_0_#111827] hover:bg-amber-300 active:translate-x-0.5 active:translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                        className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 py-3 rounded-xl font-black text-xs uppercase tracking-widest shadow-md hover:shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                       >
-                        <Send className="w-4 h-4" />
-                        <span>{submitting ? 'Registering Enquiry...' : 'Confirm Order & Request License'}</span>
+                        <Send className="w-4 h-4 text-slate-950" />
+                        <span>{submitting ? 'Registering Request...' : 'Book Free Demo & Consultation'}</span>
                       </button>
                     </div>
                   </form>
@@ -850,28 +868,28 @@ export default function PortalModal() {
           {/* ======================================================== */}
           {mode === 'hardware' && (
             <div className="space-y-4">
-              <div className="bg-white border-[2px] border-gray-900 p-4 shadow-[3px_3px_0_0_#111827] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-black text-gray-900 text-sm uppercase flex items-center gap-2">
+                  <h3 className="font-black text-slate-900 text-sm uppercase flex items-center gap-2">
                     <span>ZKTECO / ESSL PUSH PROTOCOL TERMINAL</span>
-                    <span className="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 border border-green-800/40">
+                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] px-2 py-0.5 rounded-full font-bold">
                       LIVE API CONNECTED
                     </span>
                   </h3>
-                  <p className="text-gray-500 text-xs font-semibold mt-0.5">
-                    Real devices communicating with backend ADMS routes (<code className="text-gray-900 bg-gray-100 px-1 font-mono">POST /api/hardware/sync-punch</code>).
+                  <p className="text-slate-500 text-xs font-medium mt-0.5">
+                    Real devices communicating with backend ADMS routes (<code className="text-slate-900 bg-slate-100 px-1 py-0.5 rounded font-mono">POST /api/hardware/sync-punch</code>).
                   </p>
                 </div>
                 <div className="flex gap-2">
                   <button 
                     onClick={handleTestPunch}
-                    className="bg-amber-400 text-gray-900 px-3 py-1.5 text-xs font-black uppercase border border-gray-900 hover:bg-amber-300 shadow-[1px_1px_0_0_#111827] cursor-pointer"
+                    className="bg-amber-400 hover:bg-amber-500 text-slate-950 px-3 py-1.5 text-xs font-black uppercase rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
                     ⚡ Simulate RFID Punch
                   </button>
                   <button 
                     onClick={fetchHardwareDevices}
-                    className="bg-gray-100 text-gray-800 px-3 py-1.5 text-xs font-bold border border-gray-900 hover:bg-gray-200 cursor-pointer"
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-1.5 text-xs font-bold rounded-xl transition-colors cursor-pointer"
                   >
                     Refresh Devices
                   </button>
@@ -881,35 +899,35 @@ export default function PortalModal() {
               {/* Devices Cards Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 {hardwareDevices.map((dev) => (
-                  <div key={dev._id} className="bg-white border-[2px] border-gray-900 p-4 shadow-[2px_2px_0_0_#111827]">
+                  <div key={dev._id} className="bg-white border border-slate-200/90 rounded-2xl p-4 shadow-xs">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-black text-gray-900 text-xs uppercase">{dev.deviceName}</span>
-                      <span className="bg-emerald-100 text-emerald-800 border border-emerald-900/40 text-[9px] font-black px-1.5 py-0.2">
+                      <span className="font-black text-slate-900 text-xs uppercase">{dev.deviceName}</span>
+                      <span className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[9px] font-black px-2 py-0.5 rounded-full">
                         {dev.status}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 border border-gray-200 mb-3">
-                      <div><span className="text-gray-500">Brand:</span> <span className="font-bold text-gray-900">{dev.brand}</span></div>
-                      <div><span className="text-gray-500">IP:</span> <span className="font-mono font-bold text-gray-900">{dev.ipAddress}</span></div>
-                      <div><span className="text-gray-500">Location:</span> <span className="font-bold text-gray-900">{dev.location}</span></div>
-                      <div><span className="text-gray-500">Punches Today:</span> <span className="font-bold text-amber-600">{dev.todayPunches || 142}</span></div>
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-slate-50 p-2.5 rounded-xl border border-slate-100 mb-3">
+                      <div><span className="text-slate-500">Brand:</span> <span className="font-bold text-slate-900">{dev.brand}</span></div>
+                      <div><span className="text-slate-500">IP:</span> <span className="font-mono font-bold text-slate-900">{dev.ipAddress}</span></div>
+                      <div><span className="text-slate-500">Location:</span> <span className="font-bold text-slate-900">{dev.location}</span></div>
+                      <div><span className="text-slate-500">Punches Today:</span> <span className="font-bold text-amber-600">{dev.todayPunches || 142}</span></div>
                     </div>
 
                     <button
                       onClick={() => handlePingDevice(dev)}
-                      className="w-full bg-[#0F172A] text-white py-1.5 text-xs font-black uppercase tracking-wider border border-gray-900 hover:bg-amber-400 hover:text-gray-900 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 py-2 text-xs font-black uppercase tracking-wider rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                     >
                       <Radio className="w-3.5 h-3.5" />
-                      <span>Ping Device & Test Port {dev.port || 4370}</span>
+                      <span>Ping Device &amp; Test Port {dev.port || 4370}</span>
                     </button>
                   </div>
                 ))}
               </div>
 
               {/* Terminal Logs Output */}
-              <div className="bg-[#0b1329] text-emerald-400 p-3 sm:p-4 border-[2px] border-gray-900 font-mono text-xs shadow-[3px_3px_0_0_#111827]">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-2 mb-2 text-gray-400 text-[11px]">
+              <div className="bg-slate-950 text-emerald-400 p-4 rounded-2xl border border-slate-800 font-mono text-xs shadow-xl">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2 mb-2 text-slate-400 text-[11px]">
                   <span className="flex items-center gap-1.5 text-amber-400">
                     <Terminal className="w-3.5 h-3.5" />
                     <span>Live Biometric ADMS Stream Console</span>
@@ -918,7 +936,7 @@ export default function PortalModal() {
                 </div>
                 <div className="space-y-1 text-[11.5px] min-h-[90px]">
                   {pingLogs.length === 0 ? (
-                    <div className="text-gray-500 italic">
+                    <div className="text-slate-500 italic">
                       Click "Ping Device" or "Simulate RFID Punch" to see live raw ADMS communication with Node.js backend.
                     </div>
                   ) : (
@@ -936,30 +954,30 @@ export default function PortalModal() {
           {/* ======================================================== */}
           {mode === 'gps' && (
             <div className="space-y-4">
-              <div className="bg-white border-[2px] border-gray-900 p-4 shadow-[3px_3px_0_0_#111827] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-black text-gray-900 text-sm uppercase flex items-center gap-2">
+                  <h3 className="font-black text-slate-900 text-sm uppercase flex items-center gap-2">
                     <span>BUS ROUTE 4A — REALTIME TELEMETRY ENGINE</span>
-                    <span className="bg-amber-100 text-amber-800 border border-amber-900/30 text-[10px] px-2 py-0.5">
+                    <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] px-2 py-0.5 rounded-full font-bold">
                       MAPBOX / OSM SYNC
                     </span>
                   </h3>
-                  <p className="text-gray-500 text-xs font-semibold mt-0.5">
+                  <p className="text-slate-500 text-xs font-medium mt-0.5">
                     Live driver smartphone stream broadcast to parents. Low-latency vector pathcasting.
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setSosActive(!sosActive)}
-                    className={`px-3 py-1 text-xs font-black uppercase border border-gray-900 transition-colors cursor-pointer ${
-                      sosActive ? 'bg-rose-600 text-white animate-pulse' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    className={`px-3 py-1.5 text-xs font-black uppercase rounded-xl transition-all cursor-pointer ${
+                      sosActive ? 'bg-rose-600 text-white animate-pulse' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {sosActive ? '⚠️ SOS BROADCASTING' : 'Trigger SOS Alert'}
                   </button>
                   <button
                     onClick={() => setGpsActive(!gpsActive)}
-                    className="bg-[#0F172A] text-white px-3 py-1 text-xs font-black uppercase border border-gray-900 hover:bg-amber-400 hover:text-gray-900 cursor-pointer"
+                    className="bg-slate-900 hover:bg-amber-400 text-white hover:text-slate-950 px-3.5 py-1.5 text-xs font-black uppercase rounded-xl transition-colors cursor-pointer"
                   >
                     {gpsActive ? 'Pause Stream' : 'Resume Stream'}
                   </button>
@@ -967,7 +985,7 @@ export default function PortalModal() {
               </div>
 
               {/* Map Simulator Panel */}
-              <div className="relative bg-slate-900 border-[2px] border-gray-900 h-64 sm:h-72 overflow-hidden shadow-[3px_3px_0_0_#111827] flex items-center justify-center">
+              <div className="relative bg-slate-900 border border-slate-800 rounded-2xl h-64 sm:h-72 overflow-hidden shadow-xl flex items-center justify-center">
                 <div className="absolute inset-0 bg-grid-pattern opacity-20" />
                 <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
                   <path 
@@ -981,23 +999,23 @@ export default function PortalModal() {
                   <circle cx="400" cy="160" r="10" fill="#09B48E" stroke="#ffffff" strokeWidth="2" />
                 </svg>
 
-                <div className="absolute top-3 left-3 bg-white/95 border-[1.5px] border-gray-900 p-2.5 text-xs shadow-[2px_2px_0_0_#111827] max-w-[220px]">
-                  <div className="font-black text-gray-900 text-xs">Bus #4: North Sector Express</div>
-                  <div className="text-gray-600 text-[11px] font-semibold">Driver: Suresh Patil</div>
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 text-xs shadow-md max-w-[220px]">
+                  <div className="font-black text-slate-900 text-xs">Bus #4: North Sector Express</div>
+                  <div className="text-slate-600 text-[11px] font-semibold">Driver: Suresh Patil</div>
                   <div className="text-emerald-600 font-bold text-[11px] mt-1">Status: En Route to Campus</div>
                 </div>
 
-                <div className="absolute bottom-3 right-3 bg-white/95 border-[1.5px] border-gray-900 p-2.5 text-xs shadow-[2px_2px_0_0_#111827] flex gap-4">
+                <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-2.5 text-xs shadow-md flex gap-4">
                   <div className="text-center">
-                    <div className="text-gray-400 text-[9px] uppercase font-bold">Speed</div>
-                    <div className="font-black text-gray-900 text-base">{busSpeed} km/h</div>
+                    <div className="text-slate-400 text-[9px] uppercase font-bold">Speed</div>
+                    <div className="font-black text-slate-900 text-base">{busSpeed} km/h</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-gray-400 text-[9px] uppercase font-bold">ETA Next Stop</div>
+                    <div className="text-slate-400 text-[9px] uppercase font-bold">ETA Next Stop</div>
                     <div className="font-black text-amber-600 text-base">3 mins</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-gray-400 text-[9px] uppercase font-bold">Onboard</div>
+                    <div className="text-slate-400 text-[9px] uppercase font-bold">Onboard</div>
                     <div className="font-black text-emerald-600 text-base">28 / 35</div>
                   </div>
                 </div>
@@ -1010,7 +1028,7 @@ export default function PortalModal() {
           {/* ======================================================== */}
           {mode === 'doc' && (
             <div className="space-y-4">
-              <div className="flex border-b border-gray-300 gap-2">
+              <div className="flex border-b border-slate-200 gap-1.5 overflow-x-auto pb-1">
                 {[
                   { id: 'spec', label: 'Quotation & Spec Sheet' },
                   { id: 'license', label: 'Commercial License' },
@@ -1020,10 +1038,10 @@ export default function PortalModal() {
                   <button
                     key={tab.id}
                     onClick={() => setActiveDocTab(tab.id)}
-                    className={`px-3 py-2 text-xs font-black uppercase transition-all cursor-pointer ${
+                    className={`px-3.5 py-2 text-xs font-black uppercase rounded-t-xl transition-all cursor-pointer whitespace-nowrap ${
                       activeDocTab === tab.id
-                        ? 'bg-amber-400 text-gray-900 border-t-2 border-l-2 border-r-2 border-gray-900 shadow-[2px_-2px_0_0_#111827]'
-                        : 'text-gray-500 hover:text-gray-900'
+                        ? 'bg-amber-400 text-slate-950 shadow-xs'
+                        : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
                     }`}
                   >
                     {tab.label}
@@ -1031,30 +1049,30 @@ export default function PortalModal() {
                 ))}
               </div>
 
-              <div className="bg-white border-[2px] border-gray-900 p-5 shadow-[3px_3px_0_0_#111827] text-gray-800 text-xs leading-relaxed space-y-3">
+              <div className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs text-slate-800 text-xs leading-relaxed space-y-3">
                 {activeDocTab === 'spec' && (
                   <>
-                    <h3 className="font-black text-gray-900 text-base uppercase">Official Architectural Specification</h3>
-                    <p className="font-semibold text-gray-600">
-                      Multi-School ERP is an enterprise monolithic suite crafted with React 18, Node.js/Express, and Flutter 3.x.
+                    <h3 className="font-black text-slate-900 text-base uppercase">Official Cloud &amp; Platform Specification</h3>
+                    <p className="font-medium text-slate-600">
+                      Multi-School ERP is a fully managed cloud SaaS operating system designed for schools, colleges, and educational groups.
                     </p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
-                      <div className="border border-gray-300 p-3 bg-gray-50">
-                        <h5 className="font-black text-gray-900 mb-1">Server Requirements:</h5>
-                        <ul className="list-disc list-inside space-y-0.5 text-gray-600">
-                          <li>Node.js v18.x or v20.x LTS</li>
-                          <li>MongoDB v5.0+ (Atlas or self-hosted)</li>
-                          <li>2GB RAM minimum (4GB recommended)</li>
-                          <li>Linux Ubuntu 22.04 LTS / Debian</li>
+                      <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50">
+                        <h5 className="font-black text-slate-900 mb-1">Cloud Infrastructure:</h5>
+                        <ul className="list-disc list-inside space-y-0.5 text-slate-600">
+                          <li>99.9% Uptime High-Availability Cloud SLA</li>
+                          <li>Encrypted MongoDB with Automated Daily Backups</li>
+                          <li>Zero Local Server or IT Staff Needed</li>
+                          <li>Instant Global CDN for Speed &amp; Security</li>
                         </ul>
                       </div>
-                      <div className="border border-gray-300 p-3 bg-gray-50">
-                        <h5 className="font-black text-gray-900 mb-1">Package Deliverables:</h5>
-                        <ul className="list-disc list-inside space-y-0.5 text-gray-600">
-                          <li>Unencrypted Source Code (.zip & Git repo)</li>
-                          <li>3 Flutter Mobile Apps (Parent, Staff, Driver)</li>
-                          <li>Windows ADMS Biometric Sync Executable</li>
-                          <li>1 Year Technical Maintenance & Bug Patches</li>
+                      <div className="border border-slate-200 rounded-xl p-3.5 bg-slate-50">
+                        <h5 className="font-black text-slate-900 mb-1">School Deliverables:</h5>
+                        <ul className="list-disc list-inside space-y-0.5 text-slate-600">
+                          <li>All 7 Dedicated Web Portals (Admin, Teacher, Fee, etc.)</li>
+                          <li>3 Native Android Mobile Apps (Parent, Staff, Driver)</li>
+                          <li>Complete Excel Roster Onboarding &amp; Setup</li>
+                          <li>Continuous Updates, New Features &amp; Priority Support</li>
                         </ul>
                       </div>
                     </div>
@@ -1063,32 +1081,32 @@ export default function PortalModal() {
 
                 {activeDocTab === 'license' && (
                   <>
-                    <h3 className="font-black text-gray-900 text-base uppercase">Commercial License Terms</h3>
-                    <p className="font-semibold text-gray-700">
-                      Grant of License: ALL CORE SOLUTION grants the licensee a perpetual, worldwide, non-exclusive commercial license to install, customize, rebrand, and deploy the Multi-School ERP codebase.
+                    <h3 className="font-black text-slate-900 text-base uppercase">SaaS Service Level Agreement (SLA)</h3>
+                    <p className="font-medium text-slate-700">
+                      Service Commitment: ALL CORE SOLUTION provides high-availability cloud hosting, uninterrupted access to all school modules, and continuous software updates.
                     </p>
-                    <ul className="list-disc list-inside space-y-1 font-medium text-gray-600">
-                      <li><strong>Unlimited Tenants:</strong> You may onboard unlimited schools and monetize SaaS subscriptions with 0% royalty.</li>
-                      <li><strong>Source Access:</strong> 100% unencrypted code. No phone-home calls or domain locking mechanisms.</li>
-                      <li><strong>Prohibition:</strong> You are strictly prohibited from redistributing or reselling the raw uncompiled source code publicly.</li>
+                    <ul className="list-disc list-inside space-y-1 font-medium text-slate-600">
+                      <li><strong>99.9% Uptime:</strong> Reliable, continuous system availability during school operational and examination hours.</li>
+                      <li><strong>Automated Backups:</strong> Daily automated snapshots with multi-region disaster recovery.</li>
+                      <li><strong>Priority Support:</strong> Direct hotline and WhatsApp support desk for administrators and teachers.</li>
                     </ul>
                   </>
                 )}
 
                 {activeDocTab === 'refund' && (
                   <>
-                    <h3 className="font-black text-gray-900 text-base uppercase">Digital Product Refund Policy</h3>
-                    <p className="font-semibold text-gray-600">
-                      Because digital source code cannot be returned once downloaded, all sales of source code packages are final once delivery tokens are issued. We provide full live demos of all running portals on this site so you can test every workflow before making your purchase.
+                    <h3 className="font-black text-slate-900 text-base uppercase">Zero-Risk Trial &amp; Subscription Terms</h3>
+                    <p className="font-medium text-slate-600">
+                      We provide interactive live demos and sandbox accounts so school management and staff can test every module before onboarding. Transparent per-student monthly billing with no lock-ins.
                     </p>
                   </>
                 )}
 
                 {activeDocTab === 'privacy' && (
                   <>
-                    <h3 className="font-black text-gray-900 text-base uppercase">Data Privacy & Sovereignty</h3>
-                    <p className="font-semibold text-gray-600">
-                      100% On-Premise Data Ownership: We never access, harvest, or transmit your student, parent, or financial records to external servers. Your MongoDB database remains strictly in your control.
+                    <h3 className="font-black text-slate-900 text-base uppercase">Student Data Privacy &amp; Protection</h3>
+                    <p className="font-medium text-slate-600">
+                      100% Institutional Data Ownership: Your school retains exclusive ownership of all student records, fee logs, and staff data. Data is strictly isolated per tenant, encrypted in transit and at rest, and never shared with third parties.
                     </p>
                   </>
                 )}
@@ -1099,15 +1117,15 @@ export default function PortalModal() {
         </div>
 
         {/* Modal Footer */}
-        <div className="bg-gray-100 border-t-[2px] border-gray-900 px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between text-xs">
-          <div className="flex items-center gap-2 font-bold text-gray-600">
-            <span>Developed by RAJ YADAV @ALLCORE SOLUTION</span>
+        <div className="bg-slate-50 border-t border-slate-200 px-5 sm:px-7 py-3 flex flex-wrap items-center justify-between text-xs">
+          <div className="flex items-center gap-2 font-medium text-slate-500">
+            <span className="font-bold text-slate-800">ALL CORE SOLUTION</span>
             <span className="hidden sm:inline">•</span>
-            <span className="hidden sm:inline text-amber-600">Support: contact@allcoresolution.com</span>
+            <span className="hidden sm:inline text-amber-600 font-semibold">Support: contact@allcoresolution.com</span>
           </div>
           <button
             onClick={closeModal}
-            className="px-4 py-1.5 bg-gray-900 hover:bg-gray-800 text-white font-black uppercase text-[11px] tracking-wider border border-gray-900 cursor-pointer"
+            className="px-4 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-black uppercase text-[11px] tracking-wider transition-colors cursor-pointer"
           >
             Close Window
           </button>

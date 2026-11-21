@@ -5,123 +5,125 @@ export default function PurchaseTerms() {
   const { openModal } = useModal();
 
   return (
-    <section className="py-8 lg:py-10 px-4 sm:px-6 lg:px-12 max-w-6xl mx-auto bg-gray-50/50 border-t border-gray-200">
+    <section className="py-12 lg:py-16 px-4 sm:px-6 lg:px-12 max-w-6xl mx-auto bg-slate-50/60 border-t border-slate-200">
       
       {/* Clean Header Box */}
-      <div className="relative z-10 text-center mb-6 sm:mb-8 flex flex-col items-center max-w-3xl mx-auto py-2 sm:p-3">
-        <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[7.5px] sm:text-[9px] px-2.5 py-1 mb-2 rounded-full shadow-sm">
-          TRANSPARENT & DOCUMENTED
+      <div className="relative z-10 text-center mb-8 sm:mb-10 flex flex-col items-center max-w-3xl mx-auto py-2 sm:p-3">
+        <span className="inline-block bg-[#E8F8F5] text-[#09B48E] font-black uppercase tracking-widest text-[9.5px] sm:text-[11px] px-3.5 py-1 mb-3 rounded-full border border-emerald-200 shadow-xs">
+          SMOOTH 3-STEP ONBOARDING
         </span>
-        <h2 className="text-xl sm:text-3xl font-black text-gray-900 leading-[1.15] tracking-tighter mb-1.5 sm:mb-2">
-          Exactly what you get — and how you get it.
+        <h2 className="text-2xl sm:text-4xl font-black text-slate-900 leading-[1.15] tracking-tight mb-2">
+          How Your School Goes Live in 24 Hours
         </h2>
-        <p className="text-gray-500 font-[500] text-[11px] sm:text-[13px] max-w-2xl mx-auto">
-          No surprises. Pay once, download instantly, and read every term before you buy. Full spec sheet and license below.
+        <p className="text-slate-600 font-medium text-xs sm:text-base max-w-2xl mx-auto leading-relaxed">
+          Zero IT headaches. We set up your school domain, import your student rosters from Excel, train your teachers, and provide 24/7 priority support.
         </p>
       </div>
 
       {/* 3 Steps Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mb-3 sm:mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5 mb-5 sm:mb-6">
         
         {/* Step 1 */}
         <div 
           onClick={() => openModal('purchase')}
-          className="bg-white border border-gray-200 p-4 sm:p-6 flex flex-col justify-between rounded-xl shadow-sm hover:border-amber-400 hover:shadow-md hover:-translate-y-1 transition-all group cursor-pointer"
+          className="bg-white border border-slate-200/90 p-5 sm:p-6 flex flex-col justify-between rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer text-left"
         >
            <div>
-             <div className="text-[#09B48E] font-black uppercase text-[8.5px] sm:text-[9px] tracking-widest mb-1.5 sm:mb-2">STEP 1</div>
-             <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1.5 sm:mb-2 group-hover:text-amber-600 transition-colors">
-               Pay securely — ₹10,000 ↗
+             <div className="text-[#09B48E] font-black uppercase text-[10px] tracking-widest mb-2 bg-emerald-50 w-max px-2 py-0.5 rounded-full border border-emerald-200">STEP 1</div>
+             <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-2 group-hover:text-amber-600 transition-colors">
+               Book Free Live Demo ↗
              </h3>
            </div>
-           <p className="text-gray-500 font-medium text-[11px] sm:text-[12px] leading-relaxed">
-             One-time payment via Razorpay / UPI / NetBanking or Bank Wire. Instant token delivery upon order submission.
+           <p className="text-slate-500 font-medium text-xs leading-relaxed">
+             Schedule an interactive demo for your school management, principal, or IT committee with real student data preview.
            </p>
         </div>
 
         {/* Step 2 */}
-        <div className="bg-white border border-gray-200 p-4 sm:p-6 flex flex-col justify-between rounded-xl shadow-sm hover:border-gray-300 hover:shadow-md hover:-translate-y-1 transition-all group">
+        <div className="bg-white border border-slate-200/90 p-5 sm:p-6 flex flex-col justify-between rounded-2xl shadow-xs hover:border-slate-300 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group text-left">
            <div>
-             <div className="text-[#09B48E] font-black uppercase text-[8.5px] sm:text-[9px] tracking-widest mb-1.5 sm:mb-2">STEP 2</div>
-             <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1.5 sm:mb-2">Instant email + download</h3>
+             <div className="text-[#09B48E] font-black uppercase text-[10px] tracking-widest mb-2 bg-emerald-50 w-max px-2 py-0.5 rounded-full border border-emerald-200">STEP 2</div>
+             <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-2">
+               Roster Import &amp; Custom Branding
+             </h3>
            </div>
-           <p className="text-gray-500 font-medium text-[11px] sm:text-[12px] leading-relaxed">
-             The moment payment succeeds, we email your client-portal login and download link — usually within a minute. No waiting, no office hours.
+           <p className="text-slate-500 font-medium text-xs leading-relaxed">
+             Share your student and teacher lists in Excel. Our team imports all data, configures fee heads, class timetables, and school logo.
            </p>
         </div>
 
         {/* Step 3 */}
         <a 
-          href="https://wa.me/91XXXXXXXXXX?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20need%20setup%20support%20for%20Multi-School%20ERP"
+          href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20onboard%20my%20school%20on%20Multi-School%20ERP"
           target="_blank"
           rel="noreferrer"
-          className="bg-white border border-gray-200 p-4 sm:p-6 flex flex-col justify-between rounded-xl shadow-sm hover:border-green-400 hover:shadow-md hover:-translate-y-1 transition-all group cursor-pointer"
+          className="bg-white border border-slate-200/90 p-5 sm:p-6 flex flex-col justify-between rounded-2xl shadow-xs hover:border-emerald-400 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer text-left"
         >
            <div>
-             <div className="text-[#09B48E] font-black uppercase text-[8.5px] sm:text-[9px] tracking-widest mb-1.5 sm:mb-2">STEP 3</div>
-             <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1.5 sm:mb-2 group-hover:text-green-600 transition-colors">
-               1 year updates & support ↗
+             <div className="text-[#09B48E] font-black uppercase text-[10px] tracking-widest mb-2 bg-emerald-50 w-max px-2 py-0.5 rounded-full border border-emerald-200">STEP 3</div>
+             <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-2 group-hover:text-emerald-600 transition-colors">
+               Staff Training &amp; Full Go-Live ↗
              </h3>
            </div>
-           <p className="text-gray-500 font-medium text-[11px] sm:text-[12px] leading-relaxed">
-             Get the full source, all 3 apps, docs & store-publish guides, plus free install help for one deployment.
+           <p className="text-slate-500 font-medium text-xs leading-relaxed">
+             Live training for teachers &amp; accountants, mobile app distribution for parents &amp; drivers, and ongoing priority support.
            </p>
         </a>
 
       </div>
 
       {/* 4 Docs Row (Clickable modals) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         <button 
           onClick={() => openModal('doc', { docTab: 'spec' })}
-          className="bg-white border border-gray-200 p-3.5 sm:p-5 flex flex-col items-start rounded-xl shadow-sm hover:border-amber-400 hover:shadow-md hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
+          className="bg-white border border-slate-200/90 p-4 sm:p-5 flex flex-col items-start rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-lg hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
         >
-           <div className="w-7 h-7 flex items-center justify-center text-xl mb-2 sm:mb-3 opacity-90 group-hover:scale-110 transition-transform">📄</div>
-           <h4 className="font-bold text-gray-900 text-[13px] sm:text-[14px] mb-1 leading-tight group-hover:text-amber-600">
-             Full Quotation <br className="hidden sm:block"/>& Spec Sheet
+           <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-lg mb-2.5 group-hover:scale-110 transition-transform">📄</div>
+           <h4 className="font-bold text-slate-900 text-sm mb-1 leading-snug group-hover:text-amber-600">
+             Module Catalog <br className="hidden sm:block"/>&amp; Feature Spec
            </h4>
-           <p className="text-gray-500 text-[10px] sm:text-[11px] font-medium leading-relaxed">
-             38 modules, deliverables, server requirements & pricing
+           <p className="text-slate-500 text-xs font-medium leading-relaxed">
+             38 modules, roles, security layers &amp; portal capabilities
            </p>
         </button>
 
         <button 
           onClick={() => openModal('doc', { docTab: 'license' })}
-          className="bg-white border border-gray-200 p-3.5 sm:p-5 flex flex-col items-start rounded-xl shadow-sm hover:border-amber-400 hover:shadow-md hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
+          className="bg-white border border-slate-200/90 p-4 sm:p-5 flex flex-col items-start rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-lg hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
         >
-           <div className="w-7 h-7 flex items-center justify-center text-xl mb-2 sm:mb-3 opacity-90 group-hover:scale-110 transition-transform">📜</div>
-           <h4 className="font-bold text-gray-900 text-[13px] sm:text-[14px] mb-1 group-hover:text-amber-600">
-             License & Terms
+           <div className="w-8 h-8 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center justify-center text-lg mb-2.5 group-hover:scale-110 transition-transform">📜</div>
+           <h4 className="font-bold text-slate-900 text-sm mb-1 group-hover:text-amber-600">
+             Service Level Agreement
            </h4>
-           <p className="text-gray-500 text-[10px] sm:text-[11px] font-medium leading-relaxed">
-             Perpetual, worldwide, no-royalty license
+           <p className="text-slate-500 text-xs font-medium leading-relaxed">
+             99.9% cloud uptime, backups &amp; uptime guarantee
            </p>
         </button>
 
         <button 
           onClick={() => openModal('doc', { docTab: 'refund' })}
-          className="bg-white border border-gray-200 p-3.5 sm:p-5 flex flex-col items-start rounded-xl shadow-sm hover:border-amber-400 hover:shadow-md hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
+          className="bg-white border border-slate-200/90 p-4 sm:p-5 flex flex-col items-start rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-lg hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
         >
-           <div className="w-7 h-7 flex items-center justify-center text-xl mb-2 sm:mb-3 opacity-90 group-hover:scale-110 transition-transform">↩️</div>
-           <h4 className="font-bold text-gray-900 text-[13px] sm:text-[14px] mb-1 group-hover:text-amber-600">
-             Refund Policy
+           <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-lg mb-2.5 group-hover:scale-110 transition-transform">↩️</div>
+           <h4 className="font-bold text-slate-900 text-sm mb-1 group-hover:text-amber-600">
+             Zero-Risk Trial Policy
            </h4>
-           <p className="text-gray-500 text-[10px] sm:text-[11px] font-medium leading-relaxed">
-             Digital product — read before you buy
+           <p className="text-slate-500 text-xs font-medium leading-relaxed">
+             Test all live portals with your staff before signing up
            </p>
         </button>
 
         <button 
           onClick={() => openModal('doc', { docTab: 'privacy' })}
-          className="bg-white border border-gray-200 p-3.5 sm:p-5 flex flex-col items-start rounded-xl shadow-sm hover:border-amber-400 hover:shadow-md hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
+          className="bg-white border border-slate-200/90 p-4 sm:p-5 flex flex-col items-start rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-lg hover:-translate-y-1 transition-all group text-left cursor-pointer w-full"
         >
-           <div className="w-7 h-7 flex items-center justify-center text-xl mb-2 sm:mb-3 opacity-90 group-hover:scale-110 transition-transform">🔒</div>
-           <h4 className="font-bold text-gray-900 text-[13px] sm:text-[14px] mb-1 group-hover:text-amber-600">
-             Privacy Policy
+           <div className="w-8 h-8 rounded-xl bg-purple-50 border border-purple-200 flex items-center justify-center text-lg mb-2.5 group-hover:scale-110 transition-transform">🔒</div>
+           <h4 className="font-bold text-slate-900 text-sm mb-1 group-hover:text-amber-600">
+             Student Privacy Policy
            </h4>
-           <p className="text-gray-500 text-[10px] sm:text-[11px] font-medium leading-relaxed">
-             How we protect and isolate your school data
+           <p className="text-slate-500 text-xs font-medium leading-relaxed">
+             100% strict institutional data isolation &amp; security
            </p>
         </button>
 

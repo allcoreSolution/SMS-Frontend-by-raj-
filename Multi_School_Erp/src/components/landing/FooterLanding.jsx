@@ -28,11 +28,11 @@ export default function FooterLanding() {
          </span>
          
          <h2 className="text-3xl sm:text-5xl lg:text-[52px] font-black tracking-tight mb-4 text-white leading-tight">
-           Your EdTech empire <br />
-           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600">starts here.</span>
+           Empower your school <br />
+           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600">with modern Cloud ERP.</span>
          </h2>
          <p className="text-slate-400 font-medium text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
-           Complete 100% unencrypted source code. 38 robust modules. 3 native mobile apps. Deploy on unlimited domains today.
+           38 integrated modules. 7 live web portals. 3 native mobile apps for Teachers, Parents, and Drivers. Go live in 24 hours.
          </p>
          
          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto">
@@ -41,16 +41,16 @@ export default function FooterLanding() {
               className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider rounded-xl shadow-lg shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
                <Sparkles className="w-4 h-4 text-slate-950" />
-               <span>Buy Now — ₹10,000</span>
+               <span>Book Free Demo &amp; Consultation</span>
             </button>
             
             <a 
-              href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20inquire%20about%20Multi-School%20ERP%20Source%20Code" 
+              href="https://wa.me/?text=Hello%20ALLCORE%20SOLUTION%2C%20I%20want%20to%20inquire%20about%20Multi-School%20ERP%20for%20my%20school" 
               target="_blank" 
               rel="noreferrer" 
               className="w-full sm:w-auto px-6 py-3.5 bg-slate-900/90 hover:bg-slate-800 border border-slate-700 hover:border-emerald-500/50 text-slate-200 text-xs sm:text-sm font-bold tracking-wider uppercase rounded-xl transition-all flex items-center justify-center gap-2 shadow-xs"
             >
-               <span className="text-emerald-400 text-base">📱</span> WhatsApp Support
+               <span className="text-emerald-400 text-base">📱</span> WhatsApp Consultation
             </a>
 
             <button 
@@ -74,7 +74,7 @@ export default function FooterLanding() {
                  <span className="text-amber-500">ERP</span>
                </div>
                <p className="text-slate-400 font-medium text-xs leading-relaxed max-w-sm">
-                 The definitive open-source multi-tenant architecture for modern educational institutions, engineered by <strong className="text-slate-200">ALL CORE SOLUTION</strong> for IT agencies & founders worldwide.
+                 The enterprise cloud multi-tenant architecture for modern educational institutions, engineered by <strong className="text-slate-200">ALL CORE SOLUTION</strong> for schools, trusts, and colleges worldwide.
                </p>
                
                <div className="flex flex-wrap items-center gap-2 mt-1">
