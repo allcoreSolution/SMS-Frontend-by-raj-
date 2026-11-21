@@ -126,19 +126,19 @@ export const authService = {
 
   forgotPassword: async (identifier) => {
     try {
-      const response = await axios.post(`${API_BASE}/auth/forgot-password`, { email: identifier });
+      const response = await axiosInstance.post('/auth/forgot-password', { email: identifier });
       return response.data;
     } catch (err) {
-      return { success: true, message: 'OTP dispatched successfully. Use OTP: 123456 to reset password.' };
+      return err.response?.data || { success: false, message: 'Could not connect to authentication server' };
     }
   },
 
   resetPassword: async (data) => {
     try {
-      const response = await axios.post(`${API_BASE}/auth/reset-password`, data);
+      const response = await axiosInstance.post('/auth/reset-password', data);
       return response.data;
     } catch (err) {
-      return { success: true, message: 'Password updated successfully.' };
+      return err.response?.data || { success: false, message: 'Failed to reset password' };
     }
   }
 };

@@ -1,16 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import axios from 'axios';
-
-const getApiUrl = () => {
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname;
-    if (host === 'localhost' || host === '127.0.0.1') {
-      return 'http://localhost:5050/api';
-    }
-  }
-  return import.meta.env.VITE_API_URL || 'https://sms-backend-by-raj-1.onrender.com/api';
-};
-const API_URL = getApiUrl();
+import axiosInstance from '../api/axios';
 
 const AuthContext = createContext(null);
 
@@ -45,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await axiosInstance.post('/auth/login', {
         email,
         username: email,
         password,
@@ -90,27 +79,7 @@ export const AuthProvider = ({ children }) => {
       }
       return false;
     } catch (err) {
-      console.warn('SuperAdmin Login API failed, checking demo fallback:', err?.message);
-      if ((email === 'ryadavy498@gmail.com' || email === 'admin123@gmail.com') && password === 'admin@123') {
-        const storedAvatar = localStorage.getItem('superadmin_user_avatar') || '';
-        const demoUser = {
-          id: 'demo_superadmin',
-          name: 'Super Admin Master',
-          email: email,
-          role: 'superadmin',
-          avatar: storedAvatar,
-        };
-        try {
-          sessionStorage.setItem('sa_user', JSON.stringify(demoUser));
-          sessionStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
-          sessionStorage.setItem('superadmin_user', JSON.stringify(demoUser));
-          localStorage.setItem('sa_user', JSON.stringify(demoUser));
-          localStorage.setItem('superadmin_token', 'demo_superadmin_jwt_token');
-          localStorage.setItem('superadmin_user', JSON.stringify(demoUser));
-        } catch (_) {}
-        setUser(demoUser);
-        return true;
-      }
+      console.warn('SuperAdmin Login failed:', err?.response?.data?.message || err?.message);
       throw err;
     }
   };

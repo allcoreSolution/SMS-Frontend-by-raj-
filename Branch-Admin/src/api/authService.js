@@ -101,6 +101,24 @@ export const authService = {
     // Disabled to strictly require manual login
     return false;
   },
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await axiosInstance.post('/auth/forgot-password', { email });
+      return response.data;
+    } catch (err) {
+      return err.response?.data || { success: false, message: 'Could not connect to authentication server' };
+    }
+  },
+
+  resetPassword: async ({ email, otp, newPassword }) => {
+    try {
+      const response = await axiosInstance.post('/auth/reset-password', { email, otp, newPassword });
+      return response.data;
+    } catch (err) {
+      return err.response?.data || { success: false, message: 'Password reset failed' };
+    }
+  },
 };
 
 export default authService;

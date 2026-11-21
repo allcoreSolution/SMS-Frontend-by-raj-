@@ -161,48 +161,90 @@ export default function Login() {
   const handleForgotPassword = async () => {
     const { value: driverIdInput } = await Swal.fire({
       title: 'Driver PIN Recovery',
-      text: 'Enter your Driver ID or Registered Mobile Number:',
+      text: 'Enter your Registered Email, Driver ID or Mobile Number:',
       input: 'text',
       inputValue: identifier || 'DRV-101',
-      inputPlaceholder: 'e.g. DRV-101 or 9811223399',
+      inputPlaceholder: 'e.g. driver@school.com or DRV-101',
       showCancelButton: true,
-      confirmButtonText: 'Verify & Send PIN',
+      confirmButtonText: 'Send Verification OTP',
       cancelButtonText: 'Cancel',
       confirmButtonColor: '#f59e0b',
       inputValidator: (val) => {
         if (!val || !val.trim()) {
-          return 'Please enter your Driver ID or Mobile Number!';
+          return 'Please enter your Registered Email, Driver ID or Mobile Number!';
         }
       }
     });
 
     if (driverIdInput) {
-      const matched = driversList.find(d => 
-        d.driverId.toLowerCase() === driverIdInput.trim().toLowerCase() ||
-        (d.mobile && d.mobile.includes(driverIdInput.trim()))
-      ) || FALLBACK_DRIVERS[0];
+      try {
+        Swal.fire({
+          title: 'Sending OTP...',
+          text: 'Dispatching verification code...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Security PIN Dispatched',
-        html: `
-          <p style="font-size: 13px; color: #475569; margin-bottom: 8px;">
-            Driver ID: <strong>${matched.driverId}</strong> (${matched.name})
-          </p>
-          <div style="background: #fef3c7; border: 1px solid #fde68a; padding: 10px; border-radius: 10px; margin: 10px 0;">
-            <p style="font-size: 11px; color: #92400e; margin: 0; font-weight: 600;">Default Security PIN:</p>
-            <p style="font-size: 20px; font-weight: 900; color: #b45309; letter-spacing: 4px; margin: 4px 0 0;">${matched.pin || '1011'}</p>
-          </div>
-          <p style="font-size: 11px; color: #64748b; margin-top: 6px;">
-            A backup verification SMS has also been dispatched to your mobile.
-          </p>
-        `,
-        confirmButtonColor: '#f59e0b',
-        confirmButtonText: 'Apply PIN & Login'
-      }).then(() => {
-        setIdentifier(matched.driverId);
-        setPassword(matched.pin || '1011');
-      });
+        const res = await driverService.forgotPassword({ email: driverIdInput.trim() });
+        if (res && res.success) {
+          const { value: formValues } = await Swal.fire({
+            title: 'Enter OTP & New PIN',
+            html: `
+              <p style="font-size: 13px; color: #475569; margin-bottom: 12px;">${res.message || 'OTP verification code sent. Please check your registered email inbox.'}</p>
+              <input id="swal-otp" class="swal2-input" placeholder="6-digit OTP" maxlength="6" style="text-align: center; font-size: 20px; letter-spacing: 4px; font-weight: bold;">
+              <input id="swal-pin" type="password" class="swal2-input" placeholder="Enter New PIN / Password">
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Update PIN',
+            confirmButtonColor: '#f59e0b',
+            preConfirm: () => {
+              const otpVal = document.getElementById('swal-otp')?.value;
+              const pinVal = document.getElementById('swal-pin')?.value;
+              if (!otpVal || !pinVal) {
+                Swal.showValidationMessage('Please enter both OTP and New PIN');
+                return false;
+              }
+              if (pinVal.length < 4) {
+                Swal.showValidationMessage('PIN must be at least 4 characters');
+                return false;
+              }
+              return { otp: otpVal.trim(), newPassword: pinVal.trim() };
+            }
+          });
+
+          if (formValues) {
+            Swal.fire({
+              title: 'Updating PIN...',
+              allowOutsideClick: false,
+              didOpen: () => Swal.showLoading()
+            });
+
+            const resetRes = await driverService.resetPassword({
+              email: driverIdInput.trim(),
+              otp: formValues.otp,
+              newPassword: formValues.newPassword
+            });
+
+            if (resetRes && resetRes.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'PIN Reset Successful!',
+                text: 'Your security PIN has been updated. You can now log in.',
+                confirmButtonColor: '#f59e0b'
+              });
+              setIdentifier(driverIdInput.trim());
+              setPassword(formValues.newPassword);
+            } else {
+              Swal.fire('Error', resetRes?.message || 'Invalid or expired OTP code', 'error');
+            }
+          }
+        } else {
+          Swal.fire('Error', res?.message || 'No registered driver account found with this ID or Email', 'error');
+        }
+      } catch (err) {
+        Swal.fire('Error', err.response?.data?.message || 'Failed to dispatch reset OTP. Please check your network.', 'error');
+      }
     }
   };
 

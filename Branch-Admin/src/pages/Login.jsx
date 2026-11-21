@@ -70,11 +70,7 @@ const Login = ({ onLogin }) => {
           didOpen: () => Swal.showLoading()
         });
 
-        const res = await fetch(`${API_URL}/auth/forgot-password`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: resetEmail })
-        }).then(r => r.json());
+        const res = await authService.forgotPassword(resetEmail);
 
         if (res.success) {
           const { value: formValues } = await Swal.fire({
@@ -99,7 +95,7 @@ const Login = ({ onLogin }) => {
                 Swal.showValidationMessage('Password must be at least 6 characters');
                 return false;
               }
-              return { otp: otpVal, newPassword: newPassVal };
+              return { otp: otpVal.trim(), newPassword: newPassVal.trim() };
             }
           });
 
@@ -110,15 +106,11 @@ const Login = ({ onLogin }) => {
               didOpen: () => Swal.showLoading()
             });
 
-            const resetRes = await fetch(`${API_URL}/auth/reset-password`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ 
-                email: resetEmail, 
-                otp: formValues.otp, 
-                newPassword: formValues.newPassword 
-              })
-            }).then(r => r.json());
+            const resetRes = await authService.resetPassword({ 
+              email: resetEmail, 
+              otp: formValues.otp, 
+              newPassword: formValues.newPassword 
+            });
 
             if (resetRes.success) {
               Swal.fire({
@@ -129,11 +121,11 @@ const Login = ({ onLogin }) => {
               });
               setPassword(formValues.newPassword);
             } else {
-              Swal.fire('Reset Failed', resetRes.message || 'Invalid or expired OTP', 'error');
+              Swal.fire('Error', resetRes.message || 'Invalid or expired OTP code', 'error');
             }
           }
         } else {
-          Swal.fire('User Not Found', res.message || 'No account found with this email', 'error');
+          Swal.fire('Error', res.message || 'Failed to dispatch verification OTP', 'error');
         }
       } catch (err) {
         Swal.fire('Connection Error', 'Could not reach server to reset password', 'error');

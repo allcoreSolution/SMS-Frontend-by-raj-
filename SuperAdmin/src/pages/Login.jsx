@@ -29,31 +29,6 @@ const Login = () => {
     }
   }, [authUser, navigate]);
 
-  const performBypassLogin = async () => {
-    setLoading(true);
-    try {
-      const ok = await login('ryadavy498@gmail.com', 'admin@123');
-      if (ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Welcome Super Admin!',
-          text: 'Master SaaS Central Command Center Active',
-          toast: true,
-          position: 'top-end',
-          showConfirmButton: false,
-          timer: 1600,
-          timerProgressBar: true
-        });
-        navigate('/', { replace: true });
-        return;
-      }
-    } catch (e) {
-      console.warn('Demo login notice:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogin = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     if (!formData.identifier.trim() || !formData.password.trim()) {
@@ -80,28 +55,16 @@ const Login = () => {
       }
       
       Swal.fire({
-        icon: 'warning',
+        icon: 'error',
         title: 'Authentication Failed',
-        text: 'Credentials did not match. Use Instant One-Click Demo Access.',
-        confirmButtonText: 'Use Demo Credentials',
-        confirmButtonColor: '#ff5c0a',
-        showCancelButton: true
-      }).then((res) => {
-        if (res.isConfirmed) {
-          performBypassLogin();
-        }
+        text: 'Credentials did not match. Please verify your email and password.',
+        confirmButtonColor: '#ff5c0a'
       });
     } catch (err) {
-      const isDemoCred = (formData.identifier.trim() === 'ryadavy498@gmail.com' || formData.identifier.trim() === 'admin123@gmail.com') && formData.password.trim() === 'admin@123';
-      if (isDemoCred) {
-        performBypassLogin();
-        return;
-      }
-
       Swal.fire({
         icon: 'error',
         title: 'Login Error',
-        text: err?.response?.data?.message || err?.message || 'Authentication failed',
+        text: err?.response?.data?.message || err?.message || 'Authentication failed. Please verify credentials.',
         confirmButtonColor: '#ff5c0a'
       });
     } finally {
@@ -344,6 +307,13 @@ const Login = () => {
                 />
                 <span>Keep Master Session Active</span>
               </label>
+
+              <Link 
+                to="/forgot-password" 
+                className="font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
+              >
+                Forgot Password?
+              </Link>
             </div>
 
             {/* Submit Button */}

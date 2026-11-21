@@ -233,16 +233,12 @@ export default function MyProfile() {
         showConfirmButton: false
       });
     } catch (err) {
-      console.warn('Profile update fallback mode:', err);
-      if (updateUser) {
-        updateUser({ name: `${profile.firstName} ${profile.lastName}`.trim(), email: profile.email, avatar: profile.avatar });
-      }
+      console.error('Profile update failed:', err);
       Swal.fire({
-        icon: 'success',
-        title: 'Profile Updated',
-        text: 'SuperAdmin profile credentials updated locally.',
-        timer: 1500,
-        showConfirmButton: false
+        icon: 'error',
+        title: 'Update Failed',
+        text: err.response?.data?.message || err.message || 'Failed to update profile on server. Please check your session.',
+        confirmButtonColor: '#ff5c0a'
       });
     } finally {
       setSaving(false);
@@ -461,14 +457,13 @@ export default function MyProfile() {
         showConfirmButton: false
       });
     } catch (err) {
+      console.error('Password update failed:', err);
       Swal.fire({
-        icon: 'success',
-        title: 'Password Updated',
-        text: 'Security password updated successfully.',
-        timer: 1800,
-        showConfirmButton: false
+        icon: 'error',
+        title: 'Password Update Failed',
+        text: err.response?.data?.message || err.message || 'Current password incorrect or failed to update credentials on server.',
+        confirmButtonColor: '#ff5c0a'
       });
-      setPasswords({ current: '', new: '', confirm: '' });
     } finally {
       setUpdatingPassword(false);
     }

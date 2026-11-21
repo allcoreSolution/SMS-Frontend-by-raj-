@@ -238,13 +238,15 @@ const Login = () => {
           didOpen: () => Swal.showLoading()
         });
 
-        const res = await axiosInstance.post('/auth/forgot-password', { email: resetEmail }).then(r => r.data).catch(() => ({ success: true, message: 'OTP sent (Demo mode: Use 123456)' }));
+        const res = await axiosInstance.post('/auth/forgot-password', { email: resetEmail })
+          .then(r => r.data)
+          .catch(err => err.response?.data || { success: false, message: 'Could not connect to server' });
 
-        if (res.success || res.message) {
+        if (res.success) {
           const { value: formValues } = await Swal.fire({
             title: 'Enter OTP & New Password',
             html:
-              `<p class="text-xs text-slate-500 mb-3">Verification code sent to <b>${resetEmail}</b> (Default: 123456)</p>` +
+              `<p class="text-xs text-slate-500 mb-3">A 6-digit verification code has been dispatched to <b>${resetEmail}</b>. Please check your email inbox.</p>` +
               '<input id="swal-otp" class="swal2-input !h-10 !text-sm !my-2" placeholder="Enter 6-digit OTP" type="text" maxlength="6">' +
               '<input id="swal-newpass" class="swal2-input !h-10 !text-sm !my-2" placeholder="Enter New Password" type="password">',
             focusConfirm: false,
@@ -254,15 +256,15 @@ const Login = () => {
             preConfirm: () => {
               const otpVal = document.getElementById('swal-otp').value;
               const newPassVal = document.getElementById('swal-newpass').value;
-              if (!otpVal || otpVal.length < 4) {
-                Swal.showValidationMessage('Please enter the OTP code');
+              if (!otpVal || otpVal.length < 6) {
+                Swal.showValidationMessage('Please enter the 6-digit OTP code sent to your email');
                 return false;
               }
               if (newPassVal.length < 6) {
                 Swal.showValidationMessage('Password must be at least 6 characters');
                 return false;
               }
-              return { otp: otpVal, newPassword: newPassVal };
+              return { otp: otpVal.trim(), newPassword: newPassVal.trim() };
             }
           });
 
@@ -277,7 +279,7 @@ const Login = () => {
               email: resetEmail, 
               otp: formValues.otp, 
               newPassword: formValues.newPassword 
-            }).then(r => r.data).catch(() => ({ success: true }));
+            }).then(r => r.data).catch(err => err.response?.data || { success: false, message: 'Password reset failed' });
 
             if (resetRes.success) {
               Swal.fire({
@@ -288,9 +290,11 @@ const Login = () => {
               });
               setFormData({ ...formData, password: formValues.newPassword });
             } else {
-              Swal.fire('Error', resetRes.message || 'Invalid OTP code', 'error');
+              Swal.fire('Error', resetRes.message || 'Invalid or expired OTP code', 'error');
             }
           }
+        } else {
+          Swal.fire('Error', res.message || 'Unable to send OTP to this email address', 'error');
         }
       } catch {
         Swal.fire('Connection Error', 'Could not reach server to reset password', 'error');
