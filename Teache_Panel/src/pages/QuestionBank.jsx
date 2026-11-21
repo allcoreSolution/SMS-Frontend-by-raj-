@@ -3,10 +3,12 @@ import Swal from 'sweetalert2';
 import {
   List, Plus, Search, Eye, Edit, Trash2, 
   Filter, X, BookOpen, Tag, Target, CheckCircle,
-  HelpCircle, Upload, Download, Copy, Loader2
+  HelpCircle, Upload, Download, Copy, Loader2,
+  Sparkles, Printer, FileText, CheckCheck
 } from 'lucide-react';
 import { onlineExamService } from '../api/onlineExamService';
 import { academicService } from '../api/academicService';
+import { aiService } from '../api/aiService';
 
 const defaultSubjects = ['Mathematics', 'Science', 'English', 'History', 'Computer Science', 'General'];
 const defaultClasses = ['Class VIII', 'Class IX', 'Class X', 'Class XI', 'Class XII', 'Class I'];
@@ -41,6 +43,21 @@ const QuestionBank = () => {
 
   const [subjects, setSubjects] = useState(defaultSubjects);
   const [classesList, setClassesList] = useState(defaultClasses);
+
+  // AI Exam Paper Generator States (100% Free & Unlimited)
+  const [showAiModal, setShowAiModal] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [aiForm, setAiForm] = useState({
+    subject: defaultSubjects[0],
+    class: defaultClasses[2] || defaultClasses[0],
+    topic: 'Core Curriculum & Chapter Concepts',
+    examTitle: 'Term Assessment Examination',
+    difficulty: 'Medium',
+    numMCQ: 5,
+    numShort: 4,
+    numLong: 2
+  });
+  const [generatedPaper, setGeneratedPaper] = useState(null);
 
   const [form, setForm] = useState({
     subject: defaultSubjects[0], 
@@ -322,6 +339,222 @@ const QuestionBank = () => {
     }
   };
 
+  // 100% Free & Unlimited AI Exam Paper Generation Handler
+  const handleGenerateAiPaper = async () => {
+    try {
+      setAiGenerating(true);
+      const res = await aiService.generateExamPaper(aiForm);
+      if (res?.success && res.data) {
+        setGeneratedPaper(res.data);
+        Swal.fire({
+          title: 'Exam Paper Generated!',
+          text: `Generated ${res.data.totalMarks} Marks structured question paper with Answer Key.`,
+          icon: 'success',
+          timer: 1600,
+          showConfirmButton: false
+        });
+      } else {
+        Swal.fire('Error', res?.message || 'Could not generate exam paper', 'error');
+      }
+    } catch (err) {
+      console.error('AI Generation Error:', err);
+      Swal.fire('Error', 'Failed to generate questions. Please retry.', 'error');
+    } finally {
+      setAiGenerating(false);
+    }
+  };
+
+  const handleSaveAllAiQuestionsToBank = async () => {
+    if (!generatedPaper) return;
+    try {
+      setSaving(true);
+      const questionsToSave = [];
+
+      (generatedPaper.sectionA_MCQ || []).forEach(item => {
+        questionsToSave.push({
+          question: item.question,
+          text: item.question,
+          subjectName: generatedPaper.subject || aiForm.subject,
+          className: generatedPaper.className || aiForm.class,
+          topic: generatedPaper.topic || aiForm.topic,
+          questionType: 'MCQ',
+          difficultyLevel: generatedPaper.difficulty || aiForm.difficulty,
+          marks: 1,
+          options: item.options || [],
+          answer: item.answer || item.options?.[0] || ''
+        });
+      });
+
+      (generatedPaper.sectionB_Short || []).forEach(item => {
+        questionsToSave.push({
+          question: item.question,
+          text: item.question,
+          subjectName: generatedPaper.subject || aiForm.subject,
+          className: generatedPaper.className || aiForm.class,
+          topic: generatedPaper.topic || aiForm.topic,
+          questionType: 'Subjective',
+          difficultyLevel: generatedPaper.difficulty || aiForm.difficulty,
+          marks: item.marks || 3,
+          options: [],
+          answer: item.answer || ''
+        });
+      });
+
+      (generatedPaper.sectionC_Long || []).forEach(item => {
+        questionsToSave.push({
+          question: item.question,
+          text: item.question,
+          subjectName: generatedPaper.subject || aiForm.subject,
+          className: generatedPaper.className || aiForm.class,
+          topic: generatedPaper.topic || aiForm.topic,
+          questionType: 'Subjective',
+          difficultyLevel: generatedPaper.difficulty || aiForm.difficulty,
+          marks: item.marks || 5,
+          options: [],
+          answer: item.answer || ''
+        });
+      });
+
+      if (questionsToSave.length > 0) {
+        await onlineExamService.bulkUploadQuestions(questionsToSave);
+        Swal.fire('Saved to Question Bank!', `${questionsToSave.length} AI generated questions added to school database.`, 'success');
+        await fetchQuestions();
+        setShowAiModal(false);
+      }
+    } catch (err) {
+      console.error('Save AI questions error:', err);
+      Swal.fire('Error', 'Failed to save questions to database', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handlePrintPaper = () => {
+    if (!generatedPaper) return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      Swal.fire('Popup Blocked', 'Please allow popups to print exam paper', 'warning');
+      return;
+    }
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${generatedPaper.examTitle} - ${generatedPaper.subject}</title>
+        <style>
+          body { font-family: 'Times New Roman', serif; margin: 30px 40px; color: #111; line-height: 1.5; }
+          .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 15px; }
+          .school-name { font-size: 22px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+          .exam-title { font-size: 16px; font-weight: bold; margin: 4px 0; }
+          .meta-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-top: 8px; }
+          .instructions { font-size: 12px; margin-bottom: 18px; padding: 8px; background: #f9f9f9; border-left: 3px solid #333; }
+          .section-title { font-size: 14px; font-weight: bold; text-decoration: underline; margin: 16px 0 8px 0; }
+          .q-item { margin-bottom: 12px; font-size: 13.5px; page-break-inside: avoid; }
+          .q-head { display: flex; justify-content: space-between; font-weight: 600; }
+          .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; margin-top: 4px; padding-left: 18px; }
+          .answer-key-page { page-break-before: always; margin-top: 30px; border-top: 2px dashed #666; padding-top: 20px; }
+          @media print { button { display: none; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="school-name">CENTRAL SCHOOL EXAMINATION BOARD</div>
+          <div class="exam-title">${generatedPaper.examTitle}</div>
+          <div class="meta-row">
+            <span>Class: ${generatedPaper.className}</span>
+            <span>Subject: ${generatedPaper.subject}</span>
+            <span>Max Marks: ${generatedPaper.totalMarks}</span>
+            <span>Time Allowed: ${generatedPaper.timeAllowed}</span>
+          </div>
+        </div>
+
+        <div class="instructions">
+          <strong>General Instructions:</strong>
+          <ul>
+            ${(generatedPaper.generalInstructions || []).map(i => `<li>${i}</li>`).join('')}
+          </ul>
+        </div>
+
+        ${generatedPaper.sectionA_MCQ?.length ? `
+          <div class="section-title">SECTION A - OBJECTIVE QUESTIONS (1 Mark Each)</div>
+          ${generatedPaper.sectionA_MCQ.map(q => `
+            <div class="q-item">
+              <div class="q-head">
+                <span>Q${q.id}. ${q.question}</span>
+                <span>[${q.marks}]</span>
+              </div>
+              <div class="options-grid">
+                ${(q.options || []).map(opt => `<div>${opt}</div>`).join('')}
+              </div>
+            </div>
+          `).join('')}
+        ` : ''}
+
+        ${generatedPaper.sectionB_Short?.length ? `
+          <div class="section-title">SECTION B - SHORT ANSWER QUESTIONS (3 Marks Each)</div>
+          ${generatedPaper.sectionB_Short.map(q => `
+            <div class="q-item">
+              <div class="q-head">
+                <span>Q${q.id}. ${q.question}</span>
+                <span>[${q.marks}]</span>
+              </div>
+            </div>
+          `).join('')}
+        ` : ''}
+
+        ${generatedPaper.sectionC_Long?.length ? `
+          <div class="section-title">SECTION C - LONG / DESCRIPTIVE QUESTIONS (5 Marks Each)</div>
+          ${generatedPaper.sectionC_Long.map(q => `
+            <div class="q-item">
+              <div class="q-head">
+                <span>Q${q.id}. ${q.question}</span>
+                <span>[${q.marks}]</span>
+              </div>
+            </div>
+          `).join('')}
+        ` : ''}
+
+        <div class="answer-key-page">
+          <div class="header">
+            <div class="school-name">CONFIDENTIAL • TEACHER ANSWER KEY & MARKING SCHEME</div>
+            <div class="meta-row">
+              <span>Class: ${generatedPaper.className}</span>
+              <span>Subject: ${generatedPaper.subject}</span>
+              <span>Exam: ${generatedPaper.examTitle}</span>
+            </div>
+          </div>
+          <div style="font-size: 13px;">
+            ${generatedPaper.sectionA_MCQ?.length ? `
+              <h4>Section A (MCQ Answers):</h4>
+              <ul>
+                ${generatedPaper.sectionA_MCQ.map(q => `<li><strong>Q${q.id}:</strong> Correct Option: ${q.answer} - <em>${q.explanation || ''}</em></li>`).join('')}
+              </ul>
+            ` : ''}
+            ${generatedPaper.sectionB_Short?.length ? `
+              <h4>Section B (Short Answers & Marking Scheme):</h4>
+              <ul>
+                ${generatedPaper.sectionB_Short.map(q => `<li><strong>Q${q.id}:</strong> ${q.answer} <br/><small style="color: #666;">Scheme: ${q.markingScheme || ''}</small></li>`).join('')}
+              </ul>
+            ` : ''}
+            ${generatedPaper.sectionC_Long?.length ? `
+              <h4>Section C (Long Answers & Marking Scheme):</h4>
+              <ul>
+                ${generatedPaper.sectionC_Long.map(q => `<li><strong>Q${q.id}:</strong> ${q.answer} <br/><small style="color: #666;">Scheme: ${q.markingScheme || ''}</small></li>`).join('')}
+              </ul>
+            ` : ''}
+          </div>
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); };
+        </script>
+      </body>
+      </html>
+    `;
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+  };
+
   const handleImportCSV = async () => {
     const { value: text } = await Swal.fire({
       title: 'Import Questions (CSV / JSON)',
@@ -439,6 +672,13 @@ const QuestionBank = () => {
               className="p-2 border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 flex items-center gap-1 text-sm font-semibold transition-colors cursor-pointer"
             >
               <Upload className="w-4 h-4" /> Import CSV
+            </button>
+            <button 
+              onClick={() => setShowAiModal(true)}
+              className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold px-4 py-2 flex items-center gap-2 text-sm shadow-sm transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
+              <span>AI Exam Paper ⚡</span>
             </button>
             <button 
               onClick={openCreateModal}
@@ -828,6 +1068,300 @@ const QuestionBank = () => {
               <button 
                 onClick={() => setViewQuestion(null)} 
                 className="px-5 py-2 bg-gray-100 text-gray-700 font-semibold text-sm hover:bg-gray-200 transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* 100% FREE & UNLIMITED AI EXAM QUESTION PAPER GENERATOR   */}
+      {/* ========================================================= */}
+      {showAiModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 overflow-y-auto">
+          <div className="bg-white w-full max-w-4xl shadow-2xl border border-purple-200 overflow-hidden my-6">
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 text-white p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-xl shadow-xs">
+                  ✨
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold flex items-center gap-2">
+                    <span>AI Exam Question Paper Generator</span>
+                    <span className="text-[10px] bg-amber-400 text-purple-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider">100% Free & Unlimited</span>
+                  </h3>
+                  <p className="text-xs text-purple-200 mt-0.5">Instant CBSE/State Board aligned exam question papers with answer keys</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowAiModal(false)}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6 space-y-6 max-h-[75vh] overflow-y-auto bg-slate-50">
+              
+              {/* Configuration Inputs */}
+              <div className="bg-white border border-purple-100 p-5 rounded-sm shadow-xs space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Class / Grade</label>
+                    <select 
+                      value={aiForm.class}
+                      onChange={e => setAiForm(prev => ({ ...prev, class: e.target.value }))}
+                      className="w-full border border-gray-300 p-2 text-sm bg-white focus:ring-2 focus:ring-purple-400"
+                    >
+                      {classesList.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Subject</label>
+                    <select 
+                      value={aiForm.subject}
+                      onChange={e => setAiForm(prev => ({ ...prev, subject: e.target.value }))}
+                      className="w-full border border-gray-300 p-2 text-sm bg-white focus:ring-2 focus:ring-purple-400"
+                    >
+                      {subjects.map(s => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Difficulty Level</label>
+                    <select 
+                      value={aiForm.difficulty}
+                      onChange={e => setAiForm(prev => ({ ...prev, difficulty: e.target.value }))}
+                      className="w-full border border-gray-300 p-2 text-sm bg-white focus:ring-2 focus:ring-purple-400"
+                    >
+                      <option value="Easy">Easy (Foundational)</option>
+                      <option value="Medium">Medium (Standard Board)</option>
+                      <option value="Hard">Hard (Advanced / HOTS)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Chapter / Topic</label>
+                    <input 
+                      type="text" 
+                      value={aiForm.topic}
+                      onChange={e => setAiForm(prev => ({ ...prev, topic: e.target.value }))}
+                      placeholder="e.g. Periodic Table, Quadratic Equations, Motion, Tenses"
+                      className="w-full border border-gray-300 p-2 text-sm focus:ring-2 focus:ring-purple-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-gray-700 uppercase mb-1">Exam Title / Header</label>
+                    <input 
+                      type="text" 
+                      value={aiForm.examTitle}
+                      onChange={e => setAiForm(prev => ({ ...prev, examTitle: e.target.value }))}
+                      placeholder="e.g. Mid-Term Examination 2026-27"
+                      className="w-full border border-gray-300 p-2 text-sm focus:ring-2 focus:ring-purple-400"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4 pt-2 border-t border-gray-100">
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-600 mb-1">Section A (MCQs - 1 Mark)</label>
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="20"
+                      value={aiForm.numMCQ}
+                      onChange={e => setAiForm(prev => ({ ...prev, numMCQ: parseInt(e.target.value) || 1 }))}
+                      className="w-full border border-gray-300 p-2 text-sm text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-600 mb-1">Section B (Short - 3 Marks)</label>
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="15"
+                      value={aiForm.numShort}
+                      onChange={e => setAiForm(prev => ({ ...prev, numShort: parseInt(e.target.value) || 1 }))}
+                      className="w-full border border-gray-300 p-2 text-sm text-center font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[11px] font-bold text-gray-600 mb-1">Section C (Long - 5 Marks)</label>
+                    <input 
+                      type="number" 
+                      min="1" 
+                      max="10"
+                      value={aiForm.numLong}
+                      onChange={e => setAiForm(prev => ({ ...prev, numLong: parseInt(e.target.value) || 1 }))}
+                      className="w-full border border-gray-300 p-2 text-sm text-center font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button 
+                    onClick={handleGenerateAiPaper}
+                    disabled={aiGenerating}
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold px-6 py-2.5 flex items-center gap-2 text-sm shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    {aiGenerating ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-amber-300" />
+                        <span>Generating AI Exam Paper...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 text-amber-300" />
+                        <span>Generate Exam Paper with AI ⚡</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Generated Result Preview */}
+              {generatedPaper && (
+                <div className="bg-white border-2 border-indigo-500/40 p-6 shadow-md space-y-6">
+                  {/* Paper Header Preview */}
+                  <div className="border-b-2 border-gray-900 pb-4 text-center space-y-1">
+                    <span className="text-[10px] font-black uppercase tracking-widest bg-indigo-100 text-indigo-900 px-3 py-0.5 rounded-full">
+                      Ready to Print Paper Preview
+                    </span>
+                    <h2 className="text-xl font-black text-gray-900 tracking-tight">{generatedPaper.examTitle}</h2>
+                    <div className="flex justify-between items-center text-xs font-bold text-gray-600 max-w-xl mx-auto pt-2 border-t border-dashed border-gray-300">
+                      <span>Class: {generatedPaper.className}</span>
+                      <span>Subject: {generatedPaper.subject}</span>
+                      <span>Total Marks: {generatedPaper.totalMarks}</span>
+                      <span>Time: {generatedPaper.timeAllowed}</span>
+                    </div>
+                  </div>
+
+                  {/* Instructions */}
+                  <div className="bg-gray-50 border-l-4 border-indigo-600 p-3 text-xs text-gray-700 space-y-1">
+                    <p className="font-bold text-gray-900">General Instructions:</p>
+                    <ul className="list-disc pl-4 space-y-0.5">
+                      {(generatedPaper.generalInstructions || []).map((ins, i) => (
+                        <li key={i}>{ins}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Section A: MCQs */}
+                  {generatedPaper.sectionA_MCQ?.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm text-indigo-900 uppercase tracking-wider border-b border-indigo-100 pb-1">
+                        Section A: Multiple Choice Questions (1 Mark Each)
+                      </h4>
+                      <div className="space-y-3">
+                        {generatedPaper.sectionA_MCQ.map(q => (
+                          <div key={q.id} className="p-3 bg-slate-50 border border-slate-200 text-sm space-y-2">
+                            <div className="flex justify-between font-semibold text-gray-900">
+                              <span>Q{q.id}. {q.question}</span>
+                              <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 border border-indigo-200">1 Mark</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-700 pl-4">
+                              {(q.options || []).map((opt, oIdx) => (
+                                <div key={oIdx} className="bg-white p-1.5 border border-gray-200 rounded-xs">
+                                  {opt}
+                                </div>
+                              ))}
+                            </div>
+                            <div className="text-xs font-bold text-emerald-700 bg-emerald-50 p-1.5 border border-emerald-200">
+                              ✓ Correct Answer: Option {q.answer} ({q.explanation || ''})
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section B: Short Answers */}
+                  {generatedPaper.sectionB_Short?.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm text-indigo-900 uppercase tracking-wider border-b border-indigo-100 pb-1">
+                        Section B: Short Answer Questions (3 Marks Each)
+                      </h4>
+                      <div className="space-y-3">
+                        {generatedPaper.sectionB_Short.map(q => (
+                          <div key={q.id} className="p-3 bg-slate-50 border border-slate-200 text-sm space-y-2">
+                            <div className="flex justify-between font-semibold text-gray-900">
+                              <span>Q{q.id}. {q.question}</span>
+                              <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 border border-indigo-200">{q.marks} Marks</span>
+                            </div>
+                            <div className="text-xs bg-white p-2 border border-gray-200 text-gray-700 space-y-1">
+                              <p className="font-bold text-gray-900">Answer Key / Solution Outline:</p>
+                              <p>{q.answer}</p>
+                              {q.markingScheme && <p className="text-purple-700 font-semibold mt-1">Marking Scheme: {q.markingScheme}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Section C: Long Answers */}
+                  {generatedPaper.sectionC_Long?.length > 0 && (
+                    <div className="space-y-3">
+                      <h4 className="font-bold text-sm text-indigo-900 uppercase tracking-wider border-b border-indigo-100 pb-1">
+                        Section C: Long / Descriptive Questions (5 Marks Each)
+                      </h4>
+                      <div className="space-y-3">
+                        {generatedPaper.sectionC_Long.map(q => (
+                          <div key={q.id} className="p-3 bg-slate-50 border border-slate-200 text-sm space-y-2">
+                            <div className="flex justify-between font-semibold text-gray-900">
+                              <span>Q{q.id}. {q.question}</span>
+                              <span className="text-xs bg-indigo-50 text-indigo-700 px-2 py-0.5 border border-indigo-200">{q.marks} Marks</span>
+                            </div>
+                            <div className="text-xs bg-white p-2 border border-gray-200 text-gray-700 space-y-1">
+                              <p className="font-bold text-gray-900">Detailed Solution & Evaluation Scheme:</p>
+                              <p>{q.answer}</p>
+                              {q.markingScheme && <p className="text-purple-700 font-semibold mt-1">Marking Scheme: {q.markingScheme}</p>}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Actions Row */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-gray-200">
+                    <span className="text-xs text-gray-500 font-bold">
+                      Total Questions: {(generatedPaper.sectionA_MCQ?.length || 0) + (generatedPaper.sectionB_Short?.length || 0) + (generatedPaper.sectionC_Long?.length || 0)}
+                    </span>
+                    <div className="flex items-center gap-3">
+                      <button 
+                        onClick={handlePrintPaper}
+                        className="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 text-xs flex items-center gap-2 cursor-pointer shadow-xs"
+                      >
+                        <Printer className="w-4 h-4 text-amber-400" />
+                        <span>Print / Export Exam Paper PDF</span>
+                      </button>
+                      <button 
+                        onClick={handleSaveAllAiQuestionsToBank}
+                        disabled={saving}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-5 py-2 text-xs flex items-center gap-2 cursor-pointer shadow-xs disabled:opacity-50"
+                      >
+                        <CheckCheck className="w-4 h-4" />
+                        <span>Save All Questions to Question Bank</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-6 py-3 bg-gray-100 border-t border-gray-200 flex justify-between items-center text-xs text-gray-500">
+              <span>Powered by High-Speed Curriculum Engine • 100% Free for all Schools</span>
+              <button 
+                onClick={() => setShowAiModal(false)}
+                className="px-4 py-1.5 bg-white border border-gray-300 text-gray-700 font-bold hover:bg-gray-50 cursor-pointer"
               >
                 Close
               </button>

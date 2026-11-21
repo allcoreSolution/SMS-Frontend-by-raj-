@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   CheckCircle, XCircle, Clock, Users, Calendar,
   Save, ChevronLeft, ChevronRight, Download,
-  BarChart2, Filter, Search, Eye, X, AlertTriangle, Loader2
+  BarChart2, Filter, Search, Eye, X, AlertTriangle, Loader2,
+  Camera, Sparkles, RotateCw, Volume2, CheckCircle2
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { studentService } from '../api/studentService';
@@ -45,6 +46,19 @@ const StudentAttendance = () => {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [viewSummary, setViewSummary] = useState(null);
+
+  // Smart Camera / QR Attendance Scanner States
+  const [showScanner, setShowScanner] = useState(false);
+  const [scannerFacing, setScannerFacing] = useState('environment'); // 'environment' | 'user'
+  const [scanRecent, setScanRecent] = useState([]);
+  const [lastScanned, setLastScanned] = useState(null);
+  const [cameraError, setCameraError] = useState('');
+  const [manualCode, setManualCode] = useState('');
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const scanLoopRef = useRef(null);
+  const lastDetectedCodeRef = useRef('');
+  const lastDetectedTimeRef = useRef(0);
 
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
@@ -295,6 +309,143 @@ const StudentAttendance = () => {
     return { total, present, absent, late, pct, hist };
   };
 
+  // Audio Speech Synthesis feedback
+  const speakStudent = (text) => {
+    try {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = 1.0;
+        window.speechSynthesis.speak(utterance);
+      }
+    } catch (e) {
+      console.warn('SpeechSynthesis error:', e);
+    }
+  };
+
+  // Match and mark student Present
+  const processStudentCode = (rawCode) => {
+    if (!rawCode || !rawCode.trim()) return false;
+    const clean = rawCode.trim().toLowerCase();
+
+    // Look up in students list by roll, admissionNo, id, or name
+    const found = students.find(s => 
+      (s.roll && s.roll.toLowerCase() === clean) ||
+      (s.admissionNo && s.admissionNo.toLowerCase() === clean) ||
+      (s.id && s.id.toString().toLowerCase() === clean) ||
+      (s.name && s.name.toLowerCase() === clean)
+    );
+
+    if (found) {
+      setAttendance(prev => ({ ...prev, [found.id]: 'P' }));
+      const scanItem = {
+        student: found,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        code: rawCode
+      };
+      setLastScanned(scanItem);
+      setScanRecent(prev => [scanItem, ...prev.filter(x => x.student.id !== found.id)].slice(0, 10));
+      speakStudent(`${found.name}, Present!`);
+      return true;
+    } else {
+      speakStudent('Student not found');
+      return false;
+    }
+  };
+
+  const startDetectLoop = () => {
+    if ('BarcodeDetector' in window) {
+      try {
+        const barcodeDetector = new window.BarcodeDetector({ formats: ['qr_code', 'code_128', 'code_39', 'ean_13', 'upc_a'] });
+        const detect = async () => {
+          if (videoRef.current && videoRef.current.readyState === 4) {
+            try {
+              const barcodes = await barcodeDetector.detect(videoRef.current);
+              if (barcodes.length > 0) {
+                const code = barcodes[0].rawValue;
+                const now = Date.now();
+                if (code !== lastDetectedCodeRef.current || (now - lastDetectedTimeRef.current) > 2500) {
+                  lastDetectedCodeRef.current = code;
+                  lastDetectedTimeRef.current = now;
+                  processStudentCode(code);
+                }
+              }
+            } catch (e) {
+              // ignore frame read errors
+            }
+          }
+          scanLoopRef.current = requestAnimationFrame(detect);
+        };
+        scanLoopRef.current = requestAnimationFrame(detect);
+      } catch (err) {
+        console.warn('BarcodeDetector not available:', err);
+      }
+    }
+  };
+
+  const startScanner = async () => {
+    setShowScanner(true);
+    setCameraError('');
+    try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setCameraError('Camera API is not supported by your browser.');
+        return;
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: scannerFacing, width: { ideal: 1280 }, height: { ideal: 720 } }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(e => console.warn(e));
+      }
+      startDetectLoop();
+    } catch (err) {
+      console.error('Camera open error:', err);
+      setCameraError('Camera access denied or unavailable. You can use the Quick Roll/Barcode input below.');
+    }
+  };
+
+  const stopScanner = () => {
+    if (scanLoopRef.current) {
+      cancelAnimationFrame(scanLoopRef.current);
+      scanLoopRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    setShowScanner(false);
+  };
+
+  const toggleCameraFacing = async () => {
+    const nextFacing = scannerFacing === 'environment' ? 'user' : 'environment';
+    setScannerFacing(nextFacing);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: nextFacing }
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(e => console.warn(e));
+      }
+    } catch (err) {
+      console.warn('Could not toggle camera:', err);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (scanLoopRef.current) cancelAnimationFrame(scanLoopRef.current);
+      if (streamRef.current) streamRef.current.getTracks().forEach(t => t.stop());
+    };
+  }, []);
+
   // Export Attendance CSV
   const handleDownload = () => {
     const rows = [
@@ -337,6 +488,14 @@ const StudentAttendance = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <button
+              onClick={startScanner}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded shadow-sm transition-all cursor-pointer"
+              title="100% Free Camera QR / Barcode & Roll Scanner Attendance"
+            >
+              <Camera className="w-3.5 h-3.5" />
+              <span>📷 Smart QR Scanner</span>
+            </button>
             {['mark', 'report'].map(t => (
               <button
                 key={t}
@@ -728,6 +887,195 @@ const StudentAttendance = () => {
                 Close
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Smart Camera & QR Attendance Scanner Modal (100% Free & Unlimited) */}
+      {showScanner && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 animate-in fade-in duration-200">
+          <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full overflow-hidden flex flex-col max-h-[92vh]">
+            
+            {/* Modal Header */}
+            <div className="px-5 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-700 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center">
+                  <Camera className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm tracking-wide flex items-center gap-2">
+                    Smart Camera & QR Attendance Scanner
+                    <span className="text-[10px] bg-white/25 px-2 py-0.5 rounded-full font-mono uppercase tracking-wider">
+                      Free & Unlimited ⚡
+                    </span>
+                  </h3>
+                  <p className="text-xs text-emerald-100">
+                    Point camera at student QR code or ID card. Instant voice confirmation on every scan!
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={stopScanner}
+                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 sm:p-5 flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
+              
+              {/* Camera Preview Section */}
+              <div className="lg:col-span-7 flex flex-col gap-3">
+                <div className="relative aspect-video sm:aspect-[4/3] bg-black rounded-xl overflow-hidden border border-gray-800 shadow-inner flex items-center justify-center">
+                  <video
+                    ref={videoRef}
+                    playsInline
+                    autoPlay
+                    muted
+                    className="w-full h-full object-cover"
+                  />
+
+                  {/* Scanning Crosshair & Laser Overlay */}
+                  <div className="absolute inset-8 border-2 border-emerald-400/60 rounded-xl pointer-events-none flex items-center justify-center">
+                    <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent animate-pulse shadow-[0_0_12px_#34d399]" />
+                    <span className="absolute top-2 left-2 text-[10px] font-mono text-emerald-300 bg-black/60 px-1.5 py-0.5 rounded">
+                      AUTO-SCAN ACTIVE
+                    </span>
+                  </div>
+
+                  {/* Camera Flip Button */}
+                  <button
+                    type="button"
+                    onClick={toggleCameraFacing}
+                    className="absolute top-3 right-3 bg-black/60 hover:bg-black/80 text-white p-2 rounded-lg border border-white/20 transition-all flex items-center gap-1.5 text-xs cursor-pointer"
+                    title="Switch Camera (Front / Back)"
+                  >
+                    <RotateCw className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Flip Camera</span>
+                  </button>
+
+                  {/* Camera Error Banner if any */}
+                  {cameraError && (
+                    <div className="absolute inset-4 bg-slate-900/90 text-white p-4 rounded-lg flex flex-col items-center justify-center text-center gap-2">
+                      <AlertTriangle className="w-8 h-8 text-amber-400" />
+                      <p className="text-xs text-gray-200">{cameraError}</p>
+                    </div>
+                  )}
+
+                  {/* Last Scanned Instant Floating Banner */}
+                  {lastScanned && (
+                    <div className="absolute bottom-3 inset-x-3 bg-emerald-900/90 border border-emerald-400/80 text-white px-3.5 py-2.5 rounded-lg flex items-center justify-between shadow-xl animate-in slide-in-from-bottom-2 duration-200">
+                      <div className="flex items-center gap-2.5">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-300 animate-bounce" />
+                        <div>
+                          <p className="text-xs font-bold text-white leading-tight">
+                            {lastScanned.student.name}
+                          </p>
+                          <p className="text-[10px] text-emerald-200">
+                            Roll #{lastScanned.student.roll} • Marked Present at {lastScanned.time}
+                          </p>
+                        </div>
+                      </div>
+                      <Volume2 className="w-4 h-4 text-emerald-300 animate-pulse" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Instant Barcode Gun / Manual Roll Code Input */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (manualCode.trim()) {
+                      processStudentCode(manualCode);
+                      setManualCode('');
+                    }
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    type="text"
+                    value={manualCode}
+                    onChange={(e) => setManualCode(e.target.value)}
+                    placeholder="Scan Barcode Gun or Type Student Roll / Admission No..."
+                    className="flex-1 border border-gray-300 rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-emerald-500 font-mono shadow-sm"
+                    autoFocus
+                  />
+                  <button
+                    type="submit"
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                  >
+                    Mark Present
+                  </button>
+                </form>
+              </div>
+
+              {/* Real-time Scanned Roster Section */}
+              <div className="lg:col-span-5 flex flex-col bg-gray-50 border border-gray-200 rounded-xl p-4">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-200 mb-3">
+                  <div>
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700">
+                      Live Scanned Roster
+                    </h4>
+                    <p className="text-[11px] text-gray-500">
+                      Class: <strong>{selectedClass}</strong>
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full">
+                    {counts.p} / {students.length} Present
+                  </span>
+                </div>
+
+                <div className="flex-1 overflow-y-auto space-y-2 max-h-64 sm:max-h-80 pr-1">
+                  {scanRecent.length === 0 ? (
+                    <div className="py-12 text-center text-gray-400 text-xs">
+                      <Camera className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+                      Ready to scan. Point camera at student QR code or type roll number.
+                    </div>
+                  ) : (
+                    scanRecent.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white border border-emerald-200 rounded-lg px-3 py-2 flex items-center justify-between shadow-xs"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-bold flex items-center justify-center">
+                            ✓
+                          </span>
+                          <div>
+                            <p className="text-xs font-bold text-gray-800">{item.student.name}</p>
+                            <p className="text-[10px] text-gray-500 font-mono">
+                              Roll: {item.student.roll} • Adm: {item.student.admissionNo || '-'}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-gray-400 font-mono">{item.time}</span>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Footer Save & Finish */}
+                <div className="pt-3 border-t border-gray-200 mt-3 flex items-center justify-between gap-3">
+                  <span className="text-[11px] text-gray-500">
+                    Voice speech audio enabled 🔊
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleSave();
+                      stopScanner();
+                    }}
+                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-4 py-2 rounded-lg text-xs shadow-md flex items-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    Save & Finish
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
           </div>
         </div>
       )}

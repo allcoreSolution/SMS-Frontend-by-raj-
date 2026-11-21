@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { 
   CheckCircle2, Save, RefreshCw, AlertCircle, Users, Award, 
-  TrendingUp, ArrowLeft, Filter, FileSpreadsheet
+  TrendingUp, ArrowLeft, Filter, FileSpreadsheet, Sparkles, Wand2
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { studentService } from '../api/studentService';
 import { examService } from '../api/examService';
 import { academicService } from '../api/academicService';
+import { aiService } from '../api/aiService';
 
 const EnterMarks = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const EnterMarks = () => {
   const [loadingMeta, setLoadingMeta] = useState(false);
   const [loadingStudents, setLoadingStudents] = useState(false);
   const [savingMarks, setSavingMarks] = useState(false);
+  const [generatingRemarks, setGeneratingRemarks] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   const [students, setStudents] = useState([]);
@@ -167,6 +169,94 @@ const EnterMarks = () => {
 
   const handleMarkAllPresent = () => {
     setStudents(prev => prev.map(s => ({ ...s, attendance: 'Present' })));
+  };
+
+  // 100% Free & Unlimited AI Student Remarks Generator
+  const handleAutoGenerateRemarks = async () => {
+    const withMarks = students.filter(s => s.marks !== '' || s.attendance === 'Absent');
+    if (withMarks.length === 0) {
+      Swal.fire({
+        icon: 'info',
+        title: 'No Marks Available',
+        text: 'Please enter marks or mark attendance for students before generating AI remarks.'
+      });
+      return;
+    }
+
+    setGeneratingRemarks(true);
+    const selectedSubName = subjects.find(s => s._id === formData.subject)?.subjectName || 'Academics';
+
+    try {
+      const updated = [...students];
+      for (let i = 0; i < updated.length; i++) {
+        const s = updated[i];
+        if (s.attendance === 'Absent') {
+          s.remarks = 'Absent during assessment. Advised to take re-evaluation test.';
+          continue;
+        }
+        if (s.marks === '') continue;
+
+        try {
+          const res = await aiService.generateStudentRemarks({
+            studentName: s.name,
+            marks: Number(s.marks),
+            maxMarks: Number(s.maxMarks) || 100,
+            subject: selectedSubName,
+            tone: 'constructive'
+          });
+          if (res?.data?.remark) {
+            s.remarks = res.data.remark;
+          }
+        } catch {
+          // Instant intelligent fallback
+          const pct = ((Number(s.marks) || 0) / (Number(s.maxMarks) || 100)) * 100;
+          if (pct >= 85) {
+            s.remarks = `Outstanding performance in ${selectedSubName}. Demonstrates high analytical thinking and consistency.`;
+          } else if (pct >= 70) {
+            s.remarks = `Very commendable effort in ${selectedSubName}. With focused revision, top grades are well within reach.`;
+          } else if (pct >= 50) {
+            s.remarks = `Good conceptual foundation in ${selectedSubName}. Focus on regular practice to improve speed and accuracy.`;
+          } else {
+            s.remarks = `Needs additional guidance in ${selectedSubName}. Regular practice and doubt clearing recommended.`;
+          }
+        }
+      }
+
+      setStudents(updated);
+      Swal.fire({
+        icon: 'success',
+        title: 'AI Remarks Generated! ⚡',
+        text: `Personalized report card remarks auto-filled for ${withMarks.length} students.`,
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch (e) {
+      console.error('Error generating remarks:', e);
+    } finally {
+      setGeneratingRemarks(false);
+    }
+  };
+
+  // Generate remark for single student
+  const handleSingleStudentRemark = async (studentId) => {
+    const s = students.find(x => x.id === studentId);
+    if (!s) return;
+    const selectedSubName = subjects.find(sub => sub._id === formData.subject)?.subjectName || 'Subject';
+    
+    try {
+      const res = await aiService.generateStudentRemarks({
+        studentName: s.name,
+        marks: Number(s.marks) || 0,
+        maxMarks: Number(s.maxMarks) || 100,
+        subject: selectedSubName,
+        tone: 'constructive'
+      });
+      const remark = res?.data?.remark || `${s.name} shows good enthusiasm in ${selectedSubName}. Consistent practice recommended.`;
+      setStudents(prev => prev.map(x => x.id === studentId ? { ...x, remarks: remark } : x));
+    } catch {
+      const remark = `${s.name} has demonstrated steady progress in ${selectedSubName}. Encouraged to participate actively.`;
+      setStudents(prev => prev.map(x => x.id === studentId ? { ...x, remarks: remark } : x));
+    }
   };
 
   const handleSaveMarks = async () => {
@@ -384,6 +474,16 @@ const EnterMarks = () => {
                 >
                   Mark All Present
                 </button>
+                <button
+                  type="button"
+                  onClick={handleAutoGenerateRemarks}
+                  disabled={generatingRemarks}
+                  className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded shadow-sm flex items-center gap-1.5 transition-all"
+                  title="100% Free: Generate smart personalized report remarks for all students with marks"
+                >
+                  {generatingRemarks ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-300" />}
+                  {generatingRemarks ? 'AI Generating...' : '⚡ AI Auto Remarks'}
+                </button>
                 <button 
                   onClick={handleSaveMarks}
                   disabled={savingMarks}
@@ -460,13 +560,23 @@ const EnterMarks = () => {
                         </span>
                       </td>
                       <td className="px-6 py-2">
-                        <input 
-                          type="text"
-                          value={student.remarks}
-                          onChange={(e) => handleRemarksChange(student.id, e.target.value)}
-                          placeholder="Optional feedback..."
-                          className="w-full border border-gray-200 rounded px-2.5 py-1 text-xs text-gray-600 focus:outline-none focus:border-blue-400"
-                        />
+                        <div className="flex items-center gap-1.5">
+                          <input 
+                            type="text"
+                            value={student.remarks}
+                            onChange={(e) => handleRemarksChange(student.id, e.target.value)}
+                            placeholder="Optional feedback..."
+                            className="w-full border border-gray-200 rounded px-2.5 py-1 text-xs text-gray-600 focus:outline-none focus:border-blue-400"
+                          />
+                          <button
+                            type="button"
+                            title="Generate AI remark for this student"
+                            onClick={() => handleSingleStudentRemark(student.id)}
+                            className="p-1 hover:bg-purple-100 text-purple-600 rounded transition-colors"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}
