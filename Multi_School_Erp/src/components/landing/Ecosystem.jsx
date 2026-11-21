@@ -58,26 +58,6 @@ export default function Ecosystem() {
       btnText: 'Open Accountant Panel ↗'
     },
     { 
-      title: 'Driver & Fleet Telematics', 
-      sub: 'GPS TRACKING • FLEET MGMT', 
-      desc: 'Driver route dispatching, student boarding scanner, pre-trip vehicle checklist, realtime vehicle GPS telemetry, and instant SOS alerts.', 
-      icon: '🚌', 
-      tag: 'Fleet & Driver • Telematics', 
-      actionType: 'url',
-      actionTarget: PORTAL_URLS.driver,
-      btnText: 'Open Driver Panel ↗'
-    },
-    { 
-      title: 'Branch Admin Network', 
-      sub: 'MULTI-CAMPUS • CENTRAL GM', 
-      desc: 'Aggregate analytics for multi-branch school networks. Central financial consolidation, inter-branch transfers, and audit logs.', 
-      icon: '🏛️', 
-      tag: 'Multi-Branch • Central GM', 
-      actionType: 'url',
-      actionTarget: PORTAL_URLS.branch,
-      btnText: 'Open Branch Admin ↗'
-    },
-    { 
       title: 'Windows Biometric API', 
       sub: 'ZKTECO ADMS PROTOCOL', 
       desc: 'Standalone secure desktop executable bridging physical hardware directly with the cloud. Uninterrupted low-latency push synchronization.', 
@@ -175,7 +155,7 @@ export default function Ecosystem() {
                💡
              </div>
              <p className="text-xs sm:text-sm font-bold text-gray-700 leading-snug">
-               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin SaaS, School Admin ERP, Teacher Panel, Accountant Panel, Student & Parent Portal, Driver App, and Branch Admin Network, plus dedicated <strong>Android APKs</strong> for Teachers, Parents, and Drivers.
+               <span className="text-gray-900 font-black">All Portals & Apps Ready:</span> SuperAdmin SaaS, School Admin ERP, Teacher Panel, Accountant Panel, and Student & Parent Portal, plus dedicated <strong>Android APKs</strong> for Teachers, Parents, and Drivers.
              </p>
            </div>
            
