@@ -28,24 +28,24 @@ export default function Ecosystem() {
       btnText: 'Open School ERP ↗'
     },
     { 
-      title: 'Parent & Student App', 
-      sub: 'ANDROID • APK DOWNLOAD', 
-      desc: 'A seamless mobile bridge. Enables instant PG fee payments, live CBT exam results, realtime GPS bus tracking, and direct push interactions.', 
+      title: 'Parent & Student Portal', 
+      sub: 'REACT 18 • LIVE WEB & MOBILE', 
+      desc: 'A seamless portal for students & parents. Enables instant online fee payments, live CBT exam results, realtime GPS bus tracking, and direct push interactions.', 
       icon: '👨‍👩‍👦', 
-      tag: 'Android APK • v1.0.1', 
-      actionType: 'download',
-      actionTarget: '/apk/Student_Parents.apk',
-      btnText: 'Download Student APK ⬇'
+      tag: 'Web & Android • Student Portal', 
+      actionType: 'url',
+      actionTarget: PORTAL_URLS.student,
+      btnText: 'Open Student Portal ↗'
     },
     { 
-      title: 'Teacher & Staff App', 
-      sub: 'ANDROID • APK DOWNLOAD', 
+      title: 'Teacher & Staff Portal', 
+      sub: 'REACT 18 • EDUCATORS HUB', 
       desc: 'Empower educators with attendance marking, lesson planning, marks entry, online exam question banks, PTM scheduling, and teacher leave management.', 
       icon: '👩‍🏫', 
-      tag: 'Android APK • Teacher App', 
-      actionType: 'download',
-      actionTarget: '/apk/Teacher.apk',
-      btnText: 'Download Teacher APK ⬇'
+      tag: 'Faculty Portal • Teacher Panel', 
+      actionType: 'url',
+      actionTarget: PORTAL_URLS.teacher,
+      btnText: 'Open Teacher Portal ↗'
     },
     { 
       title: 'Accountant & Fee Desk', 
@@ -56,6 +56,26 @@ export default function Ecosystem() {
       actionType: 'url',
       actionTarget: PORTAL_URLS.accountant,
       btnText: 'Open Accountant Panel ↗'
+    },
+    { 
+      title: 'Driver & Fleet Telematics', 
+      sub: 'GPS TRACKING • FLEET MGMT', 
+      desc: 'Driver route dispatching, student boarding scanner, pre-trip vehicle checklist, realtime vehicle GPS telemetry, and instant SOS alerts.', 
+      icon: '🚌', 
+      tag: 'Fleet & Driver • Telematics', 
+      actionType: 'url',
+      actionTarget: PORTAL_URLS.driver,
+      btnText: 'Open Driver Panel ↗'
+    },
+    { 
+      title: 'Branch Admin Network', 
+      sub: 'MULTI-CAMPUS • CENTRAL GM', 
+      desc: 'Aggregate analytics for multi-branch school networks. Central financial consolidation, inter-branch transfers, and audit logs.', 
+      icon: '🏛️', 
+      tag: 'Multi-Branch • Central GM', 
+      actionType: 'url',
+      actionTarget: PORTAL_URLS.branch,
+      btnText: 'Open Branch Admin ↗'
     },
     { 
       title: 'Windows Biometric API', 

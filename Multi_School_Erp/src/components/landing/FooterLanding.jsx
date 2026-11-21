@@ -123,6 +123,10 @@ export default function FooterLanding() {
                  <span>Branch Admin</span>
                  <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-amber-400 transition-colors" />
                </a>
+               <a href={PORTAL_URLS.driver} target="_blank" rel="noreferrer" className="text-slate-300 hover:text-amber-400 transition-colors text-xs font-medium flex items-center justify-between group">
+                 <span>Driver & Fleet</span>
+                 <ExternalLink className="w-3 h-3 text-slate-500 group-hover:text-amber-400 transition-colors" />
+               </a>
             </div>
 
             {/* Column 3: Mobile Apps & APK Downloads (2 Columns) */}

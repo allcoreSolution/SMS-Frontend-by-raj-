@@ -18,16 +18,15 @@ export default function Showcase() {
       theme: 'border-amber-400'
     },
     {
-      title: 'Teacher & Staff App (Android APK)',
-      port: 'APK',
-      badge: 'Teacher App',
+      title: 'Teacher & Staff Portal',
+      port: 'WEB',
+      badge: 'Teacher Panel',
       badgeColor: 'bg-emerald-400 text-gray-900',
-      url: '/apk/Teacher.apk',
-      isDownload: true,
-      downloadName: 'Teacher.apk',
-      desc: 'Exclusive native Android mobile app for educators: Student Attendance marking, Exam Marksheet entry, Teacher Leave apply, and Lesson Planners.',
+      url: PORTAL_URLS.teacher,
+      isDownload: false,
+      desc: 'Exclusive cloud portal for educators: Student Attendance marking, Exam Marksheet entry, Teacher Leave apply, and Lesson Planners.',
       stats: [
-        { label: 'Platform', val: 'Android APK (Teacher.apk)' },
+        { label: 'Platform', val: 'Web Cloud Portal' },
         { label: 'Exams & Marks', val: 'Term 1 / CBT Evaluation' }
       ],
       theme: 'border-emerald-400'
@@ -47,16 +46,15 @@ export default function Showcase() {
       theme: 'border-teal-400'
     },
     {
-      title: 'Student & Parent App (Android APK)',
-      port: 'APK',
+      title: 'Student & Parent Portal',
+      port: 'WEB',
       badge: 'Student / Parent',
       badgeColor: 'bg-purple-400 text-gray-900',
-      url: '/apk/Student_Parents.apk',
-      isDownload: true,
-      downloadName: 'Student_Parents.apk',
-      desc: 'Android mobile app with Hindi and English switch, Intelligent AI Assistant, CBT Online Exams with timer, Digital Fee Challan, and Attendance.',
+      url: PORTAL_URLS.student,
+      isDownload: false,
+      desc: 'Dedicated cloud web portal for students & parents: Bilingual Hindi & English switch, Intelligent AI Assistant, CBT Online Exams, Digital Fee Challan, and Attendance.',
       stats: [
-        { label: 'Platform', val: 'Android APK' },
+        { label: 'Platform', val: 'Web Cloud Portal' },
         { label: 'Languages', val: 'Hindi & English' }
       ],
       theme: 'border-purple-400'
