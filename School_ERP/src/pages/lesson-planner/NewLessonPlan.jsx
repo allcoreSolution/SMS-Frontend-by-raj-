@@ -263,7 +263,7 @@ export default function NewLessonPlan() {
                 onClick={handleAiGenerateLessonPlan}
                 disabled={generatingAi}
                 className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
-                title="100% Free AI Curriculum Lesson Plan Generator"
+                title="Auto-Draft Lesson Plan with Curriculum AI"
               >
                 {generatingAi ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-300" />}
                 {generatingAi ? 'AI Drafting Plan...' : '⚡ AI Auto-Draft Plan'}

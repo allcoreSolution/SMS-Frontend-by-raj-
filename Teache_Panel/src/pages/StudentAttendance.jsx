@@ -491,7 +491,7 @@ const StudentAttendance = () => {
             <button
               onClick={startScanner}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded shadow-sm transition-all cursor-pointer"
-              title="100% Free Camera QR / Barcode & Roll Scanner Attendance"
+              title="Smart Camera QR / Barcode & Roll Scanner Attendance"
             >
               <Camera className="w-3.5 h-3.5" />
               <span>📷 Smart QR Scanner</span>
@@ -905,7 +905,7 @@ const StudentAttendance = () => {
                   <h3 className="font-bold text-sm tracking-wide flex items-center gap-2">
                     Smart Camera & QR Attendance Scanner
                     <span className="text-[10px] bg-white/25 px-2 py-0.5 rounded-full font-mono uppercase tracking-wider">
-                      Free & Unlimited ⚡
+                      Live Scanner ⚡
                     </span>
                   </h3>
                   <p className="text-xs text-emerald-100">

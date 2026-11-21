@@ -479,7 +479,7 @@ const EnterMarks = () => {
                   onClick={handleAutoGenerateRemarks}
                   disabled={generatingRemarks}
                   className="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded shadow-sm flex items-center gap-1.5 transition-all"
-                  title="100% Free: Generate smart personalized report remarks for all students with marks"
+                  title="Auto-generate constructive report card remarks with AI"
                 >
                   {generatingRemarks ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5 text-amber-300" />}
                   {generatingRemarks ? 'AI Generating...' : '⚡ AI Auto Remarks'}
