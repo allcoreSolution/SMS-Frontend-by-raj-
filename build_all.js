@@ -46,8 +46,16 @@ function buildPanel(panelName, subpath, targetFolder) {
     env: {
       ...process.env,
       VITE_BASE_PATH: subpath,
-      VITE_API_URL: process.env.VITE_API_URL || 'https://sms-backend-by-raj-s7dt.onrender.com/api',
-      VITE_BASE_URL: process.env.VITE_BASE_URL || 'https://sms-backend-by-raj-s7dt.onrender.com',
+      VITE_API_URL: 'https://sms-backend-by-raj-s7dt.onrender.com/api',
+      VITE_BASE_URL: 'https://sms-backend-by-raj-s7dt.onrender.com',
+      VITE_ADMIN_URL: 'https://sms-frontend-by-raj-school-erp.onrender.com',
+      VITE_ACCOUNTANT_URL: 'https://sms-frontend-by-raj-acc-z5ie.onrender.com',
+      VITE_TEACHER_URL: 'https://sms-frontend-by-raj-ts.onrender.com',
+      VITE_DRIVER_URL: 'https://sms-frontend-by-raj-driverp.onrender.com',
+      VITE_STUDENT_URL: 'https://sms-frontend-by-raj-stpt.onrender.com',
+      VITE_BRANCH_URL: 'https://sms-frontend-by-raj-branchadm.onrender.com',
+      VITE_SUPERADMIN_URL: 'https://sms-frontend-by-raj-sa.onrender.com',
+      VITE_LANDING_URL: 'https://sms-frontend-by-raj-multilanding.onrender.com',
     }
   });
 
