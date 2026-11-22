@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import KpiCards from '../components/dashboard/KpiCards';
+import ServerTelemetryCard from '../components/dashboard/ServerTelemetryCard';
 import PlatformHub from '../components/dashboard/PlatformHub';
 import LiveActivity from '../components/dashboard/LiveActivity';
 import BottomWidgets from '../components/dashboard/BottomWidgets';
@@ -89,6 +90,9 @@ const Dashboard = () => {
 
       {/* KPI Cards */}
       <KpiCards />
+
+      {/* Real-Time Cloud Server & Database Telemetry */}
+      <ServerTelemetryCard />
 
       {/* Main Grid & Sidebar Area */}
       <div className="flex flex-col xl:flex-row gap-4 mb-6 w-full max-w-full min-w-0">

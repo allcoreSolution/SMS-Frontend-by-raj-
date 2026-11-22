@@ -1,12 +1,15 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import {
   Save, Download, Printer, Undo, Redo, Type, Image as ImageIcon, Square, Circle,
   Minus, AlignLeft, AlignCenter, AlignRight, Bold, Italic, Underline, CheckCircle,
   Copy, Trash2, ZoomIn, ZoomOut, Maximize2, Grid, Eye, EyeOff, Layers, Sparkles,
   Move, ChevronDown, RefreshCw, Upload, Shield, Award, QrCode, Barcode, FileText,
-  Sliders, Palette, ArrowUp, ArrowDown, Lock, Unlock, HelpCircle, X, ExternalLink
+  Sliders, Palette, ArrowUp, ArrowDown, Lock, Unlock, HelpCircle, X, ExternalLink,
+  ArrowLeft
 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import templateService from '../../api/templateService';
 
 // Preset Canvas Dimensions
 const CANVAS_PRESETS = {
@@ -331,7 +334,15 @@ const PRESET_TEMPLATES = {
 };
 
 const CanvasDesigner = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const activeTemplateId = id || searchParams.get('id');
+
   // State
+  const [templateName, setTemplateName] = useState('Custom Design Canvas');
+  const [templateCategory, setTemplateCategory] = useState('id_card');
+  const [isSavingDb, setIsSavingDb] = useState(false);
   const [selectedTemplateKey, setSelectedTemplateKey] = useState('academicExcellence');
   const [canvasPresetKey, setCanvasPresetKey] = useState('A4 Landscape');
   const [canvasWidth, setCanvasWidth] = useState(842);
@@ -348,6 +359,38 @@ const CanvasDesigner = () => {
   const [rightSidebarOpen, setRightSidebarOpen] = useState(true);
   const [history, setHistory] = useState([PRESET_TEMPLATES.academicExcellence.elements]);
   const [historyIndex, setHistoryIndex] = useState(0);
+
+  // Load template from DB if activeTemplateId is provided
+  useEffect(() => {
+    if (!activeTemplateId) return;
+    async function loadTemplate() {
+      try {
+        const data = await templateService.getTemplateById(activeTemplateId);
+        if (data && data.template) {
+          const tpl = data.template;
+          setTemplateName(tpl.name || 'Untitled Template');
+          if (tpl.category) setTemplateCategory(tpl.category);
+          if (tpl.contentJson?.elements && Array.isArray(tpl.contentJson.elements)) {
+            setElements(tpl.contentJson.elements);
+            if (tpl.contentJson.bgColor) setBgColor(tpl.contentJson.bgColor);
+            if (tpl.contentJson.bgGradient) setBgGradient(tpl.contentJson.bgGradient);
+          } else {
+            // Pick corresponding preset if elements not saved yet
+            if (tpl.category?.includes('id')) {
+              setSelectedTemplateKey('studentIdCardHorizontal');
+              setCanvasPresetKey('ID Card Landscape');
+              setCanvasWidth(540);
+              setCanvasHeight(340);
+              setElements(PRESET_TEMPLATES.studentIdCardHorizontal.elements);
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Could not load template from DB:', err.message);
+      }
+    }
+    loadTemplate();
+  }, [activeTemplateId]);
 
   // Dragging & Interaction Refs
   const canvasRef = useRef(null);
@@ -757,10 +800,12 @@ const CanvasDesigner = () => {
     updateElement(selectedElement.id, { text: current + ' ' + tag });
   };
 
-  // Save template to localStorage
-  const saveTemplateLocally = () => {
+  // Save template to database & localStorage
+  const saveTemplateLocally = async () => {
+    setIsSavingDb(true);
     const templateData = {
-      name: `Custom Design - ${new Date().toLocaleTimeString()}`,
+      name: templateName,
+      category: templateCategory,
       size: canvasPresetKey,
       width: canvasWidth,
       height: canvasHeight,
@@ -770,14 +815,57 @@ const CanvasDesigner = () => {
     };
     try {
       localStorage.setItem('superadmin_saved_canvas', JSON.stringify(templateData));
+
+      if (activeTemplateId) {
+        await templateService.updateTemplate(activeTemplateId, {
+          name: templateName,
+          category: templateCategory,
+          contentJson: {
+            elements,
+            bgColor,
+            bgGradient
+          }
+        });
+      } else {
+        const created = await templateService.createTemplate({
+          name: templateName,
+          category: templateCategory,
+          dimensions: {
+            widthMm: canvasPresetKey.includes('ID') ? 85.6 : 297,
+            heightMm: canvasPresetKey.includes('ID') ? 54 : 210,
+            orientation: canvasWidth > canvasHeight ? 'landscape' : 'portrait'
+          },
+          contentJson: {
+            elements,
+            bgColor,
+            bgGradient
+          },
+          isDesignerMade: true
+        });
+        if (created?.template?._id) {
+          navigate(`/templates/${created.template._id}/edit`, { replace: true });
+        }
+      }
+
       Swal.fire({
         icon: 'success',
         title: 'Template Saved!',
-        text: 'Your custom canvas design has been saved to your browser session.',
-        confirmButtonColor: '#ea580c'
+        text: 'Canvas template saved to database and ready for schools.',
+        confirmButtonColor: '#6366f1',
+        timer: 1500,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end'
       });
-    } catch {
-      Swal.fire({ icon: 'error', title: 'Save Failed', text: 'Storage limit exceeded.' });
+    } catch (err) {
+      console.error('Save error:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Save Failed',
+        text: err.response?.data?.message || err.message || 'Could not save to database.'
+      });
+    } finally {
+      setIsSavingDb(false);
     }
   };
 
@@ -846,7 +934,15 @@ const CanvasDesigner = () => {
 
         {/* TOP HEADER / ACTION BAR */}
         <header className="h-14 px-3 sm:px-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between shrink-0 z-30 gap-2">
-          <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            <button
+              onClick={() => navigate('/templates')}
+              className="p-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition-colors cursor-pointer shrink-0"
+              title="Back to Ready Templates"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+
             <button
               onClick={() => setLeftSidebarOpen(prev => !prev)}
               className={`p-1.5 rounded-lg border transition-colors cursor-pointer shrink-0 ${leftSidebarOpen ? 'bg-orange-500/20 border-orange-500/40 text-orange-400' : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white'}`}
@@ -855,17 +951,22 @@ const CanvasDesigner = () => {
               <Sliders className="w-4 h-4" />
             </button>
 
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white shadow-md shrink-0">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#8b3dff] via-[#5b47fb] to-[#00c4cc] flex items-center justify-center text-white shadow-md shrink-0">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div className="truncate">
-              <div className="flex items-center gap-2">
-                <h1 className="text-xs sm:text-sm font-black text-white tracking-wide uppercase truncate">Canvas Studio</h1>
-                <span className="hidden sm:inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30 shrink-0">
-                  PRO
-                </span>
-              </div>
-              <p className="hidden md:block text-[10px] text-slate-400 truncate">Certificates, Student & Faculty ID Cards, Badges</p>
+
+            <div className="flex items-center gap-2 min-w-0">
+              <input
+                type="text"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+                className="bg-slate-900 border border-slate-800 focus:border-indigo-500 rounded-lg px-2.5 py-1 text-xs font-bold text-white focus:outline-none w-36 sm:w-56 truncate"
+                placeholder="Template Name..."
+                title="Click to rename template"
+              />
+              <span className="hidden sm:inline-block text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 shrink-0">
+                PRO DESIGNER
+              </span>
             </div>
           </div>
 
@@ -960,10 +1061,11 @@ const CanvasDesigner = () => {
 
             <button
               onClick={saveTemplateLocally}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-orange-500/20 active:scale-95"
+              disabled={isSavingDb}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#8b3dff] via-[#5b47fb] to-[#00c4cc] hover:opacity-95 text-white text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-indigo-500/20 active:scale-95 disabled:opacity-50"
             >
-              <Save className="w-3.5 h-3.5" />
-              <span>Save</span>
+              <Save className={`w-3.5 h-3.5 ${isSavingDb ? 'animate-spin' : ''}`} />
+              <span>{isSavingDb ? 'Saving...' : 'Save'}</span>
             </button>
 
             <button

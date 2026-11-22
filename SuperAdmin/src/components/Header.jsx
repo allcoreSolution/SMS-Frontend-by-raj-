@@ -1,10 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Settings, Globe, Bell, Search, ChevronDown, Sparkles, X, LogOut, User as UserIcon, ShieldCheck, ShoppingBag } from 'lucide-react';
+import { Menu, Settings, Globe, Bell, Search, ChevronDown, Sparkles, X, LogOut, User as UserIcon, ShieldCheck, ShoppingBag, Megaphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLanguage } from '../i18n/LanguageContext';
 import { tenantService } from '../api/tenantService';
+import { superAdminService } from '../api/superAdminService';
 import { toArray } from '../utils/helpers';
+import SpotlightSearch from './SpotlightSearch';
+import BroadcastModal from './BroadcastModal';
 
 const allPages = [
   { label: 'Schools', path: '/schools' },
@@ -36,8 +39,26 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [activeBroadcast, setActiveBroadcast] = useState(null);
   const [imgError, setImgError] = useState(false);
   const searchRef = useRef(null);
+
+  useEffect(() => {
+    const fetchActiveBroadcast = async () => {
+      try {
+        const res = await superAdminService.getBroadcasts(true);
+        if (res.success && res.data && res.data.length > 0) {
+          setActiveBroadcast(res.data[0]);
+        } else {
+          setActiveBroadcast(null);
+        }
+      } catch (_) {}
+    };
+    fetchActiveBroadcast();
+    const bcInterval = setInterval(fetchActiveBroadcast, 60000);
+    return () => clearInterval(bcInterval);
+  }, []);
 
   const searchResults = searchQuery.trim().length > 0
     ? allPages.filter(p => p.label.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -235,6 +256,21 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Global Broadcast Center Button */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setShowBroadcastModal(true)}
+              className="relative w-9 h-9 flex items-center justify-center rounded-xl hover:bg-amber-50 text-slate-500 hover:text-amber-600 transition-colors cursor-pointer active:scale-95"
+              title="Global Emergency Broadcast Dispatcher"
+            >
+              <Megaphone className="w-4 h-4 text-amber-500" />
+              {activeBroadcast && (
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-white animate-ping" />
+              )}
+            </button>
           </div>
 
           {/* Notifications Center */}
@@ -435,56 +471,17 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
         />
       )}
 
-      {/* Search Modal */}
-      {showSearch && (
-        <div className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs z-50 flex items-start justify-center pt-20 px-4" onClick={() => { setShowSearch(false); setSearchQuery(''); }}>
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200/80 w-full max-w-lg overflow-hidden animate-scale-up" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-slate-100">
-              <Search className="w-4 h-4 text-orange-500 shrink-0" />
-              <input
-                ref={searchRef}
-                type="text"
-                placeholder="Type to search platform features..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter' && searchResults.length > 0) handleSelect(searchResults[0].path); }}
-                className="flex-1 text-sm font-semibold outline-none text-slate-800 placeholder-slate-400"
-                autoFocus
-              />
-              <button onClick={() => { setShowSearch(false); setSearchQuery(''); }} className="p-1 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-            {searchResults.length > 0 ? (
-              <ul className="py-2 max-h-72 overflow-y-auto">
-                {searchResults.map((r, i) => (
-                  <li key={i}>
-                    <button onClick={() => handleSelect(r.path)}
-                      className="w-full text-left px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-orange-50 hover:text-orange-600 flex items-center gap-3 transition-colors">
-                      <Search className="w-3.5 h-3.5 text-slate-400" />
-                      {r.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : searchQuery.trim() ? (
-              <div className="px-4 py-8 text-center text-xs font-medium text-slate-400">No pages found for "{searchQuery}"</div>
-            ) : (
-              <div className="px-5 py-4 bg-slate-50/50">
-                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">Popular Quick Access</p>
-                <div className="flex flex-wrap gap-2">
-                  {allPages.slice(0, 8).map((p, i) => (
-                    <button key={i} onClick={() => handleSelect(p.path)}
-                      className="text-xs font-semibold bg-white border border-slate-200 hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 text-slate-700 px-3 py-1.5 rounded-xl transition-all shadow-3xs cursor-pointer">
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Universal Spotlight Quick Search (Ctrl + K) */}
+      <SpotlightSearch 
+        isOpen={showSearch} 
+        onClose={() => setShowSearch(false)} 
+      />
+
+      {/* Global Broadcast Emergency Dispatcher Modal */}
+      <BroadcastModal 
+        isOpen={showBroadcastModal} 
+        onClose={() => setShowBroadcastModal(false)} 
+      />
     </>
   );
 };

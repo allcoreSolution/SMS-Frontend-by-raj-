@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Mail, Lock, LogIn, ArrowRight, ShieldCheck, Zap, 
   Building2, School, CheckCircle2, Sparkles, Key, Globe, Eye, EyeOff 
@@ -13,6 +13,32 @@ const Login = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const impToken = params.get('impersonate_token') || params.get('token');
+    if (impToken) {
+      const impEmail = params.get('email') || 'admin@branch.com';
+      const user = {
+        name: 'Branch General Manager',
+        email: impEmail,
+        role: 'Branch Admin',
+        token: impToken,
+        isImpersonated: true
+      };
+
+      sessionStorage.setItem('branch_admin_token', impToken);
+      sessionStorage.setItem('branch_admin_user', JSON.stringify(user));
+      localStorage.setItem('branch_admin_token', impToken);
+      localStorage.setItem('token', impToken);
+      localStorage.setItem('branch_admin_user', JSON.stringify(user));
+
+      window.history.replaceState({}, document.title, window.location.pathname);
+      if (typeof onLogin === 'function') {
+        onLogin();
+      }
+    }
+  }, [onLogin]);
 
   const handleSubmit = async (e) => {
     if (e && e.preventDefault) e.preventDefault();

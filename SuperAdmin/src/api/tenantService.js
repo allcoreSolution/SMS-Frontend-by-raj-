@@ -11,4 +11,17 @@ export const tenantService = {
   rechargeWallet: async (schoolId, smsAmount, whatsappAmount) =>
     (await axiosInstance.put('/tenant/wallet/recharge', { schoolId, smsAmount, whatsappAmount })).data,
   getAllTickets: async () => (await axiosInstance.get('/tenant/tickets')).data,
+  impersonateTenant: async (id) => (await axiosInstance.post(`/superadmin/impersonate/${id}`)).data,
+  suspendWithGrace: async (id, data) => (await axiosInstance.post(`/superadmin/tenant/${id}/suspend-grace`, data)).data,
+  securityReset: async (id, data) => (await axiosInstance.post(`/superadmin/tenant/${id}/security-reset`, data)).data,
+  getBackup: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/backup`)).data,
+  getAnalytics: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/analytics`)).data,
+  getBackupsList: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/backups`)).data,
+  createBackup: async (id) => (await axiosInstance.post(`/superadmin/tenant/${id}/backups`)).data,
+  getExplorerData: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/explorer`)).data,
+  getBillingProfile: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/billing-profile`)).data,
+  recordBillingPayment: async (id, data) => (await axiosInstance.post(`/superadmin/tenant/${id}/billing-payment`, data)).data,
+  getSettingsFull: async (id) => (await axiosInstance.get(`/superadmin/tenant/${id}/settings-full`)).data,
+  updateSettingsFull: async (id, data) => (await axiosInstance.put(`/superadmin/tenant/${id}/settings-full`, data)).data,
+  createSchoolAdvanced: async (data) => (await axiosInstance.post('/superadmin/create-school-advanced', data)).data,
 };

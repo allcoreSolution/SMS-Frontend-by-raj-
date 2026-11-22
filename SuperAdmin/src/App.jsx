@@ -16,6 +16,11 @@ import Reports from './pages/reports/Reports';
 import Schools from './pages/schools/Schools';
 import AddSchool from './pages/schools/AddSchool';
 import SchoolDetail from './pages/schools/SchoolDetail';
+import SchoolAnalytics from './pages/schools/SchoolAnalytics';
+import SchoolBackups from './pages/schools/SchoolBackups';
+import SchoolDataExplorer from './pages/schools/SchoolDataExplorer';
+import SchoolBillingProfile from './pages/schools/SchoolBillingProfile';
+import SchoolSettingsEdit from './pages/schools/SchoolSettingsEdit';
 import SchoolsReport from './pages/platform/SchoolsReport';
 import AttendanceReport from './pages/platform/AttendanceReport';
 import OnboardingTemplates from './pages/platform/OnboardingTemplates';
@@ -114,6 +119,7 @@ import AlertsNotifications from './pages/admin/AlertsNotifications';
 import LoginReport from './pages/admin/LoginReport';
 import EngagementReport from './pages/admin/EngagementReport';
 import ThemeEngine from './pages/admin/ThemeEngine';
+import AuditLogs from './pages/admin/AuditLogs';
 
 const NotFound = () => (
   <div className="flex flex-col items-center justify-center h-96 text-center">
@@ -180,6 +186,12 @@ function AppRoutes() {
               {/* Schools — add before :id to avoid conflict */}
               <Route path="/schools" element={<Schools />} />
               <Route path="/schools/add" element={<AddSchool />} />
+              <Route path="/schools/create" element={<AddSchool />} />
+              <Route path="/schools/:id/analytics" element={<SchoolAnalytics />} />
+              <Route path="/schools/:id/backups" element={<SchoolBackups />} />
+              <Route path="/schools/:id/explorer" element={<SchoolDataExplorer />} />
+              <Route path="/schools/:id/billing-profile" element={<SchoolBillingProfile />} />
+              <Route path="/schools/:id/edit" element={<SchoolSettingsEdit />} />
               <Route path="/schools/:id" element={<SchoolDetail />} />
               <Route path="/schools-report" element={<SchoolsReport />} />
               <Route path="/attendance-report" element={<AttendanceReport />} />
@@ -264,10 +276,15 @@ function AppRoutes() {
               
               <Route path="/api-docs" element={<ApiDocs />} />
               <Route path="/templates" element={<Templates />} />
+              <Route path="/templates/designer" element={<CanvasDesigner />} />
+              <Route path="/templates/:id/edit" element={<CanvasDesigner />} />
 
               {/* Website */}
               <Route path="/landing-page" element={<LandingPage />} />
               <Route path="/landing-templates" element={<LandingTemplates />} />
+              <Route path="/landing-page/templates" element={<LandingTemplates />} />
+              <Route path="/landing-page/templates/:id/edit" element={<LandingTemplates />} />
+              <Route path="/landing-page/templates/create" element={<LandingTemplates />} />
               <Route path="/website-pages" element={<WebsitePages />} />
               <Route path="/website-menu" element={<WebsiteMenu />} />
               <Route path="/sitemap" element={<Sitemap />} />
@@ -299,6 +316,7 @@ function AppRoutes() {
               {/* Admin */}
               <Route path="/master-menus" element={<MasterMenus />} />
               <Route path="/alerts" element={<AlertsNotifications />} />
+              <Route path="/audit-logs" element={<AuditLogs />} />
               <Route path="/login-report" element={<LoginReport />} />
               <Route path="/engagement-report" element={<EngagementReport />} />
               <Route path="/theme-engine" element={<ThemeEngine />} />

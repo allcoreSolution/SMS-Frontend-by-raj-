@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import licenseOrderService from '../../api/licenseOrderService';
+import GstInvoiceModal from '../../components/GstInvoiceModal';
 
 const STATUS_CONFIG = {
   'New Enquiry': { label: 'New / Pending', color: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock },
@@ -32,6 +33,60 @@ export default function LicenseOrders() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [copiedKey, setCopiedKey] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState(false);
+  const [invoiceModalData, setInvoiceModalData] = useState(null);
+
+  const handleDownloadGstInvoice = (order) => {
+    const rawAmount = 10000;
+    const cgst = 900;
+    const sgst = 900;
+    const totalAmount = 11800;
+
+    setInvoiceModalData({
+      invoiceNumber: `INV-ACS-LIC-${order._id ? order._id.slice(-6).toUpperCase() : Math.floor(100000 + Math.random() * 900000)}`,
+      invoiceDate: order.createdAt || new Date(),
+      seller: {
+        companyName: 'ALL CORE SOLUTION',
+        tagline: 'Enterprise Cloud ERP & SaaS Platforms',
+        gstin: '07AAAAA0000A1Z5',
+        hsnSac: '998313',
+        address: 'Tower B, Tech City, New Delhi - 110001, India',
+        supportEmail: 'billing@allcoresolution.com',
+        phone: '+91 98765 43210'
+      },
+      buyer: {
+        schoolName: order.studentName || order.parentName || 'Commercial License Client',
+        schoolCode: `LIC-${order._id ? order._id.slice(-4).toUpperCase() : '101'}`,
+        email: order.email || 'client@schoolerp.com',
+        address: 'Registered Buyer Address',
+        gstin: 'Unregistered'
+      },
+      items: [
+        {
+          description: order.targetClass || 'School ERP Commercial Full Source Code License (All 38 Modules + 3 Mobile Apps)',
+          hsnSac: '998313',
+          taxableAmount: rawAmount,
+          cgstRate: '9%',
+          cgstAmount: cgst,
+          sgstRate: '9%',
+          sgstAmount: sgst,
+          totalAmount
+        }
+      ],
+      financials: {
+        taxableAmount: rawAmount,
+        cgst,
+        sgst,
+        totalGst: cgst + sgst,
+        totalPayable: totalAmount,
+        currency: 'INR'
+      },
+      digitalSignature: {
+        authorizedSignatory: 'RAJ YADAV',
+        title: 'Founder & Chief Architect',
+        brand: 'ALL CORE SOLUTION'
+      }
+    });
+  };
 
   // New Order Form state
   const [newOrderForm, setNewOrderForm] = useState({
@@ -578,6 +633,15 @@ export default function LicenseOrders() {
                           <div className="inline-flex items-center gap-1">
                             <button
                               type="button"
+                              onClick={() => handleDownloadGstInvoice(order)}
+                              className="p-1.5 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg text-blue-600 transition shadow-2xs cursor-pointer border border-blue-200"
+                              title="Download GST Tax Invoice"
+                            >
+                              <FileText className="w-4 h-4" />
+                            </button>
+
+                            <button
+                              type="button"
                               onClick={() => setSelectedOrder(order)}
                               className="p-1.5 bg-slate-100 hover:bg-orange-500 hover:text-white rounded-lg text-slate-600 transition shadow-2xs cursor-pointer"
                               title="View Order Details & Generate License"
@@ -827,6 +891,14 @@ export default function LicenseOrders() {
               </button>
 
               <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDownloadGstInvoice(selectedOrder)}
+                  className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>GST Tax Invoice</span>
+                </button>
                 {selectedOrder.contactNumber && (
                   <a
                     href={`https://wa.me/${selectedOrder.contactNumber.replace(/[^\d]/g, '')}`}
@@ -961,6 +1033,12 @@ export default function LicenseOrders() {
           </div>
         </div>
       )}
+      {/* GST INVOICE MODAL */}
+      <GstInvoiceModal
+        isOpen={!!invoiceModalData}
+        onClose={() => setInvoiceModalData(null)}
+        invoiceData={invoiceModalData}
+      />
     </div>
   );
 }

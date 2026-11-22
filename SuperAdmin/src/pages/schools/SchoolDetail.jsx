@@ -280,13 +280,26 @@ export default function SchoolDetail() {
     }
   };
 
-  const handleLaunchERP = () => {
+  const handleLaunchERP = async () => {
     try {
       localStorage.setItem('active_school_id', school.rawId);
       localStorage.setItem('schoolId', school.rawId);
       localStorage.setItem('schoolName', school.name);
+
+      // Direct Live School ERP URL
+      const schoolErpBase = 'https://sms-frontend-by-raj-school-erp.onrender.com';
+
+      try {
+        const res = await tenantService.impersonateTenant(school.rawId);
+        if (res.success && res.token) {
+          const url = `${schoolErpBase}/login?impersonate_token=${encodeURIComponent(res.token)}&schoolId=${encodeURIComponent(school.rawId)}&schoolName=${encodeURIComponent(school.name)}&email=${encodeURIComponent(res.user?.email || school.email || '')}`;
+          window.open(url, '_blank');
+          return;
+        }
+      } catch (_) {}
+
+      window.open(schoolErpBase, '_blank');
     } catch (_) {}
-    window.open('https://sms-frontend-by-raj-school-erp.onrender.com/dashboard', '_blank');
   };
 
   const handleSendNotice = async () => {

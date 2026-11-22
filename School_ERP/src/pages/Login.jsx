@@ -16,8 +16,51 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem('token');
-    const user = sessionStorage.getItem('user');
+    // Check for direct SuperAdmin impersonation token in URL query
+    const params = new URLSearchParams(window.location.search);
+    const impToken = params.get('impersonate_token') || params.get('token');
+    if (impToken) {
+      const impEmail = params.get('email') || 'admin@school.com';
+      const impSchoolId = params.get('schoolId') || '6ad9bbe1c6514fd4a43099c6';
+      const impSchoolName = params.get('schoolName') || 'ALL CORE SOLUTION School';
+
+      let parsedUser = {
+        username: impEmail,
+        email: impEmail,
+        role: 'admin',
+        token: impToken,
+        isImpersonated: true,
+        impersonatedBy: 'Super Admin (RAJ YADAV)',
+        tenant: {
+          _id: impSchoolId,
+          schoolName: impSchoolName,
+          plan: 'Enterprise Pro Suite'
+        }
+      };
+
+      const userParam = params.get('user');
+      if (userParam) {
+        try {
+          parsedUser = { ...parsedUser, ...JSON.parse(decodeURIComponent(userParam)) };
+        } catch (_) {}
+      }
+
+      sessionStorage.setItem('token', impToken);
+      sessionStorage.setItem('user', JSON.stringify(parsedUser));
+      localStorage.setItem('token', impToken);
+      localStorage.setItem('user', JSON.stringify(parsedUser));
+      localStorage.setItem('schoolId', impSchoolId);
+      localStorage.setItem('schoolName', impSchoolName);
+      localStorage.setItem('is_impersonated', 'true');
+
+      // Clear query string and redirect to School ERP dashboard
+      window.history.replaceState({}, document.title, window.location.pathname);
+      navigate('/');
+      return;
+    }
+
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    const user = sessionStorage.getItem('user') || localStorage.getItem('user');
     if (token && user) {
       navigate('/');
     }

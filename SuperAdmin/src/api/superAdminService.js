@@ -20,4 +20,36 @@ export const superAdminService = {
   getRateCards: async () => (await axiosInstance.get('/superadmin/comms/rate-cards')).data,
   updateRateCards: async (data) =>
     (await axiosInstance.put('/superadmin/comms/rate-cards', data)).data,
+
+  // 1. 1-Click School Impersonation
+  impersonateSchool: async (schoolId) =>
+    (await axiosInstance.post(`/superadmin/impersonate/${schoolId}`)).data,
+
+  // 2. Real-Time Telemetry & Health
+  getTelemetry: async () =>
+    (await axiosInstance.get('/superadmin/telemetry')).data,
+
+  // 3. Platform Audit Logs
+  getAuditLogs: async (params = {}) =>
+    (await axiosInstance.get('/superadmin/audit-logs', { params })).data,
+  createAuditLog: async (data) =>
+    (await axiosInstance.post('/superadmin/audit-logs', data)).data,
+
+  // 4. Global Broadcast Announcements
+  getBroadcasts: async (activeOnly = false) =>
+    (await axiosInstance.get('/superadmin/broadcast-announcements', { params: { activeOnly } })).data,
+  createBroadcast: async (data) =>
+    (await axiosInstance.post('/superadmin/broadcast-announcements', data)).data,
+  toggleBroadcast: async (id) =>
+    (await axiosInstance.patch(`/superadmin/broadcast-announcements/${id}/toggle`)).data,
+  deleteBroadcast: async (id) =>
+    (await axiosInstance.delete(`/superadmin/broadcast-announcements/${id}`)).data,
+
+  // 5. Suspension with Grace Period
+  suspendWithGrace: async (schoolId, data) =>
+    (await axiosInstance.post(`/superadmin/tenant/${schoolId}/suspend-grace`, data)).data,
+
+  // 6. GST Tax Invoices
+  generateTaxInvoice: async (data) =>
+    (await axiosInstance.post('/superadmin/generate-tax-invoice', data)).data,
 };

@@ -21,7 +21,7 @@ const navSections = [
       { to: '/plan-addons', icon: Puzzle, label: 'Plan Add-ons', color: '#fb923c', bg: 'rgba(251,146,60,0.15)' },
       { to: '/team', icon: Users, label: 'Team', color: '#f472b6', bg: 'rgba(244,114,182,0.15)' },
       { to: '/payments', icon: CreditCard, label: 'Payments', color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
-      { to: '/license-orders', icon: ShoppingBag, label: 'License Orders', badge: '₹10K', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
+      { to: '/license-orders', icon: ShoppingBag, label: 'License Orders', badge: 'GST Ready', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
       { to: '/templates', icon: LayoutTemplate, label: 'Templates', color: '#c084fc', bg: 'rgba(192,132,252,0.15)' },
       {
         icon: BarChart3, label: 'Reports', color: '#60a5fa', bg: 'rgba(96,165,250,0.15)',
@@ -31,10 +31,39 @@ const navSections = [
           { to: '/reports/fee-collections', label: 'Fee Collections' },
           { to: '/reports/attendance-trends', label: 'Attendance Trends' },
           { to: '/reports/engagement-audit', label: 'Engagement Audit' },
-          { to: '/reports/communications', label: 'Communications' },
-          { to: '/reports', label: 'Platform Reports' },
-          { to: '/schools-report', label: 'Schools Report' },
-          { to: '/attendance-report', label: 'Attendance Report' }
+          { to: '/reports/communications', label: 'Communications' }
+        ]
+      },
+      {
+        icon: Landmark, label: 'Billing & Gateways', color: '#22d3ee', bg: 'rgba(34,211,238,0.15)',
+        children: [
+          { to: '/payment-gateways', label: 'Payment Gateways' },
+          { to: '/comms/wallets', label: 'Wallet Oversight' },
+          { to: '/comms/rate-cards', label: 'Rate Cards' },
+          { to: '/sms-gateways', label: 'SMS Gateways' },
+          { to: '/sms-report', label: 'SMS Report' },
+          { to: '/comms/meta-dlt', label: 'Meta / DLT Config' }
+        ]
+      },
+      { to: '/support', icon: Headset, label: 'Support Tickets', color: '#9333ea', bg: 'rgba(147,51,234,0.15)' },
+      {
+        icon: Server, label: 'Server & Health', color: '#06b6d4', bg: 'rgba(6,182,212,0.15)',
+        children: [
+          { to: '/server',           label: 'Server Health & Telemetry' },
+          { to: '/storage-center',   label: 'Storage Nodes' },
+          { to: '/backup-center',    label: 'Backups' },
+          { to: '/software-updates', label: 'Software Updates' },
+          { to: '/cron-monitor',     label: 'Cron Monitor' },
+          { to: '/infrastructure',   label: 'Infrastructure' }
+        ]
+      },
+      {
+        icon: ShieldCheck, label: 'Audit & Governance', color: '#f87171', bg: 'rgba(248,113,113,0.15)',
+        children: [
+          { to: '/audit-logs', label: 'Tamper-Proof Audit Logs' },
+          { to: '/alerts', label: 'Alerts & Broadcasts' },
+          { to: '/master-menus', label: 'Master Menus' },
+          { to: '/notifications', label: 'Notifications Inbox' }
         ]
       },
       {
@@ -42,63 +71,16 @@ const navSections = [
         children: [
           { to: '/settings-center', label: 'Settings Center' },
           { to: '/settings-general', label: 'General' },
-          { to: '/settings-menu', label: 'Menu Builder' },
-          { to: '/settings-payments', label: 'Payments' },
-          { to: '/settings-sms', label: 'SMS' },
-          { to: '/settings-notifications', label: 'Notifications' },
           { to: '/settings-appearance', label: 'Appearance' },
           { to: '/settings-branding', label: 'App Branding' },
           { to: '/settings-registration', label: 'Registration & Security' },
           { to: '/settings-subscriptions', label: 'Subscriptions' },
           { to: '/settings-whatsapp', label: 'WhatsApp Gateway' },
           { to: '/settings-mail-smtp', label: 'Mail / SMTP' },
-          { to: '/settings-telegram', label: 'Telegram Bot' },
-          { to: '/settings-login-designs', label: 'Login Page Designs' },
-          { to: '/settings-face-vectors', label: 'Face Vectors' }
+          { to: '/settings-telegram', label: 'Telegram Bot' }
         ]
       },
-      {
-        icon: Wallet, label: 'Comms Wallet', color: '#fbbf24', bg: 'rgba(251,191,36,0.15)',
-        children: [
-          { to: '/comms/wallets', label: 'Wallet Oversight' },
-          { to: '/comms/rate-cards', label: 'Rate Cards' },
-          { to: '/comms/meta-dlt', label: 'Meta / DLT Config' }
-        ]
-      },
-      {
-        icon: Landmark, label: 'Billing & Gateways', color: '#22d3ee', bg: 'rgba(34,211,238,0.15)',
-        children: [
-          { to: '/payment-gateways', label: 'Payment Gateways' },
-          { to: '/comms-rates', label: 'Comms Rates' },
-          { to: '/sms-gateways', label: 'SMS Gateways' },
-          { to: '/sms-report', label: 'SMS Report' }
-        ]
-      },
-      { to: '/api-docs', icon: Plug, label: 'API Docs', color: '#f87171', bg: 'rgba(248,113,113,0.15)' },
-      { to: '/support', icon: Headset, label: 'Support Tickets', color: '#9333ea', bg: 'rgba(147,51,234,0.15)' },
-      {
-        icon: Server, label: 'Server & Health', color: '#06b6d4', bg: 'rgba(6,182,212,0.15)',
-        children: [
-          { to: '/server',           label: 'Server Health' },
-          { to: '/storage-center',   label: 'Storage' },
-          { to: '/backup-center',    label: 'Backups' },
-          { to: '/software-updates', label: 'Software Updates' },
-          { to: '/server-settings',  label: 'Server Settings' },
-          { to: '/cron-monitor',     label: 'Cron Monitor' },
-          { to: '/infrastructure',   label: 'Infrastructure' }
-        ]
-      },
-      {
-        icon: ShieldCheck, label: 'Admin Tools', color: '#f87171', bg: 'rgba(248,113,113,0.15)',
-        children: [
-          { to: '/master-menus', label: 'Master Menus' },
-          { to: '/alerts', label: 'Alerts & Notifications' },
-          { to: '/login-report', label: 'Login Report' },
-          { to: '/engagement-report', label: 'Engagement Report' },
-          { to: '/theme-engine', label: 'Theme Engine' },
-          { to: '/notifications', label: 'Notifications Inbox' }
-        ]
-      }
+      { to: '/api-docs', icon: Plug, label: 'API Docs', color: '#f87171', bg: 'rgba(248,113,113,0.15)' }
     ]
   },
   {
@@ -112,9 +94,7 @@ const navSections = [
           { to: '/landing-page/full-templates', label: 'Full Templates' },
           { to: '/website-pages', label: 'Pages' },
           { to: '/website-menu', label: 'Navigation & Footer' },
-          { to: '/sitemap', label: 'Sitemap' },
-          { to: '/landing-page/school-templates', label: 'School Site Templates' },
-          { to: '/landing-page/preview', label: 'Preview Site' }
+          { to: '/sitemap', label: 'Sitemap' }
         ]
       }
     ]
