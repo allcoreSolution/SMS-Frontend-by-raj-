@@ -21,7 +21,7 @@ export const authService = {
         const userData = response.data.data;
         const token = userData.token;
         const rawSchoolName = userData.schoolName || userData.school?.name;
-        const safeSchoolName = (rawSchoolName && !rawSchoolName.includes('Xavier')) ? rawSchoolName : 'All core';
+        const safeSchoolName = (rawSchoolName && !rawSchoolName.includes('Xavier')) ? rawSchoolName : 'ALL CORE SOLUTION';
         const schoolObj = {
           name: safeSchoolName,
           shortName: userData.schoolShortName || userData.school?.shortName || 'allcore',

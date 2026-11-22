@@ -168,7 +168,7 @@ export default function Login() {
       showCancelButton: true,
       confirmButtonText: 'Send Verification OTP',
       cancelButtonText: 'Cancel',
-      confirmButtonColor: '#f59e0b',
+      confirmButtonColor: '#ff5c0a',
       inputValidator: (val) => {
         if (!val || !val.trim()) {
           return 'Please enter your Registered Email, Driver ID or Mobile Number!';
@@ -197,7 +197,7 @@ export default function Login() {
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: 'Update PIN',
-            confirmButtonColor: '#f59e0b',
+            confirmButtonColor: '#ff5c0a',
             preConfirm: () => {
               const otpVal = document.getElementById('swal-otp')?.value;
               const pinVal = document.getElementById('swal-pin')?.value;
@@ -231,7 +231,7 @@ export default function Login() {
                 icon: 'success',
                 title: 'PIN Reset Successful!',
                 text: 'Your security PIN has been updated. You can now log in.',
-                confirmButtonColor: '#f59e0b'
+                confirmButtonColor: '#ff5c0a'
               });
               setIdentifier(driverIdInput.trim());
               setPassword(formValues.newPassword);
@@ -303,23 +303,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center font-sans p-0 sm:p-3 select-none text-slate-800">
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans p-0 sm:p-3 select-none text-slate-800 relative overflow-hidden">
       
       {/* Background Ambient Glow */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-amber-500/15 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-sky-500/10 blur-3xl" />
+        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-orange-600/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-indigo-600/15 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-amber-500/5 blur-3xl pointer-events-none" />
       </div>
 
       {/* Desktop Top Stepper Bar */}
-      <div className="hidden sm:flex items-center gap-2 mb-3 bg-slate-800/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-700 shadow-sm z-20">
-        <span className="text-[11px] font-black text-amber-400 uppercase tracking-wider mr-1">Switch Screen:</span>
+      <div className="hidden sm:flex items-center gap-2 mb-3 bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-800 shadow-sm z-20">
+        <span className="text-[11px] font-black text-orange-400 uppercase tracking-wider mr-1">Switch Screen:</span>
         <button
           onClick={() => setCurrentStep('welcome')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'welcome' 
-              ? 'bg-amber-500 text-slate-950 shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           1. Welcome
@@ -328,8 +329,8 @@ export default function Login() {
           onClick={() => setCurrentStep('role')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'role' 
-              ? 'bg-amber-500 text-slate-950 shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           2. Continue as
@@ -338,8 +339,8 @@ export default function Login() {
           onClick={() => setCurrentStep('login')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'login' 
-              ? 'bg-amber-500 text-slate-950 shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           3. Login Form
@@ -355,16 +356,16 @@ export default function Login() {
         {currentStep === 'welcome' && (
           <div className="flex-1 flex flex-col justify-between bg-white relative overflow-hidden min-h-full">
             
-            {/* Top Navy Header Section */}
-            <div className="bg-gradient-to-b from-[#041226] via-[#061a38] to-[#0a2349] text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0 border-b border-slate-800">
               {/* Top Bar with Sign In Pill */}
               <div className="flex items-center justify-between z-20 mb-1">
-                <span className="text-[10px] font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">
-                  Fleet v3.7
+                <span className="text-[10px] font-mono text-orange-400 font-bold bg-orange-500/10 px-2.5 py-0.5 rounded-full border border-orange-500/20">
+                  Fleet &amp; Transport Cloud Console
                 </span>
                 <button 
                   onClick={() => setCurrentStep('login')}
-                  className="text-xs font-bold text-amber-300 hover:text-amber-200 bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-amber-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95 shrink-0"
+                  className="text-xs font-bold text-orange-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-orange-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95 shrink-0"
                 >
                   <span>Sign In</span>
                   <ChevronRight className="w-3.5 h-3.5 shrink-0" />
@@ -373,19 +374,23 @@ export default function Login() {
 
               {/* Top Branding Section */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1 shrink-0" variant="darkHeader" />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
                 <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-amber-400">ERP</span>
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h1>
-                <p className="text-xs font-bold text-slate-300 tracking-wide mt-1">
-                  Smart School Management System
+                <p className="text-xs font-bold text-slate-400 tracking-wide mt-1">
+                  Fleet &amp; Transport Cloud Console
                 </p>
               </div>
 
-              {/* Golden Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#f59e0b" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -393,61 +398,61 @@ export default function Login() {
 
             {/* Hero Banner Card in a Box */}
             <div className="px-4 my-auto shrink-0 py-1">
-              <div className="relative rounded-2xl overflow-hidden shadow-md border border-amber-200/70 bg-slate-900 group">
+              <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-900 group">
                 <img 
                   src={driverWelcomeHeroImg} 
                   alt="School Bus Driver" 
                   className="w-full h-40 sm:h-44 object-cover object-center group-hover:scale-102 transition-transform duration-500" 
                 />
-                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-amber-300 flex items-center gap-1.5 shadow-sm border border-amber-400/50">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-orange-400 flex items-center gap-1.5 shadow-sm border border-orange-500/30">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                   <span>For Drivers</span>
                 </div>
               </div>
             </div>
 
-            {/* 4 Feature Module Cards (Pastel Backgrounds matching Mockup) */}
+            {/* 4 Feature Module Cards */}
             <div className="px-4 pb-2 z-10 shrink-0">
               <div className="grid grid-cols-2 gap-2.5">
-                {/* 1. View My Route (Red Pin) */}
+                {/* 1. View My Route (Orange Pin) */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#fff1f2] hover:bg-[#ffe4e6] border border-rose-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-orange-50/60 hover:bg-orange-50 border border-orange-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-[#ff5c0a] flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <MapPin className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">View My Route</span>
                 </div>
 
-                {/* 2. Student Pick & Drop (Blue Bus) */}
+                {/* 2. Student Pick & Drop */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#eff6ff] hover:bg-[#dbeafe] border border-blue-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-amber-50/60 hover:bg-amber-50 border border-amber-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Bus className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Student Pick &amp; Drop</span>
                 </div>
 
-                {/* 3. Bus Attendance (Green Clock) */}
+                {/* 3. Bus Attendance */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#f0fdf4] hover:bg-[#dcfce7] border border-emerald-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900/10 text-slate-800 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Clock className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Bus Attendance</span>
                 </div>
 
-                {/* 4. Get Notifications (Amber Bell) */}
+                {/* 4. Get Notifications */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#fffbeb] hover:bg-[#fef3c7] border border-amber-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-rose-50/60 hover:bg-rose-50 border border-rose-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Bell className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Get Notifications</span>
@@ -455,13 +460,13 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Bottom Curved Navy Wave & Action Banner (Pinned to Bottom) */}
+            {/* Bottom Curved Wave & Action Banner (Pinned to Bottom) */}
             <div 
               onClick={() => setCurrentStep('role')}
-              className="bg-gradient-to-r from-[#041226] via-[#061a38] to-[#0a2349] text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-amber-400 shrink-0"
+              className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-[#ff5c0a] shrink-0"
             >
               <div className="flex items-center gap-2.5 flex-1 pr-2">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0 border border-amber-400/30">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center shrink-0 border border-orange-400/30">
                   <ShieldCheck className="w-4 h-4 stroke-[2.4] shrink-0" />
                 </div>
                 <div>
@@ -469,7 +474,7 @@ export default function Login() {
                     Safe &amp; On-Time Transportation
                   </p>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-5 h-1.5 bg-amber-400 rounded-full shadow-xs" />
+                    <span className="w-5 h-1.5 bg-[#ff5c0a] rounded-full shadow-xs" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                   </div>
@@ -478,7 +483,7 @@ export default function Login() {
 
               <button
                 type="button"
-                className="w-9 h-9 rounded-full bg-white text-slate-900 hover:bg-amber-100 flex items-center justify-center shadow-md shrink-0 transition-transform active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:brightness-110 flex items-center justify-center shadow-md shadow-orange-500/30 shrink-0 transition-transform active:scale-90 cursor-pointer"
                 title="Continue"
               >
                 <ArrowRight className="w-4 h-4 stroke-[2.5] shrink-0" />
@@ -494,8 +499,8 @@ export default function Login() {
         {currentStep === 'role' && (
           <div className="flex-1 flex flex-col justify-between bg-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
-            {/* Top Navy Header Section */}
-            <div className="bg-gradient-to-b from-[#041226] via-[#061a38] to-[#0a2349] text-white pt-3 pb-7 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-3 pb-7 px-4 relative shrink-0 border-b border-slate-800">
               {/* Navigation Bar with Back Button */}
               <div className="flex items-center justify-between z-20 mb-1">
                 <button 
@@ -507,7 +512,7 @@ export default function Login() {
                 </button>
                 <button 
                   onClick={() => setCurrentStep('login')}
-                  className="text-xs font-bold text-amber-300 hover:underline cursor-pointer"
+                  className="text-xs font-bold text-orange-400 hover:underline cursor-pointer"
                 >
                   Skip to Login
                 </button>
@@ -515,19 +520,23 @@ export default function Login() {
 
               {/* Branding Header */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1" variant="darkHeader" />
-                <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-1 leading-none">
-                  School <span className="text-amber-400">ERP</span>
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
+                <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h1>
-                <p className="text-[11px] font-semibold text-slate-300 mt-1">
-                  Smart School Management System
+                <p className="text-xs font-bold text-slate-400 tracking-wide mt-1">
+                  Fleet &amp; Transport Cloud Console
                 </p>
               </div>
 
-              {/* Golden Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#f59e0b" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -544,23 +553,23 @@ export default function Login() {
                 </p>
               </div>
 
-              {/* Role Card: Driver (Golden Accent) */}
+              {/* Role Card: Driver (Orange Accent) */}
               <div 
                 onClick={() => setCurrentStep('login')}
-                className="bg-gradient-to-r from-[#fffbeb] via-[#fef3c7] to-white hover:from-[#fde68a]/50 border-2 border-amber-300/80 rounded-2xl p-3.5 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                className="bg-white hover:bg-orange-50/40 border-2 border-slate-200 hover:border-[#ff5c0a] rounded-2xl p-3.5 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group active:scale-[0.98]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-16 rounded-xl overflow-hidden bg-amber-100 shrink-0 border border-amber-300/60 shadow-2xs flex items-center justify-center">
+                  <div className="w-14 h-16 rounded-xl overflow-hidden bg-orange-100/80 shrink-0 border border-orange-200 shadow-2xs flex items-center justify-center group-hover:scale-105 transition-transform">
                     <img 
                       src={driverAvatarImg} 
                       alt="Driver Avatar" 
-                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform" 
+                      className="w-full h-full object-cover object-top" 
                     />
                   </div>
                   <div>
-                    <h3 className="text-sm font-black text-slate-900 group-hover:text-amber-600 transition-colors flex items-center gap-1.5">
+                    <h3 className="text-sm font-black text-slate-900 group-hover:text-[#ff5c0a] transition-colors flex items-center gap-1.5">
                       <span>Driver</span>
-                      <span className="text-[9.5px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.2 rounded-full font-mono uppercase">
+                      <span className="text-[9.5px] bg-[#ff5c0a] text-white font-black px-1.5 py-0.2 rounded-full font-mono uppercase">
                         Fleet
                       </span>
                     </h3>
@@ -569,7 +578,7 @@ export default function Login() {
                     </p>
                   </div>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-xs shadow-orange-500/30 shrink-0 group-hover:scale-110 transition-transform">
                   <ChevronRight className="w-4 h-4 stroke-[3]" />
                 </div>
               </div>
@@ -578,7 +587,7 @@ export default function Login() {
             {/* School Bus & Campus Artwork at Bottom */}
             <div className="text-center px-4 pt-1 pb-4 shrink-0">
               <div className="w-full flex justify-center mb-2">
-                <div className="w-full max-w-[280px] rounded-2xl overflow-hidden shadow-xs border border-amber-200/60 bg-white">
+                <div className="w-full max-w-[280px] rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 bg-white">
                   <img 
                     src={schoolBusCampusImg} 
                     alt="School Campus & Fleet Bus" 
@@ -600,8 +609,8 @@ export default function Login() {
         {currentStep === 'login' && (
           <div className="flex-1 flex flex-col justify-between bg-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
-            {/* Top Navy Header Section */}
-            <div className="bg-gradient-to-b from-[#041226] via-[#061a38] to-[#0a2349] text-white pt-3 pb-8 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-3 pb-8 px-4 relative shrink-0 border-b border-slate-800">
               <div className="flex items-center justify-between mb-1 z-20">
                 <button 
                   onClick={() => setCurrentStep('role')}
@@ -614,21 +623,25 @@ export default function Login() {
                 <div className="w-8"></div>
               </div>
 
-              {/* Branding Header with 3D White Logo */}
+              {/* Branding Header with Golden ACS Logo */}
               <div className="flex flex-col items-center text-center my-1 z-10">
-                <SchoolLogo3D className="w-12 h-9 mb-0.5" variant="darkHeader" />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
                 <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-amber-400">ERP</span>
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h1>
-                <p className="text-[10px] text-slate-300 font-medium mt-0.5">
-                  Smart School Management System
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                  Fleet &amp; Transport Cloud Console
                 </p>
               </div>
 
-              {/* Golden Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#f59e0b" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -640,7 +653,7 @@ export default function Login() {
               <div>
                 {/* Floating Thumbs-Up Driver Banner Card */}
                 <div className="w-full flex justify-center -mt-7 mb-2">
-                  <div className="w-full max-w-[280px] h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-2 ring-amber-200/80 bg-gradient-to-r from-amber-50 to-white flex items-center justify-center">
+                  <div className="w-full max-w-[280px] h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-2 ring-orange-200/80 bg-gradient-to-r from-orange-50 to-white flex items-center justify-center">
                     <img 
                       src={driverLoginBannerImg} 
                       alt="Driver Ready for Trip" 
@@ -669,8 +682,8 @@ export default function Login() {
 
                 {/* Autofill Notification */}
                 {autofillNotice && (
-                  <div className="mb-2 p-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl text-center flex items-center justify-center gap-1.5 shadow-2xs">
-                    <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                  <div className="mb-2 p-1.5 bg-orange-50 border border-orange-200 text-orange-800 text-xs font-bold rounded-xl text-center flex items-center justify-center gap-1.5 shadow-2xs">
+                    <Check className="w-3.5 h-3.5 text-orange-600 stroke-[2.5]" />
                     <span>{autofillNotice}</span>
                   </div>
                 )}
@@ -689,7 +702,7 @@ export default function Login() {
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
                         placeholder="Driver ID / Username"
-                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:bg-white transition-all font-medium shadow-2xs"
+                        className="w-full pl-9 pr-3 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#ff5c0a] focus:bg-white transition-all font-medium shadow-2xs"
                       />
                     </div>
                   </div>
@@ -706,7 +719,7 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Password"
-                        className="w-full pl-9 pr-9 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 focus:bg-white transition-all font-medium shadow-2xs font-mono tracking-wider"
+                        className="w-full pl-9 pr-9 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#ff5c0a] focus:bg-white transition-all font-medium shadow-2xs font-mono tracking-wider"
                       />
                       <button
                         type="button"
@@ -725,7 +738,7 @@ export default function Login() {
                         type="checkbox" 
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="w-4 h-4 rounded text-amber-500 focus:ring-amber-400 border-slate-300" 
+                        className="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 accent-[#ff5c0a] border-slate-300" 
                       />
                       <span>Remember me</span>
                     </label>
@@ -733,21 +746,21 @@ export default function Login() {
                     <button 
                       type="button" 
                       onClick={handleForgotPassword}
-                      className="font-bold text-amber-600 hover:text-amber-700 hover:underline cursor-pointer"
+                      className="font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
                     >
                       Forgot Password?
                     </button>
                   </div>
 
-                  {/* Golden Yellow Vibrant Login Button */}
+                  {/* Vibrant Gradient Login Button */}
                   <button 
                     type="submit"
                     disabled={loading}
-                    className="w-full mt-1.5 py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black rounded-xl text-sm shadow-md shadow-amber-500/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                    className="w-full mt-1.5 py-2.5 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl text-sm shadow-md shadow-orange-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-70"
                   >
                     {loading ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                         <span>Verifying Credentials...</span>
                       </>
                     ) : (
@@ -765,7 +778,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => handleQuickDemo('DRV-101')}
-                    className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 hover:bg-amber-100 font-bold border border-amber-200/80 cursor-pointer"
+                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
                   >
                     DRV-101
                   </button>
@@ -773,7 +786,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => handleQuickDemo('DRV-102')}
-                    className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 hover:bg-amber-100 font-bold border border-amber-200/80 cursor-pointer"
+                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
                   >
                     DRV-102
                   </button>
@@ -781,7 +794,7 @@ export default function Login() {
                   <button
                     type="button"
                     onClick={() => handleQuickDemo('DRV-106')}
-                    className="px-2 py-0.5 rounded bg-amber-50 text-amber-800 hover:bg-amber-100 font-bold border border-amber-200/80 cursor-pointer"
+                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
                   >
                     DRV-106
                   </button>
@@ -807,8 +820,8 @@ export default function Login() {
               </div>
 
               {/* Bottom Support / Help Callout */}
-              <div className="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 bg-gradient-to-r from-amber-50/50 via-slate-50/80 to-blue-50/40 p-2.5 rounded-xl border border-amber-100/70">
-                <div className="w-8 h-8 rounded-lg bg-[#061a38] text-amber-400 flex items-center justify-center shrink-0 shadow-2xs border border-amber-400/30">
+              <div className="mt-2 pt-2 border-t border-slate-100 flex items-center gap-3 bg-gradient-to-r from-orange-50/60 via-slate-50 to-orange-50/40 p-2.5 rounded-xl border border-orange-200/60">
+                <div className="w-8 h-8 rounded-lg bg-orange-500/10 text-[#ff5c0a] flex items-center justify-center shrink-0 shadow-2xs border border-orange-500/30">
                   <Headphones className="w-4 h-4 stroke-[2.3]" />
                 </div>
                 <div className="text-[10px] text-slate-600 leading-snug">

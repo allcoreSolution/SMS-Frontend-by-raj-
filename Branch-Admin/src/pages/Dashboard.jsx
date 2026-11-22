@@ -31,52 +31,56 @@ const BranchCard = ({ branch = {} }) => {
   const renews = branch.renews || '—';
 
   return (
-    <div className="bg-white rounded-xl shadow-xs border border-gray-200/80 p-5 font-sans group hover:shadow-md hover:border-orange-500/30 transition-all duration-300 flex flex-col justify-between">
+    <div className="bg-white rounded-2xl shadow-xs border border-slate-200/80 p-5 font-sans group hover:shadow-lg hover:shadow-orange-500/5 hover:border-orange-500/30 transition-all duration-300 flex flex-col justify-between">
       <div>
-        <div className="flex justify-between items-start mb-3">
+        <div className="flex justify-between items-start mb-3.5">
           <div>
-            <h3 className="text-[15.5px] font-bold text-gray-900 tracking-tight group-hover:text-orange-600 transition-colors">
-              {name}
-            </h3>
-            <p className="text-[11.5px] text-gray-400 mt-0.5 flex items-center gap-1.5 font-medium">
-              <span className="w-4 h-4 bg-gray-100 rounded flex items-center justify-center text-[10px]">📅</span> 
-              Renews: <strong className="text-gray-600">{renews}</strong>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-orange-500" />
+              <h3 className="text-base font-black text-slate-900 tracking-tight group-hover:text-orange-600 transition-colors">
+                {name}
+              </h3>
+            </div>
+            <p className="text-[11.5px] text-slate-400 mt-1 flex items-center gap-1.5 font-medium">
+              <span className="w-4 h-4 bg-slate-100 rounded flex items-center justify-center text-[10px]">📅</span> 
+              Renews: <strong className="text-slate-600 font-semibold">{renews}</strong>
             </p>
           </div>
-          <span className={`text-[10.5px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
+          <span className={`text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
             status === 'Active' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
             status === 'Expiring' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-            'bg-gray-100 text-gray-600'
+            'bg-slate-100 text-slate-600 border border-slate-200'
           }`}>
             {status}
           </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2 mb-4">
-          <div className="bg-[#f0f7ff] p-2.5 rounded-lg flex flex-col items-center justify-center min-h-[64px]">
-            <span className="text-[#3c8dbc] font-black text-xl leading-none">{students.toLocaleString()}</span>
-            <span className="text-gray-500 text-[11px] mt-1 font-semibold">Students</span>
+          <div className="bg-sky-50/70 border border-sky-100/60 p-2.5 rounded-xl flex flex-col items-center justify-center min-h-[66px]">
+            <span className="text-sky-700 font-black text-xl leading-none">{students.toLocaleString()}</span>
+            <span className="text-slate-500 text-[11px] mt-1 font-bold">Students</span>
           </div>
-          <div className="bg-[#f9f3ff] p-2.5 rounded-lg flex flex-col items-center justify-center min-h-[64px]">
-            <span className="text-[#8b5cf6] font-black text-xl leading-none">{staff.toLocaleString()}</span>
-            <span className="text-gray-500 text-[11px] mt-1 font-semibold">Staff & Faculty</span>
+          <div className="bg-purple-50/70 border border-purple-100/60 p-2.5 rounded-xl flex flex-col items-center justify-center min-h-[66px]">
+            <span className="text-purple-700 font-black text-xl leading-none">{staff.toLocaleString()}</span>
+            <span className="text-slate-500 text-[11px] mt-1 font-bold">Staff & Faculty</span>
           </div>
-          <div className="bg-[#faf5ff] p-2.5 rounded-lg flex flex-col items-center justify-center min-h-[64px]">
-            <span className="text-amber-600 font-black text-xl leading-none">{attendance}</span>
-            <span className="text-gray-500 text-[11px] mt-1 font-semibold">Attendance</span>
+          <div className="bg-amber-50/70 border border-amber-100/60 p-2.5 rounded-xl flex flex-col items-center justify-center min-h-[66px]">
+            <span className="text-amber-700 font-black text-xl leading-none">{attendance}</span>
+            <span className="text-slate-500 text-[11px] mt-1 font-bold">Attendance</span>
           </div>
-          <div className="bg-[#f0faeb] p-2.5 rounded-lg flex flex-col items-center justify-center min-h-[64px]">
-            <span className="text-[#00a65a] font-black text-xl leading-none">{collected}</span>
-            <span className="text-gray-500 text-[11px] mt-1 text-center font-semibold">Collected (MTD)</span>
+          <div className="bg-emerald-50/70 border border-emerald-100/60 p-2.5 rounded-xl flex flex-col items-center justify-center min-h-[66px]">
+            <span className="text-emerald-700 font-black text-xl leading-none">{collected}</span>
+            <span className="text-slate-500 text-[11px] mt-1 text-center font-bold">Collected (MTD)</span>
           </div>
         </div>
       </div>
 
       <Link 
         to="/branches" 
-        className="w-full py-2 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg text-[13px] font-bold hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-all flex items-center justify-center gap-1.5 group-hover:shadow-2xs cursor-pointer"
+        className="w-full py-2.5 bg-slate-50 border border-slate-200/80 text-slate-700 rounded-xl text-xs font-bold hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-all flex items-center justify-center gap-1.5 group-hover:shadow-2xs cursor-pointer"
       >
-        Manage School Details <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+        <span>Manage School Details</span> 
+        <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
       </Link>
     </div>
   );
@@ -147,46 +151,52 @@ const Dashboard = () => {
   return (
     <div className="px-4 sm:px-6 lg:px-8 pb-12 pt-5 max-w-[1600px] mx-auto font-sans">
       
-      {/* Executive Welcome Ribbon */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <div className="inline-flex items-center gap-2 mb-2.5">
-            <span className="inline-flex items-center gap-1.5 bg-orange-50 text-orange-700 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-orange-200/80">
-              <Globe className="w-3.5 h-3.5 text-orange-600" /> Multi-School Head Office • Network Command Center
-            </span>
-            <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 text-[11px] font-bold px-2.5 py-1 rounded-full border border-emerald-200">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Live Central Database
-            </span>
+      {/* Executive Welcome Ribbon - Modern Executive Dark Glassmorphic Banner */}
+      <div className="relative rounded-3xl bg-slate-950 border border-slate-800 p-5 sm:p-6 mb-6 text-white shadow-xl overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute -top-12 -right-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-2.5 border border-amber-400/30 uppercase">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>ALL CORE SOLUTION • BRANCH NETWORK COMMAND CENTER</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-            Executive Branch Manager Dashboard
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+            <span>Executive Branch Manager Dashboard</span>
+            <span className="text-2xl">👋</span>
           </h1>
-          <p className="text-gray-500 text-[13px] sm:text-sm font-medium mt-1">
-            Active supervision across <strong className="text-gray-800">{branches.length} campus branches</strong> • {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          <p className="text-xs sm:text-[13px] font-medium text-slate-400 mt-1">
+            Active supervision across <strong className="text-slate-200">{branches.length} campus branches</strong> • {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Live Feed Ticker Card & Quick Action Buttons */}
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center gap-3">
           <button 
             onClick={loadDashboardData}
             disabled={loading}
-            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-2.5 rounded-lg text-[13px] font-bold shadow-xs flex items-center gap-2 transition-all cursor-pointer"
+            className="bg-slate-900/90 border border-slate-700/80 hover:bg-slate-800 text-slate-200 px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-bold shadow-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
             title="Refresh Live Data from Central Database"
           >
-            <RotateCw className={`w-4 h-4 text-orange-500 ${loading ? 'animate-spin' : ''}`} />
+            <RotateCw className={`w-4 h-4 text-orange-400 ${loading ? 'animate-spin' : ''}`} />
             <span>{loading ? 'Syncing...' : 'Live Sync'}</span>
           </button>
+          
           <Link 
             to="/branches" 
-            className="bg-gradient-to-r from-[#fd7e14] to-[#f59e0b] hover:from-[#e86e04] hover:to-[#d97706] text-white px-5 py-2.5 rounded-lg text-[13.5px] font-bold shadow-sm flex items-center gap-2 transition-all hover:shadow-md cursor-pointer"
+            className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white px-5 py-2.5 rounded-xl text-xs sm:text-[13px] font-bold shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer border border-orange-400/30"
           >
-            <Building2 className="w-4 h-4" /> All School Branches
+            <Building2 className="w-4 h-4" /> 
+            <span>All School Branches</span>
           </Link>
+
           <Link 
             to="/payments" 
-            className="bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-4 py-2.5 rounded-lg text-[13.5px] font-bold shadow-xs flex items-center gap-2 transition-colors cursor-pointer"
+            className="bg-slate-900/90 border border-slate-700/80 hover:bg-slate-800 text-slate-200 px-4 py-2.5 rounded-xl text-xs sm:text-[13px] font-bold shadow-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
-            <CreditCard className="w-4 h-4 text-orange-500" /> Payment Ledger
+            <CreditCard className="w-4 h-4 text-orange-400" /> 
+            <span>Payment Ledger</span>
           </Link>
         </div>
       </div>

@@ -124,7 +124,7 @@ const getSchoolMeta = () => {
     const rawSchoolName = localStorage.getItem('schoolName');
     if (rawSchoolName && !rawSchoolName.includes('Xavier')) return { name: rawSchoolName, logo: null, shortName: '' };
   } catch (_) {}
-  return { name: 'All core', logo: null, shortName: 'allcore' };
+  return { name: 'ALL CORE SOLUTION', logo: null, shortName: 'allcore' };
 };
 
 const getSchoolInitials = (name) => {
@@ -205,7 +205,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   return (
     <aside 
-      className={`bg-[#131927] text-slate-300 h-full border-r border-[#1e2638] flex flex-col font-sans overflow-hidden flex-shrink-0 z-50 transition-all duration-300 ease-in-out fixed lg:relative
+      className={`bg-slate-950 text-slate-300 h-full border-r border-slate-800/80 flex flex-col font-sans overflow-hidden flex-shrink-0 z-50 transition-all duration-300 ease-in-out fixed lg:relative
         ${isOpen 
           ? 'w-[240px] translate-x-0 opacity-100 shadow-xl lg:shadow-none' 
           : 'w-0 -translate-x-full opacity-0 pointer-events-none lg:w-0'
@@ -214,14 +214,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     >
       {/* Brand Logo Area (Static Display, No Redirection) */}
       <div 
-        className="h-16 flex items-center gap-3 px-4 bg-[#131927] border-b border-[#1e2638] text-white shrink-0 select-none"
-        title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
+        className="h-16 flex items-center gap-3 px-4 bg-slate-950 border-b border-slate-800/80 text-white shrink-0 select-none"
+        title={`${schoolInfo.name || 'ALL CORE SOLUTION'} • Accountant Portal`}
       >
         <div 
-          className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 shrink-0 overflow-hidden"
+          className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] via-amber-500 to-[#ff7a29] p-[1.5px] flex items-center justify-center shadow-lg shadow-orange-500/20 shrink-0 overflow-hidden"
           translate="no"
         >
-          <div className="w-full h-full bg-[#131927] rounded-[9px] flex items-center justify-center overflow-hidden">
+          <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
             {schoolInfo.logo && !logoError ? (
               <img
                 src={schoolInfo.logo}
@@ -230,18 +230,18 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                 className="w-full h-full object-contain p-1"
               />
             ) : (
-              <span className="text-[#ff5c0a] text-xs font-black tracking-wider uppercase select-none font-mono">
-                {getSchoolInitials(schoolInfo.name)}
+              <span className="text-transparent bg-clip-text bg-gradient-to-tr from-amber-300 via-orange-400 to-[#ff5c0a] text-xs font-black tracking-wider uppercase select-none font-mono">
+                {getSchoolInitials(schoolInfo.name) || 'ACS'}
               </span>
             )}
           </div>
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="font-bold text-[14px] tracking-wide leading-tight truncate max-w-[155px]">
-            {schoolInfo.name || 'Accountant Portal'}
+          <span className="font-extrabold text-[14px] text-white tracking-wide leading-tight truncate max-w-[155px]">
+            {schoolInfo.name || 'ALL CORE SOLUTION'}
           </span>
-          <span className="text-[10px] text-slate-400 font-medium truncate max-w-[155px]">
-            {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accountant Portal • ERP'}
+          <span className="text-[10px] text-orange-400/90 font-semibold truncate max-w-[155px]">
+            {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accounts & Finance Cloud Console'}
           </span>
         </div>
       </div>
@@ -327,10 +327,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       </div>
 
       {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER - FIXED PERMANENTLY AT BOTTOM */}
-      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-[#131927] text-center">
+      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-slate-950 text-center">
         <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
           <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-            &copy; 2026 School ERP
+            &copy; 2026 ALL CORE SOLUTION
           </p>
           <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
             Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>

@@ -104,12 +104,12 @@ const MainLayout = () => {
           </div>
 
           {/* Main Portal Bottom Footer */}
-          <footer className="mt-auto shrink-0 py-3 px-4 border-t border-gray-200/80 bg-white/80 backdrop-blur-xs text-center">
-            <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
-              &copy; 2026 School ERP
+          <footer className="mt-auto shrink-0 py-3.5 px-6 border-t border-slate-200/80 bg-white/95 backdrop-blur-md text-center flex flex-col sm:flex-row items-center justify-between gap-2">
+            <p className="text-xs font-bold text-slate-700 tracking-wide">
+              &copy; 2026 ALL CORE SOLUTION — Enterprise School ERP Digital Operating System
             </p>
-            <p className="text-[11px] font-medium text-gray-500">
-              Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+            <p className="text-[11px] font-medium text-slate-500">
+              Developed by <span className="text-slate-900 font-black">RAJ YADAV</span> <span className="bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text text-transparent font-black">@ALLCORE SOLUTION</span>
             </p>
           </footer>
           

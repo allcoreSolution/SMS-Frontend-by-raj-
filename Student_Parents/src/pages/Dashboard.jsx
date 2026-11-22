@@ -464,10 +464,11 @@ export default function Dashboard({ activeChild, setActiveChild }) {
           {/* 1. COMPACT HERO ID CARD (ADAPTIVE FOR STUDENT VS PARENT) */}
           <div className={`w-full bg-gradient-to-r ${
             isStudent 
-              ? 'from-[#1E3A8A] via-[#2563EB] to-[#1D4ED8] shadow-[0_6px_18px_-4px_rgba(37,99,235,0.3)]' 
-              : 'from-[#065F46] via-[#059669] to-[#047857] shadow-[0_6px_18px_-4px_rgba(5,150,105,0.3)]'
-          } rounded-2xl sm:rounded-3xl p-3 sm:p-4 text-white border border-white/20 relative overflow-hidden`}>
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
+              ? 'from-slate-950 via-slate-900 to-indigo-950 shadow-[0_10px_25px_-5px_rgba(15,23,42,0.6)] border-indigo-500/30' 
+              : 'from-slate-950 via-slate-900 to-emerald-950 shadow-[0_10px_25px_-5px_rgba(15,23,42,0.6)] border-emerald-500/30'
+          } rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 text-white border relative overflow-hidden`}>
+            <div className="absolute top-0 right-0 w-36 h-36 bg-amber-400/5 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10"></div>
+            <div className="absolute -bottom-10 -left-10 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <div className="flex items-center gap-2.5 sm:gap-3.5 relative z-10">
               {/* Avatar with Photo Upload & Online Status Dot */}
@@ -481,7 +482,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 />
                 <div 
                   onClick={() => photoInputRef.current?.click()}
-                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-white/90 shadow-md bg-white/20 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer relative"
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-amber-400/80 shadow-md bg-white/10 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer relative"
                   title={currentLang === 'hi' ? 'फ़ोटो बदलें' : 'Change Profile Photo'}
                 >
                   <img 
@@ -505,7 +506,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                   type="button"
                   onClick={() => photoInputRef.current?.click()}
                   title={currentLang === 'hi' ? 'फ़ोटो बदलें' : 'Change Profile Photo'}
-                  className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-white text-blue-600 shadow-md border border-blue-600 flex items-center justify-center hover:scale-110 active:scale-95 cursor-pointer z-10"
+                  className="absolute -bottom-0.5 -right-0.5 w-5 h-5 rounded-full bg-slate-900 text-amber-400 shadow-md border border-amber-400/60 flex items-center justify-center hover:scale-110 active:scale-95 cursor-pointer z-10"
                 >
                   <Camera className="w-2.5 h-2.5" />
                 </button>
@@ -514,16 +515,21 @@ export default function Dashboard({ activeChild, setActiveChild }) {
               {/* Identity info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-1">
-                  <p className="text-[10px] font-bold text-blue-100 tracking-wide uppercase">
-                    {isStudent
-                      ? (currentLang === 'hi' ? '🎓 विद्यार्थी वर्कस्पेस' : '🎓 Student Workspace')
-                      : (currentLang === 'hi' ? '👨‍👩‍👧 अभिभावक डेस्क' : '👨‍👩‍👧 Parent Portal Desk')}
-                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <span className="px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/30 text-[8.5px] font-black text-amber-300 tracking-wider font-mono">
+                      ACS
+                    </span>
+                    <p className="text-[10px] font-bold text-slate-300 tracking-wide uppercase">
+                      {isStudent
+                        ? (currentLang === 'hi' ? '🎓 विद्यार्थी वर्कस्पेस' : '🎓 Student Workspace')
+                        : (currentLang === 'hi' ? '👨‍👩‍👧 अभिभावक डेस्क' : '👨‍👩‍👧 Parent Portal Desk')}
+                    </p>
+                  </div>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <button
                       type="button"
                       onClick={() => navigate('/my-profile')}
-                      className="text-[10px] font-bold bg-white/20 hover:bg-white/30 text-white px-2 py-0.5 rounded-full transition-transform active:scale-95 cursor-pointer flex items-center gap-1"
+                      className="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-slate-200 px-2 py-0.5 rounded-full transition-transform active:scale-95 cursor-pointer flex items-center gap-1 border border-white/10"
                       title={currentLang === 'hi' ? 'प्रोफ़ाइल बदलें' : 'Edit Profile'}
                     >
                       <Edit3 className="w-2.5 h-2.5" />
@@ -532,7 +538,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                     <button
                       type="button"
                       onClick={() => setShowIdCardModal(true)}
-                      className="shrink-0 text-[10px] font-black bg-white hover:bg-slate-100 text-slate-900 px-2 py-0.5 rounded-full shadow-2xs transition-transform active:scale-95 cursor-pointer"
+                      className="shrink-0 text-[10px] font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 px-2.5 py-0.5 rounded-full shadow-sm transition-transform active:scale-95 cursor-pointer"
                     >
                       {isStudent 
                         ? (currentLang === 'hi' ? 'पहचान पत्र →' : 'ID Card →')
@@ -545,10 +551,10 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                   {isStudent ? student.name : `${currentLang === 'hi' ? 'नमस्ते' : 'Welcome'}, ${parentUserName}`}
                 </h2>
                 <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
-                  <span className="bg-white/20 backdrop-blur-xs text-white text-[9.5px] sm:text-[10.5px] font-bold px-2 py-0.2 rounded-full border border-white/20">
+                  <span className="bg-white/10 backdrop-blur-xs text-slate-200 text-[9.5px] sm:text-[10.5px] font-bold px-2 py-0.2 rounded-full border border-white/15">
                     {isStudent ? student.class : `${currentLang === 'hi' ? 'वार्ड' : 'Ward'}: ${student.name} (${student.class})`}
                   </span>
-                  <span className="bg-white/25 text-white text-[9.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
+                  <span className="bg-amber-400/15 border border-amber-400/30 text-amber-300 text-[9.5px] font-black px-1.5 py-0.2 rounded-full shadow-2xs">
                     {isStudent 
                       ? (currentLang === 'hi' ? 'सक्रिय विद्यार्थी ✅' : 'Active Student ✅') 
                       : (currentLang === 'hi' ? 'अभिभावक खाता ✅' : 'Parent Account ✅')}
@@ -558,28 +564,28 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             </div>
 
             {/* 3-Column Compact Details Strip */}
-            <div className="mt-2.5 bg-black/20 backdrop-blur-xs rounded-xl p-1.5 sm:p-2 border border-white/15 grid grid-cols-3 gap-1 text-center relative z-10">
+            <div className="mt-2.5 bg-black/40 backdrop-blur-xs rounded-xl p-1.5 sm:p-2 border border-white/10 grid grid-cols-3 gap-1 text-center relative z-10">
               <div className="text-left pl-1 min-w-0">
-                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                <p className="text-[8.5px] text-slate-400 uppercase font-bold truncate">
                   {currentLang === 'hi' ? 'प्रवेश सं.' : 'Admission No.'}
                 </p>
-                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate font-mono">
                   {student.admn}
                 </p>
               </div>
               <div className="min-w-0">
-                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                <p className="text-[8.5px] text-slate-400 uppercase font-bold truncate">
                   {currentLang === 'hi' ? 'रोल नंबर' : 'Roll Number'}
                 </p>
-                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate font-mono">
                   {student.roll}
                 </p>
               </div>
               <div className="text-right pr-1 min-w-0">
-                <p className="text-[8.5px] text-blue-200 uppercase font-bold truncate">
+                <p className="text-[8.5px] text-slate-400 uppercase font-bold truncate">
                   {currentLang === 'hi' ? 'सत्र' : 'Session'}
                 </p>
-                <p className="text-[11px] sm:text-xs font-black text-white tracking-tight truncate">
+                <p className="text-[11px] sm:text-xs font-black text-amber-300 tracking-tight truncate font-mono">
                   {student.session}
                 </p>
               </div>
@@ -852,16 +858,16 @@ export default function Dashboard({ activeChild, setActiveChild }) {
 
           {/* Real Interactive Activity Calendar */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs overflow-hidden">
-            <div className="bg-gradient-to-r from-[#1E3A8A] to-[#2563EB] text-white p-2.5 sm:p-3 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-2.5 sm:p-3 flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center shrink-0">
-                  <CalendarDays className="w-3.5 h-3.5 text-white shrink-0" />
+                <div className="w-6 h-6 rounded-md bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0 border border-amber-400/30">
+                  <CalendarDays className="w-3.5 h-3.5 shrink-0" />
                 </div>
                 <div>
-                  <h3 className="text-xs sm:text-sm font-black font-serif tracking-tight leading-none">
+                  <h3 className="text-xs sm:text-sm font-black font-serif tracking-tight leading-none text-white">
                     {currentLang === 'hi' ? 'स्कूल गतिविधि कैलेंडर' : 'School Activity Calendar'}
                   </h3>
-                  <p className="text-[9px] text-blue-200 mt-0.5">
+                  <p className="text-[9px] text-slate-400 mt-0.5">
                     {MONTHS[m]} {y}
                   </p>
                 </div>
@@ -871,7 +877,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 <button
                   type="button"
                   onClick={() => setCurDate(new Date(y, m - 1, 1))}
-                  className="p-1 rounded-md hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  className="p-1 rounded-md hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
                   title="Previous Month"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
@@ -879,14 +885,14 @@ export default function Dashboard({ activeChild, setActiveChild }) {
                 <button
                   type="button"
                   onClick={() => setCurDate(new Date())}
-                  className="px-1.5 py-0.5 text-[9.5px] font-bold bg-white text-[#1E3A8A] rounded transition-colors"
+                  className="px-1.5 py-0.5 text-[9.5px] font-black bg-amber-400 text-slate-950 rounded transition-colors"
                 >
                   {currentLang === 'hi' ? 'आज' : 'Today'}
                 </button>
                 <button
                   type="button"
                   onClick={() => setCurDate(new Date(y, m + 1, 1))}
-                  className="p-1 rounded-md hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  className="p-1 rounded-md hover:bg-white/10 text-slate-300 hover:text-white transition-colors cursor-pointer"
                   title="Next Month"
                 >
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -1001,7 +1007,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150 text-slate-800"
           >
-            <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-4 flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <School className="w-5 h-5 text-amber-300 shrink-0" />
                 <h3 className="text-base font-black font-serif">{dashboardData?.school?.name || (currentLang === 'hi' ? 'विद्यालय' : 'School')}</h3>
@@ -1045,7 +1051,7 @@ export default function Dashboard({ activeChild, setActiveChild }) {
             onClick={(e) => e.stopPropagation()}
             className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in zoom-in-95 duration-150 text-slate-800"
           >
-            <div className="bg-[#1E3A8A] text-white p-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 text-white p-4 flex items-center justify-between border-b border-slate-800">
               <div className="flex items-center gap-2">
                 <Megaphone className="w-4 h-4 text-amber-300" />
                 <h4 className="text-sm font-bold">{currentLang === 'hi' ? 'स्कूल आधिकारिक सूचना' : 'School Notice'}</h4>

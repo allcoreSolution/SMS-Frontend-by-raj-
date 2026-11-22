@@ -97,20 +97,21 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
   ];
 
   return (
-    <div className={`fixed inset-y-0 left-0 bg-[#0b1329] w-[240px] text-gray-300 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} ${isDesktopOpen ? 'md:translate-x-0' : 'md:-translate-x-full'} shadow-[4px_0_24px_rgba(0,0,0,0.15)] border-r border-slate-800/80`}>
+    <div className={`fixed inset-y-0 left-0 bg-[#070d1e] w-[250px] text-gray-300 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} ${isDesktopOpen ? 'md:translate-x-0' : 'md:-translate-x-full'} shadow-[4px_0_24px_rgba(0,0,0,0.25)] border-r border-slate-800/80`}>
       
       {/* Branding Header */}
-      <div className="h-[70px] flex items-center justify-between px-4 border-b border-slate-800 bg-[#070d1e]">
+      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 bg-[#050a17]">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-[#fd7e14] to-[#f59e0b] flex items-center justify-center font-bold text-white shadow-md ring-2 ring-orange-500/30">
-            <School className="w-5 h-5 text-white" />
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center font-black text-white shadow-md shadow-orange-500/25 ring-1 ring-white/20">
+            <span className="text-xs font-black tracking-tight text-white font-mono">ACS</span>
           </div>
           <div>
-            <span className="font-extrabold text-[15px] text-white tracking-tight block leading-tight">
-              Multi-School ERP
+            <span className="font-black text-sm text-white tracking-tight flex items-center gap-1 leading-tight">
+              <span>ALL CORE</span>
+              <span className="text-orange-500">SOLUTION</span>
             </span>
-            <span className="text-[10px] font-bold text-orange-400 uppercase tracking-widest block">
-              Branch Admin
+            <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest block">
+              Branch Console
             </span>
           </div>
         </div>
@@ -139,18 +140,18 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
               key={idx} 
               to={link.path} 
               onClick={() => setOpen(false)}
-              className={`flex items-center justify-between px-5 py-2.5 my-0.5 mx-2 rounded-md transition-all font-medium ${
+              className={`flex items-center justify-between px-4 py-2.5 my-1 mx-2.5 rounded-xl transition-all font-medium ${
                 isActive 
-                  ? 'text-white bg-gradient-to-r from-orange-500/20 to-orange-500/5 border-l-[3px] border-[#fd7e14] font-bold shadow-xs' 
+                  ? 'text-white bg-gradient-to-r from-orange-500/20 via-orange-500/10 to-transparent border-l-[3px] border-orange-500 font-bold shadow-xs' 
                   : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className={`${isActive ? 'text-[#fd7e14]' : 'text-slate-400'}`}>{link.icon}</span>
+                <span className={`${isActive ? 'text-orange-400' : 'text-slate-400'}`}>{link.icon}</span>
                 <span>{link.name}</span>
               </div>
               {link.badge !== undefined && (
-                <span className="text-[11px] font-bold px-1.5 py-0.2 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
                   {link.badge}
                 </span>
               )}
@@ -162,14 +163,14 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
         <div className="mt-2">
           <button 
             onClick={() => setReportsOpen(!reportsOpen)}
-            className={`w-full flex items-center justify-between px-5 py-2.5 my-0.5 mx-2 rounded-md font-medium transition-colors ${
+            className={`w-full flex items-center justify-between px-4 py-2.5 my-1 mx-2.5 rounded-xl font-medium transition-colors ${
               location.pathname.startsWith('/reports') 
                 ? 'text-white bg-slate-800/80 font-bold' 
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             <div className="flex items-center gap-3">
-              <span className={location.pathname.startsWith('/reports') ? 'text-[#fd7e14]' : 'text-slate-400'}>
+              <span className={location.pathname.startsWith('/reports') ? 'text-orange-400' : 'text-slate-400'}>
                 <BookOpen className="w-4 h-4" />
               </span>
               <span>Reports & Audit</span>
@@ -178,7 +179,7 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
           </button>
           
           {reportsOpen && (
-            <div className="bg-[#070d1e]/80 py-1.5 my-1 mx-2 rounded-lg flex flex-col font-medium border border-slate-800/60">
+            <div className="bg-[#050a17]/90 py-1.5 my-1 mx-2.5 rounded-xl flex flex-col font-medium border border-slate-800/60">
               {[
                 { name: 'Login Logs', path: '/reports/login-logs' },
                 { name: 'Schools Usage', path: '/reports/schools-usage' },
@@ -194,9 +195,9 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
                     key={idx} 
                     to={link.path} 
                     onClick={() => setOpen(false)}
-                    className={`px-8 py-2 text-[12.5px] transition-colors flex items-center justify-between ${
+                    className={`px-7 py-2 text-[12px] transition-colors flex items-center justify-between ${
                       isSubActive 
-                        ? 'text-orange-400 bg-orange-500/10 font-bold' 
+                        ? 'text-orange-400 bg-orange-500/15 font-bold' 
                         : 'text-slate-400 hover:text-white hover:bg-slate-800/40'
                     }`}
                   >
@@ -214,17 +215,17 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
         </div>
         <button 
           onClick={onLogout}
-          className="w-full flex items-center gap-3 px-5 py-2.5 mx-2 rounded-md font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus:outline-none cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-2.5 mx-2.5 rounded-xl font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus:outline-none cursor-pointer"
         >
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
 
       {/* Sidebar Footer - Developer Attribution */}
-      <div className="shrink-0 bg-[#070d1e] px-3 py-2.5 border-t border-slate-800/80 text-center">
-        <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+      <div className="shrink-0 bg-[#050a17] px-3.5 py-3 border-t border-slate-800/80 text-center">
+        <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-orange-500/40 transition-colors">
           <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-            &copy; 2026 School ERP
+            &copy; 2026 ALL CORE SOLUTION
           </p>
           <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
             Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
@@ -365,12 +366,12 @@ const Header = ({ onToggle, isDesktopOpen = true, onLogout }) => {
   const unreadCount = Array.isArray(notifications) ? notifications.filter(n => n && !n.read).length : 0;
 
   return (
-    <div className="h-[70px] bg-white flex items-center justify-between px-4 sm:px-6 shadow-sm sticky top-0 z-40 border-b border-gray-100">
+    <div className="h-16 bg-white/95 backdrop-blur-md flex items-center justify-between px-4 sm:px-6 shadow-xs sticky top-0 z-40 border-b border-slate-200/80">
       
       {/* Left: Mobile Toggle & Fast Navigation Search */}
       <div className="flex items-center gap-3">
         <button 
-          className="text-gray-600 hover:text-orange-600 p-2 rounded-lg hover:bg-orange-50 transition-colors cursor-pointer flex items-center justify-center border border-gray-200/80 shadow-3xs" 
+          className="text-slate-600 hover:text-orange-600 p-2 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer flex items-center justify-center border border-slate-200 shadow-2xs" 
           onClick={onToggle}
           title={isDesktopOpen ? "Collapse Sidebar" : "Expand Sidebar"}
         >
@@ -383,15 +384,20 @@ const Header = ({ onToggle, isDesktopOpen = true, onLogout }) => {
             placeholder="Search branches, fees, templates..." 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-[#f3f7f9] text-[13px] border border-gray-200/80 rounded-md pl-4 pr-10 py-1.5 w-64 md:w-80 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
+            className="bg-slate-50 text-[13px] border border-slate-200 rounded-xl pl-4 pr-10 py-2 w-64 md:w-80 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-2xs font-medium placeholder:text-slate-400"
           />
           <button 
             type="submit"
-            className="absolute right-3 text-gray-400 hover:text-orange-500 focus:outline-none cursor-pointer"
+            className="absolute right-3 text-slate-400 hover:text-orange-500 focus:outline-none cursor-pointer"
           >
             <Search className="w-4 h-4" />
           </button>
         </form>
+
+        <span className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200 shadow-3xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          5 Campuses Linked • Live Sync
+        </span>
       </div>
 
       {/* Right Controls: Language, Notifications & Profile */}
@@ -612,10 +618,10 @@ const App = () => {
             <div className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity" onClick={() => setMobileSidebarOpen(false)} />
           )}
 
-          <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${desktopSidebarOpen ? 'md:ml-[240px]' : 'md:ml-0'}`}>
+          <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300 ease-in-out ${desktopSidebarOpen ? 'md:ml-[250px]' : 'md:ml-0'}`}>
             <Header onToggle={handleToggleSidebar} isDesktopOpen={desktopSidebarOpen} onLogout={handleLogout} />
             
-            <main className="flex-1 overflow-y-auto bg-[#f4f7fa] flex flex-col justify-between">
+            <main className="flex-1 overflow-y-auto bg-[#f8fafc] flex flex-col justify-between">
               <div className="flex-1">
                 <Routes>
                   <Route path="/" element={<Dashboard />} />
@@ -641,12 +647,12 @@ const App = () => {
               </div>
 
               {/* Main Portal Bottom Footer */}
-              <footer className="mt-auto shrink-0 py-3.5 px-4 border-t border-gray-200/80 bg-white/90 backdrop-blur-xs text-center">
-                <p className="text-[12px] font-bold text-gray-700 tracking-wide mb-0.5">
-                  &copy; 2026 School ERP • Multi-Branch Operations
+              <footer className="mt-auto shrink-0 py-3.5 px-6 border-t border-slate-200/80 bg-white/95 backdrop-blur-md text-center flex flex-col sm:flex-row items-center justify-between gap-2">
+                <p className="text-xs font-bold text-slate-700 tracking-wide">
+                  &copy; 2026 ALL CORE SOLUTION — Multi-Branch Enterprise Cloud Platform
                 </p>
-                <p className="text-[11px] font-medium text-gray-500">
-                  Developed by <span className="text-gray-900 font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+                <p className="text-[11px] font-medium text-slate-500">
+                  Developed by <span className="text-slate-900 font-black">RAJ YADAV</span> <span className="bg-gradient-to-r from-amber-500 to-amber-600 bg-clip-text text-transparent font-black">@ALLCORE SOLUTION</span>
                 </p>
               </footer>
             </main>

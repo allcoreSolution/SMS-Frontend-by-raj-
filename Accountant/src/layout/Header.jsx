@@ -75,7 +75,7 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
       const appSettings = localDb.getAll('settings')?.appearance;
       if (appSettings?.schoolName && !appSettings.schoolName.includes('Xavier')) return { name: appSettings.schoolName, logo: null, shortName: '' };
     } catch (_) {}
-    return { name: 'All core', logo: null, shortName: 'allcore' };
+    return { name: 'ALL CORE SOLUTION', logo: null, shortName: 'allcore' };
   };
 
   const [profileMeta, setProfileMeta] = useState(getProfileMeta);
@@ -219,11 +219,11 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
         {/* Brand Unit (Static Display, No Redirection) */}
         <div
           className="flex items-center gap-2 sm:gap-2.5 select-none"
-          title={`${schoolInfo.name || 'School ERP'} • Accountant Portal`}
+          title={`${schoolInfo.name || 'ALL CORE SOLUTION'} • Accountant Portal`}
         >
           {/* School Emblem Icon */}
-          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 shadow-xs flex items-center justify-center shrink-0">
-            <div className="w-full h-full bg-[#131927] rounded-[10px] flex items-center justify-center overflow-hidden relative">
+          <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-[#ff5c0a] via-amber-500 to-[#ff7a29] p-0.5 shadow-sm flex items-center justify-center shrink-0">
+            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center overflow-hidden relative">
               {schoolInfo.logo && !logoImgError ? (
                 <img
                   src={schoolInfo.logo}
@@ -232,16 +232,18 @@ const Header = ({ toggleSidebar, isSidebarOpen }) => {
                   className="w-full h-full object-contain p-0.5"
                 />
               ) : (
-                <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-orange-400" />
+                <span className="text-[11px] font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-tr from-amber-300 via-orange-400 to-[#ff5c0a] font-mono">
+                  ACS
+                </span>
               )}
-              <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-white animate-pulse" />
+              <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-emerald-400 border border-slate-950 animate-pulse" />
             </div>
           </div>
 
           <div className="flex flex-col min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-black text-slate-800 tracking-tight text-[15px] sm:text-[17px] leading-tight truncate max-w-[200px] sm:max-w-[340px]">
-                {schoolInfo.name || 'School ERP'}
+              <span className="font-black text-slate-900 tracking-tight text-[15px] sm:text-[17px] leading-tight truncate max-w-[200px] sm:max-w-[340px]">
+                {schoolInfo.name || 'ALL CORE SOLUTION'}
               </span>
               <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-xs shrink-0">
                 <Sparkles className="w-2.5 h-2.5 text-[#ff5c0a]" />

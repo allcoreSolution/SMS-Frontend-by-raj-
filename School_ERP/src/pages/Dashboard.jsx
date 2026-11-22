@@ -75,7 +75,7 @@ export default function Dashboard() {
   // Active School Name State
   const [currentSchoolName, setCurrentSchoolName] = useState(() => {
     const s = localStorage.getItem('schoolName');
-    return (s && s !== 'Greenwood International School') ? s : 'RAM INTERNATIONAL SCHOOL';
+    return (s && s !== 'Greenwood International School' && s !== 'RAM INTERNATIONAL SCHOOL') ? s : 'ALL CORE SOLUTION';
   });
 
   // Fetch real metrics from backend API
@@ -161,8 +161,8 @@ export default function Dashboard() {
   }, []);
 
   // User & School greeting
-  const schoolDisplayName = userData?.username || userData?.name || 'school';
-  const schoolName = currentSchoolName || userData?.tenant?.schoolName || 'RAM INTERNATIONAL SCHOOL';
+  const schoolDisplayName = userData?.username || userData?.name || 'School Administrator';
+  const schoolName = currentSchoolName || userData?.tenant?.schoolName || 'ALL CORE SOLUTION';
 
   // Time-based greeting with localization
   const hour = currentDate.getHours();
@@ -182,25 +182,34 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 lg:p-7 space-y-5 max-w-[1720px] mx-auto font-sans">
       
-      {/* ── 1. Greeting & Updates Bar ───────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-2">
-            {greeting}, {schoolDisplayName} <span className="text-xl">👋</span>
+      {/* ── 1. Modern Executive SaaS Banner ───────────────────────────────── */}
+      <div className="relative rounded-3xl bg-slate-950 border border-slate-800 p-5 sm:p-6 text-white shadow-xl overflow-hidden flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute -top-12 -right-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 text-[10px] font-black tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-2.5 border border-amber-400/30 uppercase">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>ALL CORE SOLUTION • SCHOOL ERP OPERATING SYSTEM</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center gap-2">
+            <span>{greeting}, {schoolDisplayName}</span>
+            <span className="text-2xl">👋</span>
           </h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {getTranslation('whatsHappening', currentLang)} {schoolName} {getTranslation('today', currentLang)} — {formattedDate}
+          <p className="text-xs sm:text-[13px] font-medium text-slate-400 mt-1">
+            {getTranslation('whatsHappening', currentLang)} <strong className="text-slate-200">{schoolName}</strong> {getTranslation('today', currentLang)} — {formattedDate}
           </p>
         </div>
 
-        {/* Updates Action / Announcement Ticker */}
-        <div className="flex items-center gap-2">
-          <div className="inline-flex items-center bg-white border border-gray-200/90 rounded-lg shadow-2xs overflow-hidden h-8 text-xs">
-            <button className="h-full px-3 bg-orange-50 hover:bg-orange-100/80 text-[#ff5c0a] font-bold flex items-center gap-1.5 transition-colors cursor-pointer border-r border-gray-200/80">
-              <Megaphone className="w-3.5 h-3.5 text-[#ff5c0a]" />
+        {/* Live Announcement Ticker */}
+        <div className="relative z-10 flex items-center gap-3">
+          <div className="inline-flex items-center bg-slate-900/90 border border-slate-700/80 rounded-xl shadow-inner overflow-hidden h-10 text-xs max-w-md">
+            <div className="h-full px-3.5 bg-orange-500/15 text-orange-400 font-bold flex items-center gap-1.5 border-r border-slate-700/80 shrink-0">
+              <Megaphone className="w-3.5 h-3.5 text-orange-400" />
               <span>{getTranslation('updates', currentLang)}</span>
-            </button>
-            <div className="px-3 text-xs text-gray-600 font-medium truncate max-w-[200px] sm:max-w-[260px]">
+            </div>
+            <div className="px-3.5 text-xs text-slate-300 font-medium truncate max-w-[220px] sm:max-w-[280px]">
               {latestNotice}
             </div>
           </div>

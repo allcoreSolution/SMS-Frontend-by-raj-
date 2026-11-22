@@ -728,16 +728,17 @@ const Sidebar = ({ isCollapsed }) => {
   return (
     <aside className={`${isCollapsed ? 'w-20' : 'w-[268px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
       {/* Brand & Logo Area */}
-      <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-5'} py-4 sticky top-0 bg-[#131927]/95 backdrop-blur-md z-20 border-b border-[#1e2638] min-h-[64px]`}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/20">
-          <div className="w-full h-full bg-[#131927] rounded-[10px] flex items-center justify-center">
-            <span className="font-black text-[12px] tracking-wider text-[#ff5c0a]">ERP</span>
-          </div>
+      <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-5'} py-3.5 sticky top-0 bg-[#0c1220]/95 backdrop-blur-md z-20 border-b border-slate-800/80 min-h-[64px]`}>
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/25 ring-1 ring-white/20">
+          <span className="font-black text-xs tracking-tight text-white font-mono">ACS</span>
         </div>
         {!isCollapsed && (
           <div className="flex flex-col min-w-0">
-            <span className="text-white font-bold text-[15px] tracking-tight leading-tight truncate">School ERP</span>
-            <span className="text-slate-400 text-[11px] font-medium tracking-wide">Enterprise Suite</span>
+            <span className="text-white font-black text-sm tracking-tight leading-tight truncate flex items-center gap-1">
+              <span>ALL CORE</span>
+              <span className="text-orange-500">SOLUTION</span>
+            </span>
+            <span className="text-slate-400 text-[10px] font-bold tracking-wide uppercase">School ERP Suite</span>
           </div>
         )}
       </div>
@@ -826,18 +827,18 @@ const Sidebar = ({ isCollapsed }) => {
       </div>
 
       {/* Developer Branding & Attribution Footer - Fixed Permanently at Bottom */}
-      <div className="shrink-0 p-2.5 border-t border-slate-800/80 bg-[#131927] text-center z-10">
+      <div className="shrink-0 p-2.5 border-t border-slate-800/80 bg-[#0c1220] text-center z-10">
         {!isCollapsed ? (
-          <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
+          <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-orange-500/40 transition-colors">
             <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-0.5">
-              &copy; 2026 School ERP
+              &copy; 2026 ALL CORE SOLUTION
             </p>
             <p className="text-[10px] font-medium text-slate-400 leading-tight">
               Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
             </p>
           </div>
         ) : (
-          <div className="py-1 flex items-center justify-center" title="© 2026 School ERP - Developed by RAJ YADAV @ALLCORE SOLUTION">
+          <div className="py-1 flex items-center justify-center" title="© 2026 ALL CORE SOLUTION - Developed by RAJ YADAV @ALLCORE SOLUTION">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
           </div>
         )}

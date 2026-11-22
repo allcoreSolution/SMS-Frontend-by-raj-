@@ -253,7 +253,7 @@ const Dashboard = () => {
       const rawName = localStorage.getItem('schoolName');
       if (rawName && !rawName.includes('Xavier')) return { name: rawName, logo: null, shortName: '' };
     } catch (_e) {}
-    return { name: 'All core', logo: null, shortName: 'allcore' };
+    return { name: 'ALL CORE SOLUTION', logo: null, shortName: 'allcore' };
   };
 
   const [schoolInfo, setSchoolInfo] = useState(getSchoolMeta);
@@ -557,11 +557,11 @@ const Dashboard = () => {
             </h1>
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-2xs">
               <Building2 className="w-3.5 h-3.5 text-[#ff5c0a]" />
-              <span>{schoolInfo.name || 'School ERP'}</span>
+              <span>{schoolInfo.name || 'ALL CORE SOLUTION'}</span>
             </span>
           </div>
           <p className="text-[13px] text-gray-500 mt-1">
-            Financial summary, daybook transactions, fee collections, and staff loans for <span className="font-semibold text-slate-700">{schoolInfo.name || 'All core'}</span>.
+            Financial summary, daybook transactions, fee collections, and staff loans for <span className="font-semibold text-slate-700">{schoolInfo.name || 'ALL CORE SOLUTION'}</span>.
           </p>
         </div>
 

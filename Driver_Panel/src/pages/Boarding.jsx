@@ -238,7 +238,7 @@ export default function Boarding() {
         assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501',
         boardingStatus: stud.status || 'Scheduled',
         emergencyContact: '+91 98112 00001',
-        schoolAuthority: 'Delhi Public School Transportation Wing'
+        schoolAuthority: 'ALL CORE SOLUTION Transportation Wing'
       });
     } finally {
       setVerifyingOnline(false);

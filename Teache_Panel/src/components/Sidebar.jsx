@@ -329,49 +329,30 @@ const Sidebar = () => {
   };
   
   return (
-    <aside className={`h-screen bg-[#131927] text-slate-300 flex flex-col overflow-hidden border-r border-[#1e2638] flex-shrink-0 z-50 transition-all duration-300 ease-in-out fixed lg:relative ${
+    <aside className={`h-screen bg-slate-950 text-slate-300 flex flex-col overflow-hidden border-r border-slate-800/80 flex-shrink-0 z-50 transition-all duration-300 ease-in-out fixed lg:relative ${
       isSidebarOpen 
         ? 'w-[240px] translate-x-0 opacity-100 shadow-2xl lg:shadow-none' 
         : 'w-0 -translate-x-full opacity-0 pointer-events-none lg:w-0 border-r-0'
     }`}>
       
-      {/* Logo Area */}
-      <div className="h-16 px-4 flex items-center flex-shrink-0 border-b border-[#1e2638] bg-[#131927]">
+      {/* Brand Header */}
+      <div className="h-16 px-4 flex items-center flex-shrink-0 border-b border-slate-800/80 bg-slate-950">
         <div className="flex items-center gap-3">
           <div 
-            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c42] p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/15 shrink-0 overflow-hidden"
+            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0 overflow-hidden"
             translate="no"
           >
-            <div className="w-full h-full bg-[#131927] rounded-[9px] flex items-center justify-center overflow-hidden">
-              <svg 
-                viewBox="0 0 36 36" 
-                className="w-full h-full notranslate select-none pointer-events-none" 
-                translate="no" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="36" height="36" rx="9" fill="#131927"/>
-                <text 
-                  x="18" 
-                  y="18.5" 
-                  dominantBaseline="central" 
-                  textAnchor="middle" 
-                  fill="#ff5c0a" 
-                  fontSize="11" 
-                  fontWeight="900" 
-                  fontFamily="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
-                  letterSpacing="0.5px"
-                >
-                  ERP
-                </text>
-              </svg>
+            <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
+              <span className="text-xs font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
             </div>
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[14px] font-bold text-white tracking-tight leading-tight truncate">
-              {userRole === 'Staff' ? t('Staff Portal', 'Staff Portal') : t('Teacher Portal', 'Teacher Portal')}
+            <span className="text-[13px] font-black text-white tracking-tight leading-tight truncate">
+              ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-medium truncate">Multi-School ERP v3.7</span>
+            <span className="text-[10px] text-slate-400 font-semibold truncate">
+              {userRole === 'Staff' ? 'Staff Cloud Console' : 'Faculty Cloud Console'}
+            </span>
           </div>
         </div>
       </div>
@@ -562,10 +543,10 @@ const Sidebar = () => {
       </nav>
 
       {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER - FIXED PERMANENTLY AT BOTTOM */}
-      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-[#131927] text-center">
+      <div className="shrink-0 p-3 border-t border-slate-800/80 bg-slate-950 text-center">
         <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs hover:border-[#ff5c0a]/40 transition-colors">
           <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-            &copy; 2026 School ERP
+            &copy; 2026 ALL CORE SOLUTION
           </p>
           <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
             Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>

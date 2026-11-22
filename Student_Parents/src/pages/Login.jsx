@@ -148,7 +148,7 @@ export default function Login() {
       showCancelButton: true,
       confirmButtonText: currentLang === 'hi' ? 'ओटीपी भेजें' : 'Send OTP',
       cancelButtonText: currentLang === 'hi' ? 'रद्द करें' : 'Cancel',
-      confirmButtonColor: '#1976d2',
+      confirmButtonColor: '#ff5c0a',
       inputValidator: (val) => {
         if (!val || !val.trim()) {
           return currentLang === 'hi' ? 'कृपया अपनी आईडी या ईमेल दर्ज करें!' : 'Please enter your ID or Email!';
@@ -179,7 +179,7 @@ export default function Login() {
             focusConfirm: false,
             showCancelButton: true,
             confirmButtonText: currentLang === 'hi' ? 'पासवर्ड अपडेट करें' : 'Update Password',
-            confirmButtonColor: '#1976d2',
+            confirmButtonColor: '#ff5c0a',
             preConfirm: () => {
               const otpVal = document.getElementById('swal-otp')?.value;
               const newPassVal = document.getElementById('swal-password')?.value;
@@ -215,7 +215,7 @@ export default function Login() {
                 text: currentLang === 'hi' 
                   ? 'आपका पासवर्ड सफलतापूर्वक अपडेट हो गया है।'
                   : 'Your password has been updated successfully.',
-                confirmButtonColor: '#1976d2'
+                confirmButtonColor: '#ff5c0a'
               });
               setPassword(formValues.newPassword);
             } else {
@@ -234,17 +234,24 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center font-sans p-0 sm:p-3 select-none">
+    <div className="min-h-screen w-full bg-slate-950 flex flex-col items-center justify-center font-sans p-0 sm:p-4 select-none relative selection:bg-orange-500 selection:text-white">
       
+      {/* Ambient Lighting Gradients */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] bg-orange-600/15 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[550px] h-[550px] bg-indigo-600/15 rounded-full blur-[140px]" />
+        <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-500/5 rounded-full blur-[160px]" />
+      </div>
+
       {/* Desktop Top Stepper Bar (Only for testing screens easily on PC) */}
-      <div className="hidden sm:flex items-center gap-2 mb-3 bg-white/95 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-sm z-20">
-        <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider mr-1">Switch Screen:</span>
+      <div className="hidden sm:flex items-center gap-2 mb-3 bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-800 shadow-md z-20">
+        <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider mr-1">Switch Screen:</span>
         <button
           onClick={() => setCurrentStep('welcome')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'welcome' 
-              ? 'bg-[#1976d2] text-white shadow-xs' 
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           1. Welcome
@@ -253,8 +260,8 @@ export default function Login() {
           onClick={() => setCurrentStep('role')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'role' 
-              ? 'bg-[#1976d2] text-white shadow-xs' 
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           2. Continue as
@@ -263,8 +270,8 @@ export default function Login() {
           onClick={() => setCurrentStep('login')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'login' 
-              ? 'bg-[#1976d2] text-white shadow-xs' 
-              : 'text-slate-600 hover:bg-slate-100'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           3. Login Form
@@ -272,7 +279,7 @@ export default function Login() {
       </div>
 
       {/* Main Container: Fullscreen on Mobile/APK, Beautiful Phone Shell on Desktop */}
-      <div className="w-full flex-1 sm:flex-initial sm:max-w-[380px] bg-white sm:rounded-[38px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.65)] sm:border-[8px] sm:border-slate-800 overflow-y-auto sm:overflow-hidden min-h-screen sm:min-h-[700px] sm:h-[750px] sm:max-h-[94vh] flex flex-col relative transition-all">
+      <div className="w-full flex-1 sm:flex-initial sm:max-w-[380px] bg-white sm:rounded-[38px] sm:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] sm:border-[8px] sm:border-slate-800 overflow-y-auto sm:overflow-hidden min-h-screen sm:min-h-[700px] sm:h-[750px] sm:max-h-[94vh] flex flex-col relative transition-all z-10 ring-1 ring-white/10">
 
         {/* ========================================================
             SCREEN 1: WELCOME & HIGHLIGHTS ONBOARDING
@@ -281,15 +288,15 @@ export default function Login() {
           <div className="flex-1 flex flex-col justify-between bg-white relative overflow-hidden min-h-full">
             
             {/* Top Navy Header Section */}
-            <div className="bg-gradient-to-b from-[#02183b] via-[#082a66] to-[#0f449e] text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0">
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0 border-b border-slate-800">
               {/* Top Bar with Sign In Pill */}
               <div className="flex items-center justify-between z-20 mb-1">
-                <span className="text-[10px] font-mono text-sky-300 font-bold bg-sky-500/10 px-2 py-0.5 rounded-full border border-sky-400/20">
+                <span className="text-[10px] font-mono text-orange-400 font-bold bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/30">
                   Students &amp; Parents v3.7
                 </span>
                 <button 
                   onClick={() => setCurrentStep('login')}
-                  className="text-xs font-bold text-sky-200 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-sky-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95 shrink-0"
+                  className="text-xs font-bold text-orange-200 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-orange-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95 shrink-0"
                 >
                   <span>Sign In</span>
                   <ChevronRight className="w-3.5 h-3.5 shrink-0" />
@@ -298,19 +305,21 @@ export default function Login() {
 
               {/* Top Branding Section */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1 shrink-0" variant="darkHeader" />
-                <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-sky-300">ERP</span>
+                <div className="w-10 h-10 bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/25 ring-1 ring-white/20 mb-1">
+                  <span className="text-sm font-black tracking-tight text-white font-mono">ACS</span>
+                </div>
+                <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
+                  ALL CORE <span className="text-orange-500">SOLUTION</span>
                 </h1>
-                <p className="text-xs font-bold text-sky-100 tracking-wide mt-1">
-                  Smart School Management System
+                <p className="text-[10px] font-bold text-slate-300 tracking-wide mt-1">
+                  Student &amp; Parent Cloud System
                 </p>
               </div>
 
-              {/* Sky Blue Wave Arc Divider */}
+              {/* Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#38bdf8" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -318,14 +327,14 @@ export default function Login() {
 
             {/* Hero Banner Card in a Box */}
             <div className="px-4 my-auto shrink-0 py-1">
-              <div className="relative rounded-2xl overflow-hidden shadow-md border border-blue-200/70 bg-slate-900 group">
+              <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-900 group">
                 <img 
                   src={welcomeHeroImg} 
                   alt="Students and Parents" 
                   className="w-full h-40 sm:h-44 object-cover object-center group-hover:scale-102 transition-transform duration-500" 
                 />
-                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-sky-300 flex items-center gap-1.5 shadow-sm border border-sky-400/50">
-                  <Sparkles className="w-3.5 h-3.5 text-sky-400 shrink-0" />
+                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-orange-300 flex items-center gap-1.5 shadow-sm border border-orange-400/50">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                   <span>For Students &amp; Parents</span>
                 </div>
               </div>
@@ -337,9 +346,9 @@ export default function Login() {
                 {/* 1. View Attendance */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#f0f7ff] hover:bg-[#e4f0ff] border border-blue-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-orange-50/70 hover:bg-orange-100/70 border border-orange-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-[#1976d2] flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-orange-500/10 text-orange-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Calendar className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">View Attendance</span>
@@ -348,9 +357,9 @@ export default function Login() {
                 {/* 2. Check Exam Results */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#f0fdf4] hover:bg-[#e2fbe9] border border-emerald-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-amber-50/70 hover:bg-amber-100/70 border border-amber-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <FileText className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Check Exam Results</span>
@@ -359,9 +368,9 @@ export default function Login() {
                 {/* 3. Fees & Payments */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#fffbef] hover:bg-[#fff6dc] border border-amber-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-emerald-50/70 hover:bg-emerald-100/70 border border-emerald-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <CreditCard className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Fees &amp; Payments</span>
@@ -370,9 +379,9 @@ export default function Login() {
                 {/* 4. Get Notifications */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#fdf2f8] hover:bg-[#fde2f0] border border-pink-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-slate-50 hover:bg-slate-100 border border-slate-200/80 rounded-2xl p-2.5 sm:p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-2xl bg-pink-500/10 text-pink-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-2xl bg-slate-500/10 text-slate-700 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Bell className="w-5 h-5 stroke-[2.2] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Get Notifications</span>
@@ -383,10 +392,10 @@ export default function Login() {
             {/* Bottom Curved Wave & Action Banner (Pinned to Bottom) */}
             <div 
               onClick={() => setCurrentStep('role')}
-              className="bg-gradient-to-r from-[#02183b] via-[#082a66] to-[#0f449e] text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-sky-400 shrink-0"
+              className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-orange-500 shrink-0"
             >
               <div className="flex items-center gap-2.5 flex-1 pr-2">
-                <div className="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-300 flex items-center justify-center shrink-0 border border-sky-400/30">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/20 text-orange-300 flex items-center justify-center shrink-0 border border-orange-400/30">
                   <Sparkles className="w-4 h-4 stroke-[2.4] shrink-0" />
                 </div>
                 <div>
@@ -394,7 +403,7 @@ export default function Login() {
                     Manage Your Child's Education Anytime
                   </p>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-5 h-1.5 bg-sky-400 rounded-full shadow-xs" />
+                    <span className="w-5 h-1.5 bg-orange-500 rounded-full shadow-xs" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                   </div>
@@ -403,7 +412,7 @@ export default function Login() {
 
               <button
                 type="button"
-                className="w-9 h-9 rounded-full bg-white text-slate-900 hover:bg-sky-100 flex items-center justify-center shadow-md shrink-0 transition-transform active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:brightness-110 flex items-center justify-center shadow-md shrink-0 transition-transform active:scale-90 cursor-pointer"
                 title="Continue"
               >
                 <ArrowRight className="w-4 h-4 stroke-[2.5] shrink-0" />
@@ -416,7 +425,7 @@ export default function Login() {
             SCREEN 2: "CONTINUE AS" ROLE SELECTION
             ======================================================== */}
         {currentStep === 'role' && (
-          <div className="flex-1 flex flex-col justify-between p-4 pb-6 bg-gradient-to-b from-[#f8faff] via-white to-[#f0f4f9] overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex-1 flex flex-col justify-between p-4 pb-6 bg-gradient-to-b from-slate-50 via-white to-slate-100 overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             <div>
               {/* Top Navigation Bar with Back Button */}
               <div className="flex items-center justify-between pt-1 mb-2">
@@ -429,7 +438,7 @@ export default function Login() {
                 </button>
                 <button 
                   onClick={() => setCurrentStep('login')}
-                  className="text-xs font-bold text-[#1976d2] hover:underline cursor-pointer"
+                  className="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
                 >
                   Skip to Login
                 </button>
@@ -437,12 +446,14 @@ export default function Login() {
 
               {/* Branding Header */}
               <div className="flex flex-col items-center text-center mb-3">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1.5" variant="default" />
-                <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-1 leading-none">
-                  School <span className="text-[#1976d2]">ERP</span>
+                <div className="w-10 h-10 bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/25 ring-1 ring-white/20 mb-1">
+                  <span className="text-sm font-black tracking-tight text-white font-mono">ACS</span>
+                </div>
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-1 leading-none">
+                  ALL CORE <span className="text-orange-500">SOLUTION</span>
                 </h1>
                 <p className="text-[11px] font-semibold text-slate-500 mt-1">
-                  Smart School Management System
+                  Student &amp; Parent Cloud Console
                 </p>
               </div>
 
@@ -464,10 +475,10 @@ export default function Login() {
                     handleRoleChange('student');
                     setCurrentStep('login');
                   }}
-                  className="bg-gradient-to-r from-[#edf5ff] via-[#f7faff] to-white hover:from-[#e3efff] border border-blue-200/80 rounded-2xl p-3 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                  className="bg-gradient-to-r from-orange-50/80 via-white to-white hover:from-orange-100/70 border border-orange-200/80 rounded-2xl p-3 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-16 rounded-xl overflow-hidden bg-sky-100 shrink-0 border border-blue-200/50 shadow-2xs flex items-center justify-center">
+                    <div className="w-14 h-16 rounded-xl overflow-hidden bg-orange-100/60 shrink-0 border border-orange-200/50 shadow-2xs flex items-center justify-center">
                       <img 
                         src={roleStudentImg} 
                         alt="Student" 
@@ -475,7 +486,7 @@ export default function Login() {
                       />
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-slate-900 group-hover:text-[#1976d2] transition-colors flex items-center gap-1">
+                      <h3 className="text-sm font-black text-slate-900 group-hover:text-orange-600 transition-colors flex items-center gap-1">
                         Student
                       </h3>
                       <p className="text-xs text-slate-500 leading-snug mt-1">
@@ -483,7 +494,7 @@ export default function Login() {
                       </p>
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-[#1976d2] text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-xs shadow-orange-500/30 shrink-0 group-hover:scale-110 transition-transform">
                     <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                   </div>
                 </div>
@@ -494,10 +505,10 @@ export default function Login() {
                     handleRoleChange('parent');
                     setCurrentStep('login');
                   }}
-                  className="bg-gradient-to-r from-[#fff1f2] via-[#fff7f8] to-white hover:from-[#ffe4e6] border border-rose-200/80 rounded-2xl p-3 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group"
+                  className="bg-gradient-to-r from-slate-50 via-white to-white hover:from-slate-100/80 border border-slate-200/90 rounded-2xl p-3 shadow-xs hover:shadow-md transition-all cursor-pointer flex items-center justify-between gap-3 group"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-14 h-16 rounded-xl overflow-hidden bg-rose-100 shrink-0 border border-rose-200/50 shadow-2xs flex items-center justify-center">
+                    <div className="w-14 h-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200/50 shadow-2xs flex items-center justify-center">
                       <img 
                         src={roleParentImg} 
                         alt="Parent" 
@@ -505,7 +516,7 @@ export default function Login() {
                       />
                     </div>
                     <div>
-                      <h3 className="text-sm font-black text-slate-900 group-hover:text-rose-600 transition-colors flex items-center gap-1">
+                      <h3 className="text-sm font-black text-slate-900 group-hover:text-slate-950 transition-colors flex items-center gap-1">
                         Parent
                       </h3>
                       <p className="text-xs text-slate-500 leading-snug mt-1">
@@ -513,7 +524,7 @@ export default function Login() {
                       </p>
                     </div>
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-[#f43f5e] text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
+                  <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-110 transition-transform">
                     <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                   </div>
                 </div>
@@ -540,31 +551,33 @@ export default function Login() {
             SCREEN 3: STUDENTS & PARENTS LOGIN FORM
             ======================================================== */}
         {currentStep === 'login' && (
-          <div className="flex-1 flex flex-col justify-between bg-gradient-to-b from-[#061833] via-[#0d2e5c] to-[#124285] text-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="flex-1 flex flex-col justify-between bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
             {/* Top Royal Navy Blue Header */}
-            <div className="pt-3 pb-5 px-4 relative">
+            <div className="pt-3 pb-5 px-4 relative border-b border-slate-800">
               <div className="flex items-center justify-between mb-1">
                 <button 
                   onClick={() => setCurrentStep('role')}
-                  className="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/20 active:scale-95"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md border border-white/15 active:scale-95"
                   title="Back to Role Selection"
                 >
                   <ArrowLeft className="w-4 h-4 stroke-[2.2]" />
                 </button>
-                <div className="flex items-center gap-1.5 bg-white/15 border border-white/20 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md">
+                <div className="flex items-center gap-1.5 bg-orange-500/20 text-orange-300 border border-orange-500/30 px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md">
                   <span>{isStudentRole ? '🎒 Student Portal' : '👨‍👩‍👧 Parent Portal'}</span>
                 </div>
               </div>
 
-              {/* Branding Header with 3D White Logo */}
+              {/* Branding Header with ACS Emblem */}
               <div className="flex flex-col items-center text-center my-1">
-                <SchoolLogo3D className="w-12 h-9 mb-0.5" variant="darkHeader" />
-                <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-sky-300">ERP</span>
+                <div className="w-8 h-8 bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md shadow-orange-500/25 ring-1 ring-white/20 mb-1">
+                  <span className="text-xs font-black tracking-tight text-white font-mono">ACS</span>
+                </div>
+                <h1 className="text-base font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
+                  ALL CORE <span className="text-orange-500">SOLUTION</span>
                 </h1>
-                <p className="text-[10px] text-sky-200/90 font-medium mt-0.5">
-                  Smart School Management System
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5">
+                  Student &amp; Parent Cloud Console
                 </p>
               </div>
             </div>
@@ -574,7 +587,7 @@ export default function Login() {
               
               {/* 3D Student & Mother Avatar Badge */}
               <div className="w-full flex justify-center -mt-3.5 mb-2">
-                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-2 ring-blue-100/70 bg-gradient-to-b from-sky-50 to-white flex items-center justify-center">
+                <div className="w-20 h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white ring-2 ring-orange-500/30 bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
                   <img 
                     src={loginAvatarHeroImg} 
                     alt="Student & Parent" 
@@ -603,7 +616,7 @@ export default function Login() {
                     onClick={() => handleRoleChange('student')}
                     className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
                       isStudentRole 
-                        ? 'bg-[#1976d2] text-white shadow-xs scale-[1.02]' 
+                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/25 scale-[1.02]' 
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -614,7 +627,7 @@ export default function Login() {
                     onClick={() => handleRoleChange('parent')}
                     className={`flex-1 py-1.5 text-xs font-black rounded-lg transition-all flex items-center justify-center gap-1 cursor-pointer ${
                       !isStudentRole 
-                        ? 'bg-[#f43f5e] text-white shadow-xs scale-[1.02]' 
+                        ? 'bg-slate-900 text-white shadow-md scale-[1.02]' 
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
@@ -653,7 +666,7 @@ export default function Login() {
                       value={userId}
                       onChange={(e) => setUserId(e.target.value)}
                       placeholder="Email / Username / Admission No."
-                      className="w-full pl-9 pr-3 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#1976d2] focus:bg-white transition-all font-medium shadow-2xs"
+                      className="w-full pl-9 pr-3 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all font-medium shadow-2xs"
                     />
                   </div>
                 </div>
@@ -670,7 +683,7 @@ export default function Login() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Password"
-                      className="w-full pl-9 pr-9 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-[#1976d2] focus:bg-white transition-all font-medium shadow-2xs"
+                      className="w-full pl-9 pr-9 py-2 bg-slate-50/80 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all font-medium shadow-2xs"
                     />
                     <button
                       type="button"
@@ -689,7 +702,7 @@ export default function Login() {
                       type="checkbox" 
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 rounded text-[#1976d2] focus:ring-blue-500 border-slate-300" 
+                      className="w-4 h-4 rounded text-orange-500 focus:ring-orange-500 border-slate-300" 
                     />
                     <span>Remember me</span>
                   </label>
@@ -697,17 +710,17 @@ export default function Login() {
                   <button 
                     type="button" 
                     onClick={handleForgotPassword}
-                    className="font-bold text-[#1976d2] hover:text-blue-800 hover:underline cursor-pointer"
+                    className="font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
                   >
                     Forgot Password?
                   </button>
                 </div>
 
-                {/* Primary Vibrant Blue Login Button */}
+                {/* Primary Vibrant Orange Login Button */}
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="w-full mt-1.5 py-2.5 bg-gradient-to-r from-[#1976d2] via-[#2196f3] to-[#1565c0] hover:from-[#1565c0] hover:to-[#0d47a1] text-white rounded-xl text-sm font-black shadow-md shadow-blue-500/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                  className="w-full mt-1.5 py-2.5 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl text-sm font-black shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
                 >
                   {loading ? (
                     <>
@@ -729,7 +742,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('student')}
-                  className="px-2 py-0.5 rounded bg-blue-50 text-[#1976d2] hover:bg-blue-100 font-bold border border-blue-200/60"
+                  className="px-2 py-0.5 rounded bg-orange-50 text-orange-600 hover:bg-orange-100 font-bold border border-orange-200/60"
                 >
                   Student
                 </button>
@@ -737,7 +750,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('parent')}
-                  className="px-2 py-0.5 rounded bg-rose-50 text-rose-600 hover:bg-rose-100 font-bold border border-rose-200/60"
+                  className="px-2 py-0.5 rounded bg-slate-100 text-slate-800 hover:bg-slate-200 font-bold border border-slate-200"
                 >
                   Parent
                 </button>
@@ -762,8 +775,8 @@ export default function Login() {
               </button>
 
               {/* Bottom School Admin Support Callout */}
-              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-3 bg-gradient-to-r from-blue-50/60 to-slate-50/80 p-2.5 rounded-xl border border-blue-100/70">
-                <div className="w-7 h-7 rounded-lg bg-blue-100 text-[#1976d2] flex items-center justify-center shrink-0 shadow-2xs">
+              <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center gap-3 bg-gradient-to-r from-orange-50/60 to-slate-50/80 p-2.5 rounded-xl border border-orange-100/70">
+                <div className="w-7 h-7 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 shadow-2xs">
                   <School className="w-3.5 h-3.5 stroke-[2.2]" />
                 </div>
                 <div className="text-[10px] text-slate-600 leading-snug">

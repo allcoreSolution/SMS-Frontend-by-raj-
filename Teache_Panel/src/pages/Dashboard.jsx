@@ -270,7 +270,7 @@ const TeacherDashboardView = () => {
       const rawSchool = localStorage.getItem('schoolName');
       if (rawSchool && !rawSchool.includes('Delhi Public')) return rawSchool;
     } catch (_) {}
-    return 'All core';
+    return 'ALL CORE SOLUTION';
   });
 
   // Real Backend Data State
@@ -403,8 +403,8 @@ const TeacherDashboardView = () => {
       ) : (
         <div className="flex-1 overflow-y-auto bg-[#f9fafb]">
           {/* Alert Banner */}
-          <div className="bg-[#0ea5e9] text-white px-6 py-2.5 text-xs text-center font-medium flex items-center justify-center gap-2">
-            <span className="font-bold bg-white/20 px-1.5 py-0.5 rounded-none text-[10px] uppercase">New</span>
+          <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-slate-300 border-b border-slate-800 px-6 py-2 text-xs text-center font-medium flex items-center justify-center gap-2 shadow-xs">
+            <span className="font-extrabold bg-gradient-to-r from-orange-500 to-amber-500 text-white px-2 py-0.5 rounded-full text-[10px] uppercase tracking-wider">New</span>
             {t("academic-session scoping. Lists and dashboard numbers now show the selected academic session only.", "academic-session scoping. Lists and dashboard numbers now show the selected academic session only.")}
           </div>
 

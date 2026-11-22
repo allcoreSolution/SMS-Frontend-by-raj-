@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../api/axios';
-import { LogIn, Lock, User, ShieldCheck, GraduationCap, CheckCircle, PieChart, Sparkles, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { 
+  LogIn, Lock, Mail, ShieldCheck, GraduationCap, CheckCircle2, 
+  PieChart, Sparkles, ArrowRight, Eye, EyeOff, Building2, Zap, Globe 
+} from 'lucide-react';
 import Swal from 'sweetalert2';
+import schoolHeroImg from '../assets/school_erp_login_hero.png';
 
 const Login = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ identifier: 'ryadavy498@gmail.com', password: 'admin@123' });
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -35,15 +40,16 @@ const Login = () => {
     localStorage.setItem('token', dummyUser.token);
     localStorage.setItem('user', JSON.stringify(dummyUser));
     localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
+    localStorage.setItem('schoolName', 'ALL CORE SOLUTION');
 
     Swal.fire({
       icon: 'success',
-      title: 'Welcome Back!',
-      text: 'Logged into School ERP Administration',
+      title: 'Access Granted',
+      text: 'Welcome to ALL CORE SOLUTION School ERP',
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1600,
       timerProgressBar: true
     });
 
@@ -51,15 +57,24 @@ const Login = () => {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
+    if (!formData.identifier.trim() || !formData.password.trim()) {
+      return Swal.fire({
+        icon: 'warning',
+        title: 'Credentials Required',
+        text: 'Please enter your User ID and Password.',
+        confirmButtonColor: '#ff5c0a'
+      });
+    }
+
     setLoading(true);
 
     try {
       const res = await axiosInstance.post('/auth/login', {
-        empId: formData.identifier,
-        email: formData.identifier,
-        password: formData.password,
-        role: "staff"
+        empId: formData.identifier.trim(),
+        email: formData.identifier.trim(),
+        password: formData.password.trim(),
+        role: "admin"
       });
 
       if (res.data?.success) {
@@ -72,16 +87,18 @@ const Login = () => {
         }
         if (res.data.data.tenant?.schoolName) {
           localStorage.setItem('schoolName', res.data.data.tenant.schoolName);
+        } else {
+          localStorage.setItem('schoolName', 'ALL CORE SOLUTION');
         }
 
         Swal.fire({
           icon: 'success',
           title: 'Access Granted',
-          text: 'Welcome to the School ERP',
+          text: 'Welcome to ALL CORE SOLUTION School ERP',
           toast: true,
           position: 'top-end',
           showConfirmButton: false,
-          timer: 2000,
+          timer: 1600,
           timerProgressBar: true
         });
 
@@ -90,7 +107,7 @@ const Login = () => {
       }
     } catch (err) {
       console.warn('API login attempt failed:', err);
-      const isDemoCred = (formData.identifier === 'ryadavy498@gmail.com' || formData.identifier === 'admin123@gmail.com') && formData.password === 'admin@123';
+      const isDemoCred = (formData.identifier.trim() === 'ryadavy498@gmail.com' || formData.identifier.trim() === 'admin123@gmail.com') && formData.password.trim() === 'admin@123';
 
       if (isDemoCred) {
         performBypassLogin();
@@ -100,8 +117,8 @@ const Login = () => {
       Swal.fire({
         icon: 'error',
         title: 'Authentication Failed',
-        text: err.response?.data?.message || 'Invalid email or password. Please try again.',
-        confirmButtonColor: '#6366f1',
+        text: err.response?.data?.message || 'Invalid email or password. Please verify credentials.',
+        confirmButtonColor: '#ff5c0a',
       });
     } finally {
       setLoading(false);
@@ -109,105 +126,187 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-slate-50 flex flex-col lg:flex-row font-sans overflow-x-hidden">
+    <div className="h-screen max-h-screen w-full bg-slate-950 flex font-sans text-slate-800 relative overflow-hidden selection:bg-orange-500 selection:text-white">
       
-      {/* Left Side - Modern Visual Branding */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 relative flex-col justify-between p-14 overflow-hidden items-start border-r border-slate-800">
-        <div className="absolute top-[-15%] left-[-10%] w-[550px] h-[550px] bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-[-15%] right-[-10%] w-[450px] h-[450px] bg-violet-600/20 rounded-full blur-[100px] pointer-events-none"></div>
+      {/* Ambient Lighting Gradients */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-[-15%] left-[-10%] w-[600px] h-[600px] bg-orange-600/15 rounded-full blur-[140px]" />
+        <div className="absolute bottom-[-15%] right-[-10%] w-[550px] h-[550px] bg-indigo-600/15 rounded-full blur-[140px]" />
+        <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-amber-500/5 rounded-full blur-[160px]" />
+      </div>
 
-        <div className="relative z-10 w-full">
-          <div className="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center mb-8 shadow-xl shadow-indigo-500/25 ring-1 ring-white/20">
-            <GraduationCap className="w-8 h-8 text-white" />
-          </div>
-          
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-indigo-300 text-xs font-semibold mb-4 border border-white/10 backdrop-blur-md">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Next Generation School Management</span>
+      {/* Left Column: Premium SaaS Showcase (Desktop lg+) - FIXED & NON-SCROLLABLE */}
+      <div className="hidden lg:flex lg:w-1/2 xl:w-5/12 h-screen max-h-screen overflow-hidden relative z-10 flex-col justify-between p-6 xl:p-8 2xl:p-10 border-r border-slate-800/80 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        
+        {/* Subtle grid background */}
+        <div 
+          className="absolute inset-0 opacity-15 pointer-events-none" 
+          style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px)', backgroundSize: '24px 24px' }}
+        />
+
+        {/* Top Brand Emblem */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-3.5 xl:mb-5">
+            <div className="w-10 h-10 xl:w-11 xl:h-11 bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 rounded-xl xl:rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/25 ring-1 ring-white/20 shrink-0">
+              <span className="text-sm xl:text-base font-black tracking-tight text-white font-mono">ACS</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg xl:text-xl font-black text-white tracking-tight">
+                  ALL CORE <span className="text-orange-500">SOLUTION</span>
+                </span>
+                <span className="text-[10px] font-black uppercase tracking-wider bg-orange-500/20 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-md">
+                  School ERP
+                </span>
+              </div>
+              <p className="text-[10.5px] font-semibold text-slate-400">Enterprise Multi-School ERP Platform</p>
+            </div>
           </div>
 
-          <h1 className="text-white text-4xl xl:text-5xl font-black leading-tight mb-5 tracking-tight">
-            Unified Core <br/>
-            <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-sky-400 bg-clip-text text-transparent">
-              School ERP Platform
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-orange-400 text-xs font-semibold mb-2 xl:mb-3 backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-orange-400" />
+            <span>Integrated School Digital Operating System</span>
+          </div>
+
+          <h1 className="text-white text-2xl xl:text-3xl font-black leading-tight tracking-tight mb-2">
+            Next-Gen Cloud OS for <br />
+            <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-orange-500 bg-clip-text text-transparent">
+              Schools & Institutions
             </span>
           </h1>
-          <p className="text-slate-300 text-base max-w-md leading-relaxed font-normal">
-            Empower administration, academic faculty, student lifecycle, and automated fee collections across 39 enterprise suites.
+
+          <p className="text-slate-300 text-xs xl:text-[13px] max-w-md leading-relaxed font-normal">
+            Empower principal leadership, academic faculty, student lifecycle, and automated fee collections across 38 integrated cloud ERP modules.
           </p>
         </div>
 
-        {/* Feature Badges */}
-        <div className="relative z-10 grid grid-cols-2 gap-5 w-full max-w-lg">
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-            <div className="w-10 h-10 bg-indigo-500/20 text-indigo-400 rounded-xl flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5" />
+        {/* Center: Sleek 3D Preview Frame */}
+        <div className="relative z-10 my-2 xl:my-4 rounded-2xl overflow-hidden border border-white/15 shadow-xl shadow-black/70 bg-slate-900/80 backdrop-blur-md group">
+          <img 
+            src={schoolHeroImg} 
+            alt="ALL CORE SOLUTION School ERP Center" 
+            className="w-full h-32 xl:h-40 2xl:h-48 object-cover object-center transform group-hover:scale-105 transition-transform duration-700" 
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent pointer-events-none" />
+          
+          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between text-white">
+            <span className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/10 text-[10.5px] font-bold shadow-md">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Campus Online & Synchronized</span>
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-[10px] font-black text-orange-300 tracking-wider font-mono">
+              SLA 99.99%
+            </span>
+          </div>
+        </div>
+
+        {/* Feature Highlights */}
+        <div className="relative z-10 grid grid-cols-2 gap-2.5 max-w-md mb-1">
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-orange-500/20 text-orange-400 rounded-lg flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-3.5 h-3.5" />
             </div>
             <div>
-              <span className="font-bold text-white text-xs block">Bank-Grade Security</span>
-              <span className="text-slate-400 text-[11px]">Role RBAC & Audit Trails</span>
+              <p className="text-xs font-bold text-white">Bank-Grade Security</p>
+              <p className="text-[10px] text-slate-400">Role RBAC & Audit Trails</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-            <div className="w-10 h-10 bg-violet-500/20 text-violet-400 rounded-xl flex items-center justify-center shrink-0">
-              <PieChart className="w-5 h-5" />
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center gap-2.5">
+            <div className="w-7 h-7 bg-emerald-500/20 text-emerald-400 rounded-lg flex items-center justify-center shrink-0">
+              <PieChart className="w-3.5 h-3.5" />
             </div>
             <div>
-              <span className="font-bold text-white text-xs block">Real-time Analytics</span>
-              <span className="text-slate-400 text-[11px]">237 Functional Screens</span>
+              <p className="text-xs font-bold text-white">Real-Time Analytics</p>
+              <p className="text-[10px] text-slate-400">38 Full Modules Active</p>
             </div>
           </div>
         </div>
 
         {/* Footer Credit */}
-        <div className="relative z-10 text-[11px] text-slate-400 font-medium">
-          Protected by School ERP SaaS Core • Version 2.5 Pro
+        <div className="relative z-10 flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-white/10 font-medium">
+          <span>&copy; {new Date().getFullYear()} ALL CORE SOLUTION</span>
+          <span className="flex items-center gap-1.5 text-emerald-400 font-bold text-[11px]">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            All Systems Operational
+          </span>
         </div>
       </div>
 
-      {/* Right Side - Interactive Login Form */}
-      <div className="w-full lg:w-1/2 min-h-screen flex flex-col justify-between py-8 px-4 sm:px-8 md:px-12 bg-white relative z-10 overflow-y-auto">
-        <div className="w-full max-w-md mx-auto my-auto space-y-6">
-          
-          {/* Mobile Branding */}
-          <div className="lg:hidden flex items-center gap-3 mb-2">
-            <div className="w-11 h-11 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center shadow-lg">
-              <GraduationCap className="w-6 h-6 text-white" />
+      {/* Right Column: Clean, Elegant, Focused Login Form - FIXED & FIT TO VIEWPORT */}
+      <div className="w-full lg:w-1/2 xl:w-7/12 h-screen max-h-screen overflow-y-auto lg:overflow-hidden flex flex-col justify-between p-4 sm:p-6 lg:p-6 xl:p-8 2xl:p-12 bg-white relative z-10">
+        
+        {/* Top Bar on Mobile Screens */}
+        <div className="lg:hidden flex items-center justify-between pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md shadow-orange-500/20">
+              <span className="text-xs font-black tracking-tight text-white font-mono">ACS</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-900 leading-tight">School ERP</h1>
-              <p className="text-xs text-slate-500">Enterprise Administration Portal</p>
+              <h2 className="text-sm font-black text-slate-900 leading-tight">
+                ALL CORE <span className="text-orange-500">SOLUTION</span>
+              </h2>
+              <p className="text-[9.5px] font-bold text-slate-400 uppercase tracking-wider">School ERP Console</p>
             </div>
           </div>
 
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Admin & Staff Portal</h2>
-            <p className="text-slate-500 text-sm mt-1">Sign in with your administrator ID or verified staff credentials.</p>
-          </div>
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            Online
+          </span>
+        </div>
+
+        {/* Centered Clean Login Box - COMPACT & FIXED */}
+        <div className="w-full max-w-md mx-auto my-auto py-2 space-y-3.5">
           
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
-                User ID / Email Address
+          {/* Header Title */}
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-orange-50 text-orange-600 text-[10.5px] font-black uppercase tracking-wider">
+              <GraduationCap className="w-3.5 h-3.5 text-orange-500" />
+              <span>School Admin & Staff Access</span>
+            </div>
+            <h2 className="text-2xl sm:text-[26px] font-black text-slate-900 tracking-tight leading-tight">
+              Sign In to School ERP
+            </h2>
+            <p className="text-xs text-slate-500 font-medium">
+              Enter your administrator ID or verified staff credentials to manage the campus.
+            </p>
+          </div>
+
+          {/* Form */}
+          <form onSubmit={handleLogin} className="space-y-3">
+            
+            {/* User ID / Email */}
+            <div className="space-y-1">
+              <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                User ID / Email Address <span className="text-rose-500">*</span>
               </label>
               <div className="relative group">
                 <input 
                   type="text" 
                   value={formData.identifier}
                   onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
-                  placeholder="e.g. ryadavy498@gmail.com"
+                  placeholder="ryadavy498@gmail.com"
                   required
-                  className="w-full border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-medium transition-all"
+                  className="w-full border border-slate-200 rounded-xl pl-9 pr-4 py-2.5 bg-slate-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400 shadow-2xs"
                 />
-                <User className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
               </div>
             </div>
-            
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1.5 uppercase tracking-wide">
-                System Password
-              </label>
+
+            {/* Password */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                  System Password <span className="text-rose-500">*</span>
+                </label>
+                <Link 
+                  to="/forgot-password" 
+                  className="text-xs font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
+                >
+                  Forgot Password?
+                </Link>
+              </div>
               <div className="relative group">
                 <input 
                   type={showPassword ? "text" : "password"} 
@@ -215,74 +314,90 @@ const Login = () => {
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   placeholder="••••••••"
                   required
-                  className="w-full border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm font-medium transition-all"
+                  className="w-full border border-slate-200 rounded-xl pl-9 pr-9 py-2.5 bg-slate-50/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs sm:text-sm font-semibold transition-all text-slate-900 placeholder:text-slate-400 shadow-2xs"
                 />
-                <Lock className="w-4 h-4 absolute left-3.5 top-3 text-slate-400 group-focus-within:text-indigo-600 transition-colors" />
+                <Lock className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer p-0.5 transition-colors"
+                  title={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-xs">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 font-medium">
-                <input type="checkbox" defaultChecked className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 border-slate-300" />
-                <span>Remember session</span>
+            {/* Session Options */}
+            <div className="flex items-center justify-between pt-0.5">
+              <label className="flex items-center gap-1.5 cursor-pointer text-xs text-slate-600 font-bold select-none">
+                <input 
+                  type="checkbox" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-3.5 h-3.5 rounded text-orange-500 focus:ring-orange-500 border-slate-300 cursor-pointer accent-orange-500" 
+                />
+                <span>Remember this workstation</span>
               </label>
-              <Link to="/forgot-password" className="text-indigo-600 font-semibold hover:underline cursor-pointer">
-                Forgot Password?
-              </Link>
+
+              <button
+                type="button"
+                onClick={() => setFormData({ identifier: 'ryadavy498@gmail.com', password: 'admin@123' })}
+                className="text-xs font-bold text-slate-400 hover:text-orange-600 transition-colors cursor-pointer"
+              >
+                Autofill Credentials
+              </button>
             </div>
 
+            {/* Submit Button */}
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white py-3 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/25 hover:shadow-indigo-600/40 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70"
+              className="w-full bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-black uppercase tracking-wider shadow-md shadow-orange-500/25 active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed border border-orange-400/30"
             >
               {loading ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                <LogIn className="w-4 h-4" />
+                <LogIn className="w-4 h-4 stroke-[2.5]" />
               )}
-              {loading ? 'Authenticating...' : 'Sign In to School ERP'}
+              <span>{loading ? 'Authenticating...' : 'Sign In to School ERP'}</span>
             </button>
           </form>
 
-          {/* Demo Access Button & Credentials */}
-          <div className="p-4 rounded-2xl bg-indigo-50/70 border border-indigo-100 space-y-3">
-            <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-indigo-900 uppercase tracking-wider text-[10px]">Demo Access Credentials</span>
-              <span className="text-[10px] font-semibold text-indigo-600 bg-white px-2 py-0.5 rounded-full border border-indigo-200">
-                Ready
-              </span>
-            </div>
-            <div className="flex items-center justify-between text-xs text-indigo-800 font-mono font-medium bg-white px-3 py-2 rounded-xl border border-indigo-100">
-              <span>ryadavy498@gmail.com</span>
-              <span>admin@123</span>
-            </div>
-            
+          {/* Clean 1-Click Demo Evaluation Strip */}
+          <div className="pt-1">
             <button
               type="button"
               onClick={performBypassLogin}
-              className="w-full py-2 bg-white hover:bg-slate-50 text-indigo-700 text-xs font-bold rounded-xl border border-indigo-200 shadow-2xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+              disabled={loading}
+              className="w-full py-2 px-3.5 rounded-xl border border-slate-200 hover:border-orange-200 bg-slate-50/50 hover:bg-orange-50/40 text-slate-600 hover:text-orange-600 text-xs font-bold transition-all flex items-center justify-between group cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              <span>Instant One-Click Demo Access</span>
-              <ArrowRight className="w-3 h-3 text-indigo-500" />
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-orange-500 group-hover:scale-125 transition-transform" />
+                <span>Instant Demo Login (Principal & Admin Access)</span>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
             </button>
           </div>
 
-          <div className="pt-2 text-center text-xs text-slate-400">
-            <p>&copy; {new Date().getFullYear()} School ERP. All rights reserved.</p>
-            <p className="font-semibold text-slate-500 mt-0.5">Built with ❤️ by <span className="text-indigo-600 font-bold">RAJ YADAV</span> @ALLCORE SOLUTION</p>
+          {/* Security Badge */}
+          <div className="pt-2 flex items-center justify-center gap-2 text-[11px] font-semibold text-slate-400">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <span>256-Bit SSL Encrypted &bull; Zero-Trust Campus Session</span>
           </div>
 
         </div>
+
+        {/* Footer Credit & Copyright */}
+        <div className="pt-2.5 pb-1 text-center text-xs text-slate-400 border-t border-slate-100">
+          <p className="font-medium">&copy; {new Date().getFullYear()} ALL CORE SOLUTION. All rights reserved.</p>
+          <p className="text-slate-400 text-[11px] mt-0.5">
+            School ERP Campus Operating System
+          </p>
+        </div>
+
       </div>
+
     </div>
   );
 };

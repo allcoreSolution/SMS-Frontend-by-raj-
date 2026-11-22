@@ -164,7 +164,7 @@ const Login = () => {
           designation: 'Staff Faculty',
           department: 'Administration',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
-          schoolName: 'All core'
+          schoolName: 'ALL CORE SOLUTION'
         } : {
           id: '6afd5a6c6568c30df618a4c4',
           staffId: '110',
@@ -175,7 +175,7 @@ const Login = () => {
           designation: 'Teacher',
           department: 'Academics',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
-          schoolName: 'All core',
+          schoolName: 'ALL CORE SOLUTION',
           photo: localStorage.getItem('teacher_user_avatar') || '',
           avatar: localStorage.getItem('teacher_user_avatar') || ''
         };
@@ -186,7 +186,7 @@ const Login = () => {
         localStorage.setItem('token', demoTok);
         localStorage.setItem('user', JSON.stringify(dummyUser));
         localStorage.setItem('schoolId', '6ad9bbe1c6514fd4a43099c6');
-        localStorage.setItem('schoolName', 'All core');
+        localStorage.setItem('schoolName', 'ALL CORE SOLUTION');
 
         Swal.fire({
           icon: 'success',
@@ -207,7 +207,7 @@ const Login = () => {
         icon: 'error',
         title: 'Login Failed',
         text: err.response?.data?.message || 'Invalid credentials. Please verify your Email/Employee ID and Password.',
-        confirmButtonColor: '#15803d'
+        confirmButtonColor: '#ff5c0a'
       });
     } finally {
       setLoading(false);
@@ -222,7 +222,7 @@ const Login = () => {
       inputPlaceholder: selectedRole === 'staff' ? 'staff@school.edu' : 'avanikumari@gmail.com',
       inputValue: formData.identifier.includes('@') ? formData.identifier : '',
       showCancelButton: true,
-      confirmButtonColor: '#15803d',
+      confirmButtonColor: '#ff5c0a',
       confirmButtonText: 'Send Verification OTP',
       inputValidator: (value) => {
         if (!value) return 'Please enter an email address!';
@@ -251,7 +251,7 @@ const Login = () => {
               '<input id="swal-newpass" class="swal2-input !h-10 !text-sm !my-2" placeholder="Enter New Password" type="password">',
             focusConfirm: false,
             confirmButtonText: 'Update Password',
-            confirmButtonColor: '#15803d',
+            confirmButtonColor: '#ff5c0a',
             showCancelButton: true,
             preConfirm: () => {
               const otpVal = document.getElementById('swal-otp').value;
@@ -286,7 +286,7 @@ const Login = () => {
                 icon: 'success',
                 title: 'Password Updated!',
                 text: 'Your password has been changed. You can now login.',
-                confirmButtonColor: '#15803d'
+                confirmButtonColor: '#ff5c0a'
               });
               setFormData({ ...formData, password: formValues.newPassword });
             } else {
@@ -316,23 +316,24 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center font-sans p-0 sm:p-3 select-none text-slate-800">
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans p-0 sm:p-3 select-none text-slate-800 relative overflow-hidden">
       
       {/* Background Ambient Glow */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-teal-500/10 blur-3xl" />
+        <div className="absolute -top-32 -left-32 w-80 h-80 rounded-full bg-orange-600/15 blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-32 -right-32 w-80 h-80 rounded-full bg-indigo-600/15 blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-amber-500/5 blur-3xl pointer-events-none" />
       </div>
 
       {/* Desktop Top Stepper Bar */}
-      <div className="hidden sm:flex items-center gap-2 mb-3 bg-slate-800/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-700 shadow-sm z-20">
-        <span className="text-[11px] font-black text-emerald-400 uppercase tracking-wider mr-1">Switch Screen:</span>
+      <div className="hidden sm:flex items-center gap-2 mb-3 bg-slate-900/90 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-800 shadow-sm z-20">
+        <span className="text-[11px] font-black text-orange-400 uppercase tracking-wider mr-1">Switch Screen:</span>
         <button
           onClick={() => setCurrentStep('welcome')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'welcome' 
-              ? 'bg-emerald-600 text-white shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           1. Welcome
@@ -341,8 +342,8 @@ const Login = () => {
           onClick={() => setCurrentStep('role')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'role' 
-              ? 'bg-emerald-600 text-white shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           2. Continue as
@@ -351,8 +352,8 @@ const Login = () => {
           onClick={() => setCurrentStep('login')}
           className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
             currentStep === 'login' 
-              ? 'bg-emerald-600 text-white shadow-xs font-black' 
-              : 'text-slate-300 hover:bg-slate-700'
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs font-black' 
+              : 'text-slate-400 hover:text-white hover:bg-slate-800'
           }`}
         >
           3. Login Form
@@ -368,16 +369,16 @@ const Login = () => {
         {currentStep === 'welcome' && (
           <div className="flex-1 flex flex-col justify-between bg-white relative overflow-y-auto sm:overflow-hidden">
             
-            {/* Top Emerald Header Section */}
-            <div className="bg-gradient-to-b from-[#042f1a] via-[#064e28] to-[#0a6336] text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-4 sm:pt-3 pb-6 sm:pb-7 px-4 relative shrink-0 border-b border-slate-800">
               {/* Top Bar with Sign In Pill */}
               <div className="flex items-center justify-between z-20 mb-1">
-                <span className="text-[10px] font-mono text-emerald-300 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-400/20">
-                  Faculty &amp; Staff v3.7
+                <span className="text-[10px] font-mono text-orange-400 font-bold bg-orange-500/10 px-2.5 py-0.5 rounded-full border border-orange-500/20">
+                  Faculty &amp; Staff Cloud Console
                 </span>
                 <button 
                   onClick={() => setCurrentStep('login')}
-                  className="text-xs font-bold text-emerald-200 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-emerald-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95"
+                  className="text-xs font-bold text-orange-300 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full border border-orange-400/30 shadow-2xs transition-all cursor-pointer flex items-center gap-1 active:scale-95"
                 >
                   <span>Sign In</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -386,19 +387,23 @@ const Login = () => {
 
               {/* Top Branding Section */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1" variant="darkHeader" />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
                 <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-emerald-300">ERP</span>
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h1>
-                <p className="text-xs font-bold text-emerald-100 tracking-wide mt-1">
-                  Smart School Management System
+                <p className="text-xs font-bold text-slate-400 tracking-wide mt-1">
+                  Faculty &amp; Staff Cloud Console
                 </p>
               </div>
 
-              {/* Emerald Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#10b981" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -406,14 +411,14 @@ const Login = () => {
 
             {/* Hero Banner Card in a Box (3D Pixar Teacher Illustration) */}
             <div className="px-4 my-auto shrink-0">
-              <div className="relative rounded-2xl overflow-hidden shadow-md border border-emerald-200/70 bg-slate-900 group">
+              <div className="relative rounded-2xl overflow-hidden shadow-md border border-slate-200/80 bg-slate-900 group">
                 <img 
                   src={teacherWelcomeHero} 
                   alt="Educators and Staff" 
                   className="w-full h-40 sm:h-44 object-cover object-center group-hover:scale-102 transition-transform duration-500" 
                 />
-                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-emerald-300 flex items-center gap-1.5 shadow-sm border border-emerald-400/50">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="absolute top-2.5 left-2.5 bg-black/65 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-orange-400 flex items-center gap-1.5 shadow-sm border border-orange-500/30">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-400" />
                   <span>For Teachers &amp; Staff</span>
                 </div>
               </div>
@@ -425,9 +430,9 @@ const Login = () => {
                 {/* 1. Manage Classes */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#ecfdf5] hover:bg-[#d1fae5] border border-emerald-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-orange-50/60 hover:bg-orange-50 border border-orange-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-[#ff5c0a] flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Calendar className="w-5 h-5 stroke-[2.3] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Manage Classes</span>
@@ -436,9 +441,9 @@ const Login = () => {
                 {/* 2. Mark Attendance */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#f0fdf4] hover:bg-[#dcfce7] border border-green-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-amber-50/60 hover:bg-amber-50 border border-amber-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-green-500/10 text-green-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Users className="w-5 h-5 stroke-[2.3] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">Mark Attendance</span>
@@ -447,9 +452,9 @@ const Login = () => {
                 {/* 3. View Student Records */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#f0fdfa] hover:bg-[#ccfbf1] border border-teal-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-slate-50 hover:bg-slate-100/80 border border-slate-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-slate-900/10 text-slate-800 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <CheckSquare className="w-5 h-5 stroke-[2.3] shrink-0" />
                   </div>
                   <span className="text-xs font-black text-slate-800 leading-tight">View Student Records</span>
@@ -458,7 +463,7 @@ const Login = () => {
                 {/* 4. Get Notifications */}
                 <div 
                   onClick={() => setCurrentStep('role')}
-                  className="bg-[#fff1f2] hover:bg-[#ffe4e6] border border-rose-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
+                  className="bg-rose-50/60 hover:bg-rose-50 border border-rose-200/80 rounded-2xl p-3 flex flex-col items-center text-center shadow-2xs hover:shadow-xs transition-all cursor-pointer group"
                 >
                   <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center mb-1.5 shadow-2xs group-hover:scale-110 transition-transform shrink-0">
                     <Bell className="w-5 h-5 stroke-[2.3] shrink-0" />
@@ -468,13 +473,13 @@ const Login = () => {
               </div>
             </div>
 
-            {/* Bottom Curved Emerald Wave & Action Banner (Pinned to Bottom) */}
+            {/* Bottom Curved Wave & Action Banner (Pinned to Bottom) */}
             <div 
               onClick={() => setCurrentStep('role')}
-              className="bg-gradient-to-r from-[#042f1a] via-[#064e28] to-[#0a6336] text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-emerald-400 shrink-0"
+              className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 text-white px-4 py-3.5 rounded-t-[28px] shadow-lg flex items-center justify-between cursor-pointer hover:brightness-110 transition-all border-t-2 border-[#ff5c0a] shrink-0"
             >
               <div className="flex items-center gap-2.5 flex-1 pr-2">
-                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-400/30">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center shrink-0 border border-orange-400/30">
                   <GraduationCap className="w-4 h-4 stroke-[2.4]" />
                 </div>
                 <div>
@@ -482,7 +487,7 @@ const Login = () => {
                     Empowering Educators for Better Learning
                   </p>
                   <div className="flex items-center gap-1.5 mt-1">
-                    <span className="w-5 h-1.5 bg-emerald-400 rounded-full shadow-xs" />
+                    <span className="w-5 h-1.5 bg-[#ff5c0a] rounded-full shadow-xs" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                     <span className="w-1.5 h-1.5 bg-white/60 rounded-full" />
                   </div>
@@ -491,7 +496,7 @@ const Login = () => {
 
               <button
                 type="button"
-                className="w-9 h-9 rounded-full bg-white text-emerald-950 hover:bg-emerald-100 flex items-center justify-center shadow-md shrink-0 transition-transform active:scale-90 cursor-pointer"
+                className="w-9 h-9 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:brightness-110 flex items-center justify-center shadow-md shadow-orange-500/30 shrink-0 transition-transform active:scale-90 cursor-pointer"
                 title="Continue"
               >
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
@@ -507,8 +512,8 @@ const Login = () => {
         {currentStep === 'role' && (
           <div className="flex-1 flex flex-col justify-between bg-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
-            {/* Top Emerald Header Section */}
-            <div className="bg-gradient-to-b from-[#042f1a] via-[#064e28] to-[#0a6336] text-white pt-3 pb-7 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-3 pb-7 px-4 relative shrink-0 border-b border-slate-800">
               {/* Navigation Bar with Back Button */}
               <div className="flex items-center justify-between z-20 mb-1">
                 <button 
@@ -517,7 +522,7 @@ const Login = () => {
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
-                <span className="text-xs font-bold text-emerald-200">
+                <span className="text-xs font-bold text-orange-400">
                   Step 2 of 3
                 </span>
                 <div className="w-8"></div>
@@ -525,19 +530,23 @@ const Login = () => {
 
               {/* Branding Section */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1" variant="darkHeader" />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
                 <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-emerald-300">ERP</span>
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h2>
-                <p className="text-xs font-bold text-emerald-100 tracking-wide mt-1">
-                  Smart School Management System
+                <p className="text-xs font-bold text-slate-400 tracking-wide mt-1">
+                  Faculty &amp; Staff Cloud Console
                 </p>
               </div>
 
-              {/* Emerald Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#10b981" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -558,10 +567,10 @@ const Login = () => {
               {/* Option 1: Teacher Role Card */}
               <div 
                 onClick={() => handleChooseRoleAndProceed('teacher')}
-                className="bg-white hover:bg-emerald-50/50 border-2 border-emerald-200/90 hover:border-emerald-500 rounded-2xl p-3 flex items-center justify-between shadow-xs hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]"
+                className="bg-white hover:bg-orange-50/40 border-2 border-slate-200 hover:border-[#ff5c0a] rounded-2xl p-3 flex items-center justify-between shadow-xs hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-emerald-100/80 border border-emerald-200 p-0.5 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl bg-orange-100/80 border border-orange-200 p-0.5 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform overflow-hidden">
                     <img 
                       src={teacherFemaleAvatar} 
                       alt="Teacher" 
@@ -569,7 +578,7 @@ const Login = () => {
                     />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-sm font-black text-slate-900 group-hover:text-[#15803d] transition-colors leading-tight">
+                    <h4 className="text-sm font-black text-slate-900 group-hover:text-[#ff5c0a] transition-colors leading-tight">
                       Teacher
                     </h4>
                     <p className="text-[11px] text-slate-500 font-medium leading-snug mt-1 max-w-[170px]">
@@ -577,7 +586,7 @@ const Login = () => {
                     </p>
                   </div>
                 </div>
-                <div className="w-7 h-7 rounded-full bg-[#15803d] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 text-white flex items-center justify-center shadow-xs shadow-orange-500/30 group-hover:scale-110 transition-transform shrink-0">
                   <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                 </div>
               </div>
@@ -585,10 +594,10 @@ const Login = () => {
               {/* Option 2: Staff Role Card */}
               <div 
                 onClick={() => handleChooseRoleAndProceed('staff')}
-                className="bg-white hover:bg-emerald-50/50 border-2 border-emerald-200/90 hover:border-emerald-500 rounded-2xl p-3 flex items-center justify-between shadow-xs hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]"
+                className="bg-white hover:bg-slate-50 border-2 border-slate-200 hover:border-slate-800 rounded-2xl p-3 flex items-center justify-between shadow-xs hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-teal-100/80 border border-teal-200 p-0.5 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform overflow-hidden">
+                  <div className="w-14 h-14 rounded-2xl bg-slate-100 border border-slate-300 p-0.5 flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform overflow-hidden">
                     <img 
                       src={teacherStaffAvatar} 
                       alt="Staff" 
@@ -596,7 +605,7 @@ const Login = () => {
                     />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-sm font-black text-slate-900 group-hover:text-[#15803d] transition-colors leading-tight">
+                    <h4 className="text-sm font-black text-slate-900 group-hover:text-slate-900 transition-colors leading-tight">
                       Staff
                     </h4>
                     <p className="text-[11px] text-slate-500 font-medium leading-snug mt-1 max-w-[170px]">
@@ -604,7 +613,7 @@ const Login = () => {
                     </p>
                   </div>
                 </div>
-                <div className="w-7 h-7 rounded-full bg-[#15803d] text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
+                <div className="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center shadow-xs group-hover:scale-110 transition-transform shrink-0">
                   <ChevronRight className="w-4 h-4 stroke-[2.5]" />
                 </div>
               </div>
@@ -631,8 +640,8 @@ const Login = () => {
         {currentStep === 'login' && (
           <div className="flex-1 flex flex-col justify-between bg-white overflow-y-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
             
-            {/* Top Emerald Header Section */}
-            <div className="bg-gradient-to-b from-[#042f1a] via-[#064e28] to-[#0a6336] text-white pt-3 pb-8 px-4 relative shrink-0">
+            {/* Top Header Section */}
+            <div className="bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white pt-3 pb-8 px-4 relative shrink-0 border-b border-slate-800">
               
               {/* Navigation Bar with Back Button */}
               <div className="flex items-center justify-between z-20 mb-1">
@@ -644,12 +653,12 @@ const Login = () => {
                 </button>
 
                 {/* Role Switcher Pill */}
-                <div className="flex bg-black/30 p-0.5 rounded-full border border-emerald-400/30">
+                <div className="flex bg-slate-900/90 p-0.5 rounded-full border border-slate-800">
                   <button
                     type="button"
                     onClick={() => handleSelectRole('teacher')}
                     className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
-                      selectedRole === 'teacher' ? 'bg-white text-emerald-900 shadow-xs' : 'text-white/80 hover:text-white'
+                      selectedRole === 'teacher' ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     Teacher
@@ -658,7 +667,7 @@ const Login = () => {
                     type="button"
                     onClick={() => handleSelectRole('staff')}
                     className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
-                      selectedRole === 'staff' ? 'bg-white text-emerald-900 shadow-xs' : 'text-white/80 hover:text-white'
+                      selectedRole === 'staff' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-400 hover:text-white'
                     }`}
                   >
                     Staff
@@ -668,19 +677,23 @@ const Login = () => {
 
               {/* Branding */}
               <div className="flex flex-col items-center text-center z-10 my-0.5">
-                <SchoolLogo3D className="w-[52px] h-[42px] mb-1" variant="darkHeader" />
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-lg shadow-orange-500/20 mb-1 shrink-0">
+                  <div className="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                    <span className="text-sm font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  </div>
+                </div>
                 <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-1.5 leading-none">
-                  School <span className="text-emerald-300">ERP</span>
+                  ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                 </h2>
-                <p className="text-xs font-bold text-emerald-100 tracking-wide mt-1">
-                  Smart School Management System
+                <p className="text-xs font-bold text-slate-400 tracking-wide mt-1">
+                  Faculty &amp; Staff Cloud Console
                 </p>
               </div>
 
-              {/* Emerald Wave Arc Divider */}
+              {/* Vibrant Orange Wave Arc Divider */}
               <div className="absolute -bottom-1 left-0 right-0 w-full overflow-hidden leading-none pointer-events-none">
                 <svg viewBox="0 0 500 50" preserveAspectRatio="none" className="w-full h-6 sm:h-7">
-                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#10b981" opacity="0.95" />
+                  <path d="M0,15 Q250,55 500,10 L500,50 L0,50 Z" fill="#ff5c0a" opacity="0.95" />
                   <path d="M0,25 Q250,65 500,20 L500,50 L0,50 Z" fill="#ffffff" />
                 </svg>
               </div>
@@ -688,7 +701,7 @@ const Login = () => {
 
             {/* Floating Hero Banner Card (3D Pixar Teacher & Staff Illustration) */}
             <div className="-mt-7 px-4 z-10 shrink-0">
-              <div className="bg-white rounded-2xl shadow-md border border-emerald-100 p-1 flex items-center justify-center overflow-hidden">
+              <div className="bg-white rounded-2xl shadow-md border border-slate-200/80 p-1 flex items-center justify-center overflow-hidden">
                 <img 
                   src={teacherLoginHero} 
                   alt="Teacher & Staff" 
@@ -711,7 +724,7 @@ const Login = () => {
               </div>
 
               {autofillNotice && (
-                <div className="bg-emerald-50 text-emerald-700 text-xs px-3 py-1.5 rounded-xl border border-emerald-200 text-center font-bold">
+                <div className="bg-orange-50 text-orange-800 text-xs px-3 py-1.5 rounded-xl border border-orange-200 text-center font-bold">
                   {autofillNotice}
                 </div>
               )}
@@ -729,7 +742,7 @@ const Login = () => {
                       placeholder="Email / Username / Employee ID"
                       value={formData.identifier}
                       onChange={(e) => setFormData({ ...formData, identifier: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 focus:bg-white transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#ff5c0a] focus:bg-white transition-all"
                     />
                   </div>
                 </div>
@@ -744,7 +757,7 @@ const Login = () => {
                       placeholder="Password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600 focus:bg-white transition-all"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-10 py-2.5 text-xs text-slate-900 placeholder-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#ff5c0a] focus:bg-white transition-all"
                     />
                     <button
                       type="button"
@@ -763,7 +776,7 @@ const Login = () => {
                       type="checkbox" 
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-3.5 h-3.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600"
+                      className="w-3.5 h-3.5 rounded border-slate-300 text-orange-600 focus:ring-orange-500 accent-[#ff5c0a]"
                     />
                     <span className="text-slate-600 font-medium text-[11px]">Remember me</span>
                   </label>
@@ -771,7 +784,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={handleForgotPassword}
-                    className="text-[11px] font-bold text-emerald-700 hover:text-emerald-900 transition-colors cursor-pointer"
+                    className="text-[11px] font-bold text-orange-600 hover:text-orange-700 transition-colors cursor-pointer"
                   >
                     Forgot Password?
                   </button>
@@ -781,7 +794,7 @@ const Login = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-emerald-700/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98] disabled:opacity-70"
+                  className="w-full py-2.5 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md shadow-orange-500/25 flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98] disabled:opacity-70"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -804,7 +817,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('teacher')}
-                  className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-bold border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer"
+                  className="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 font-bold border border-orange-200 hover:bg-orange-100 transition-colors cursor-pointer"
                 >
                   Teacher
                 </button>
@@ -812,7 +825,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('staff')}
-                  className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 font-bold border border-teal-200 hover:bg-teal-100 transition-colors cursor-pointer"
+                  className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 font-bold border border-slate-200 hover:bg-slate-200 transition-colors cursor-pointer"
                 >
                   Staff
                 </button>
@@ -837,8 +850,8 @@ const Login = () => {
               </button>
 
               {/* Need Help? Footer Card */}
-              <div className="bg-emerald-50/70 border border-emerald-200/60 rounded-2xl p-2.5 flex items-center gap-2.5 mt-1">
-                <div className="w-8 h-8 rounded-xl bg-emerald-600/10 text-emerald-700 flex items-center justify-center shrink-0">
+              <div className="bg-orange-50/60 border border-orange-200/60 rounded-2xl p-2.5 flex items-center gap-2.5 mt-1">
+                <div className="w-8 h-8 rounded-xl bg-orange-500/10 text-[#ff5c0a] flex items-center justify-center shrink-0">
                   <School className="w-4 h-4" />
                 </div>
                 <div className="text-left">

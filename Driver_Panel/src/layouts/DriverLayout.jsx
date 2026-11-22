@@ -119,29 +119,33 @@ export default function DriverLayout() {
       <header className="sticky top-0 z-30 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 shadow-sm transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-3">
           
-          {/* Left: Round Peach Bus Badge + Portal Title */}
+          {/* Left: Golden ACS Emblem + Portal Title */}
           <div className="flex items-center gap-3">
             {/* Mobile Hamburger Drawer Trigger */}
             <button 
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden w-10 h-10 rounded-full bg-[#ffedd5] dark:bg-orange-950/70 border border-orange-200/60 dark:border-orange-800/40 flex items-center justify-center text-[#d9480f] dark:text-orange-400 shrink-0 shadow-sm hover:scale-105 active:scale-95 transition-transform"
+              className="lg:hidden w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0 hover:scale-105 active:scale-95 transition-transform"
               title="Open Driver Menu"
             >
-              <Bus className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center">
+                <span className="text-[10px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+              </div>
             </button>
 
             {/* Desktop Brand Link */}
             <NavLink to="/dashboard" className="hidden lg:flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-full bg-[#ffedd5] dark:bg-orange-950/70 border border-orange-200/60 dark:border-orange-800/40 flex items-center justify-center text-[#d9480f] dark:text-orange-400 shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-                <Bus className="w-5 h-5 stroke-[2.2]" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center">
+                  <span className="text-[11px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                </div>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="font-serif font-black text-lg tracking-wider text-slate-900 dark:text-white uppercase leading-none">
-                    DRIVER PORTAL
+                  <h1 className="font-sans font-black text-base tracking-tight text-slate-900 dark:text-white uppercase leading-none">
+                    ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
                   </h1>
-                  <span className="text-[10px] bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400 font-bold px-1.5 py-0.5 rounded uppercase">
-                    ERP FLEET
+                  <span className="text-[9.5px] bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400 font-bold px-1.5 py-0.5 rounded uppercase">
+                    DRIVER &amp; FLEET
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
@@ -152,8 +156,8 @@ export default function DriverLayout() {
 
             {/* Mobile Center Title */}
             <div className="lg:hidden text-left sm:text-center">
-              <h1 className="font-serif font-black text-base sm:text-lg tracking-wider text-slate-900 dark:text-white uppercase leading-tight">
-                DRIVER PORTAL
+              <h1 className="font-sans font-black text-sm sm:text-base tracking-tight text-slate-900 dark:text-white uppercase leading-tight">
+                ALL CORE <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">SOLUTION</span>
               </h1>
             </div>
           </div>
@@ -304,7 +308,7 @@ export default function DriverLayout() {
                     className={({ isActive }) => `
                       flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors duration-150
                       ${isActive 
-                        ? 'bg-[#ea580c] text-white shadow-sm shadow-orange-500/20 font-bold' 
+                        ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white shadow-sm shadow-orange-500/20 font-bold' 
                         : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                       }
                     `}
@@ -332,6 +336,18 @@ export default function DriverLayout() {
                 <Contact className="w-4 h-4 shrink-0" />
                 <span>Emergency Contacts</span>
               </button>
+            </div>
+
+            {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-center">
+              <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2.5 border border-slate-800/80 shadow-xs">
+                <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
+                  &copy; 2026 ALL CORE SOLUTION
+                </p>
+                <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
+                  Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+                </p>
+              </div>
             </div>
 
           </div>
@@ -445,15 +461,17 @@ export default function DriverLayout() {
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#ffedd5] dark:bg-orange-950/70 border border-orange-200 flex items-center justify-center text-orange-600 font-bold">
-                    <Bus className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0">
+                    <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center">
+                      <span className="text-[10px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                    </div>
                   </div>
                   <div>
-                    <h3 className="font-serif font-black text-sm uppercase text-slate-900 dark:text-white">
-                      DRIVER PANEL
+                    <h3 className="font-sans font-black text-xs uppercase text-slate-900 dark:text-white leading-tight">
+                      ALL CORE <span className="text-[#ff5c0a]">SOLUTION</span>
                     </h3>
-                    <p className="text-[11px] text-orange-600 font-bold">
-                      {formattedBusNo}
+                    <p className="text-[10px] text-orange-600 font-bold">
+                      {formattedBusNo} • Fleet Console
                     </p>
                   </div>
                 </div>
@@ -502,7 +520,7 @@ export default function DriverLayout() {
                       className={({ isActive }) => `
                         flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold transition-colors duration-150
                         ${isActive 
-                          ? 'bg-[#ea580c] text-white font-bold shadow-md shadow-orange-500/20' 
+                          ? 'bg-gradient-to-r from-[#ff5c0a] to-[#ff7a29] text-white font-bold shadow-md shadow-orange-500/20' 
                           : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                         }
                       `}
@@ -522,13 +540,22 @@ export default function DriverLayout() {
               </nav>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+              <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-2 border border-slate-800/80 shadow-xs text-center">
+                <p className="text-[10px] font-bold text-slate-300 tracking-wide mb-0.5">
+                  &copy; 2026 ALL CORE SOLUTION
+                </p>
+                <p className="text-[9px] font-medium text-slate-400 leading-tight">
+                  Developed by <span className="text-white font-bold">RAJ YADAV</span> <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">@ALLCORE SOLUTION</span>
+                </p>
+              </div>
+
               <button
                 onClick={() => {
                   logout();
                   navigate('/login');
                 }}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-2xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-2xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Log Out of Driver Portal</span>

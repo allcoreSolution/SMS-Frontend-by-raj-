@@ -41,7 +41,7 @@ const Header = () => {
       const rawSchoolName = localStorage.getItem('schoolName');
       if (rawSchoolName && !rawSchoolName.includes('Delhi Public')) return { name: rawSchoolName, logo: null, shortName: '' };
     } catch (_) {}
-    return { name: 'All core', logo: null, shortName: 'allcore' };
+    return { name: 'ALL CORE SOLUTION', logo: null, shortName: 'allcore' };
   });
 
   // Profile State (Teacher or Staff)
@@ -444,18 +444,24 @@ const Header = () => {
 
         {/* Dynamic School Name & Logo */}
         <div className="flex items-center gap-2 min-w-0">
-          {schoolInfo?.logo && (
+          {schoolInfo?.logo ? (
             <img 
               src={schoolInfo.logo} 
               alt={schoolInfo?.name || 'School'} 
-              className="w-5 h-5 object-contain rounded shrink-0"
+              className="w-6 h-6 object-contain rounded-lg shrink-0"
             />
+          ) : (
+            <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1px] shadow-xs shrink-0 flex items-center justify-center">
+              <div className="w-full h-full bg-slate-950 rounded-[7px] flex items-center justify-center">
+                <span className="text-[9px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+              </div>
+            </div>
           )}
           <span 
-            className="text-[13px] sm:text-[14px] font-extrabold text-gray-800 tracking-tight hidden sm:inline-block theme-text max-w-[130px] md:max-w-[180px] lg:max-w-[240px] truncate shrink min-w-0"
-            title={schoolInfo?.name || 'School ERP'}
+            className="text-[13px] sm:text-[14px] font-extrabold text-slate-800 tracking-tight hidden sm:inline-block theme-text max-w-[130px] md:max-w-[180px] lg:max-w-[240px] truncate shrink min-w-0"
+            title={schoolInfo?.name || 'ALL CORE SOLUTION'}
           >
-            {schoolInfo?.name || 'School ERP'}
+            {schoolInfo?.name || 'ALL CORE SOLUTION'}
           </span>
         </div>
         

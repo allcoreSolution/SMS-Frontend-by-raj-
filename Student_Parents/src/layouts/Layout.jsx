@@ -194,29 +194,29 @@ function NavItem({ item, active, navigate, location, lang, onSelect }) {
           onClick={() => setOpen(!open)}
           className={`w-full flex items-center gap-2.5 px-3.5 py-2 transition-all text-left group
             ${(active || isChildActive)
-              ? 'bg-[#1e232d] border-l-[3px] border-orange-500 text-white'
-              : 'hover:bg-white/5 border-l-[3px] border-transparent text-gray-300 hover:text-white'}`}
+              ? 'bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-transparent border-l-[3px] border-amber-400 text-white font-semibold'
+              : 'hover:bg-slate-800/60 border-l-[3px] border-transparent text-slate-300 hover:text-white'}`}
         >
-          <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${(active || isChildActive) ? 'text-orange-400' : 'text-gray-400 group-hover:text-white'}`} strokeWidth={1.8} />
+          <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${(active || isChildActive) ? 'text-amber-400' : 'text-slate-400 group-hover:text-white'}`} strokeWidth={1.8} />
           <span className="flex-1 text-[12.5px] font-medium truncate">
             {itemLabel}
           </span>
-          <ChevronDown className={`w-3.5 h-3.5 text-gray-400 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </button>
         {isOpen && (
           <div className="flex flex-col ml-8 mt-0.5 space-y-0.5 relative mb-1.5">
-            <div className="absolute left-[-12px] top-0 bottom-3 w-[1px] bg-white/10" />
+            <div className="absolute left-[-12px] top-0 bottom-3 w-[1px] bg-slate-700/60" />
             
             {item.subItems.map(subItem => (
               <div key={subItem.route} className="relative flex items-center">
-                <div className="w-2.5 h-[1px] bg-white/10 absolute left-[-12px]" />
+                <div className="w-2.5 h-[1px] bg-slate-700/60 absolute left-[-12px]" />
                 <button
                   onClick={() => {
                     navigate(subItem.route);
                     if (onSelect) onSelect();
                   }}
                   className={`w-full text-left flex items-center gap-2 pl-2 pr-2 py-1.5 transition-all text-[11px]
-                    ${location.pathname === subItem.route ? 'text-orange-400 font-semibold' : 'text-gray-400 hover:text-white'}`}
+                    ${location.pathname === subItem.route ? 'text-amber-300 font-bold' : 'text-slate-400 hover:text-white'}`}
                 >
                   <span className="text-[10px] opacity-70">»</span>
                   {getT(subItem.key, lang) || subItem.label}
@@ -237,10 +237,10 @@ function NavItem({ item, active, navigate, location, lang, onSelect }) {
       }}
       className={`w-full flex items-center gap-2.5 px-3.5 py-2 transition-all text-left group
         ${active
-          ? 'bg-[#1e232d] border-l-[3px] border-orange-500 text-white font-medium'
-          : 'hover:bg-white/5 border-l-[3px] border-transparent text-gray-300 hover:text-white'}`}
+          ? 'bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-transparent border-l-[3px] border-amber-400 text-white font-semibold'
+          : 'hover:bg-slate-800/60 border-l-[3px] border-transparent text-slate-300 hover:text-white'}`}
     >
-      <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${active ? 'text-orange-400' : 'text-gray-400 group-hover:text-white'}`} strokeWidth={1.8} />
+      <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${active ? 'text-amber-400' : 'text-slate-400 group-hover:text-white'}`} strokeWidth={1.8} />
       <span className="flex-1 text-[12.5px] font-medium truncate">
         {itemLabel}
       </span>
@@ -335,8 +335,8 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       }
     } catch (e) {}
     return {
-      name: 'ACS-SCHOOL',
-      shortName: 'Smart Campus',
+      name: 'ALL CORE SOLUTION',
+      shortName: 'STUDENT & PARENT CLOUD',
       logo: null
     };
   });
@@ -562,16 +562,16 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           fixed inset-y-0 left-0 z-50 lg:static lg:z-auto
           ${sideOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0 lg:w-0'}
           transition-all duration-300 ease-in-out
-          overflow-hidden flex-shrink-0 flex flex-col bg-[#272b35] border-r border-[#1e222b] shadow-2xl lg:shadow-none
+          overflow-hidden flex-shrink-0 flex flex-col bg-slate-950 border-r border-slate-800/80 shadow-2xl lg:shadow-none
         `}
       >
 
         {/* Dynamic School Brand Header */}
-        <div className="flex items-center justify-between px-3.5 py-3.5 flex-shrink-0 border-b border-[#1e222b] select-none">
+        <div className="flex items-center justify-between px-3.5 py-3.5 flex-shrink-0 border-b border-slate-800/80 select-none bg-slate-950/80">
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
             {/* School Logo with Image and Fallback Monogram */}
             {schoolInfo?.logo ? (
-              <div className="relative w-8 h-8 rounded-xl bg-white p-0.5 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/20 border border-white/20 overflow-hidden">
+              <div className="relative w-8 h-8 rounded-xl bg-white p-0.5 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-500/10 border border-slate-700 overflow-hidden">
                 <img
                   src={getMediaUrl(schoolInfo.logo)}
                   alt={schoolInfo.name}
@@ -581,31 +581,32 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                     if (e.currentTarget.nextSibling) e.currentTarget.nextSibling.style.display = 'flex';
                   }}
                 />
-                <div className="hidden w-full h-full rounded-lg bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 items-center justify-center">
-                  <GraduationCap className="w-4 h-4 text-white" strokeWidth={2.4} />
+                <div className="hidden w-full h-full rounded-lg bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 items-center justify-center">
+                  <span className="font-black text-slate-950 text-xs font-mono">ACS</span>
                 </div>
               </div>
             ) : (
-              <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-blue-700 via-indigo-600 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-md shadow-blue-600/30 border border-blue-400/30 overflow-hidden">
-                <span className="font-black text-white text-xs tracking-wider uppercase font-serif">
-                  {(schoolInfo?.name || 'S').trim().charAt(0).toUpperCase()}
-                </span>
-                <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-amber-400 rounded-full border-2 border-[#272b35]" />
+              <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 p-0.5 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-500/20 border border-amber-400/30 overflow-hidden">
+                <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+                  <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[10px] tracking-wider font-mono">
+                    ACS
+                  </span>
+                </div>
               </div>
             )}
 
             <div className="flex flex-col min-w-0 flex-1 pr-1">
               <span 
                 className="font-black text-white text-[13px] tracking-wide uppercase leading-tight font-serif truncate"
-                title={schoolInfo?.name || 'School ERP'}
+                title={schoolInfo?.name || 'ALL CORE SOLUTION'}
               >
-                {schoolInfo?.name || 'School ERP'}
+                {schoolInfo?.name || 'ALL CORE SOLUTION'}
               </span>
               <span 
-                className="text-[9px] font-bold text-blue-300 tracking-wider uppercase leading-none truncate mt-0.5"
-                title={schoolInfo?.shortName || 'Smart Campus'}
+                className="text-[9px] font-bold text-amber-300/90 tracking-wider uppercase leading-none truncate mt-0.5"
+                title={schoolInfo?.shortName || 'STUDENT & PARENT CLOUD'}
               >
-                {schoolInfo?.shortName || 'Smart Campus'}
+                {schoolInfo?.shortName || 'STUDENT & PARENT CLOUD'}
               </span>
             </div>
           </div>
@@ -617,7 +618,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
               e.stopPropagation();
               setSideOpen(false);
             }}
-            className="lg:hidden p-1 text-gray-400 hover:text-white hover:bg-white/10 rounded transition-colors cursor-pointer shrink-0"
+            className="lg:hidden p-1 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer shrink-0"
             title="Close Drawer"
           >
             <X className="w-5 h-5" />
@@ -625,18 +626,18 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
         </div>
 
         {/* Search */}
-        <div className="px-3.5 py-3 flex-shrink-0 border-b border-[#1e222b]">
-          <div className="flex items-center bg-[#353b47] rounded overflow-hidden border border-white/5">
+        <div className="px-3.5 py-3 flex-shrink-0 border-b border-slate-800/80">
+          <div className="flex items-center bg-slate-900/90 rounded-xl overflow-hidden border border-slate-800 focus-within:border-amber-400/50 transition-colors">
             <input
               type="text"
               value={menuSearch}
               onChange={(e) => setMenuSearch(e.target.value)}
-              className="bg-transparent text-[11.5px] text-gray-200 outline-none flex-1 px-3 py-1.5 placeholder-gray-400"
+              className="bg-transparent text-[11.5px] text-gray-200 outline-none flex-1 px-3 py-1.5 placeholder-slate-500"
               placeholder="Search Menu..."
             />
             <button
               type="button"
-              className="bg-[#414856] hover:bg-[#4a5263] px-2.5 py-2 text-gray-300 transition-colors cursor-pointer flex items-center justify-center"
+              className="bg-slate-800 hover:bg-slate-700 px-2.5 py-2 text-slate-300 transition-colors cursor-pointer flex items-center justify-center"
               title="Search"
             >
               <Search className="w-3.5 h-3.5" />
@@ -868,17 +869,17 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
           </button>
           
           {/* DEVELOPER BRANDING & ATTRIBUTION FOOTER */}
-          <div className="mt-6 mb-3 pt-3 border-t border-white/10 px-2 text-center">
-            <div className="bg-gradient-to-r from-slate-900/90 via-slate-800/60 to-slate-900/90 rounded-xl p-3 border border-white/10 shadow-xs hover:border-[#ff5c0a]/40 transition-colors text-center">
-              <p className="text-[11px] font-bold text-slate-300 tracking-wide mb-1">
-                &copy; 2026 {currentLang === 'hi' ? 'स्कूल ईआरपी' : 'School ERP'}
-              </p>
+          <div className="mt-6 mb-3 pt-3 border-t border-slate-800/80 px-2 text-center">
+            <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 rounded-xl p-3 border border-slate-800/90 shadow-sm hover:border-amber-400/40 transition-colors text-center">
+              <div className="flex items-center justify-center gap-1.5 mb-1">
+                <span className="px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/30 text-[9px] font-black text-amber-300 tracking-wider">ACS CLOUD</span>
+                <p className="text-[11px] font-bold text-slate-200 tracking-wide">
+                  &copy; 2026 ALL CORE SOLUTION
+                </p>
+              </div>
               <p className="text-[10px] font-medium text-slate-400 leading-relaxed">
                 {currentLang === 'hi' ? 'निर्माता' : 'Developed by'}{' '}
-                <span className="text-white font-bold">RAJ YADAV</span>{' '}
-                <span className="bg-gradient-to-r from-orange-400 to-amber-300 bg-clip-text text-transparent font-bold">
-                  @ALLCORE SOLUTION
-                </span>
+                <span className="text-white font-bold">RAJ YADAV</span>
               </p>
             </div>
           </div>
@@ -890,20 +891,20 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Topbar */}
-        <header className="bg-white border-b border-gray-200 px-2 sm:px-4 py-1 sm:py-2 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-40 select-none overflow-visible" style={{ paddingRight: 'max(0.35rem, env(safe-area-inset-right))', paddingLeft: 'max(0.35rem, env(safe-area-inset-left))' }}>
+        <header className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-2 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between flex-shrink-0 w-full max-w-full relative z-40 select-none overflow-visible" style={{ paddingRight: 'max(0.35rem, env(safe-area-inset-right))', paddingLeft: 'max(0.35rem, env(safe-area-inset-left))' }}>
           
           {/* Left Actions: Menu Toggle & Student Portal Logo */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0 min-w-0">
             <button 
               onClick={() => setSideOpen(!sideOpen)} 
-              className="p-1 rounded-lg hover:bg-gray-100 text-gray-700 transition-colors shrink-0 cursor-pointer"
+              className="p-1 rounded-lg hover:bg-slate-100 text-slate-700 transition-colors shrink-0 cursor-pointer"
               title="Toggle Sidebar Menu"
             >
               <Menu className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
             </button>
             
             <div className="flex items-center gap-1.5 sm:gap-2.5 select-none min-w-0">
-              <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-lg ${isStudent ? 'bg-blue-600/10 text-[#2563EB]' : 'bg-emerald-600/10 text-emerald-600'} flex items-center justify-center shrink-0 shadow-2xs overflow-hidden border border-slate-200/50`}>
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-slate-950 text-amber-300 flex items-center justify-center shrink-0 shadow-2xs overflow-hidden border border-slate-800">
                 {schoolInfo?.logo ? (
                   <img
                     src={getMediaUrl(schoolInfo.logo)}
@@ -915,24 +916,20 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                     }}
                   />
                 ) : null}
-                <div className={`${schoolInfo?.logo ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>
-                  {isStudent ? (
-                    <GraduationCap className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
-                  ) : (
-                    <Users className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0" strokeWidth={2.4} />
-                  )}
+                <div className={`${schoolInfo?.logo ? 'hidden' : 'flex'} items-center justify-center w-full h-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 p-0.5`}>
+                  <div className="w-full h-full bg-slate-950 rounded-md flex items-center justify-center">
+                    <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[9px] font-mono">ACS</span>
+                  </div>
                 </div>
               </div>
               <div className="flex flex-col min-w-0">
-                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[80px] xs:max-w-[130px] sm:max-w-[320px]" title={schoolInfo?.name}>
-                  {schoolInfo?.name || (isStudent 
-                    ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल' : 'Student Portal')
-                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल' : 'Parent Portal'))}
+                <span className="text-xs sm:text-base font-black text-slate-900 tracking-tight font-serif leading-tight truncate max-w-[80px] xs:max-w-[130px] sm:max-w-[320px]" title={schoolInfo?.name || 'ALL CORE SOLUTION'}>
+                  {schoolInfo?.name || 'ALL CORE SOLUTION'}
                 </span>
-                <span className={`text-[8.5px] font-bold tracking-widest uppercase hidden sm:block ${isStudent ? 'text-blue-600' : 'text-emerald-600'}`}>
-                  {isStudent 
-                    ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल • स्मार्ट कैम्पस' : `${schoolInfo?.shortName || 'Smart Campus'} • Student Portal`) 
-                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल • पैरेंट डेस्क' : `${schoolInfo?.shortName || 'Smart Campus'} • Parent Portal`)}
+                <span className="text-[8.5px] font-bold tracking-widest uppercase hidden sm:block text-slate-500">
+                  {schoolInfo?.shortName || (isStudent 
+                    ? (currentLang === 'hi' ? 'विद्यार्थी पोर्टल • स्मार्ट कैम्पस' : 'STUDENT & PARENT CLOUD') 
+                    : (currentLang === 'hi' ? 'अभिभावक पोर्टल • पैरेंट डेस्क' : 'STUDENT & PARENT CLOUD'))}
                 </span>
               </div>
             </div>
