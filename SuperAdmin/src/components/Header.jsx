@@ -182,11 +182,22 @@ const Header = ({ onMenuClick, sidebarOpen = true }) => {
             <Menu className="w-5 h-5" />
           </button>
 
+          {/* ALL CORE SOLUTION Brand Tag */}
+          <div className="hidden sm:flex items-center gap-2.5 pl-1 pr-3 border-r border-slate-200">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs shadow-xs">
+              ACS
+            </div>
+            <div className="flex flex-col leading-none">
+              <span className="font-black text-xs text-slate-900 tracking-tight">ALL CORE SOLUTION</span>
+              <span className="text-[9.5px] font-bold text-amber-600 mt-0.5">SuperAdmin Console</span>
+            </div>
+          </div>
+
           {/* Search bar */}
           <div
             onClick={() => { setShowSearch(true); setTimeout(() => searchRef.current?.focus(), 50); }}
-            className="hidden md:flex items-center gap-2 bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 w-72 cursor-pointer hover:border-orange-400 hover:bg-white transition-all group shadow-3xs">
-            <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-orange-500 transition-colors" />
+            className="hidden md:flex items-center gap-2 bg-slate-50/80 border border-slate-200 rounded-xl px-3.5 py-2 w-72 cursor-pointer hover:border-amber-400 hover:bg-white transition-all group shadow-3xs">
+            <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-500 transition-colors" />
             <span className="text-xs text-slate-400 font-medium">Quick search modules, schools...</span>
             <div className="ml-auto flex items-center gap-1">
               <kbd className="text-[10px] bg-slate-200/70 text-slate-500 px-1.5 py-0.5 rounded-md font-mono font-semibold">⌘K</kbd>

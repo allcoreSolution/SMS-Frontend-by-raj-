@@ -10,19 +10,19 @@ import { toArray } from '../../utils/helpers';
 const bgColors = ['bg-blue-500', 'bg-pink-500', 'bg-orange-500', 'bg-teal-500', 'bg-purple-500'];
 
 const WidgetCard = ({ title, subtitle, actionText, onAction, children, icon: Icon }) => (
-  <div className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 flex flex-col h-full shadow-sm hover:shadow-md transition-shadow min-w-0 w-full overflow-hidden">
+  <div className="bg-white rounded-3xl border border-slate-200/90 p-5 flex flex-col h-full shadow-xs hover:shadow-md transition-shadow min-w-0 w-full overflow-hidden">
     <div className="flex justify-between items-start mb-4 gap-2">
       <div className="flex items-center gap-2.5 min-w-0">
-        {Icon && <Icon className="w-4 h-4 text-orange-500 shrink-0" />}
+        {Icon && <Icon className="w-4 h-4 text-amber-500 shrink-0" />}
         <div className="min-w-0">
-          <h3 className="text-[13px] font-bold text-slate-800 truncate">{title}</h3>
+          <h3 className="text-sm font-black text-slate-900 truncate">{title}</h3>
           {subtitle && <p className="text-[11px] font-medium text-slate-400 mt-0.5 truncate">{subtitle}</p>}
         </div>
       </div>
       {actionText && (
         <button
           onClick={onAction}
-          className="text-[11px] font-bold text-[#ff5c0a] bg-orange-50 px-3 py-1 rounded-full flex items-center justify-center border border-orange-100 hover:bg-orange-100 transition-colors shrink-0 cursor-pointer">
+          className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1 rounded-full flex items-center justify-center border border-amber-200 hover:bg-amber-100 transition-colors shrink-0 cursor-pointer">
           {actionText === 'View all' ? (
             <span className="flex items-center gap-1.5">{actionText} <span className="w-3.5 h-3.5 bg-white rounded-full flex items-center justify-center text-[9px] shadow-xs">↗</span></span>
           ) : actionText}
@@ -74,15 +74,15 @@ const BottomWidgets = () => {
               <AreaChart data={revenueData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ff5c0a" stopOpacity={0.25}/>
-                    <stop offset="95%" stopColor="#ff5c0a" stopOpacity={0}/>
+                    <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.25}/>
+                    <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} dy={10} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#64748b', fontWeight: 700 }} tickFormatter={(val) => `₹${val/1000}k`} dx={-10} />
                 <RechartsTooltip contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }} />
-                <Area type="monotone" dataKey="value" stroke="#ff5c0a" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" dot={{ r: 4, fill: '#fff', stroke: '#ff5c0a', strokeWidth: 2 }} activeDot={{ r: 6, strokeWidth: 0, fill: '#ff5c0a' }} />
+                <Area type="monotone" dataKey="value" stroke="#f59e0b" strokeWidth={3} fillOpacity={1} fill="url(#colorValue)" dot={{ r: 4, fill: '#fff', stroke: '#f59e0b', strokeWidth: 2 }} activeDot={{ r: 6, strokeWidth: 0, fill: '#f59e0b' }} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

@@ -19,47 +19,47 @@ const KpiCard = ({
   const safeId = (title || 'kpi').replace(/[^a-zA-Z0-9]/g, '');
 
   return (
-    <div className="bg-white rounded-xl shadow-xs border border-gray-100 p-2.5 sm:px-3 sm:py-2.5 flex flex-col justify-between h-[105px] relative overflow-hidden group hover:shadow-md hover:-translate-y-0.5 transition-all">
+    <div className="bg-white rounded-2xl shadow-xs border border-slate-200/90 p-3.5 flex flex-col justify-between h-[115px] relative overflow-hidden group hover:shadow-xl hover:border-amber-400/80 hover:-translate-y-1 transition-all duration-300">
       {/* Subtle Glow Effect on Hover */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out z-0 pointer-events-none"
-        style={{ background: `radial-gradient(circle at top right, ${glowColor}15, transparent 70%)` }}
+        style={{ background: `radial-gradient(circle at top right, ${glowColor}18, transparent 70%)` }}
       />
 
-      {/* Top Row: Icon Badge on Left, Trend/Live Badge on Right (Identical to School ERP) */}
+      {/* Top Row: Icon Badge on Left, Trend/Live Badge on Right */}
       <div className="flex justify-between items-start z-10">
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-105"
+          className="w-8 h-8 rounded-xl flex items-center justify-center shadow-xs transition-transform duration-300 group-hover:scale-105"
           style={{ background: iconBg }}
         >
-          {Icon && <Icon className="w-3.5 h-3.5" style={{ color: iconColor }} strokeWidth={2.2} />}
+          {Icon && <Icon className="w-4 h-4" style={{ color: iconColor }} strokeWidth={2.2} />}
         </div>
 
         {isLive ? (
-          <span className="text-[8.5px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center gap-1 shadow-2xs">
+          <span className="text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1 shadow-xs">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             Live
           </span>
         ) : trend ? (
-          <span className={`text-[8.5px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-2xs ${trendColor || 'text-emerald-700 bg-emerald-50 border border-emerald-200/60'}`}>
+          <span className={`text-[9px] font-black px-2 py-0.5 rounded-full flex items-center gap-0.5 shadow-xs ${trendColor || 'text-emerald-700 bg-emerald-50 border border-emerald-200'}`}>
             <ArrowUp className="w-2.5 h-2.5 stroke-[2.5]" />
             {trend}
           </span>
         ) : null}
       </div>
 
-      {/* Bottom Section: Big Value on Top, Title underneath (Identical to School ERP) */}
-      <div className="mt-1.5 z-10">
-        <h3 className="text-lg sm:text-xl font-black text-gray-800 tracking-tight leading-none">
+      {/* Bottom Section: Big Value on Top, Title underneath */}
+      <div className="mt-1 z-10">
+        <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none">
           {value}
         </h3>
-        <p className="text-[10.5px] text-gray-500 font-semibold mt-0.5 truncate">
+        <p className="text-[11px] text-slate-500 font-bold mt-1 truncate">
           {title}
         </p>
       </div>
 
       {/* Background Sparkline Chart on Bottom-Right */}
-      <div className="absolute bottom-0 right-0 left-1/3 h-10 opacity-70 pointer-events-none z-0">
+      <div className="absolute bottom-0 right-0 left-1/3 h-11 opacity-70 pointer-events-none z-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={spark} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
             <defs>
@@ -178,7 +178,7 @@ const KpiCards = () => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-3 mb-5 pt-1">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-3.5 mb-6 pt-1">
       {liveCards.map(c => <KpiCard key={c.title} {...c} />)}
     </div>
   );

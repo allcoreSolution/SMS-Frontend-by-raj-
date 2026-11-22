@@ -302,24 +302,24 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
           to="/" 
           onClick={onClose}
           className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
-          title="Multi-School ERP - Platform Owner Dashboard"
+          title="ALL CORE SOLUTION - SuperAdmin Command Center"
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#ff5c0a] to-[#ff8c55] flex items-center justify-center flex-shrink-0 shadow-md shadow-orange-500/20 ring-1 ring-orange-500/40 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs flex-shrink-0 shadow-md shadow-amber-500/20 ring-1 ring-amber-500/40 group-hover:scale-105 transition-transform">
+            ACS
           </div>
           <div className="min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-1.5">
-              <span className="text-white font-bold text-[13px] tracking-tight truncate leading-none group-hover:text-orange-400 transition-colors">
-                Multi-School ERP
+              <span className="text-white font-black text-[13px] tracking-tight truncate leading-none group-hover:text-amber-400 transition-colors">
+                ALL CORE SOLUTION
               </span>
-              <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none">
-                PRO
+              <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 leading-none uppercase">
+                SAAS
               </span>
             </div>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              <span className="text-[10px] text-slate-400 font-medium tracking-wide leading-none truncate">
-                v3.7 • Platform Owner
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span className="text-[10px] text-slate-400 font-semibold tracking-wide leading-none truncate">
+                SuperAdmin Platform Owner
               </span>
             </div>
           </div>

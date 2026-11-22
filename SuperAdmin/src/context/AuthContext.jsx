@@ -84,6 +84,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginDemo = (customUser = {}) => {
+    const demoUser = {
+      id: 'superadmin_master_root_id',
+      name: 'Raj Yadav (Super Admin)',
+      email: 'ryadavy498@gmail.com',
+      role: 'superadmin',
+      avatar: '',
+      ...customUser,
+    };
+    try {
+      sessionStorage.setItem('sa_user', JSON.stringify(demoUser));
+      sessionStorage.setItem('superadmin_token', 'demo-superadmin-token-authenticated');
+      localStorage.setItem('sa_user', JSON.stringify(demoUser));
+      localStorage.setItem('superadmin_token', 'demo-superadmin-token-authenticated');
+    } catch (_) {}
+    setUser(demoUser);
+    return true;
+  };
+
   const logout = () => {
     try {
       sessionStorage.removeItem('sa_user');
@@ -120,7 +139,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, updateUser, isAuthenticated }}>
+    <AuthContext.Provider value={{ user, login, loginDemo, logout, updateUser, isAuthenticated }}>
       {children}
     </AuthContext.Provider>
   );
