@@ -23,7 +23,7 @@ export default function SchoolSettingsEdit() {
     try {
       setLoading(true);
       const res = await tenantService.getSettingsFull(id);
-      if (res.success) {
+      if (res && res.success) {
         setForm(res.settings);
       }
     } catch (err) {

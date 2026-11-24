@@ -27,7 +27,7 @@ export default function SchoolBillingProfile() {
     try {
       setLoading(true);
       const res = await tenantService.getBillingProfile(id);
-      if (res.success) {
+      if (res && res.success) {
         setData(res);
       }
     } catch (err) {

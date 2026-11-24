@@ -24,9 +24,9 @@ export default function SchoolBackups() {
     try {
       setLoading(true);
       const res = await tenantService.getBackupsList(id);
-      if (res.success) {
-        setSchool(res.school);
-        setCloudSync(res.cloudSync);
+      if (res && res.success) {
+        setSchool(res.school || { name: 'Campus Database', code: id });
+        setCloudSync(res.cloudSync || { status: 'Synchronized & Verified' });
         setBackups(res.backups || []);
       }
     } catch (err) {

@@ -23,7 +23,7 @@ export default function SchoolDataExplorer() {
     try {
       setLoading(true);
       const res = await tenantService.getExplorerData(id);
-      if (res.success) {
+      if (res && res.success) {
         setExplorerData(res);
         if (res.collections?.length > 0) {
           setActiveCollection(res.collections[0].name);

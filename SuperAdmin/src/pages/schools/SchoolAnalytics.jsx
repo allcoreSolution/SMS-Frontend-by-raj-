@@ -22,8 +22,8 @@ export default function SchoolAnalytics() {
     try {
       setLoading(true);
       const res = await tenantService.getAnalytics(id);
-      if (res.success) {
-        setData(res.analytics);
+      if (res && (res.analytics || res.success)) {
+        setData(res.analytics || res);
       }
     } catch (err) {
       console.error(err);
@@ -58,7 +58,19 @@ export default function SchoolAnalytics() {
     );
   }
 
-  if (!data) return null;
+  if (!data || !data.school) {
+    return (
+      <div className="p-8 text-center bg-white rounded-2xl border border-slate-200 my-8 max-w-[600px] mx-auto">
+        <p className="text-slate-700 font-bold text-sm mb-4">Campus intelligence profile is preparing metrics...</p>
+        <button 
+          onClick={() => navigate('/schools')} 
+          className="px-4 py-2 bg-[#008f8c] hover:bg-[#007a78] text-white rounded-xl text-xs font-bold transition"
+        >
+          Return to Schools Directory
+        </button>
+      </div>
+    );
+  }
 
   const { school, quotas, admissionsTrend, financialHealth, attendanceStats, userBreakdown } = data;
 
