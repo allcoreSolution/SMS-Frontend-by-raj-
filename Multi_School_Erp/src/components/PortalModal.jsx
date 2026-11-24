@@ -21,7 +21,7 @@ export default function PortalModal() {
     email: '',
     phone: '',
     schoolName: '',
-    plan: 'Starter Cloud — ₹15 / student / month',
+    plan: 'Pro School Annual — ₹49,999 / year (Most Popular)',
     notes: ''
   });
   const [submitting, setSubmitting] = useState(false);
@@ -740,8 +740,8 @@ export default function PortalModal() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-slate-400 font-bold">Cloud SaaS</div>
-                      <div className="text-xl font-black text-amber-500 leading-none">₹15<span className="text-xs text-slate-600 font-semibold">/std/mo</span></div>
+                      <div className="text-xs text-slate-400 font-bold">Annual License</div>
+                      <div className="text-xl font-black text-amber-500 leading-none">₹24,999<span className="text-xs text-slate-600 font-semibold">/year</span></div>
                     </div>
                   </div>
 
@@ -819,14 +819,17 @@ export default function PortalModal() {
                         onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
                         className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:bg-white"
                       >
-                        <option value="Starter Cloud — ₹15 / student / month">
-                          Starter Cloud — ₹15 / student / month (Full ERP + All Apps)
+                        <option value="Starter Annual Plan — ₹24,999 / year (Up to 500 Students)">
+                          Starter Annual Plan — ₹24,999 / year (Up to 500 Students)
                         </option>
-                        <option value="Pro School Enterprise — ₹25 / student / month">
-                          Pro School Enterprise — ₹25 / student / month (Dedicated Cloud + SLA)
+                        <option value="Pro School Annual — ₹49,999 / year (Most Popular • Up to 1,500 Students + All Mobile Apps)">
+                          Pro School Annual — ₹49,999 / year (Most Popular • Up to 1,500 Students + All Mobile Apps)
                         </option>
-                        <option value="Multi-Branch School Group (Custom Package)">
-                          Multi-Branch School Group (Custom Package)
+                        <option value="Enterprise Multi-Campus — ₹89,999 / year (Unlimited Students + Custom Domain)">
+                          Enterprise Multi-Campus — ₹89,999 / year (Unlimited Students + Custom Domain)
+                        </option>
+                        <option value="Custom Multi-School Group Package (Institutional Consultation)">
+                          Custom Multi-School Group Package (Institutional Consultation)
                         </option>
                         <option value="Schedule Live Online Demo First (No Commitment)">
                           Schedule Live Online Demo First (No Commitment)
@@ -1097,7 +1100,7 @@ export default function PortalModal() {
                   <>
                     <h3 className="font-black text-slate-900 text-base uppercase">Zero-Risk Trial &amp; Subscription Terms</h3>
                     <p className="font-medium text-slate-600">
-                      We provide interactive live demos and sandbox accounts so school management and staff can test every module before onboarding. Transparent per-student monthly billing with no lock-ins.
+                      We provide interactive live demos and sandbox accounts so school management and staff can test every module before onboarding. Transparent flat annual institutional billing with complete cloud peace of mind.
                     </p>
                   </>
                 )}

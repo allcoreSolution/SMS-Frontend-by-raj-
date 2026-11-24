@@ -8,15 +8,15 @@ import Swal from 'sweetalert2';
 export default function Inspection() {
   const { driver, vehicle } = useAuth();
   const driverPhoto = getDriverPhoto(driver);
-  const driverName = driver?.name || 'Ramesh Kumar';
+  const driverName = driver?.name || 'Driver';
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
   const [type, setType] = useState('Pre-Trip');
-  const [odometer, setOdometer] = useState('45280');
-  const [fuelLevel, setFuelLevel] = useState('85');
-  const [notes, setNotes] = useState('Vehicle checked and verified roadworthy.');
+  const [odometer, setOdometer] = useState(() => vehicle?.odometer ? String(vehicle.odometer) : '');
+  const [fuelLevel, setFuelLevel] = useState(() => vehicle?.fuelLevel ? String(vehicle.fuelLevel) : '');
+  const [notes, setNotes] = useState('');
 
   const [checklist, setChecklist] = useState({
     brakes: true,
@@ -59,7 +59,7 @@ export default function Inspection() {
     setSubmitting(true);
     try {
       const res = await driverService.submitInspection({
-        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501',
+        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned',
         type,
         odometer: Number(odometer),
         fuelLevel: Number(fuelLevel),

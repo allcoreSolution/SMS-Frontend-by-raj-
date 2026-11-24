@@ -107,13 +107,13 @@ export default function StudentRoster() {
                       {s.studentName}
                     </h3>
                     <div className="text-[11px] text-slate-500 font-medium">
-                      {s.className || 'Class 5-A'} • Roll #{s.rollNo || (idx + 10)}
+                      {s.className || 'Student'} {s.rollNo ? `• Roll #${s.rollNo}` : ''}
                     </div>
                   </div>
                 </div>
 
                 <span className="font-mono text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-400">
-                  {s.admissionNo || `ADM-2024-00${idx + 1}`}
+                  {s.admissionNo || '-'}
                 </span>
               </div>
 
@@ -126,19 +126,21 @@ export default function StudentRoster() {
 
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-[10.5px] text-slate-400 block">Parent Phone:</span>
+                  <span className="text-[10.5px] text-slate-400 block">Parent Emergency Contact:</span>
                   <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
-                    {s.emergencyContact || '+91 98112 0000' + idx}
+                    {s.emergencyContact || s.fatherMobile || s.mobile || 'Not available'}
                   </span>
                 </div>
-                <a
-                  href={`tel:${s.emergencyContact || '981120000' + idx}`}
-                  className="p-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 font-bold flex items-center gap-1"
-                  title="Call Parent"
-                >
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>Call</span>
-                </a>
+                {(s.emergencyContact || s.fatherMobile || s.mobile) && (
+                  <a
+                    href={`tel:${s.emergencyContact || s.fatherMobile || s.mobile}`}
+                    className="p-2 rounded-xl bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 font-bold flex items-center gap-1"
+                    title="Call Parent"
+                  >
+                    <Phone className="w-3.5 h-3.5" />
+                    <span>Call</span>
+                  </a>
+                )}
               </div>
             </div>
           ))}

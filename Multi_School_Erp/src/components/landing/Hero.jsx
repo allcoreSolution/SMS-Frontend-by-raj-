@@ -51,10 +51,10 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-3 pt-1">
-            <span className="text-sm sm:text-base font-bold text-gray-400 line-through decoration-2">₹30/mo</span>
-            <span className="text-3xl sm:text-4xl font-black text-gray-900 leading-none">₹15</span>
+            <span className="text-sm sm:text-base font-bold text-gray-400 line-through decoration-2">₹39,999</span>
+            <span className="text-3xl sm:text-4xl font-black text-gray-900 leading-none">₹24,999</span>
             <span className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider leading-tight">
-              PER STUDENT / MONTH<br/>AFFORDABLE SCHOOL PLANS
+              FLAT / YEARLY LICENSE<br/>COMPLETE INSTITUTIONAL SAAS
             </span>
           </div>
 

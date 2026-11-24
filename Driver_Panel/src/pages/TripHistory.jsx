@@ -82,11 +82,11 @@ export default function TripHistory() {
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-400 block">Distance Covered:</span>
-                  <span className="font-bold text-emerald-600">{trip.totalDistanceKm || 22} km</span>
+                  <span className="font-bold text-emerald-600">{trip.totalDistanceKm || 0} km</span>
                 </div>
                 <div>
                   <span className="text-[11px] text-slate-400 block">Students Transported:</span>
-                  <span className="font-bold text-slate-900 dark:text-white">{trip.students?.length || 28} Students</span>
+                  <span className="font-bold text-slate-900 dark:text-white">{trip.students?.length || 0} Students</span>
                 </div>
               </div>
             </div>

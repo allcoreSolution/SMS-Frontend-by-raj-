@@ -37,7 +37,9 @@ export default function SchoolAnalytics() {
     try {
       const res = await tenantService.impersonateTenant(id);
       if (res.success && res.token) {
-        const liveUrl = `https://sms-frontend-by-raj-school-erp.onrender.com/login?impersonate_token=${encodeURIComponent(res.token)}&user=${encodeURIComponent(JSON.stringify(res.user || {}))}&schoolId=${encodeURIComponent(id)}`;
+        const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const schoolErpBase = isLocal ? 'http://localhost:5176' : 'https://sms-frontend-by-raj-school-erp.onrender.com';
+        const liveUrl = `${schoolErpBase}/login?impersonate_token=${encodeURIComponent(res.token)}&user=${encodeURIComponent(JSON.stringify(res.user || {}))}&schoolId=${encodeURIComponent(id)}`;
         window.open(liveUrl, '_blank');
       }
     } catch (e) {

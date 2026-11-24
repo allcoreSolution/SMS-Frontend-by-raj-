@@ -44,7 +44,7 @@ export default function DriverLayout() {
   const [sosDescription, setSosDescription] = useState('Medical or Road Emergency assistance required.');
   const [sosSending, setSosSending] = useState(false);
   const [sosSuccess, setSosSuccess] = useState(false);
-  const [unreadNotifs] = useState(3);
+  const [unreadNotifs, setUnreadNotifs] = useState(0);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,14 +53,28 @@ export default function DriverLayout() {
     setMobileMenuOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const fetchUnread = async () => {
+      try {
+        const res = await driverService.getNotifications();
+        if (res.success && Array.isArray(res.data)) {
+          setUnreadNotifs(res.data.filter(n => !n.isRead).length);
+        }
+      } catch (e) {
+        // silent fallback
+      }
+    };
+    fetchUnread();
+  }, [location.pathname]);
+
   const handleTriggerSOS = async () => {
     setSosSending(true);
     try {
       await driverService.triggerSOS({
-        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234',
+        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned',
         routeName: activeTrip?.routeName || 'Assigned Route',
         description: sosDescription,
-        location: vehicle?.currentLocation || { lat: 26.8467, lng: 80.9462, address: 'Near Current GPS Position' }
+        location: vehicle?.currentLocation || { lat: 28.5355, lng: 77.3550, address: 'Current Live GPS Location' }
       });
       setSosSuccess(true);
       setTimeout(() => {
@@ -91,10 +105,10 @@ export default function DriverLayout() {
     { name: 'Settings', path: '/settings', icon: Settings }
   ];
 
-  const driverName = driver?.name || 'Ramesh Kumar';
+  const driverName = driver?.name || 'Driver';
   const driverPhoto = getDriverPhoto(driver);
-  const busNumber = vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
-  const formattedBusNo = busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
+  const busNumber = vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned';
+  const formattedBusNo = busNumber === 'Unassigned' ? 'Unassigned' : busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">

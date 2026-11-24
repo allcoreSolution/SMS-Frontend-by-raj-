@@ -186,16 +186,16 @@ export default function Profile() {
 
   // Editable Profile fields
   const [profileData, setProfileData] = useState({
-    name: driver?.name || 'Ramesh Kumar',
-    empId: driver?.driverId || 'EMP-DRV-04',
-    designation: 'Senior Bus Driver',
-    vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234',
-    assignedRoute: 'Route 12 (Sector 15 to School)',
-    licenseNumber: driver?.licence || 'UP32-20190045678',
-    mobileNumber: driver?.mobile || '9876543210',
-    vehicleModel: 'TATA Winger Standard ERP Bus',
-    emergencyContact: '+91 98765 00000',
-    bloodGroup: driver?.bloodGroup || 'B+'
+    name: driver?.name || 'Authorized Driver',
+    empId: driver?.driverId || 'DRV',
+    designation: 'School Fleet Driver',
+    vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned',
+    assignedRoute: driver?.route?.routeName || 'Assigned Route Circuit',
+    licenseNumber: driver?.licence || '',
+    mobileNumber: driver?.mobile || '',
+    vehicleModel: vehicle?.vehicleModel || 'School Bus',
+    emergencyContact: driver?.emergency || '',
+    bloodGroup: driver?.bloodGroup || ''
   });
 
   // Sync profileData if driver state loads or updates
@@ -1359,7 +1359,7 @@ export default function Profile() {
                 value={scanInput}
                 onChange={(e) => setScanInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && scanInput && handleUniversalVerify(scanInput)}
-                placeholder="e.g. YIS-2024-101 or DRV-101 or DL-01-AB-4501"
+                placeholder="e.g. Enter Student Admission No or Driver ID"
                 className="w-full p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>

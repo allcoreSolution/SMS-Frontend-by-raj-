@@ -31,16 +31,25 @@ export default function AssignedVehicle() {
     );
   }
 
-  const v = vehicle || {
-    vehicleNumber: 'DL-01-AB-4501',
-    vehicleModel: 'Tata Starbus Skool 42-Seater',
-    capacity: 42,
-    status: 'Active',
-    fuelLevel: 88,
-    speed: 38,
-    lastPing: 'Live (Just now)',
-    currentLocation: { lat: 28.5823, lng: 77.0500, address: 'Near Dwarka Sector 12 Metro Station' }
-  };
+  if (!vehicle) {
+    return (
+      <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 shadow-sm text-center space-y-3">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <Bus className="w-8 h-8" />
+          </div>
+          <h2 className="text-base font-black text-slate-900 dark:text-white">
+            No Vehicle Currently Assigned
+          </h2>
+          <p className="text-xs text-slate-500 max-w-md mx-auto">
+            Your driver profile does not have an active bus or transport vehicle assigned in the central database. Please contact the school transport supervisor to assign a fleet vehicle.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const v = vehicle;
 
   return (
     <div className="space-y-6 animate-fade-in max-w-5xl mx-auto">

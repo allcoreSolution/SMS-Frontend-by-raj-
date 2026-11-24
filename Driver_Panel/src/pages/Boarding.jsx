@@ -213,7 +213,7 @@ export default function Boarding() {
         admissionNo: stud.admissionNo || '',
         studentName: stud.studentName,
         type: 'STUDENT_BOARDING_PASS',
-        assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501'
+        assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || ''
       });
       if (res.success && res.data) {
         setVerifiedDetails(res.data);
@@ -232,13 +232,13 @@ export default function Boarding() {
         verified: true,
         verificationTimestamp: new Date().toISOString(),
         studentName: stud.studentName,
-        admissionNo: stud.admissionNo || 'YIS-2024-101',
-        className: stud.className || 'Class 5-A',
+        admissionNo: stud.admissionNo || stud.studentId || '-',
+        className: stud.className || 'Student',
         stopName: stud.stopName,
-        assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501',
+        assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || 'Assigned Bus',
         boardingStatus: stud.status || 'Scheduled',
-        emergencyContact: '+91 98112 00001',
-        schoolAuthority: 'ALL CORE SOLUTION Transportation Wing'
+        emergencyContact: stud.emergencyContact || stud.mobile || 'Not available',
+        schoolAuthority: 'Transport Operations Wing'
       });
     } finally {
       setVerifyingOnline(false);
@@ -639,17 +639,17 @@ export default function Boarding() {
                 <QRCodeImage 
                   value={JSON.stringify({
                     type: 'STUDENT_BOARDING_PASS',
-                    admissionNo: selectedStudentQR.admissionNo || 'YIS-2024-101',
+                    admissionNo: selectedStudentQR.admissionNo || selectedStudentQR.studentId || '',
                     studentName: selectedStudentQR.studentName,
-                    className: selectedStudentQR.className || 'Class 5-A',
+                    className: selectedStudentQR.className || 'Student',
                     stopName: selectedStudentQR.stopName,
-                    assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501'
+                    assignedBus: vehicle?.vehicleNumber || driver?.assignedBus || ''
                   })}
                   size={150}
                   className="bg-white p-2 rounded-2xl shadow-lg border-2 border-orange-400/80"
                 />
                 <span className="text-[10px] text-slate-300 font-mono mt-2 tracking-wider">
-                  ADM: {selectedStudentQR.admissionNo || 'YIS-2024-101'}
+                  ADM: {selectedStudentQR.admissionNo || '-'}
                 </span>
               </div>
 
@@ -661,11 +661,11 @@ export default function Boarding() {
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="text-slate-400">Class & Section:</span>
-                  <span className="font-semibold text-slate-200">{selectedStudentQR.className || 'Class 5-A'}</span>
+                  <span className="font-semibold text-slate-200">{selectedStudentQR.className || '-'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="text-slate-400">Assigned Bus:</span>
-                  <span className="font-mono font-bold text-orange-400">{vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501'}</span>
+                  <span className="font-mono font-bold text-orange-400">{vehicle?.vehicleNumber || driver?.assignedBus || 'Assigned Bus'}</span>
                 </div>
                 <div className="flex justify-between items-center text-[11px]">
                   <span className="text-slate-400">Assigned Stop:</span>

@@ -19,7 +19,7 @@ export default function Pricing() {
          <div className="flex flex-col gap-2.5 relative z-10 w-full">
            <div className="flex items-center gap-2">
              <span className="bg-amber-400/10 text-amber-400 font-black text-[9px] sm:text-[10px] tracking-wider px-2.5 py-0.5 rounded-full border border-amber-400/30 uppercase">
-               Affordable Cloud SaaS for Schools &amp; Colleges
+               Flat Annual SaaS License for Schools &amp; Colleges
              </span>
            </div>
            
@@ -29,18 +29,18 @@ export default function Pricing() {
            
            <div className="flex items-end gap-2.5 pt-0.5">
               <span className="text-slate-500 font-bold text-xs sm:text-sm line-through decoration-slate-600 decoration-2 mb-0.5">
-                ₹30/mo
+                ₹39,999/yr
               </span>
               <span className="text-amber-400 font-black text-3xl sm:text-4xl tracking-tight leading-none">
-                ₹15
+                ₹24,999
               </span>
               <span className="text-slate-400 font-bold text-[10px] sm:text-xs uppercase tracking-wider mb-0.5">
-                / student / month
+                / year (Annual School License)
               </span>
            </div>
            
            <p className="text-slate-400 text-[11px] sm:text-xs font-medium tracking-wide border-b border-slate-800 pb-2">
-              Complete multi-portal cloud ecosystem · 38 modules &amp; mobile apps included · zero setup headache
+              Flat yearly institutional license · All 38 modules &amp; mobile apps included · Zero per-student headache
            </p>
            
            {/* 2-Column Compact Features Grid */}

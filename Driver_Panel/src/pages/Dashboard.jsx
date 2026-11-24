@@ -85,17 +85,18 @@ export default function Dashboard() {
   }, [lastTripStatus, lastBoardingUpdate]);
 
   const handleStartTrip = async () => {
-    const defaultBus = data?.vehicle?.vehicleNumber || driver?.assignedBus || 'UP 32 AB 1234';
-    const defaultRoute = data?.route?.routeName || 'Route 12';
+    const defaultBus = data?.vehicle?.vehicleNumber || driver?.assignedBus || '';
+    const defaultRoute = data?.route?.routeName || 'Scheduled Route';
+    const currentOdo = data?.vehicle?.odometer || '';
 
     const { value: formValues } = await Swal.fire({
       title: 'Start Scheduled Trip?',
       html: `
         <div class="text-left text-xs space-y-2 p-2">
-          <p class="font-bold text-gray-700">Vehicle: <span class="text-orange-600">${defaultBus}</span></p>
+          <p class="font-bold text-gray-700">Vehicle: <span class="text-orange-600">${defaultBus || 'Assigned Bus'}</span></p>
           <p class="font-bold text-gray-700">Route: <span class="text-slate-900">${defaultRoute}</span></p>
           <label class="block font-bold text-gray-600 mt-2">Enter Starting Odometer (km):</label>
-          <input id="swal-odometer" type="number" class="w-full border p-2 text-sm rounded-lg" value="45280" />
+          <input id="swal-odometer" type="number" class="w-full border p-2 text-sm rounded-lg" value="${currentOdo}" placeholder="Enter odometer reading" />
         </div>
       `,
       focusConfirm: false,
@@ -140,7 +141,7 @@ export default function Dashboard() {
       title: 'Complete & End Trip?',
       input: 'number',
       inputLabel: 'Closing Odometer Reading (km)',
-      inputValue: 45312,
+      inputPlaceholder: 'Enter final odometer reading',
       showCancelButton: true,
       confirmButtonText: 'Confirm Completion',
       confirmButtonColor: '#10b981',
@@ -206,15 +207,36 @@ export default function Dashboard() {
 
   const v = data?.vehicle || authVehicle;
   const active = data?.activeTrip || authActiveTrip;
-  const stats = data?.studentStats || { total: 24, boarded: 18, dropped: 0, absent: 2, pending: 4 };
+  const stats = data?.studentStats || {
+    total: data?.studentsCount || 0,
+    boarded: data?.boardedCount || 0,
+    dropped: data?.droppedCount || 0,
+    absent: data?.absentCount || 0,
+    pending: data?.pendingCount || 0
+  };
 
-  const driverName = driver?.name || data?.driver?.name || 'Ramesh Kumar';
+  const driverName = driver?.name || data?.driver?.name || 'Driver';
   const driverPhoto = getDriverPhoto(driver) || getDriverPhoto(data?.driver);
-  const busNumber = v?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
-  const formattedBusNo = busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
-  const routeName = active?.routeName || data?.route?.routeName || 'Route 12';
+  const busNumber = v?.vehicleNumber || driver?.assignedBus || 'Unassigned';
+  const formattedBusNo = busNumber === 'Unassigned' ? 'Unassigned' : busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
+  const routeName = active?.routeName || data?.route?.routeName || 'Assigned Route';
 
   const [selectedNoticeCategory, setSelectedNoticeCategory] = useState('All');
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    const fetchNotices = async () => {
+      try {
+        const res = await driverService.getNotifications();
+        if (res.success && Array.isArray(res.data)) {
+          setNotices(res.data);
+        }
+      } catch (err) {
+        console.warn('Notice fetch note in Dashboard:', err.message);
+      }
+    };
+    fetchNotices();
+  }, []);
 
   const NOTICE_CATEGORIES = [
     'All',
@@ -222,97 +244,6 @@ export default function Dashboard() {
     'Vehicle Maintenance',
     'Holiday',
     'Transport Advisory'
-  ];
-
-  const notices = [
-    {
-      id: 'notice-1',
-      title: 'Transport Notice: Speed Limit & Safety Alert',
-      category: 'Safety & Route',
-      priority: 'high',
-      badge: 'SPEED & SAFETY',
-      date: '09 Aug 2026',
-      summary: 'Maintain max speed limit of 40 km/h in school zones & strictly adhere to traffic safety protocols.',
-      details: 'All school fleet drivers are strictly instructed to maintain speed governor limits of 40 km/h in residential and school campus zones. Any deviation logged by the GPS telemetry will be flagged for review. Ensure students remain seated while the vehicle is in motion.',
-      issuer: 'School Safety & Transportation Wing'
-    },
-    {
-      id: 'notice-2',
-      title: `Vehicle Servicing: ${formattedBusNo}`,
-      category: 'Vehicle Maintenance',
-      priority: 'high',
-      badge: 'DEPOT SERVICE',
-      date: '07 Aug 2026',
-      summary: `Scheduled brake and oil servicing due this weekend at central depot for ${formattedBusNo}.`,
-      details: `Vehicle ${formattedBusNo} has reached its scheduled periodic maintenance interval (10,000 km check). Please report to Central Workshop Bay 3 on Saturday morning post student drop-off for brake caliper adjustment and oil replacement.`,
-      issuer: 'Fleet Mechanical Division'
-    },
-    {
-      id: 'notice-3',
-      title: 'Holiday Bulletin: Independence Day Celebration Schedule',
-      category: 'Holiday',
-      priority: 'normal',
-      badge: 'SCHOOL HOLIDAY',
-      date: '06 Aug 2026',
-      summary: 'School will observe national holiday on 15th August. Special morning bus pickup at 07:00 AM for parade.',
-      details: 'On the occasion of Independence Day (15th August), regular academic classes remain suspended. A dedicated morning batch pickup will run for students and staff attending the flag hoisting ceremony. All drivers will receive festive breakfast allowance.',
-      issuer: 'Principal & Admin Secretariat'
-    },
-    {
-      id: 'notice-4',
-      title: 'Route 12 Diversion Advisory: Underpass Construction',
-      category: 'Safety & Route',
-      priority: 'high',
-      badge: 'ROUTE DIVERSION',
-      date: '05 Aug 2026',
-      summary: 'Due to civic drain construction at Sector 4 underpass, follow service lane bypass via Ring Road.',
-      details: 'Sector 4 underpass is closed for storm water drain construction from 06:00 AM to 02:00 PM. All Route 12 morning buses must use the Ring Road service lane. Estimated delay is 5-7 minutes. Parents on stops 3 and 4 have been notified via app.',
-      issuer: 'Traffic Control & Dispatch Dept.'
-    },
-    {
-      id: 'notice-5',
-      title: 'Transport Advisory: Monthly Diesel Slip Reimbursement',
-      category: 'Transport Advisory',
-      priority: 'normal',
-      badge: 'FUEL & EXPENSES',
-      date: '04 Aug 2026',
-      summary: 'Submit monthly diesel fuel receipts, toll receipts, and trip log sheets before the 28th.',
-      details: 'Drivers are required to submit original IOCL/HPCL fuel slips along with odometer logs to Mr. Sharma at the Transport Office by 28th of this month for timely reimbursement with the monthly salary credit.',
-      issuer: 'Accounts & Transport Office'
-    },
-    {
-      id: 'notice-6',
-      title: 'Raksha Bandhan Holiday Notice: Depot Timings',
-      category: 'Holiday',
-      priority: 'normal',
-      badge: 'FESTIVAL CLOSURE',
-      date: '03 Aug 2026',
-      summary: 'Campus operations and bus transport services will remain closed on Raksha Bandhan.',
-      details: 'All school transport operations will remain closed on the occasion of Raksha Bandhan. Buses should remain parked in their designated bays with battery isolator switches turned off.',
-      issuer: 'Central Administrative Office'
-    },
-    {
-      id: 'notice-7',
-      title: 'Air Conditioning & Defogger Pre-Monsoon Check',
-      category: 'Vehicle Maintenance',
-      priority: 'normal',
-      badge: 'PRE-MONSOON',
-      date: '02 Aug 2026',
-      summary: 'All fleet air-conditioning filters and windshield wiper blades must be inspected at the depot.',
-      details: 'Monsoon fleet readiness audit is underway. All drivers must get wiper blades, headlight leveling, and front defoggers checked at Bay 1 before Friday 5:00 PM.',
-      issuer: 'Fleet Maintenance Bay'
-    },
-    {
-      id: 'notice-8',
-      title: 'Transport Advisory: Annual Driver Medical & Eye Checkup Camp',
-      category: 'Transport Advisory',
-      priority: 'normal',
-      badge: 'HEALTH CAMP',
-      date: '01 Aug 2026',
-      summary: 'Compulsory health screening and eye vision assessment for all transport staff on Thursday.',
-      details: 'In compliance with State Transport Department guidelines, a mandatory eye and general health checkup camp will be held at the Campus Health Center on Thursday from 10:00 AM to 01:00 PM.',
-      issuer: 'Health & Transport Welfare Committee'
-    }
   ];
 
   const getNoticeCategoryMeta = (cat) => {

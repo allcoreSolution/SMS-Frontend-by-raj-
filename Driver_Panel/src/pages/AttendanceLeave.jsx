@@ -32,25 +32,25 @@ export default function AttendanceLeave() {
   const driverPhoto = getDriverPhoto(driver);
 
   const [activeTab, setActiveTab] = useState('biometric'); // 'biometric' | 'history'
-  const [selectedMonth, setSelectedMonth] = useState('August 2026');
+  const [selectedMonth, setSelectedMonth] = useState(() => new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }));
   const [loading, setLoading] = useState(true);
 
   // Live Attendance Data
   const [todayRecord, setTodayRecord] = useState(null);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const [summaryData, setSummaryData] = useState({
-    shiftDuration: '10h 40m',
-    workingDays: 24,
-    totalWorkingDays: 26,
-    lateArrivals: 1,
-    onTimeRate: 98.4,
-    attendanceRate: '98.4% Attendance Rate'
+    shiftDuration: '0h',
+    workingDays: 0,
+    totalWorkingDays: 0,
+    lateArrivals: 0,
+    onTimeRate: 100,
+    attendanceRate: 'Active'
   });
   const [depotData, setDepotData] = useState({
-    name: 'Greenwood Bus Depot Zone A',
-    lat: 26.9124,
-    lng: 75.7873,
-    geofenceStatus: 'Geo-fence OK'
+    name: 'School Central Transport Hub',
+    lat: 28.5355,
+    lng: 77.3550,
+    geofenceStatus: 'Geo-fence Active'
   });
 
   // Biometric Scanning Simulation Modal State
@@ -614,7 +614,7 @@ export default function AttendanceLeave() {
                 {scanStep === 3 && 'Biometric Authentication Matched!'}
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
-                {driver?.name || 'Ramesh Kumar'} • Bus {vehicle?.vehicleNumber || 'UP 32 AB 1234'}
+                {driver?.name || 'Authorized Driver'} • Bus {vehicle?.vehicleNumber || 'Unassigned'}
               </p>
               <div className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center justify-center gap-1">
                 <Radio className="w-3.5 h-3.5 animate-pulse" />

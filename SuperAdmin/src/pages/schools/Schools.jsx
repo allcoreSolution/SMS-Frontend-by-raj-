@@ -4,7 +4,7 @@ import {
   XCircle, Clock, X, Save, AlertTriangle, Mail, Info, 
   ChevronDown, Key, Copy, Lock, Phone, MapPin, Globe, Sparkles, FileText, ShieldAlert,
   BarChart2, Database, Table, Receipt, LogIn, Edit3, KeyRound, Download, RefreshCw, 
-  FileSpreadsheet, Layers, ShieldCheck, ArrowUpRight, Check
+  FileSpreadsheet, Layers, ShieldCheck, ArrowUpRight, Check, LineChart
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { tenantService } from '../../api/tenantService';
@@ -164,8 +164,9 @@ export default function Schools() {
         localStorage.setItem('school_impersonation_token', res.token);
         localStorage.setItem('impersonated_school_name', school.name);
 
-        const schoolErpBase = 'https://sms-frontend-by-raj-school-erp.onrender.com';
-        const branchAdminBase = 'https://sms-frontend-by-raj-branchadm.onrender.com';
+        const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+        const schoolErpBase = isLocal ? 'http://localhost:5176' : 'https://sms-frontend-by-raj-school-erp.onrender.com';
+        const branchAdminBase = isLocal ? 'http://localhost:5177' : 'https://sms-frontend-by-raj-branchadm.onrender.com';
 
         const schoolErpUrl = `${schoolErpBase}/login?impersonate_token=${encodeURIComponent(res.token)}&user=${encodeURIComponent(JSON.stringify(res.user || {}))}&schoolId=${encodeURIComponent(school.id || '')}&schoolName=${encodeURIComponent(school.name || '')}&email=${encodeURIComponent(res.user?.email || school.email || '')}`;
         const branchAdminUrl = `${branchAdminBase}/login?impersonate_token=${encodeURIComponent(res.token)}&user=${encodeURIComponent(JSON.stringify(res.user || {}))}&schoolId=${encodeURIComponent(school.id || '')}&schoolName=${encodeURIComponent(school.name || '')}&email=${encodeURIComponent(res.user?.email || school.email || '')}`;
@@ -598,7 +599,7 @@ export default function Schools() {
                         onClick={() => { setOpenDropdownId(null); navigate(`/schools/${school.id}/analytics`); }}
                         className="w-full text-left px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5"
                       >
-                        <BarChart2 className="w-4 h-4 text-blue-500" />
+                        <LineChart className="w-4 h-4 text-blue-500" />
                         <span>Analytics</span>
                       </button>
                       <button
@@ -776,7 +777,7 @@ export default function Schools() {
                             }}
                             className="w-full text-left px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-950 flex items-center gap-2.5 transition cursor-pointer"
                           >
-                            <BarChart2 className="w-4 h-4 text-blue-500" />
+                            <LineChart className="w-4 h-4 text-blue-500" />
                             <span>Analytics</span>
                           </button>
 

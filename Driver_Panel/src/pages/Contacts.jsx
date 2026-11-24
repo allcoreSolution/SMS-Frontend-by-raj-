@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Phone, 
   MessageSquare, 
@@ -13,122 +13,93 @@ import {
   Bus
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { driverService } from '../api/driverService';
 import { getDriverPhoto } from '../utils/photoHelper';
 import Swal from 'sweetalert2';
 
 export default function Contacts() {
   const { driver, vehicle } = useAuth();
   const driverPhoto = getDriverPhoto(driver);
-  const driverName = driver?.name || 'Ramesh Kumar';
-  const driverMobile = driver?.mobile || '+91 98112 23399';
-  const emergencyContact = driver?.emergency || '+91 98765 00000';
-  const busNo = vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501';
+  const driverName = driver?.name || 'Driver';
+  const driverMobile = driver?.mobile || '';
+  const emergencyContact = driver?.emergency || '112';
+  const busNo = vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned';
 
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMessageModal, setActiveMessageModal] = useState(null);
   const [messageText, setMessageText] = useState('');
+  const [parents, setParents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContacts = async () => {
+      try {
+        setLoading(true);
+        const res = await driverService.getStudentsRoster();
+        if (res.success && Array.isArray(res.data)) {
+          setParents(res.data.map((s, idx) => ({
+            id: s._id || `p-${idx}`,
+            initial: (s.studentName || 'S').charAt(0).toUpperCase(),
+            studentName: s.studentName,
+            classGrade: s.className || 'Student',
+            parentName: s.fatherName || s.parentName || s.guardianName || 'Parent / Guardian',
+            stopName: s.stopName || 'Designated Stop',
+            mobile: s.emergencyContact || s.fatherMobile || s.mobile || ''
+          })));
+        }
+      } catch (err) {
+        console.warn('Could not load student roster contacts:', err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContacts();
+  }, []);
 
   const speedDialContacts = [
     {
       id: 'em-1',
-      name: 'Mr. Anil V...',
-      fullName: 'Mr. Anil Verma',
-      role: 'Transport Man...',
-      fullRole: 'Transport Manager',
-      phone: '+919876543210',
+      name: 'Transport Desk',
+      fullName: 'School Transport Office',
+      role: 'Fleet Manager',
+      fullRole: 'Transport Dispatch & Control',
+      phone: driverMobile || '+91 98765 43210',
       bgColor: 'bg-orange-50 dark:bg-orange-950/60',
       textColor: 'text-[#ea580c]'
     },
     {
       id: 'em-2',
-      name: 'School Co...',
-      fullName: 'School Control Desk',
-      role: 'Admin & SOS ...',
-      fullRole: 'Admin & SOS Dispatch',
-      phone: '+919811223399',
+      name: 'School SOS',
+      fullName: 'Central Security Desk',
+      role: 'Admin & SOS',
+      fullRole: 'Admin & Emergency Dispatch',
+      phone: emergencyContact,
       bgColor: 'bg-rose-50 dark:bg-rose-950/60',
       textColor: 'text-rose-600'
     },
     {
       id: 'em-3',
-      name: 'Auto Care ...',
-      fullName: 'Auto Care Workshop',
-      role: 'Bus Mechanic ...',
-      fullRole: 'Bus Mechanic & Breakdown',
-      phone: '+919822344556',
+      name: 'Depot Workshop',
+      fullName: 'Depot Fleet Workshop',
+      role: 'Maintenance',
+      fullRole: 'Fleet Mechanic & Recovery',
+      phone: '1800-FLEET-CARE',
       bgColor: 'bg-blue-50 dark:bg-blue-950/60',
       textColor: 'text-blue-600'
     },
     {
       id: 'em-4',
-      name: 'Jaipur Tra...',
-      fullName: 'Jaipur Traffic Police',
-      role: 'Highway Patro...',
-      fullRole: 'Highway Patrol & Safety',
+      name: 'Highway Patrol',
+      fullName: 'Police / Highway Emergency',
+      role: 'Emergency',
+      fullRole: 'National Emergency Response',
       phone: '112',
       bgColor: 'bg-emerald-50 dark:bg-emerald-950/60',
       textColor: 'text-emerald-600'
     }
   ];
 
-  const initialParents = [
-    {
-      id: 'p-1',
-      initial: 'A',
-      studentName: 'Aarav Sharma',
-      classGrade: 'Class 5-A',
-      parentName: 'Mr. Rajesh Sharma',
-      stopName: 'Sector 15, Stop #1',
-      mobile: '+919811234567'
-    },
-    {
-      id: 'p-2',
-      initial: 'A',
-      studentName: 'Ananya Verma',
-      classGrade: 'Class 7-B',
-      parentName: 'Mr. Suresh Verma',
-      stopName: 'Sector 15, Stop #1',
-      mobile: '+919822345678'
-    },
-    {
-      id: 'p-3',
-      initial: 'R',
-      studentName: 'Rohan Gupta',
-      classGrade: 'Class 8-C',
-      parentName: 'Mrs. Priya Gupta',
-      stopName: 'Sector 18 Market, Stop #2',
-      mobile: '+919833456789'
-    },
-    {
-      id: 'p-4',
-      initial: 'D',
-      studentName: 'Diya Kapoor',
-      classGrade: 'Class 4-B',
-      parentName: 'Mr. Vikrant Kapoor',
-      stopName: 'Sector 18 Market, Stop #2',
-      mobile: '+919844567890'
-    },
-    {
-      id: 'p-5',
-      initial: 'I',
-      studentName: 'Ishaan Malhotra',
-      classGrade: 'Class 6-A',
-      parentName: 'Mrs. Neha Malhotra',
-      stopName: 'Sector 22 Circle, Stop #3',
-      mobile: '+919855678901'
-    },
-    {
-      id: 'p-6',
-      initial: 'S',
-      studentName: 'Sanya Mehra',
-      classGrade: 'Class 9-A',
-      parentName: 'Mr. Kunal Mehra',
-      stopName: 'Sector 29 Metro, Stop #4',
-      mobile: '+919866789012'
-    }
-  ];
-
-  const filteredParents = initialParents.filter((p) => {
+  const filteredParents = parents.filter((p) => {
     const q = searchQuery.toLowerCase();
     return (
       p.studentName.toLowerCase().includes(q) ||
@@ -288,7 +259,7 @@ export default function Contacts() {
                 <button
                   onClick={() => {
                     setActiveMessageModal(parent);
-                    setMessageText(`Dear ${parent.parentName}, Bus UP 32 AB 1234 is approaching ${parent.stopName}. Please be ready for student pickup.`);
+                    setMessageText(`Dear ${parent.parentName}, ${busNo} is approaching ${parent.stopName}. Please be ready for student pickup.`);
                   }}
                   className="w-9 h-9 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center hover:bg-emerald-100 transition-colors shadow-sm cursor-pointer"
                   title={`Message ${parent.parentName}`}

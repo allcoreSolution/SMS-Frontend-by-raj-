@@ -31,23 +31,25 @@ import driverAvatarImg from '../assets/driver_avatar.png';
 import schoolBusCampusImg from '../assets/school_bus_campus.png';
 import driverLoginBannerImg from '../assets/driver_login_banner.png';
 
-// Fallback Fleet Drivers
-const FALLBACK_DRIVERS = [
-  { driverId: 'DRV-101', name: 'Ramesh Kumar', assignedBus: 'DL-01-AB-4501', pin: '1011', mobile: '+91 98112 23399' },
-  { driverId: 'DRV-102', name: 'Sukhwinder Singh', assignedBus: 'DL-01-AB-4502', pin: '1022', mobile: '+91 98112 23398' },
-  { driverId: 'DRV-103', name: 'Harish Chandra', assignedBus: 'DL-01-AB-4503', pin: '1033', mobile: '+91 98112 23397' },
-  { driverId: 'DRV-104', name: 'Mohd. Aslam', assignedBus: 'DL-01-AB-4504', pin: '1044', mobile: '+91 98112 23396' },
-  { driverId: 'DRV-105', name: 'Balram Yadav', assignedBus: 'DL-01-AB-4505', pin: '1055', mobile: '+91 98112 23395' },
-  { driverId: 'DRV-106', name: 'Suresh Verma', assignedBus: 'DL-09-XY-2704', pin: 'MyPassword999', mobile: '+91 98112 23394' }
-];
-
 // Google Multicolored SVG Icon
 const GoogleIcon = () => (
   <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+    <path
+      fill="#4285F4"
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+    />
+    <path
+      fill="#34A853"
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+    />
+    <path
+      fill="#FBBC05"
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+    />
+    <path
+      fill="#EA4335"
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+    />
   </svg>
 );
 
@@ -58,19 +60,19 @@ export default function Login() {
   // Stepper State: 'welcome' | 'role' | 'login'
   const [currentStep, setCurrentStep] = useState(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get('step') === 'login' || window.location.hash === '#login') {
-      return 'login';
+    if (params.get('step') === 'welcome' || window.location.hash === '#welcome') {
+      return 'welcome';
     }
     if (params.get('step') === 'role' || window.location.hash === '#role') {
       return 'role';
     }
-    return 'welcome';
+    return 'login';
   });
 
-  const [driversList, setDriversList] = useState(FALLBACK_DRIVERS);
-  const [selectedDriver, setSelectedDriver] = useState(FALLBACK_DRIVERS[0]);
-  const [identifier, setIdentifier] = useState('DRV-101');
-  const [password, setPassword] = useState('1011');
+  const [driversList, setDriversList] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -86,13 +88,9 @@ export default function Login() {
       const res = await driverService.getActiveDrivers();
       if (res.success && res.data && res.data.length > 0) {
         setDriversList(res.data);
-        const matched = res.data.find(d => d.driverId === identifier) || res.data[0];
-        setSelectedDriver(matched);
-        setIdentifier(matched.driverId);
-        setPassword(matched.pin || '1011');
       }
     } catch (e) {
-      console.warn('Using local fleet driver directory:', e.message);
+      console.warn('Could not load fleet drivers from server:', e.message);
     }
   };
 
@@ -102,16 +100,18 @@ export default function Login() {
 
   const handleSelectDriver = (drv) => {
     setSelectedDriver(drv);
-    setIdentifier(drv.driverId);
-    setPassword(drv.pin || '1011');
+    setIdentifier(drv.driverId || drv.mobile || '');
+    setPassword(drv.pin || '');
     setError('');
-    setAutofillNotice(`Loaded credentials for ${drv.name} (${drv.driverId})`);
+    setAutofillNotice(`Loaded credentials for ${drv.name} (${drv.driverId || drv.mobile})`);
     setTimeout(() => setAutofillNotice(''), 2500);
   };
 
   const handleQuickDemo = (drvId) => {
-    const drv = driversList.find(d => d.driverId === drvId) || FALLBACK_DRIVERS.find(d => d.driverId === drvId) || FALLBACK_DRIVERS[0];
-    handleSelectDriver(drv);
+    if (driversList && driversList.length > 0) {
+      const drv = driversList.find(d => d.driverId === drvId || d.driver_id === drvId) || driversList[0];
+      if (drv) handleSelectDriver(drv);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -149,7 +149,7 @@ export default function Login() {
     Swal.fire({
       icon: 'info',
       title: 'Fleet Google Single Sign-On',
-      text: `Authenticating driver account for ${identifier || 'DRV-101'}...`,
+      text: `Authenticating driver account for ${identifier || 'Driver'}...`,
       timer: 1200,
       showConfirmButton: false,
       didOpen: () => Swal.showLoading()
@@ -163,8 +163,8 @@ export default function Login() {
       title: 'Driver PIN Recovery',
       text: 'Enter your Registered Email, Driver ID or Mobile Number:',
       input: 'text',
-      inputValue: identifier || 'DRV-101',
-      inputPlaceholder: 'e.g. driver@school.com or DRV-101',
+      inputValue: identifier || '',
+      inputPlaceholder: 'e.g. driver@school.com or Driver ID',
       showCancelButton: true,
       confirmButtonText: 'Send Verification OTP',
       cancelButtonText: 'Cancel',
@@ -772,33 +772,22 @@ export default function Login() {
                   </button>
                 </form>
 
-                {/* Quick Demo Fleet Chips */}
-                <div className="flex items-center justify-center gap-1.5 mt-2 text-[10px] text-slate-500">
-                  <span className="font-semibold text-slate-400">Quick Demo:</span>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('DRV-101')}
-                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
-                  >
-                    DRV-101
-                  </button>
-                  <span>•</span>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('DRV-102')}
-                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
-                  >
-                    DRV-102
-                  </button>
-                  <span>•</span>
-                  <button
-                    type="button"
-                    onClick={() => handleQuickDemo('DRV-106')}
-                    className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
-                  >
-                    DRV-106
-                  </button>
-                </div>
+                {/* Dynamic Fleet Quick Fill Chips (only shown if fleet drivers are loaded) */}
+                {driversList && driversList.length > 0 && (
+                  <div className="flex items-center justify-center flex-wrap gap-1.5 mt-2 text-[10px] text-slate-500">
+                    <span className="font-semibold text-slate-400">Quick Fill:</span>
+                    {driversList.slice(0, 3).map((drv, idx) => (
+                      <button
+                        key={drv.driverId || drv._id || idx}
+                        type="button"
+                        onClick={() => handleSelectDriver(drv)}
+                        className="px-2 py-0.5 rounded bg-orange-50 text-orange-700 hover:bg-orange-100 font-bold border border-orange-200/80 cursor-pointer"
+                      >
+                        {drv.driverId || drv.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* OR Divider */}
                 <div className="relative my-2 flex items-center justify-center">

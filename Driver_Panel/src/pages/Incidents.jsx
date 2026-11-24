@@ -19,7 +19,7 @@ import Swal from 'sweetalert2';
 export default function Incidents() {
   const { driver, vehicle, activeTrip } = useAuth();
   const driverPhoto = getDriverPhoto(driver);
-  const driverName = driver?.name || 'Ramesh Kumar';
+  const driverName = driver?.name || 'Driver';
   const [incidents, setIncidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +27,7 @@ export default function Incidents() {
   const [type, setType] = useState('Breakdown');
   const [severity, setSeverity] = useState('High');
   const [description, setDescription] = useState('');
-  const [address, setAddress] = useState('Sector 12, Main Ring Road, near Metro station');
+  const [address, setAddress] = useState(() => vehicle?.currentLocation?.address || '');
 
   const fetchIncidents = async () => {
     try {
@@ -60,7 +60,7 @@ export default function Incidents() {
         type,
         severity,
         description,
-        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501',
+        vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned',
         routeName: activeTrip?.routeName || 'Assigned Route',
         location: {
           lat: vehicle?.currentLocation?.lat || 28.6139,
@@ -105,7 +105,7 @@ export default function Incidents() {
     if (isConfirmed) {
       try {
         const res = await driverService.triggerSOS({
-          vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'DL-01-AB-4501',
+          vehicleNumber: vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned',
           description: 'Emergency SOS button clicked by driver on route.'
         });
         if (res.success) {
