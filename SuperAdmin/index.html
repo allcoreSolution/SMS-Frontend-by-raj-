@@ -8,9 +8,116 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Complete Visual Suppression for Google Translate (Hide top banner, tooltip, and extra spaces) -->
+    <style>
+      .VIpgJd-ZVi9od-ORHb-OEVmcd,
+      .VIpgJd-yAW6fm-L9AdLc,
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMy,
+      .VIpgJd-ZVi9od-aZ2wEe-wOHMy-ti6hGc,
+      .VIpgJd-ZVi9od-aZ2wjd-Ond6De,
+      .VIpgJd-yAWNEb-L7lbkb,
+      .VIpgJd-yAWNEb-hvh4ld,
+      .VIpgJd-ZVi9od-ORHb,
+      .VIpgJd-ZVi9od-SmMuJa,
+      .VIpgJd-ZVi9od-xl07Ob-OEVmcd,
+      .VIpgJd-yAWNEb-r4nke,
+      [class*="VIpgJd"],
+      .goog-te-banner-frame,
+      .goog-te-banner-frame.skiptranslate,
+      iframe.goog-te-banner-frame,
+      .goog-te-balloon-frame,
+      #goog-gt-tt,
+      #goog-gt-vt,
+      .goog-te-balloon,
+      .goog-tooltip,
+      .goog-tooltip:hover,
+      .goog-te-gadget-icon,
+      .goog-te-gadget-simple,
+      .goog-logo-link,
+      .skiptranslate,
+      body > .skiptranslate,
+      div.skiptranslate,
+      iframe.skiptranslate,
+      [id*="goog-gt-"],
+      div[id^="goog-gt-"],
+      .goog-te-spinner-pos,
+      iframe[id*=":1.container"],
+      iframe[id*=":2.container"],
+      iframe[id^=":"],
+      #google_translate_element,
+      .goog-te-gadget {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        clip: rect(0, 0, 0, 0) !important;
+        overflow: hidden !important;
+        z-index: -9999 !important;
+      }
+
+      body {
+        top: 0px !important;
+        position: static !important;
+      }
+
+      font {
+        background-color: transparent !important;
+        box-shadow: none !important;
+        color: inherit !important;
+      }
+    </style>
+
+    <!-- Session Language State Sync -->
+    <script type="text/javascript">
+      (function() {
+        try {
+          var isHindiSession = sessionStorage.getItem('sa_user_selected_hindi') === 'true' || localStorage.getItem('sa_language') === 'Hindi';
+          if (!isHindiSession) {
+            var host = window.location.hostname;
+            var domains = ['', host, '.' + host];
+            var paths = ['/', window.location.pathname];
+            domains.forEach(function(d) {
+              paths.forEach(function(p) {
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=' + p + (d ? '; domain=' + d : '') + ';';
+              });
+            });
+            document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            localStorage.setItem('sa_language', 'English');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Hidden Google Translate Element Container -->
+    <div id="google_translate_element" style="display:none !important;visibility:hidden !important;position:absolute !important;top:-9999px !important;left:-9999px !important;width:0 !important;height:0 !important;overflow:hidden !important;pointer-events:none !important;"></div>
+    
+    <!-- Google Translate Initialization Script -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        if (window.google && window.google.translate && window.google.translate.TranslateElement) {
+          try {
+            new window.google.translate.TranslateElement({
+              pageLanguage: 'en',
+              autoDisplay: false,
+              includedLanguages: 'en,hi',
+              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+          } catch (e) {
+            console.warn('Google translate init error:', e);
+          }
+        }
+      }
+    </script>
+    <script async defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

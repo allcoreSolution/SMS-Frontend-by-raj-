@@ -21,12 +21,110 @@ const shouldSkip = (el) => {
   return false;
 };
 
+export const hideGoogleTranslateElements = () => {
+  try {
+    if (typeof document === 'undefined') return;
+    document.body.style.top = '0px';
+    document.body.style.marginTop = '0px';
+    document.body.style.position = 'static';
+
+    const selectors = [
+      '.goog-te-banner-frame',
+      '#goog-gt-tt',
+      '#goog-gt-vt',
+      '.goog-te-balloon-frame',
+      '.goog-tooltip',
+      '.goog-te-gadget',
+      '.goog-te-gadget-icon',
+      '.skiptranslate',
+      'iframe.skiptranslate',
+      'div.skiptranslate',
+      '[class*="VIpgJd"]',
+      '[id*="goog-gt-"]'
+    ];
+    selectors.forEach(sel => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.setProperty('display', 'none', 'important');
+        el.style.setProperty('visibility', 'hidden', 'important');
+        el.style.setProperty('opacity', '0', 'important');
+        el.style.setProperty('pointer-events', 'none', 'important');
+        el.style.setProperty('width', '0px', 'important');
+        el.style.setProperty('height', '0px', 'important');
+      });
+    });
+  } catch (e) {}
+};
+
+export const triggerGoogleTranslate = (langCode) => {
+  try {
+    const host = window.location.hostname;
+    hideGoogleTranslateElements();
+
+    if (!langCode || langCode === 'en' || (typeof langCode === 'string' && langCode.toLowerCase() === 'english')) {
+      const domains = ['', host, '.' + host];
+      const paths = ['/', window.location.pathname];
+      domains.forEach(d => {
+        paths.forEach(p => {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p}${d ? '; domain=' + d : ''};`;
+        });
+      });
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        combo.value = '';
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      setTimeout(hideGoogleTranslateElements, 100);
+      setTimeout(hideGoogleTranslateElements, 500);
+      return;
+    }
+
+    const val = `/en/${langCode}`;
+    document.cookie = `googtrans=${val}; path=/;`;
+    document.cookie = `googtrans=${val}; path=/; domain=${host};`;
+
+    const applyToCombo = () => {
+      hideGoogleTranslateElements();
+      const combo = document.querySelector('.goog-te-combo') || document.querySelector('select.goog-te-combo');
+      if (combo) {
+        const desiredVal = (!langCode || langCode === 'en') ? '' : langCode.toLowerCase();
+        if (combo.options && combo.options.length > 0) {
+          for (let i = 0; i < combo.options.length; i++) {
+            const optVal = (combo.options[i].value || '').toLowerCase();
+            if (optVal === desiredVal || (desiredVal === '' && (optVal === 'en' || optVal === ''))) {
+              combo.selectedIndex = i;
+              combo.options[i].selected = true;
+              break;
+            }
+          }
+        }
+        combo.value = desiredVal;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        try {
+          combo.dispatchEvent(new Event('input', { bubbles: true }));
+        } catch (_) {}
+        setTimeout(hideGoogleTranslateElements, 150);
+        return true;
+      }
+      return false;
+    };
+
+    if (!applyToCombo()) {
+      setTimeout(applyToCombo, 200);
+      setTimeout(applyToCombo, 600);
+      setTimeout(applyToCombo, 1200);
+      setTimeout(applyToCombo, 2500);
+    }
+  } catch (e) {
+    console.warn('Google Translate Trigger notice:', e);
+  }
+};
+
 function translateTextNode(node, code) {
   const parent = node.parentElement;
   if (!parent || shouldSkip(parent)) return;
   const rec = textStore.get(node);
   const current = node.nodeValue;
-  // If React changed the text after we translated it, treat the new value as the new original
   let orig = rec && rec.shown === current ? rec.orig : current;
   if (!orig || !orig.trim()) return;
   if (code === 'en') {
@@ -47,7 +145,7 @@ function translateTextNode(node, code) {
 }
 
 function translateAttrs(el, code) {
-  if (el.nodeType !== 1 || SKIP_TAGS.has(el.tagName) && !(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA')) {
+  if (el.nodeType !== 1 || (SKIP_TAGS.has(el.tagName) && !(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'))) {
     if (el.nodeType !== 1) return;
   }
   if (el.hasAttribute('data-no-translate')) return;
@@ -90,7 +188,7 @@ function walk(root, code) {
 export const LanguageProvider = ({ children }) => {
   const [code, setCode] = useState(() => {
     try {
-      const isHindi = sessionStorage.getItem('sa_user_selected_hindi') === 'true';
+      const isHindi = sessionStorage.getItem('sa_user_selected_hindi') === 'true' || localStorage.getItem('sa_language') === 'Hindi';
       return isHindi ? 'hi' : 'en';
     } catch (e) {
       return 'en';
@@ -102,27 +200,46 @@ export const LanguageProvider = ({ children }) => {
     if (c === 'hi') {
       sessionStorage.setItem('sa_user_selected_hindi', 'true');
       localStorage.setItem('sa_language', 'Hindi');
+      triggerGoogleTranslate('hi');
     } else {
       sessionStorage.removeItem('sa_user_selected_hindi');
       localStorage.setItem('sa_language', 'English');
+      triggerGoogleTranslate('en');
     }
     setCode(c);
   }, []);
 
-  // keep in sync if another tab / settings page changes it
+  // Sync with storage events across tabs
   useEffect(() => {
     const onStorage = (e) => {
-      if (e.key === 'sa_language') setCode(nameToCode(e.newValue || 'English'));
+      if (e.key === 'sa_language') {
+        const newCode = nameToCode(e.newValue || 'English');
+        setCode(newCode);
+        triggerGoogleTranslate(newCode);
+      }
     };
     window.addEventListener('storage', onStorage);
     return () => window.removeEventListener('storage', onStorage);
   }, []);
 
-  // Apply translation to whole DOM + keep translating anything React renders later
+  // On initial mount: activate selected language in Google Translate and suppress UI
+  useEffect(() => {
+    const isHindi = sessionStorage.getItem('sa_user_selected_hindi') === 'true' || localStorage.getItem('sa_language') === 'Hindi';
+    if (isHindi) {
+      triggerGoogleTranslate('hi');
+    } else {
+      hideGoogleTranslateElements();
+    }
+    const timer = setInterval(hideGoogleTranslateElements, 600);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Apply instantaneous local translations + keep translating dynamically rendered content
   useEffect(() => {
     document.documentElement.lang = code;
     const root = document.getElementById('root') || document.body;
     walk(root, code);
+    hideGoogleTranslateElements();
 
     let queued = new Set();
     let raf = 0;
@@ -131,6 +248,7 @@ export const LanguageProvider = ({ children }) => {
       const items = Array.from(queued);
       queued = new Set();
       items.forEach((n) => { if (n.isConnected) walk(n, code); });
+      hideGoogleTranslateElements();
     };
     const obs = new MutationObserver((muts) => {
       muts.forEach((m) => {
