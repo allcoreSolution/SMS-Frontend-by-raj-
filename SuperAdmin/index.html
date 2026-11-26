@@ -13,6 +13,17 @@
 
     <!-- Complete Visual Suppression for Google Translate (Hide top banner, tooltip, and extra spaces) -->
     <style>
+      body > .skiptranslate,
+      div.skiptranslate,
+      iframe.skiptranslate,
+      .goog-te-banner-frame,
+      iframe.goog-te-banner-frame,
+      .goog-te-balloon-frame,
+      #goog-gt-tt,
+      #goog-gt-vt,
+      .goog-tooltip,
+      .goog-tooltip:hover,
+      .goog-text-highlight,
       .VIpgJd-ZVi9od-ORHb-OEVmcd,
       .VIpgJd-yAW6fm-L9AdLc,
       .VIpgJd-ZVi9od-aZ2wEe-wOHMy,
@@ -24,19 +35,24 @@
       .VIpgJd-ZVi9od-SmMuJa,
       .VIpgJd-ZVi9od-xl07Ob-OEVmcd,
       .VIpgJd-yAWNEb-r4nke,
-      [class*="VIpgJd-ZVi9od"],
-      .goog-te-banner-frame,
-      iframe.goog-te-banner-frame,
-      .goog-te-balloon-frame,
-      #goog-gt-tt,
-      #goog-gt-vt,
-      .goog-tooltip,
-      .goog-tooltip:hover,
+      [class*="VIpgJd"],
+      [id*="goog-gt-"],
+      .goog-logo-link,
+      .goog-te-gadget,
+      .goog-te-gadget-icon,
+      .goog-te-gadget-simple,
       .goog-te-spinner-pos {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
+        position: absolute !important;
+        top: -9999px !important;
+        left: -9999px !important;
+        width: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        z-index: -99999 !important;
       }
 
       #google_translate_element {
@@ -56,12 +72,25 @@
         position: static !important;
       }
 
-      font {
+      font, font:hover, .goog-text-highlight {
+        background: transparent !important;
         background-color: transparent !important;
         box-shadow: none !important;
         color: inherit !important;
+        border: none !important;
+        text-decoration: none !important;
+        outline: none !important;
       }
     </style>
+
+    <script type="text/javascript">
+      // Suppress Google Translate mouseover tooltip
+      window.addEventListener('mouseover', function(e) {
+        if (e.target && (e.target.tagName === 'FONT' || (e.target.closest && e.target.closest('font')))) {
+          e.stopPropagation();
+        }
+      }, true);
+    </script>
 
     <!-- Session Language State Sync -->
     <script type="text/javascript">
