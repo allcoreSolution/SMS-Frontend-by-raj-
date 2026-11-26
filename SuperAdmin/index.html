@@ -24,43 +24,31 @@
       .VIpgJd-ZVi9od-SmMuJa,
       .VIpgJd-ZVi9od-xl07Ob-OEVmcd,
       .VIpgJd-yAWNEb-r4nke,
-      [class*="VIpgJd"],
+      [class*="VIpgJd-ZVi9od"],
       .goog-te-banner-frame,
-      .goog-te-banner-frame.skiptranslate,
       iframe.goog-te-banner-frame,
       .goog-te-balloon-frame,
       #goog-gt-tt,
       #goog-gt-vt,
-      .goog-te-balloon,
       .goog-tooltip,
       .goog-tooltip:hover,
-      .goog-te-gadget-icon,
-      .goog-te-gadget-simple,
-      .goog-logo-link,
-      .skiptranslate,
-      body > .skiptranslate,
-      div.skiptranslate,
-      iframe.skiptranslate,
-      [id*="goog-gt-"],
-      div[id^="goog-gt-"],
-      .goog-te-spinner-pos,
-      iframe[id*=":1.container"],
-      iframe[id*=":2.container"],
-      iframe[id^=":"],
-      #google_translate_element,
-      .goog-te-gadget {
+      .goog-te-spinner-pos {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
-        position: absolute !important;
+      }
+
+      #google_translate_element {
+        position: fixed !important;
         top: -9999px !important;
         left: -9999px !important;
-        width: 0 !important;
-        height: 0 !important;
-        clip: rect(0, 0, 0, 0) !important;
+        width: 1px !important;
+        height: 1px !important;
+        opacity: 0.01 !important;
+        pointer-events: none !important;
+        z-index: -99999 !important;
         overflow: hidden !important;
-        z-index: -9999 !important;
       }
 
       body {
@@ -80,8 +68,11 @@
       (function() {
         try {
           var isHindiSession = sessionStorage.getItem('sa_user_selected_hindi') === 'true' || localStorage.getItem('sa_language') === 'Hindi';
-          if (!isHindiSession) {
-            var host = window.location.hostname;
+          var host = window.location.hostname;
+          if (isHindiSession) {
+            document.cookie = 'googtrans=/en/hi; path=/;';
+            if (host) document.cookie = 'googtrans=/en/hi; path=/; domain=' + host + ';';
+          } else {
             var domains = ['', host, '.' + host];
             var paths = ['/', window.location.pathname];
             domains.forEach(function(d) {
@@ -99,8 +90,8 @@
   <body>
     <div id="root"></div>
 
-    <!-- Hidden Google Translate Element Container -->
-    <div id="google_translate_element" style="display:none !important;visibility:hidden !important;position:absolute !important;top:-9999px !important;left:-9999px !important;width:0 !important;height:0 !important;overflow:hidden !important;pointer-events:none !important;"></div>
+    <!-- Google Translate Element Container (rendered off-screen, NOT display:none) -->
+    <div id="google_translate_element"></div>
     
     <!-- Google Translate Initialization Script -->
     <script type="text/javascript">
@@ -110,8 +101,7 @@
             new window.google.translate.TranslateElement({
               pageLanguage: 'en',
               autoDisplay: false,
-              includedLanguages: 'en,hi',
-              layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+              includedLanguages: 'en,hi'
             }, 'google_translate_element');
           } catch (e) {
             console.warn('Google translate init error:', e);
@@ -119,7 +109,7 @@
         }
       }
     </script>
-    <script async defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
