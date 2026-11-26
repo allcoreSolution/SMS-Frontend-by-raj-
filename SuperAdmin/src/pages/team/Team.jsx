@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   Search, 
@@ -29,7 +30,7 @@ const avatarColors = ['bg-[#2563eb]', 'bg-[#9333ea]', 'bg-[#16a34a]', 'bg-[#ef44
 const emptyForm = { name: '', email: '', phone: '', password: 'admin@123', role: 'Support Agent', status: 'Active' };
 
 /** Modal for Adding / Editing a Team Member */
-function MemberModal({ member, onChange, onSave, onClose, isAdd }) {
+function MemberModal({ member, onChange, onSave, onClose, isAdd, availableRoles = [] }) {
   if (!member) return null;
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-in fade-in duration-150">
@@ -115,13 +116,29 @@ function MemberModal({ member, onChange, onSave, onClose, isAdd }) {
                 Platform Role
               </label>
               <select
-                value={member.role || 'Support Agent'}
-                onChange={(e) => onChange({ ...member, role: e.target.value })}
+                value={member.role || 'SuperAdmin'}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const matched = availableRoles.find((r) => r.name === val);
+                  onChange({
+                    ...member,
+                    role: val,
+                    roleId: matched ? matched._id : member.roleId,
+                  });
+                }}
                 className="w-full border border-slate-200 rounded-lg px-3.5 py-2 text-sm text-slate-900 bg-white focus:outline-none focus:border-[#0891b2] focus:ring-2 focus:ring-[#0891b2]/10"
               >
-                {roles.map((r) => (
-                  <option key={r} value={r}>{r}</option>
-                ))}
+                {availableRoles.length > 0
+                  ? availableRoles.map((r) => (
+                      <option key={r._id || r.name} value={r.name}>
+                        {r.name}
+                      </option>
+                    ))
+                  : roles.map((r) => (
+                      <option key={r} value={r}>
+                        {r}
+                      </option>
+                    ))}
               </select>
             </div>
             <div>
@@ -368,7 +385,9 @@ function ViewModal({ member, onClose, onEdit, onPasswordReset, onToggleStatus, o
 }
 
 export default function Team() {
+  const navigate = useNavigate();
   const [team, setTeam] = useState([]);
+  const [availableRoles, setAvailableRoles] = useState([]);
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [editMember, setEditMember] = useState(null);
@@ -380,7 +399,19 @@ export default function Team() {
 
   useEffect(() => {
     fetchTeam();
+    fetchAvailableRoles();
   }, []);
+
+  const fetchAvailableRoles = async () => {
+    try {
+      const res = await superAdminService.getRoles('superadmin');
+      if (res?.success && Array.isArray(res.data)) {
+        setAvailableRoles(res.data);
+      }
+    } catch (e) {
+      console.error('Failed to fetch platform roles:', e);
+    }
+  };
 
   const fetchTeam = async () => {
     try {
@@ -536,6 +567,25 @@ export default function Team() {
   return (
     <div className="p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-6 max-w-[1600px] mx-auto font-sans">
       
+      {/* ─── Tabs Navigation (Team / Roles) ─── */}
+      <div className="flex items-center gap-3 border-b border-slate-200 pb-3">
+        <button
+          type="button"
+          className="px-4 py-2 text-xs font-bold rounded-xl bg-cyan-50 text-[#0891b2] border border-cyan-200 shadow-xs flex items-center gap-2 cursor-default"
+        >
+          <Users className="w-4 h-4 text-[#0891b2]" />
+          <span>Platform Team Members</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate('/roles-permissions')}
+          className="px-4 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-all cursor-pointer flex items-center gap-2"
+        >
+          <ShieldCheck className="w-4 h-4 text-purple-600" />
+          <span>Platform Roles & Permissions</span>
+        </button>
+      </div>
+
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
@@ -907,6 +957,7 @@ export default function Team() {
           onSave={handleAdd}
           onClose={() => setShowAdd(false)}
           isAdd
+          availableRoles={availableRoles}
         />
       )}
 
@@ -917,6 +968,7 @@ export default function Team() {
           onChange={setEditMember}
           onSave={handleSaveEdit}
           onClose={() => setEditMember(null)}
+          availableRoles={availableRoles}
         />
       )}
 

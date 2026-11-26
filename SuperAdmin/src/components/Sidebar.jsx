@@ -20,6 +20,7 @@ const navSections = [
       { to: '/plans', icon: Layers, label: 'Plans', color: '#2dd4bf', bg: 'rgba(45,212,191,0.15)' },
       { to: '/plan-addons', icon: Puzzle, label: 'Plan Add-ons', color: '#fb923c', bg: 'rgba(251,146,60,0.15)' },
       { to: '/team', icon: Users, label: 'Team', color: '#f472b6', bg: 'rgba(244,114,182,0.15)' },
+      { to: '/roles-permissions', icon: ShieldCheck, label: 'Roles & Permissions', color: '#a855f7', bg: 'rgba(168,85,247,0.15)' },
       { to: '/payments', icon: CreditCard, label: 'Payments', color: '#4ade80', bg: 'rgba(74,222,128,0.15)' },
       { to: '/license-orders', icon: ShoppingBag, label: 'License Orders', badge: 'GST Ready', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
       { to: '/templates', icon: LayoutTemplate, label: 'Templates', color: '#c084fc', bg: 'rgba(192,132,252,0.15)' },

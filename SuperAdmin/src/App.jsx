@@ -41,6 +41,7 @@ import SMSReport from './pages/billing/SMSReport';
 
 // Platform - Team & Support
 import Team from './pages/team/Team';
+import RolesPermissions from './pages/admin/RolesPermissions';
 import SupportTickets from './pages/SupportTickets';
 
 // Platform - Reports & Settings
@@ -220,6 +221,8 @@ function AppRoutes() {
 
               {/* Team & Support */}
               <Route path="/team" element={<Team />} />
+              <Route path="/roles-permissions" element={<RolesPermissions />} />
+              <Route path="/roles" element={<Navigate to="/roles-permissions" replace />} />
               <Route path="/support" element={<SupportTickets />} />
 
               {/* Reports & Settings */}

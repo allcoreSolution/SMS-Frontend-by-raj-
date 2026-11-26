@@ -44,6 +44,32 @@ export const settingsService = {
   getAuditTrail: async () => {
     const res = await axiosInstance.get('/settings/audit-trail/list');
     return res.data;
+  },
+
+  // 4. Roles & Permissions RBAC
+  getRoles: async () => {
+    const res = await axiosInstance.get('/roles?scope=school');
+    return res.data;
+  },
+
+  getPermissionsMatrix: async () => {
+    const res = await axiosInstance.get('/roles/permissions-matrix?scope=school');
+    return res.data;
+  },
+
+  createRole: async (data) => {
+    const res = await axiosInstance.post('/roles', { ...data, scope: 'school' });
+    return res.data;
+  },
+
+  updateRole: async (id, data) => {
+    const res = await axiosInstance.put(`/roles/${id}`, data);
+    return res.data;
+  },
+
+  deleteRole: async (id) => {
+    const res = await axiosInstance.delete(`/roles/${id}`);
+    return res.data;
   }
 };
 

@@ -483,6 +483,8 @@ function App() {
         <Route path="/settings/school-settings" element={<SchoolSettings />} />
         <Route path="/settings/custom-fields" element={<CustomFields />} />
         <Route path="/settings/roles-permissions" element={<RolesPermissions />} />
+        <Route path="/roles-permissions" element={<RolesPermissions />} />
+        <Route path="/roles" element={<RolesPermissions />} />
         <Route path="/settings/payment-gateway" element={<PaymentGateway />} />
         <Route path="/settings/notification-settings" element={<NotificationSettings />} />
         <Route path="/settings/admission-settings" element={<AdmissionSettings />} />

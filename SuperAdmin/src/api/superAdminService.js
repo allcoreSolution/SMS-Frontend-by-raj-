@@ -52,4 +52,18 @@ export const superAdminService = {
   // 6. GST Tax Invoices
   generateTaxInvoice: async (data) =>
     (await axiosInstance.post('/superadmin/generate-tax-invoice', data)).data,
+
+  // 7. RBAC Roles & Permissions
+  getRoles: async (scope = 'superadmin') =>
+    (await axiosInstance.get('/roles', { params: { scope } })).data,
+  getPermissionsMatrix: async (scope = 'superadmin') =>
+    (await axiosInstance.get('/roles/permissions-matrix', { params: { scope } })).data,
+  getRoleById: async (id) =>
+    (await axiosInstance.get(`/roles/${id}`)).data,
+  createRole: async (data) =>
+    (await axiosInstance.post('/roles', data)).data,
+  updateRole: async (id, data) =>
+    (await axiosInstance.put(`/roles/${id}`, data)).data,
+  deleteRole: async (id) =>
+    (await axiosInstance.delete(`/roles/${id}`)).data,
 };
