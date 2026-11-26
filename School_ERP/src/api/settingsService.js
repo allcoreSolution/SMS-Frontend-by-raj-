@@ -70,6 +70,24 @@ export const settingsService = {
   deleteRole: async (id) => {
     const res = await axiosInstance.delete(`/roles/${id}`);
     return res.data;
+  },
+
+  // 5. User Management with Roles
+  getRoleUsers: async (params = {}) => {
+    const res = await axiosInstance.get('/roles/users', { params: { scope: 'school', ...params } });
+    return res.data;
+  },
+  addRoleUser: async (data) => {
+    const res = await axiosInstance.post('/roles/users', { ...data, scope: 'school' });
+    return res.data;
+  },
+  updateRoleUser: async (id, data) => {
+    const res = await axiosInstance.put(`/roles/users/${id}`, data);
+    return res.data;
+  },
+  deleteRoleUser: async (id) => {
+    const res = await axiosInstance.delete(`/roles/users/${id}`);
+    return res.data;
   }
 };
 

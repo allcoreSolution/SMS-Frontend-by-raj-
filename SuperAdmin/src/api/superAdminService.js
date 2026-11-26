@@ -66,4 +66,14 @@ export const superAdminService = {
     (await axiosInstance.put(`/roles/${id}`, data)).data,
   deleteRole: async (id) =>
     (await axiosInstance.delete(`/roles/${id}`)).data,
+
+  // 8. User Management with Roles
+  getRoleUsers: async (params = {}) =>
+    (await axiosInstance.get('/roles/users', { params: { scope: 'superadmin', ...params } })).data,
+  addRoleUser: async (data) =>
+    (await axiosInstance.post('/roles/users', { ...data, scope: 'superadmin' })).data,
+  updateRoleUser: async (id, data) =>
+    (await axiosInstance.put(`/roles/users/${id}`, data)).data,
+  deleteRoleUser: async (id) =>
+    (await axiosInstance.delete(`/roles/users/${id}`)).data,
 };
