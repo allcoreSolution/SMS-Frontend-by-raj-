@@ -82,6 +82,7 @@ const Sidebar = ({ isCollapsed }) => {
 
   const mainNav = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
+    { name: "Roles & Permissions", icon: ShieldCheck, path: "/roles-permissions" },
     { name: "Lead Management", icon: TrendingUp, path: "/leads/dashboard" },
     { name: "Competency-Based (CBC)", icon: Network, path: "/cbc/dashboard" },
     { name: "Contact Support", icon: Headset, path: "/contact-support" },
@@ -240,6 +241,7 @@ const Sidebar = ({ isCollapsed }) => {
         { name: "Teacher Portal (:5177)", path: "http://localhost:5177", isExternal: true },
         { name: "Add New Staff", path: "/hr/staff/new" },
         { name: "Staff Directory", path: "/hr/staff" },
+        { name: "Roles & Permissions", path: "/roles-permissions" },
         { name: "Staff Attendance", path: "/hr/staff-attendance" },
         { name: "Payroll", path: "/hr/payroll" },
         { name: "Set Salary", path: "/hr/set-salary" },
