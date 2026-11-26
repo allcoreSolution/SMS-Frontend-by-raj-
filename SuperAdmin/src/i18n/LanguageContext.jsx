@@ -6,7 +6,7 @@ const LanguageContext = createContext(null);
 const nameToCode = (name) => LANGUAGES.find((l) => l.name === name || l.code === name)?.code || 'en';
 const codeToName = (code) => LANGUAGES.find((l) => l.code === code)?.name || 'English';
 
-const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'NOSCRIPT']);
+const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'TEXTAREA', 'INPUT', 'CODE', 'PRE', 'NOSCRIPT', 'FONT']);
 const ATTRS = ['placeholder', 'title', 'aria-label'];
 
 // text node -> { orig, shown }
@@ -15,8 +15,19 @@ const textStore = new WeakMap();
 const attrStore = new WeakMap();
 
 const shouldSkip = (el) => {
+  if (typeof document !== 'undefined' && (
+      document.documentElement.classList.contains('translated-ltr') || 
+      document.documentElement.classList.contains('translated-rtl')
+  )) {
+    return true; // Let Google Translate own the DOM without mutation collisions
+  }
   for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
-    if (SKIP_TAGS.has(n.tagName) || n.hasAttribute('data-no-translate') || n.getAttribute('translate') === 'no') return true;
+    if (SKIP_TAGS.has(n.tagName) || 
+        n.tagName === 'FONT' || 
+        n.classList.contains('skiptranslate') ||
+        n.closest?.('.skiptranslate') ||
+        n.hasAttribute('data-no-translate') || 
+        n.getAttribute('translate') === 'no') return true;
   }
   return false;
 };

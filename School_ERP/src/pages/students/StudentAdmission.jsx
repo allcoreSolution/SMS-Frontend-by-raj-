@@ -50,20 +50,46 @@ const StudentAdmission = () => {
   const [newParentPass, setNewParentPass] = useState('');
   const [savingPassword, setSavingPassword] = useState(false);
 
-  // Random Password Generator
-  const generatePassword = (prefix = 'Pass') => {
-    const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
-    let res = prefix + '@';
-    for (let i = 0; i < 4; i++) {
-      res += chars.charAt(Math.floor(Math.random() * chars.length));
+  // Enterprise Strong Password Generator
+  const generateStrongPassword = () => {
+    const upper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const lower = 'abcdefghijkmnopqrstuvwxyz';
+    const numbers = '23456789';
+    const symbols = '@#$&*!';
+    
+    let pwd = '';
+    pwd += upper.charAt(Math.floor(Math.random() * upper.length));
+    pwd += lower.charAt(Math.floor(Math.random() * lower.length));
+    pwd += lower.charAt(Math.floor(Math.random() * lower.length));
+    pwd += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    pwd += symbols.charAt(Math.floor(Math.random() * symbols.length));
+    
+    const all = upper + lower + numbers + symbols;
+    for (let i = 0; i < 5; i++) {
+      pwd += all.charAt(Math.floor(Math.random() * all.length));
     }
-    return res;
+    return pwd.split('').sort(() => 0.5 - Math.random()).join('');
   };
 
+  const generateStudentId = () => {
+    const year = new Date().getFullYear();
+    const rand = Math.floor(1000 + Math.random() * 9000);
+    return `ADM-${year}-${rand}`;
+  };
+
+  const generateRollNo = () => {
+    return String(Math.floor(10 + Math.random() * 90));
+  };
+
+  const defaultId = generateStudentId();
+  const defaultRoll = generateRollNo();
+  const defaultStudPass = generateStrongPassword();
+  const defaultParentPass = generateStrongPassword();
+
   const initialForm = {
-    aparId: `YIS-2026-${Math.floor(100 + Math.random() * 900)}`,
-    admissionNo: '',
-    rollNo: '',
+    aparId: defaultId,
+    admissionNo: defaultId,
+    rollNo: defaultRoll,
     classId: '',
     sectionId: '',
     admissionDate: new Date().toISOString().split('T')[0],
@@ -92,8 +118,8 @@ const StudentAdmission = () => {
     address: '',
     
     // Credentials & Portal Access
-    portalPassword: 'School@1234',
-    parentPassword: 'secret_access_24',
+    portalPassword: defaultStudPass,
+    parentPassword: defaultParentPass,
     enablePortalAccess: true,
     notifyParents: true,
 
@@ -127,10 +153,18 @@ const StudentAdmission = () => {
     }
   };
 
+  const getActiveSchoolTenant = () => {
+    return localStorage.getItem('schoolId') || 
+           localStorage.getItem('active_school_id') || 
+           localStorage.getItem('tenantId') || 
+           localStorage.getItem('tenant') || '';
+  };
+
   const fetchAdmissions = async () => {
     try {
       setLoadingAdmissions(true);
-      const res = await studentService.getStudents({ limit: 50 });
+      const activeTenant = getActiveSchoolTenant();
+      const res = await studentService.getStudents({ limit: 50, tenant: activeTenant });
       setAdmissionsList(res?.data || []);
     } catch (err) {
       console.error('Failed to fetch admitted students', err);
@@ -161,8 +195,33 @@ const StudentAdmission = () => {
   };
 
   const generateNewId = () => {
-    const newId = `YIS-2026-${Math.floor(100 + Math.random() * 900)}`;
-    setFormData(prev => ({ ...prev, aparId: newId, admissionNo: newId }));
+    const newId = generateStudentId();
+    const newRoll = generateRollNo();
+    setFormData(prev => ({ 
+      ...prev, 
+      aparId: newId, 
+      admissionNo: newId,
+      rollNo: newRoll
+    }));
+  };
+
+  const regenerateAllCredentials = () => {
+    const newStudentPass = generateStrongPassword();
+    const newParentPass = generateStrongPassword();
+    setFormData(prev => ({
+      ...prev,
+      portalPassword: newStudentPass,
+      parentPassword: newParentPass
+    }));
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: 'success',
+      title: 'Strong Passwords Generated!',
+      text: 'Enterprise-grade 10-character passwords generated.',
+      timer: 1800,
+      showConfirmButton: false
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -196,6 +255,13 @@ const StudentAdmission = () => {
 
       if (!formData.admissionNo) {
         fd.append('admissionNo', formData.aparId);
+      }
+
+      // Attach active school/tenant to ensure 100% strict tenant isolation
+      const activeTenant = getActiveSchoolTenant();
+      if (activeTenant) {
+        fd.append('tenant', activeTenant);
+        fd.append('schoolId', activeTenant);
       }
 
       const res = await studentService.createStudent(fd);
@@ -431,7 +497,32 @@ const StudentAdmission = () => {
                   <p className="text-xs text-slate-400">Class placement, roll numbering, and student identification</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-slate-700">Admission No *</label>
+                      <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded">Auto</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        name="admissionNo"
+                        value={formData.admissionNo}
+                        onChange={handleChange}
+                        className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-indigo-700 focus:outline-none focus:border-indigo-500"
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={generateNewId}
+                        className="p-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl cursor-pointer"
+                        title="Generate New Admission ID & Roll No"
+                      >
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">APAR ID / Reg ID *</label>
                     <div className="flex gap-2">
@@ -443,16 +534,35 @@ const StudentAdmission = () => {
                         className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-indigo-700 focus:outline-none focus:border-indigo-500"
                         required
                       />
-                      <button
-                        type="button"
-                        onClick={generateNewId}
-                        className="p-2 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-xl cursor-pointer"
-                        title="Generate Random ID"
-                      >
-                        <RefreshCw className="w-4 h-4" />
-                      </button>
                     </div>
                   </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Roll No</label>
+                    <input
+                      type="text"
+                      name="rollNo"
+                      placeholder="e.g. 01"
+                      value={formData.rollNo}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">Admission Date *</label>
+                    <input
+                      type="date"
+                      name="admissionDate"
+                      value={formData.admissionDate}
+                      onChange={handleChange}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-indigo-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
@@ -748,24 +858,11 @@ const StudentAdmission = () => {
 
                   <button
                     type="button"
-                    onClick={() => {
-                      setFormData(prev => ({
-                        ...prev,
-                        portalPassword: generatePassword('Stud'),
-                        parentPassword: generatePassword('Parent')
-                      }));
-                      Swal.fire({
-                        title: 'Passwords Generated!',
-                        text: 'Auto-generated high security passwords for both Student & Parent.',
-                        icon: 'success',
-                        timer: 1200,
-                        showConfirmButton: false
-                      });
-                    }}
+                    onClick={regenerateAllCredentials}
                     className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 flex items-center gap-1.5 cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Generate Both Passwords</span>
+                    <span>Generate Strong Passwords</span>
                   </button>
                 </div>
 
@@ -773,9 +870,12 @@ const StudentAdmission = () => {
                   
                   {/* Student Portal Credentials */}
                   <div className="p-5 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-3">
-                    <div className="flex items-center gap-2 text-indigo-900 font-bold text-xs">
-                      <GraduationCap className="w-4 h-4 text-indigo-600" />
-                      <span>Student Portal Access</span>
+                    <div className="flex items-center justify-between text-indigo-900 font-bold text-xs">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-4 h-4 text-indigo-600" />
+                        <span>Student Portal Access</span>
+                      </div>
+                      <span className="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">Strong Security</span>
                     </div>
 
                     <div>
@@ -792,13 +892,25 @@ const StudentAdmission = () => {
                     <div>
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-[11px] font-bold text-slate-600">Student Password *</label>
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, portalPassword: generatePassword('Stud') }))}
-                          className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <RefreshCw className="w-2.5 h-2.5" /> Randomize
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(formData.portalPassword);
+                              Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Password copied!', timer: 1200, showConfirmButton: false });
+                            }}
+                            className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Copy className="w-2.5 h-2.5" /> Copy
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, portalPassword: generateStrongPassword() }))}
+                            className="text-[10px] font-bold text-indigo-600 hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <RefreshCw className="w-2.5 h-2.5" /> Regenerate
+                          </button>
+                        </div>
                       </div>
                       <div className="relative">
                         <input
@@ -807,7 +919,7 @@ const StudentAdmission = () => {
                           value={formData.portalPassword}
                           onChange={handleChange}
                           placeholder="Enter password"
-                          className="w-full bg-white border border-indigo-200 rounded-xl pl-3 pr-10 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+                          className="w-full bg-white border border-indigo-200 rounded-xl pl-3 pr-10 py-2 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
                         />
                         <button
                           type="button"
@@ -822,9 +934,12 @@ const StudentAdmission = () => {
 
                   {/* Parent Portal Credentials */}
                   <div className="p-5 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-3">
-                    <div className="flex items-center gap-2 text-amber-900 font-bold text-xs">
-                      <Users className="w-4 h-4 text-amber-600" />
-                      <span>Parent Portal Access</span>
+                    <div className="flex items-center justify-between text-amber-900 font-bold text-xs">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-amber-600" />
+                        <span>Parent Portal Access</span>
+                      </div>
+                      <span className="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">Strong Security</span>
                     </div>
 
                     <div>
@@ -841,13 +956,25 @@ const StudentAdmission = () => {
                     <div>
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-[11px] font-bold text-slate-600">Parent Password *</label>
-                        <button
-                          type="button"
-                          onClick={() => setFormData(prev => ({ ...prev, parentPassword: generatePassword('Parent') }))}
-                          className="text-[10px] font-bold text-amber-700 hover:underline flex items-center gap-0.5 cursor-pointer"
-                        >
-                          <RefreshCw className="w-2.5 h-2.5" /> Randomize
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(formData.parentPassword);
+                              Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'Password copied!', timer: 1200, showConfirmButton: false });
+                            }}
+                            className="text-[10px] font-bold text-amber-700 hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <Copy className="w-2.5 h-2.5" /> Copy
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, parentPassword: generateStrongPassword() }))}
+                            className="text-[10px] font-bold text-amber-700 hover:underline flex items-center gap-0.5 cursor-pointer"
+                          >
+                            <RefreshCw className="w-2.5 h-2.5" /> Regenerate
+                          </button>
+                        </div>
                       </div>
                       <div className="relative">
                         <input
@@ -856,7 +983,7 @@ const StudentAdmission = () => {
                           value={formData.parentPassword}
                           onChange={handleChange}
                           placeholder="Enter parent password"
-                          className="w-full bg-white border border-amber-200 rounded-xl pl-3 pr-10 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
+                          className="w-full bg-white border border-amber-200 rounded-xl pl-3 pr-10 py-2 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/30"
                         />
                         <button
                           type="button"

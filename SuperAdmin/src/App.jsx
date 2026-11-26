@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
@@ -169,6 +169,12 @@ const ProtectedRoute = ({ children }) => {
 
 function AppRoutes() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  React.useEffect(() => {
+    document.title = "SuperAdmin Platform | ALL CORE SOLUTION";
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
