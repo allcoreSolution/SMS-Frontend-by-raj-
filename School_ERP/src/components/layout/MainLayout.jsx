@@ -3,6 +3,7 @@ import { Outlet, useLocation, Link } from "react-router-dom";
 import { BotMessageSquare, X, Megaphone } from "lucide-react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import TrialBannerAndPaywall from "./TrialBannerAndPaywall";
 
 const MainLayout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -73,6 +74,7 @@ const MainLayout = () => {
       <div className="flex-1 flex flex-col min-w-0 bg-slate-50 print:bg-white h-screen overflow-hidden">
         <div className="print:hidden relative z-30 flex-shrink-0 w-full">
           <Header toggleSidebar={handleToggleSidebar} />
+          <TrialBannerAndPaywall />
         </div>
         
         {/* Session Scoping Announcement Banner */}

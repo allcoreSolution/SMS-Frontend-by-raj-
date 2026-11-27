@@ -18,8 +18,8 @@ export default function Pricing() {
          {/* Left: Pricing Details */}
          <div className="flex flex-col gap-2.5 relative z-10 w-full">
            <div className="flex items-center gap-2">
-             <span className="bg-amber-400/10 text-amber-400 font-black text-[9px] sm:text-[10px] tracking-wider px-2.5 py-0.5 rounded-full border border-amber-400/30 uppercase">
-               Flat Annual SaaS License for Schools &amp; Colleges
+             <span className="bg-emerald-400/20 text-emerald-400 font-black text-[9px] sm:text-[10px] tracking-wider px-2.5 py-0.5 rounded-full border border-emerald-400/40 uppercase animate-pulse">
+               🎉 100% Free Trial • 1st Month Free for All Schools
              </span>
            </div>
            
@@ -29,18 +29,18 @@ export default function Pricing() {
            
            <div className="flex items-end gap-2.5 pt-0.5">
               <span className="text-slate-500 font-bold text-xs sm:text-sm line-through decoration-slate-600 decoration-2 mb-0.5">
-                ₹39,999/yr
+                ₹24,999/yr
               </span>
-              <span className="text-amber-400 font-black text-3xl sm:text-4xl tracking-tight leading-none">
-                ₹24,999
+              <span className="text-emerald-400 font-black text-3xl sm:text-4xl tracking-tight leading-none">
+                ₹0
               </span>
-              <span className="text-slate-400 font-bold text-[10px] sm:text-xs uppercase tracking-wider mb-0.5">
-                / year (Annual School License)
+              <span className="text-slate-300 font-bold text-[10px] sm:text-xs uppercase tracking-wider mb-0.5">
+                / 1st Month (30 Days 100% Free Trial)
               </span>
            </div>
            
            <p className="text-slate-400 text-[11px] sm:text-xs font-medium tracking-wide border-b border-slate-800 pb-2">
-              Flat yearly institutional license · All 38 modules &amp; mobile apps included · Zero per-student headache
+              First 30 days completely free · All 38 modules &amp; mobile apps included · No credit card required · Upgrade plan anytime
            </p>
            
            {/* 2-Column Compact Features Grid */}
@@ -75,11 +75,11 @@ export default function Pricing() {
            </ul>
            
            <button 
-             onClick={() => openModal('purchase', { plan: 'School Subscription Onboarding' })}
-             className="w-full mt-2 px-5 py-2.5 sm:py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-xs sm:text-[13px] uppercase tracking-wider rounded-xl shadow-md shadow-amber-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+             onClick={() => openModal('purchase', { plan: '30-Day Free Trial (1st Month ₹0 Free)' })}
+             className="w-full mt-2 px-5 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-slate-950 font-black text-xs sm:text-[13px] uppercase tracking-wider rounded-xl shadow-md shadow-emerald-500/20 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
            >
              <Sparkles className="w-3.5 h-3.5 text-slate-950" />
-             <span>Book Free School Demo &amp; Consultation →</span>
+             <span>Start 30-Day Free Trial (₹0) Now →</span>
            </button>
          </div>
          

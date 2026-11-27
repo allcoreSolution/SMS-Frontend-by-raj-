@@ -295,22 +295,25 @@ export default function Schools() {
   };
 
   /* 5. Suspend & Grace Handler */
-  const handleSuspendSubmit = async () => {
+  const handleSuspendSubmit = async (statusOverride) => {
     if (!suspendSchool) return;
     try {
-      const nextStatus = suspendSchool.status === 'Suspended' ? 'Active' : 'Suspended';
+      const isCurrentlyLocked = suspendSchool.status === 'Suspended' || suspendSchool.status === 'Terminated';
+      const nextStatus = statusOverride || (isCurrentlyLocked ? 'Active' : 'Suspended');
       await tenantService.suspendWithGrace(suspendSchool.id, {
         status: nextStatus,
-        suspensionReason: nextStatus === 'Suspended' ? suspendReason : '',
+        suspensionReason: nextStatus !== 'Active' ? suspendReason : '',
         graceDays: nextStatus === 'Suspended' ? Number(graceDays) : 0
       });
 
       Swal.fire({
         icon: 'success',
         title: `School ${nextStatus}!`,
-        text: nextStatus === 'Suspended' 
-          ? `Suspended with ${graceDays} days grace period. Reason: ${suspendReason}`
-          : 'School has been restored to Active status.',
+        text: nextStatus === 'Terminated'
+          ? `School account terminated. All associated accounts and data access have been locked.`
+          : (nextStatus === 'Suspended' 
+              ? `Suspended with ${graceDays === 0 ? 'immediate lockout' : `${graceDays} days grace period`}. Reason: ${suspendReason}`
+              : 'School access restored to Active status.'),
         timer: 2500
       });
       setSuspendSchool(null);
@@ -1424,22 +1427,30 @@ export default function Schools() {
             </div>
 
             <div className="p-5 space-y-4 text-xs">
-              <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-amber-900 flex items-start gap-2.5">
-                <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+              <div className={`p-3 rounded-2xl border flex items-start gap-2.5 ${
+                suspendSchool.status === 'Terminated' || suspendSchool.status === 'Suspended'
+                  ? 'bg-rose-50 border-rose-200 text-rose-900'
+                  : 'bg-amber-50 border-amber-200 text-amber-900'
+              }`}>
+                <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${
+                  suspendSchool.status === 'Terminated' || suspendSchool.status === 'Suspended'
+                    ? 'text-rose-600'
+                    : 'text-amber-600'
+                }`} />
                 <div>
-                  <p className="font-bold">Current Status: {suspendSchool.status}</p>
-                  <p className="text-[11px] text-amber-800 mt-0.5">
-                    {suspendSchool.status === 'Suspended'
-                      ? 'Reactivating will immediately restore full portal access to this school campus.'
-                      : 'Suspending will restrict school portal login with a customized grace period and notice.'}
+                  <p className="font-bold">Current Status: <span className="uppercase">{suspendSchool.status}</span></p>
+                  <p className="text-[11px] mt-0.5">
+                    {suspendSchool.status === 'Terminated' || suspendSchool.status === 'Suspended'
+                      ? 'Reactivating will immediately restore full portal access and unlock all user accounts.'
+                      : 'Suspending or Terminating will lock out all accounts and prevent school functions.'}
                   </p>
                 </div>
               </div>
 
-              {suspendSchool.status !== 'Suspended' && (
+              {suspendSchool.status !== 'Suspended' && suspendSchool.status !== 'Terminated' && (
                 <>
                   <div>
-                    <label className="block text-slate-700 font-bold mb-1">Reason for Suspension</label>
+                    <label className="block text-slate-700 font-bold mb-1">Reason for Lockout / Suspension</label>
                     <select
                       value={suspendReason}
                       onChange={e => setSuspendReason(e.target.value)}
@@ -1448,7 +1459,7 @@ export default function Schools() {
                       <option value="Annual SaaS Subscription Renewal Due">Annual SaaS Subscription Renewal Due</option>
                       <option value="Non-Payment of Cloud Hosting Invoices">Non-Payment of Cloud Hosting Invoices</option>
                       <option value="Compliance & License Audit Review">Compliance & License Audit Review</option>
-                      <option value="School Administrative Request">School Administrative Request</option>
+                      <option value="School Administrative Termination Request">School Administrative Termination Request</option>
                     </select>
                   </div>
 
@@ -1475,7 +1486,7 @@ export default function Schools() {
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex flex-wrap items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setSuspendSchool(null)}
@@ -1483,17 +1494,33 @@ export default function Schools() {
               >
                 Cancel
               </button>
-              <button
-                type="button"
-                onClick={handleSuspendSubmit}
-                className={`px-4 py-2 rounded-xl text-xs font-black text-white cursor-pointer shadow-xs ${
-                  suspendSchool.status === 'Suspended'
-                    ? 'bg-emerald-600 hover:bg-emerald-500'
-                    : 'bg-rose-600 hover:bg-rose-500'
-                }`}
-              >
-                {suspendSchool.status === 'Suspended' ? 'Restore Active Status' : 'Confirm Suspension'}
-              </button>
+
+              {suspendSchool.status === 'Suspended' || suspendSchool.status === 'Terminated' ? (
+                <button
+                  type="button"
+                  onClick={() => handleSuspendSubmit('Active')}
+                  className="px-4 py-2 rounded-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-500 cursor-pointer shadow-xs"
+                >
+                  ✓ Reactivate &amp; Unlock School Access
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => handleSuspendSubmit('Suspended')}
+                    className="px-3.5 py-2 rounded-xl text-xs font-black text-white bg-amber-600 hover:bg-amber-500 cursor-pointer shadow-xs"
+                  >
+                    Suspend School
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSuspendSubmit('Terminated')}
+                    className="px-3.5 py-2 rounded-xl text-xs font-black text-white bg-rose-600 hover:bg-rose-500 cursor-pointer shadow-xs"
+                  >
+                    🔒 Terminate &amp; Lock School Data
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

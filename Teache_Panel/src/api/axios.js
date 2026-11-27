@@ -69,6 +69,12 @@ axiosInstance.interceptors.response.use(
       console.warn('API Network/Connection Error: ', error.message);
     }
     
+    if (error.response && error.response.status === 403 && (error.response.data?.schoolLocked || error.response.data?.isTerminated)) {
+      if (typeof window !== 'undefined') {
+        alert(error.response.data?.message || 'This school account has been suspended or terminated by SuperAdmin. All functions are locked.');
+      }
+    }
+
     // Only perform forced logout if an EXPLICIT authentication verification endpoint rejects the token
     if (error.response && error.response.status === 401) {
       const reqUrl = error.config?.url || '';

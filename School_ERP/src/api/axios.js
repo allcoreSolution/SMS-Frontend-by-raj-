@@ -52,6 +52,21 @@ axiosInstance.interceptors.response.use(
   (error) => {
     console.error('API Call Error: ', error.response || error.message);
     
+    if (error.response && error.response.status === 403 && (error.response.data?.schoolLocked || error.response.data?.isTerminated)) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('school_locked', 'true');
+        localStorage.setItem('school_lock_message', error.response.data.message || 'School has been terminated by SuperAdmin');
+        window.dispatchEvent(new Event('school_lockout_triggered'));
+      }
+    }
+
+    if (error.response && (error.response.status === 402 || error.response.data?.trialExpired)) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('trial_expired', 'true');
+        window.dispatchEvent(new Event('trial_expired_triggered'));
+      }
+    }
+    
     if (error.response && error.response.status === 401) {
       const isLoginRequest = error.config?.url?.includes('/auth/login');
       const isAlreadyOnLogin = window.location.pathname === '/login';

@@ -740,8 +740,8 @@ export default function PortalModal() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-xs text-slate-400 font-bold">Annual License</div>
-                      <div className="text-xl font-black text-amber-500 leading-none">₹24,999<span className="text-xs text-slate-600 font-semibold">/year</span></div>
+                      <div className="text-xs text-emerald-600 font-bold">1st Month Free</div>
+                      <div className="text-xl font-black text-emerald-500 leading-none">₹0<span className="text-xs text-slate-500 font-semibold">/trial</span></div>
                     </div>
                   </div>
 
@@ -819,14 +819,17 @@ export default function PortalModal() {
                         onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
                         className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:bg-white"
                       >
-                        <option value="Starter Annual Plan — ₹24,999 / year (Up to 500 Students)">
-                          Starter Annual Plan — ₹24,999 / year (Up to 500 Students)
+                        <option value="30-Day Free Trial (1st Month ₹0 Free — All 38 Modules & Mobile Apps)">
+                          🎉 30-Day Free Trial (1st Month ₹0 Free — All 38 Modules &amp; Mobile Apps)
                         </option>
-                        <option value="Pro School Annual — ₹49,999 / year (Most Popular • Up to 1,500 Students + All Mobile Apps)">
-                          Pro School Annual — ₹49,999 / year (Most Popular • Up to 1,500 Students + All Mobile Apps)
+                        <option value="Starter Campus — 1st Month Free Trial (Up to 500 Students)">
+                          Starter Campus — 1st Month Free Trial (Up to 500 Students)
                         </option>
-                        <option value="Enterprise Multi-Campus — ₹89,999 / year (Unlimited Students + Custom Domain)">
-                          Enterprise Multi-Campus — ₹89,999 / year (Unlimited Students + Custom Domain)
+                        <option value="Pro School — 1st Month Free Trial (Most Popular • Up to 1,500 Students + All Mobile Apps)">
+                          Pro School — 1st Month Free Trial (Most Popular • Up to 1,500 Students + All Mobile Apps)
+                        </option>
+                        <option value="Enterprise Multi-Campus — 1st Month Free Trial (Unlimited Students + Custom Domain)">
+                          Enterprise Multi-Campus — 1st Month Free Trial (Unlimited Students + Custom Domain)
                         </option>
                         <option value="Custom Multi-School Group Package (Institutional Consultation)">
                           Custom Multi-School Group Package (Institutional Consultation)

@@ -40,14 +40,14 @@ export default function PricingPage() {
         <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           {/* Top Banner */}
           <div className="text-center mb-10">
-            <span className="inline-block px-3 py-1 bg-amber-400/10 border border-amber-400/30 text-amber-400 font-black text-xs uppercase tracking-wider rounded-full mb-3">
-              ⚡ Annual Flat-Fee Institutional SaaS Plans • Zero Per-Student Surcharges
+            <span className="inline-block px-3 py-1 bg-emerald-400/20 border border-emerald-400/40 text-emerald-400 font-black text-xs uppercase tracking-wider rounded-full mb-3 animate-pulse">
+              🎉 100% Free 30-Day Trial • First Month Free For All Schools • Zero Upfront Cost
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-white">
-              Choose the Right Yearly Plan for Your School
+              Start Free for 30 Days — Upgrade Anytime
             </h2>
             <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl mx-auto">
-              Simple, transparent annual billing. Every plan includes cloud hosting, automated daily backups, and free onboarding assistance.
+              Get full enterprise access for the first 30 days completely free. When your trial ends, simply choose a plan below to keep uninterrupted operations.
             </p>
           </div>
 
@@ -65,13 +65,13 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-slate-500 line-through text-sm font-bold">₹39,999</span>
-                  <span className="text-3xl sm:text-4xl font-black text-white leading-none">₹24,999</span>
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">/ year</span>
+                  <span className="text-slate-500 line-through text-sm font-bold">₹24,999</span>
+                  <span className="text-3xl sm:text-4xl font-black text-emerald-400 leading-none">₹0</span>
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">/ 1st month free</span>
                 </div>
 
                 <div className="text-xs text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 px-3 py-1.5 rounded-lg mb-6">
-                  ✓ Up to 500 Students Included
+                  ✓ 1 Month Free Trial • Up to 500 Students
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-slate-200 font-semibold mb-6 flex-1">
@@ -99,10 +99,10 @@ export default function PricingPage() {
                 </ul>
 
                 <button 
-                  onClick={() => openModal('purchase', { plan: 'Starter Annual Plan — ₹24,999 / year' })}
-                  className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-black text-xs uppercase tracking-wider rounded-xl transition cursor-pointer border border-slate-600"
+                  onClick={() => openModal('purchase', { plan: 'Starter Campus — 1st Month Free Trial (₹0)' })}
+                  className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs uppercase tracking-wider rounded-xl transition cursor-pointer shadow-md"
                 >
-                  Choose Starter Annual →
+                  Start Free Trial →
                 </button>
               </div>
             </div>
@@ -122,13 +122,13 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-slate-400 line-through text-sm font-bold">₹69,999</span>
-                  <span className="text-3xl sm:text-4xl font-black text-amber-400 leading-none">₹49,999</span>
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">/ year</span>
+                  <span className="text-slate-400 line-through text-sm font-bold">₹49,999</span>
+                  <span className="text-3xl sm:text-4xl font-black text-amber-400 leading-none">₹0</span>
+                  <span className="text-xs font-bold text-slate-200 uppercase tracking-wider">/ 1st month free</span>
                 </div>
 
                 <div className="text-xs text-amber-300 font-bold bg-amber-950/40 border border-amber-800/40 px-3 py-1.5 rounded-lg mb-6">
-                  ✓ Up to 1,500 Students Included
+                  ✓ 1 Month Free Trial • Up to 1,500 Students
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-slate-100 font-semibold mb-6 flex-1">
@@ -159,10 +159,10 @@ export default function PricingPage() {
                 </ul>
 
                 <button 
-                  onClick={() => openModal('purchase', { plan: 'Pro School Annual — ₹49,999 / year' })}
+                  onClick={() => openModal('purchase', { plan: 'Pro School — 1st Month Free Trial (₹0)' })}
                   className="w-full py-3.5 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider rounded-xl shadow-md transition cursor-pointer"
                 >
-                  Get Pro School Annual →
+                  Start Pro Free Trial →
                 </button>
               </div>
             </div>
@@ -179,13 +179,13 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-slate-500 line-through text-sm font-bold">₹1,19,999</span>
-                  <span className="text-3xl sm:text-4xl font-black text-white leading-none">₹89,999</span>
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">/ year</span>
+                  <span className="text-slate-500 line-through text-sm font-bold">₹89,999</span>
+                  <span className="text-3xl sm:text-4xl font-black text-cyan-400 leading-none">₹0</span>
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">/ 1st month free</span>
                 </div>
 
                 <div className="text-xs text-cyan-400 font-bold bg-cyan-950/40 border border-cyan-800/40 px-3 py-1.5 rounded-lg mb-6">
-                  ✓ Unlimited Students &amp; Multi-Branch Support
+                  ✓ 1 Month Free Trial • Multi-Campus &amp; Custom Domain
                 </div>
 
                 <ul className="space-y-2.5 text-xs text-slate-200 font-semibold mb-6 flex-1">
@@ -213,10 +213,10 @@ export default function PricingPage() {
                 </ul>
 
                 <button 
-                  onClick={() => openModal('purchase', { plan: 'Enterprise Multi-Campus — ₹89,999 / year' })}
+                  onClick={() => openModal('purchase', { plan: 'Enterprise Multi-Campus — 1st Month Free Trial (₹0)' })}
                   className="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-black text-xs uppercase tracking-wider rounded-xl transition cursor-pointer"
                 >
-                  Contact for Enterprise →
+                  Start Enterprise Free Trial →
                 </button>
               </div>
             </div>

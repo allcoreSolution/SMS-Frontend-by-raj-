@@ -58,6 +58,11 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
+    if (error.response && error.response.status === 403 && (error.response.data?.schoolLocked || error.response.data?.isTerminated)) {
+      if (typeof window !== 'undefined') {
+        alert(error.response.data?.message || 'This school account has been suspended or terminated by SuperAdmin. All functions are locked.');
+      }
+    }
     // Graceful error messages
     const friendlyMessage = error.response?.data?.message || 
       (error.code === 'ECONNABORTED' ? 'Network timeout. Central fleet server is unreachable.' : 'Fleet communication error.');
