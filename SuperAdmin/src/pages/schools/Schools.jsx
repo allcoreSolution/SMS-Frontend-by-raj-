@@ -52,6 +52,7 @@ export default function Schools() {
   const [suspendReason, setSuspendReason] = useState('Annual SaaS Subscription Renewal Due');
   const [graceDays, setGraceDays] = useState(7);
   const [invoiceModalData, setInvoiceModalData] = useState(null);
+  const [expiryModalData, setExpiryModalData] = useState(null);
 
   const navigate = useNavigate();
 
@@ -255,12 +256,72 @@ export default function Schools() {
         Swal.fire({
           icon: 'success',
           title: 'Backup Downloaded!',
-          text: `Snapshot verified with checksum ${res.backup.integrityHash.slice(0, 16)}...`,
+          text: `Snapshot verified with checksum ${res.backup.integrityHash?.slice(0, 16) || 'SHA-256'}...`,
           timer: 3000
         });
       }
     } catch (err) {
       Swal.fire('Backup Failed', err.response?.data?.message || err.message, 'error');
+    }
+  };
+
+  /* 3.1 1-Click School Tenant Data Export (JSON) */
+  const handleExportSchoolData = async (school) => {
+    try {
+      Swal.fire({
+        title: 'Exporting School Data...',
+        text: `Compiling full roster, staff, and database export for ${school.name}`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+      const res = await tenantService.exportTenantData(school.id, school.schoolCode);
+      if (res.success) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Export Downloaded!',
+          text: `Complete JSON package for ${school.name} (${school.schoolCode}) exported successfully.`,
+          timer: 3000
+        });
+      }
+    } catch (err) {
+      Swal.fire('Export Failed', err.response?.data?.message || err.message, 'error');
+    }
+  };
+
+  /* 3.2 Automated Expiry & Renewal Reminders Checker */
+  const handleCheckExpiries = async () => {
+    try {
+      Swal.fire({
+        title: 'Checking Expiries & Subscriptions...',
+        text: 'Analyzing licenses, trial end dates, and preparing renewal notices',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      const res = await tenantService.checkExpiries();
+      Swal.close();
+      if (res.success) {
+        setExpiryModalData(res);
+      } else {
+        Swal.fire('Expiry Scan', res.message || 'Unable to scan school expiries', 'info');
+      }
+    } catch (err) {
+      Swal.fire('Error', err.response?.data?.message || err.message, 'error');
+    }
+  };
+
+  const handleSendManualReminder = async (schoolId, schoolName, channel = 'all') => {
+    try {
+      Swal.fire({
+        title: 'Dispatching Reminder...',
+        text: `Sending renewal notice to ${schoolName} via ${channel.toUpperCase()}`,
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+      const res = await tenantService.sendManualReminder(schoolId, { channel });
+      Swal.fire('Reminder Sent!', res.message || `Renewal alert dispatched to ${schoolName}`, 'success');
+    } catch (err) {
+      Swal.fire('Failed', err.response?.data?.message || err.message, 'error');
     }
   };
 
@@ -452,7 +513,7 @@ export default function Schools() {
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-4 sm:p-6 max-w-[1300px] w-full mx-auto min-h-[85vh]">
       
-      {/* HEADER SECTION (Matches screenshot: 'Manage Schools' with Total and Orange Add Button) */}
+      {/* HEADER SECTION (Matches screenshot: 'Manage Schools' with Total and Action Buttons) */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Manage Schools</h1>
@@ -460,13 +521,28 @@ export default function Schools() {
             {schools.length} total
           </span>
         </div>
-        <button 
-          onClick={() => navigate('/schools/create')} 
-          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shadow-orange-500/20 active:scale-95 cursor-pointer shrink-0 self-start sm:self-auto"
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" /> 
-          <span>Add New School</span>
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button 
+            type="button"
+            onClick={handleCheckExpiries}
+            className="inline-flex items-center justify-center gap-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-xs cursor-pointer"
+          >
+            <Bell className="w-4 h-4 text-emerald-600" />
+            <span>Check Expiries & Reminders</span>
+            {schools.filter(s => s.isExpiring).length > 0 && (
+              <span className="bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-black">
+                {schools.filter(s => s.isExpiring).length}
+              </span>
+            )}
+          </button>
+          <button 
+            onClick={() => navigate('/schools/create')} 
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shadow-orange-500/20 active:scale-95 cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" /> 
+            <span>Add New School</span>
+          </button>
+        </div>
       </div>
 
       {/* TOP STATUS TABS (Matches screenshot: All 702 | Active 169 | Inactive 17 | Suspended 504 | Expiring 42) */}
@@ -635,8 +711,16 @@ export default function Schools() {
                         onClick={() => { setOpenDropdownId(null); handleImpersonate(school); }}
                         className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-900 hover:bg-slate-50 flex items-center gap-2.5"
                       >
-                        <LogIn className="w-4 h-4 text-slate-800" />
-                        <span>Login to Dashboard</span>
+                        <ArrowUpRight className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                        <span>Launch School Portal ↗</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setOpenDropdownId(null); handleExportSchoolData(school); }}
+                        className="w-full text-left px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5"
+                      >
+                        <Download className="w-4 h-4 text-indigo-600" />
+                        <span>Export School Data (JSON)</span>
                       </button>
                       <button
                         type="button"
@@ -752,18 +836,29 @@ export default function Schools() {
 
                   {/* 8. Action Column: 'Manage ▼' with Dropdown Menu */}
                   <td className="px-4 py-3.5 align-middle border-x border-slate-200 text-center bg-slate-50/20">
-                    <div className="relative inline-block text-left">
+                    <div className="flex items-center justify-center gap-1.5">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setOpenDropdownId(openDropdownId === school.id ? null : school.id);
-                        }}
-                        className="px-3.5 py-1.5 bg-[#008f8c] hover:bg-[#007a78] active:bg-[#006664] text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer select-none"
+                        title="1-Click Launch School ERP Portal"
+                        onClick={() => handleImpersonate(school)}
+                        className="px-2 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-2xs cursor-pointer"
                       >
-                        <span>Manage</span>
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdownId === school.id ? 'rotate-180' : ''}`} />
+                        <ArrowUpRight className="w-3.5 h-3.5 text-emerald-700 stroke-[2.5]" />
+                        <span className="hidden xl:inline">Launch Portal</span>
                       </button>
+
+                      <div className="relative inline-block text-left">
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenDropdownId(openDropdownId === school.id ? null : school.id);
+                          }}
+                          className="px-3 py-1.5 bg-[#008f8c] hover:bg-[#007a78] active:bg-[#006664] text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer select-none"
+                        >
+                          <span>Manage</span>
+                          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdownId === school.id ? 'rotate-180' : ''}`} />
+                        </button>
 
                       {/* Dropdown Floating Menu (Exact items from red circle in screenshot) */}
                       {openDropdownId === school.id && (
@@ -825,7 +920,7 @@ export default function Schools() {
 
                           <div className="my-1 border-t border-slate-100" />
 
-                          {/* 5. Login to Dashboard */}
+                          {/* 5. Launch School Portal ↗ */}
                           <button
                             type="button"
                             onClick={() => {
@@ -834,8 +929,21 @@ export default function Schools() {
                             }}
                             className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-900 hover:bg-slate-50 flex items-center gap-2.5 transition cursor-pointer"
                           >
-                            <LogIn className="w-4 h-4 text-slate-800" />
-                            <span>Login to Dashboard</span>
+                            <ArrowUpRight className="w-4 h-4 text-emerald-600 stroke-[2.5]" />
+                            <span>Launch School Portal ↗</span>
+                          </button>
+
+                          {/* 5.1 1-Click School Tenant Data Export */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setOpenDropdownId(null);
+                              handleExportSchoolData(school);
+                            }}
+                            className="w-full text-left px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-2.5 transition cursor-pointer"
+                          >
+                            <Download className="w-4 h-4 text-indigo-600" />
+                            <span>Export School Data (JSON)</span>
                           </button>
 
                           {/* 6. Edit Settings */}
@@ -884,8 +992,9 @@ export default function Schools() {
                         </div>
                       )}
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                </td>
+              </tr>
               ))
             )}
           </tbody>
@@ -1521,6 +1630,105 @@ export default function Schools() {
                   </button>
                 </>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7.5 AUTOMATED EXPIRY & RENEWAL REMINDERS MODAL */}
+      {expiryModalData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 animate-in fade-in backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl border border-slate-100">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-black">
+                  <Bell className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900">Subscription & Trial Expiries</h3>
+                  <p className="text-xs text-slate-500 font-medium">Automated WhatsApp &amp; Email Renewal Reminders</p>
+                </div>
+              </div>
+              <button 
+                type="button"
+                onClick={() => setExpiryModalData(null)}
+                className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Summary Counters */}
+            <div className="grid grid-cols-3 gap-3 my-4">
+              <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200">
+                <span className="text-[11px] font-bold text-amber-700 block">Expiring Soon (≤ 7 Days)</span>
+                <span className="text-xl font-black text-amber-900">{expiryModalData.summary?.expiringSoonCount || 0} Schools</span>
+              </div>
+              <div className="p-3.5 bg-rose-50 rounded-xl border border-rose-200">
+                <span className="text-[11px] font-bold text-rose-700 block">Already Expired</span>
+                <span className="text-xl font-black text-rose-900">{expiryModalData.summary?.expiredCount || 0} Schools</span>
+              </div>
+              <div className="p-3.5 bg-emerald-50 rounded-xl border border-emerald-200">
+                <span className="text-[11px] font-bold text-emerald-700 block">Active &amp; Healthy</span>
+                <span className="text-xl font-black text-emerald-900">{expiryModalData.summary?.activeHealthyCount || 0} Schools</span>
+              </div>
+            </div>
+
+            {/* List */}
+            <div className="space-y-2 mt-4">
+              <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider">Schools Requiring Action</h4>
+              {[...(expiryModalData.data?.expiringSoon || []), ...(expiryModalData.data?.expired || [])].length === 0 ? (
+                <div className="py-8 text-center text-slate-400 text-xs font-semibold">
+                  <CheckCircle className="w-8 h-8 text-emerald-500 mx-auto mb-2" />
+                  All schools have active licenses. No renewal reminders needed right now!
+                </div>
+              ) : (
+                <div className="divide-y divide-slate-100 max-h-64 overflow-y-auto pr-1">
+                  {[...(expiryModalData.data?.expiringSoon || []), ...(expiryModalData.data?.expired || [])].map((item, idx) => (
+                    <div key={idx} className="py-2.5 flex items-center justify-between gap-3 text-xs">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-900">{item.schoolName}</span>
+                          <span className="text-[10px] font-mono px-1.5 py-0.5 bg-slate-100 rounded text-slate-600">{item.schoolCode}</span>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            item.remainingDays <= 0 ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'
+                          }`}>
+                            {item.remainingDays <= 0 ? 'Expired' : `${item.remainingDays} days left`}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-400">{item.email} • {item.phone || 'No phone'} • Plan: {item.plan || 'Trial'}</p>
+                      </div>
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => handleSendManualReminder(item.id, item.schoolName, 'whatsapp')}
+                          className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold rounded-lg text-[11px] flex items-center gap-1 cursor-pointer transition border border-emerald-200"
+                        >
+                          <span>WhatsApp</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSendManualReminder(item.id, item.schoolName, 'email')}
+                          className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-lg text-[11px] flex items-center gap-1 cursor-pointer transition border border-blue-200"
+                        >
+                          <span>Email</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <span className="text-xs text-slate-400 font-medium">Automatic daily cron sends notifications at 08:00 AM IST</span>
+              <button
+                type="button"
+                onClick={() => setExpiryModalData(null)}
+                className="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 cursor-pointer"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

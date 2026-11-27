@@ -80,7 +80,6 @@ import SettingsPayments from './pages/settings/SettingsPayments';
 import SettingsSms from './pages/settings/SettingsSms';
 import SettingsNotifications from './pages/settings/SettingsNotifications';
 import LoginPageDesignsSettings from './pages/settings/LoginPageDesignsSettings';
-import DummySettings from './pages/settings/DummySettings';
 import ApiDocs from './pages/ApiDocs';
 import Templates from './pages/Templates';
 

@@ -5,7 +5,7 @@ import {
   Search, LayoutDashboard, User, Building2, Layers,
   Users, LayoutTemplate, BarChart3,
   Settings, FileText, LifeBuoy, Server,
-  MonitorPlay, Rss, BookOpen, BrainCircuit, LayoutList,
+  MonitorPlay, BookOpen, BrainCircuit, LayoutList,
   LogOut, ChevronDown, ChevronLeft, Sparkles, Zap, Bell, X, Puzzle, CreditCard, Wallet, Plug,
   Megaphone, Headset, Landmark, ShieldCheck, ShoppingBag
 } from 'lucide-react';
@@ -63,7 +63,6 @@ const navSections = [
         children: [
           { to: '/audit-logs', label: 'Tamper-Proof Audit Logs' },
           { to: '/alerts', label: 'Alerts & Broadcasts' },
-          { to: '/master-menus', label: 'Master Menus' },
           { to: '/notifications', label: 'Notifications Inbox' }
         ]
       },
@@ -87,29 +86,12 @@ const navSections = [
   {
     label: 'WEBSITE',
     items: [
-      {
-        icon: Megaphone, label: 'Landing Page', color: '#f472b6', bg: 'rgba(244,114,182,0.15)',
-        children: [
-          { to: '/landing-templates', label: 'Landing Templates' },
-          { to: '/landing-page/visual-builder', label: 'Visual Builder' },
-          { to: '/landing-page/full-templates', label: 'Full Templates' },
-          { to: '/website-pages', label: 'Pages' },
-          { to: '/website-menu', label: 'Navigation & Footer' },
-          { to: '/sitemap', label: 'Sitemap' }
-        ]
-      }
+      { to: '/landing-templates', icon: Megaphone, label: 'Landing Templates', color: '#f472b6', bg: 'rgba(244,114,182,0.15)' }
     ]
   },
   {
     label: 'AI & CONTENT',
     items: [
-      {
-        icon: Rss, label: 'Blog', color: '#a855f7', bg: 'rgba(168,85,247,0.15)',
-        children: [
-          { to: '/blog/posts', label: 'Posts' },
-          { to: '/blog/categories', label: 'Categories' }
-        ]
-      },
       {
         icon: BookOpen, label: 'Knowledge Base', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)',
         children: [

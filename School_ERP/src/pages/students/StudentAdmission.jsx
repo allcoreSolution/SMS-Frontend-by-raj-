@@ -294,6 +294,27 @@ const StudentAdmission = () => {
       setCurrentView('registry');
     } catch (err) {
       console.error(err);
+      if (err.response?.data?.code === 'STUDENT_CAPACITY_EXCEEDED') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Student Capacity Limit Reached',
+          html: `
+            <div class="text-left text-xs space-y-2 text-slate-600">
+              <p class="font-bold text-rose-600">${err.response.data.message}</p>
+              <p>Your current school subscription tier does not allow registering additional students. Please upgrade your campus license plan.</p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'View Upgrade Plans',
+          cancelButtonText: 'Close',
+          confirmButtonColor: '#f97316'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            navigate('/subscription');
+          }
+        });
+        return;
+      }
       Swal.fire('Admission Failed', err.response?.data?.message || err.message, 'error');
     } finally {
       setLoading(false);
