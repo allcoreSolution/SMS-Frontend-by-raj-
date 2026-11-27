@@ -704,6 +704,7 @@ export default function RolesPermissions() {
         });
 
         setSelectedMatrixRoleId(newRole._id);
+        setActiveTab("matrix");
         Swal.fire({
           icon: 'success',
           title: 'Platform Role Created!',
@@ -1305,6 +1306,26 @@ export default function RolesPermissions() {
 
               {/* Action Presets */}
               <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleOpenCreateRole}
+                  className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                  title="Create new platform role"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>New Role</span>
+                </button>
+                {activeMatrixRole && !activeMatrixRole.isSystem && (
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteRole(activeMatrixRole)}
+                    className="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold rounded-xl transition-all cursor-pointer border border-rose-200 flex items-center gap-1.5"
+                    title="Delete this role"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    <span>Delete Role</span>
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={handlePresetSelectAll}
