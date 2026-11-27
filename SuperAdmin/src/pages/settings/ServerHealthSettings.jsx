@@ -1,34 +1,49 @@
 import React from 'react';
-import { Lock, HeartPulse, CheckCircle2, ExternalLink } from 'lucide-react';
+import { HeartPulse, CheckCircle2, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
 import SettingsLayout from '../../components/SettingsLayout';
+import { useNavigate } from 'react-router-dom';
 
 export default function ServerHealthSettings() {
+  const navigate = useNavigate();
+
   return (
     <SettingsLayout activeTab="server-health">
-      <div className="flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto p-6 max-w-[1150px] mx-auto w-full">
+      <div className="flex flex-col h-full bg-[#f8fafc]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-[1150px] mx-auto w-full">
           
-          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-xl bg-emerald-50 flex items-center justify-center mb-4">
-              <HeartPulse className="w-7 h-7 text-emerald-500" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs p-6 sm:p-10 flex flex-col items-center text-center max-w-xl mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4 text-emerald-600 shadow-xs">
+              <HeartPulse className="w-8 h-8 animate-pulse" />
             </div>
-            <h1 className="text-xl font-bold text-gray-800 mb-2">Server Health</h1>
-            <p className="text-sm text-gray-500 max-w-[1150px] leading-relaxed mb-6">
-              Live server monitoring, self-tests, diagnostics, cache tools and storage fixes.
+
+            <h1 className="text-xl sm:text-2xl font-black text-slate-800 mb-2">Live Server Health &amp; Telemetry</h1>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6">
+              Real-time Node.js execution runtime, heap memory usage, active event-loop uptime, and MongoDB cluster latency metrics.
             </p>
-            <div className="flex flex-col gap-2 mb-6 text-left w-full max-w-[1150px]">
-              {['CPU / RAM / disk / database vitals and capacity', 'Run diagnostics, clear caches and re-link storage'].map(f => (
-                <div key={f} className="flex items-center gap-2.5 text-sm text-gray-700">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500 flex-shrink-0" /> {f}
+
+            <div className="flex flex-col gap-2.5 mb-8 text-left w-full bg-slate-50 border border-slate-200/80 rounded-xl p-4">
+              {[
+                'Live Node.js V8 Heap & Process RAM tracking',
+                'Real-time MongoDB Atlas ping latency & operational status',
+                'Production Uptime counter with active process ID inspection',
+                'Instant memory garbage-collection stress check'
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span>{f}</span>
                 </div>
               ))}
             </div>
-            <button onClick={() => window.open('/server-health-workspace', '_blank')}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors text-sm">
-              <ExternalLink className="w-4 h-4" /> Open Server Health
+
+            <button 
+              onClick={() => navigate('/server')}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold rounded-xl transition-all shadow-md shadow-emerald-600/20 active:scale-95 text-xs sm:text-sm cursor-pointer w-full sm:w-auto"
+            >
+              <span>Launch Live Telemetry Console</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="text-xs text-gray-400 mt-3">Opens the full workspace in a new tab.</p>
           </div>
+
         </div>
       </div>
     </SettingsLayout>

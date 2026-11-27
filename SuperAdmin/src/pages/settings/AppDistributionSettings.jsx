@@ -1,34 +1,49 @@
 import React from 'react';
-import { Lock, Smartphone, CheckCircle2, ExternalLink } from 'lucide-react';
+import { Smartphone, CheckCircle2, ArrowRight, ShieldCheck, DownloadCloud } from 'lucide-react';
 import SettingsLayout from '../../components/SettingsLayout';
+import { useNavigate } from 'react-router-dom';
 
 export default function AppDistributionSettings() {
+  const navigate = useNavigate();
+
   return (
     <SettingsLayout activeTab="app-dist">
-      <div className="flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto p-6 max-w-[1150px] mx-auto w-full">
+      <div className="flex flex-col h-full bg-[#f8fafc]">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 max-w-[1150px] mx-auto w-full">
           
-          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-sm p-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-              <Smartphone className="w-7 h-7 text-blue-500" />
+          <div className="bg-white border border-slate-200/80 rounded-2xl shadow-xs p-6 sm:p-10 flex flex-col items-center text-center max-w-xl mx-auto">
+            <div className="w-16 h-16 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center mb-4 text-indigo-600 shadow-xs">
+              <Smartphone className="w-8 h-8" />
             </div>
-            <h1 className="text-xl font-bold text-gray-800 mb-2">App Distribution</h1>
-            <p className="text-sm text-gray-500 max-w-[1150px] leading-relaxed mb-6">
-              Upload APK / Windows installers and set store links so panels can offer the apps.
+
+            <h1 className="text-xl sm:text-2xl font-black text-slate-800 mb-2">Mobile App Distribution Center</h1>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mb-6">
+              Publish Android APKs, Play Store URLs, and iOS App Store distribution packages for School Parent, Teacher, and Driver apps.
             </p>
-            <div className="flex flex-col gap-2 mb-6 text-left w-full max-w-[1150px]">
-              {['Chunked upload for large APK / EXE files', 'Play Store / App Store links per app', 'Choose which audiences see each download'].map(f => (
-                <div key={f} className="flex items-center gap-2.5 text-sm text-gray-700">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500 flex-shrink-0" /> {f}
+
+            <div className="flex flex-col gap-2.5 mb-8 text-left w-full bg-slate-50 border border-slate-200/80 rounded-xl p-4">
+              {[
+                'Upload and host production Android APK builds directly on platform CDN',
+                'Set direct Google Play Store & Apple App Store download URLs',
+                'Configure version update enforcement (force update vs optional)',
+                'Audience-specific app download banners in School & Parent portals'
+              ].map((f, i) => (
+                <div key={i} className="flex items-center gap-2.5 text-xs font-semibold text-slate-700">
+                  <CheckCircle2 className="w-4 h-4 text-indigo-500 shrink-0" />
+                  <span>{f}</span>
                 </div>
               ))}
             </div>
-            <button onClick={() => window.open('/app-distribution-workspace', '_blank')}
-              className="flex items-center gap-2 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors text-sm">
-              <ExternalLink className="w-4 h-4" /> Open App Distribution
+
+            <button 
+              onClick={() => navigate('/app-distribution')}
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all shadow-md shadow-indigo-600/20 active:scale-95 text-xs sm:text-sm cursor-pointer w-full sm:w-auto"
+            >
+              <span>Launch App Distribution Manager</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
-            <p className="text-xs text-gray-400 mt-3">Opens the full workspace in a new tab.</p>
           </div>
+
         </div>
       </div>
     </SettingsLayout>

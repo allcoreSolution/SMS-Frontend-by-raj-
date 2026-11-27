@@ -31,7 +31,7 @@ const navCategories = [
       { id: 'general', to: '/settings-general', label: 'General Configuration', icon: SlidersHorizontal },
       { id: 'registration', to: '/settings-registration', label: 'Registration & Security', icon: UserCheck },
       { id: 'subscriptions', to: '/settings-subscriptions', label: 'Subscriptions & Tiers', icon: CreditCard },
-      { id: 'app-dist', to: '/settings-app-distribution', label: 'App Distribution', icon: ExternalLink, external: true },
+      { id: 'app-dist', to: '/app-distribution', label: 'App Distribution', icon: ExternalLink },
       { id: 'payment-settings', to: '/settings-payment-settings', label: 'Payment Settings', icon: CreditCard }
     ]
   },
@@ -58,11 +58,10 @@ const navCategories = [
   {
     category: 'Advanced Services',
     items: [
-      { id: 'menu-builder', to: '/settings-menu', label: 'Menu Builder', icon: LayoutList },
       { id: 'ai-mgmt', to: '/settings-ai-mgmt', label: 'AI Management', icon: BrainCircuit },
       { id: 'face-vectors', to: '/settings-face-vectors', label: 'Face Vectors AI', icon: Camera },
-      { id: 'api-docs', to: '/settings-api-docs', label: 'API Documentation', icon: Plug },
-      { id: 'server-health', to: '/settings-server-health', label: 'Server Health', icon: HeartPulse }
+      { id: 'api-docs', to: '/api-docs', label: 'API Documentation', icon: Plug },
+      { id: 'server-health', to: '/server', label: 'Server Health & Telemetry', icon: HeartPulse }
     ]
   }
 ];
