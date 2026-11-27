@@ -4,7 +4,7 @@ import {
   XCircle, Clock, X, Save, AlertTriangle, Mail, Info, 
   ChevronDown, Key, Copy, Lock, Phone, MapPin, Globe, Sparkles, FileText, ShieldAlert,
   BarChart2, Database, Table, Receipt, LogIn, Edit3, KeyRound, Download, RefreshCw, 
-  FileSpreadsheet, Layers, ShieldCheck, ArrowUpRight, Check, LineChart
+  FileSpreadsheet, Layers, ShieldCheck, ArrowUpRight, Check, LineChart, Bell
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { tenantService } from '../../api/tenantService';
