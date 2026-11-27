@@ -38,10 +38,8 @@ const navSections = [
         children: [
           { to: '/payment-gateways', label: 'Payment Gateways' },
           { to: '/comms/wallets', label: 'Wallet Oversight' },
-          { to: '/comms/rate-cards', label: 'Rate Cards' },
           { to: '/sms-gateways', label: 'SMS Gateways' },
-          { to: '/sms-report', label: 'SMS Report' },
-          { to: '/comms/meta-dlt', label: 'Meta / DLT Config' }
+          { to: '/comms/rate-cards', label: 'Rate Cards' }
         ]
       },
       { to: '/support', icon: Headset, label: 'Support Tickets', color: '#9333ea', bg: 'rgba(147,51,234,0.15)' },
