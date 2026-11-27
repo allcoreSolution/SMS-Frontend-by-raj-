@@ -259,7 +259,12 @@ export default function HRStaffDirectory() {
                         </span>
                       </td>
                       <td className="py-4 px-4">
-                        <div className="font-semibold text-slate-800">{staff.designation || 'Staff'}</div>
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-semibold text-slate-800">{staff.designation || 'Staff'}</span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                            {staff.role?.name || staff.roleName || (staff.designation === 'Teacher' ? 'Teacher' : 'Staff')}
+                          </span>
+                        </div>
                         <div className="text-[11px] text-purple-600 font-medium mt-0.5">
                           {staff.department || 'General'}
                         </div>

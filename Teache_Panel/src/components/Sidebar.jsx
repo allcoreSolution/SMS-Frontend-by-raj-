@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { 
   Search, LayoutDashboard, User, DollarSign, Video, AlertCircle, FileText,
   Heart, CalendarDays, Users, CheckCircle, ChevronDown,
   PenTool, List, Edit, UploadCloud, Printer, Book, Grid, Handshake, Clipboard, ClipboardCheck, 
   Filter, BarChart, MessageCircle, LogOut, Accessibility, CreditCard,
-  Settings
+  Settings, ShieldCheck
 } from 'lucide-react';
 import { useSidebar } from '../context/SidebarContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -212,25 +213,105 @@ const Sidebar = () => {
   const [openSection, setOpenSection] = useState('MAIN NAVIGATION');
   const [openSubmenu, setOpenSubmenu] = useState(null);
 
-  const [userRole, setUserRole] = useState(() => {
+  const [userData, setUserData] = useState(() => {
     try {
-      const u = JSON.parse(localStorage.getItem('user') || '{}');
-      return u?.role || 'Teacher';
+      return JSON.parse(localStorage.getItem('user') || '{}');
     } catch (_) {
-      return 'Teacher';
+      return {};
     }
   });
+
+  const userRole = userData?.role || 'Teacher';
+  const userRoleName = userData?.roleName || userRole;
+  const userPermissions = Array.isArray(userData?.permissions) ? userData.permissions : [];
 
   useEffect(() => {
     const handleStorage = () => {
       try {
         const u = JSON.parse(localStorage.getItem('user') || '{}');
-        setUserRole(u?.role || 'Teacher');
+        setUserData(u);
       } catch (_) {}
     };
     window.addEventListener('storage', handleStorage);
     return () => window.removeEventListener('storage', handleStorage);
   }, []);
+
+  // Universal dynamic permission evaluator
+  const hasAccess = (requiredKeys = []) => {
+    if (userPermissions.includes('*') || userPermissions.includes('all')) return true;
+
+    if (!Array.isArray(requiredKeys)) requiredKeys = [requiredKeys];
+    if (requiredKeys.length === 0) return true;
+
+    const hasExplicitPerm = requiredKeys.some(key => {
+      if (userPermissions.includes(key)) return true;
+      const [module] = key.split('.');
+      if (userPermissions.includes(module) || userPermissions.includes(`${module}.*`)) return true;
+      if (userPermissions.some(p => p.startsWith(module + '.') || p === module)) return true;
+      return false;
+    });
+
+    if (hasExplicitPerm) return true;
+
+    // Default Teacher fallback privileges
+    const isTeacher = userRole.toLowerCase().includes('teacher') || userRole === 'Faculty';
+    if (isTeacher) {
+      const teacherDefaults = [
+        'academics', 'students', 'exams', 'online_exams', 'ptm', 
+        'lesson_plan', 'classwork', 'assignments', 'timetable', 'attendance'
+      ];
+      if (requiredKeys.some(k => teacherDefaults.some(td => k.includes(td)))) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  const showRolePermissionsModal = () => {
+    const isFull = userPermissions.includes('all') || userPermissions.includes('*');
+    const permListHtml = isFull 
+      ? `<div style="padding:12px; border-radius:10px; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-weight:600; font-size:13px; text-align:center;">
+           ✨ All Administrative & Teaching Privileges Granted (Full Access / Super Role)
+         </div>`
+      : userPermissions.length === 0
+        ? `<div style="padding:12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px; text-align:center;">
+             Standard baseline permissions active.
+           </div>`
+        : `<div style="max-height: 220px; overflow-y: auto; text-align: left; display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 0;">
+             ${userPermissions.map(p => `
+               <span style="display:inline-flex; align-items:center; gap:4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 600; background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1;">
+                 <span style="color:#10b981; font-weight:bold;">✓</span> ${p}
+               </span>
+             `).join('')}
+           </div>`;
+
+    Swal.fire({
+      title: `<span style="font-size:18px; font-weight:800; color:#1e293b;">Active Role & Permissions</span>`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; font-size: 13px; color: #475569; text-align: left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Assigned Role</div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a;">${userRoleName}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Active Privileges</div>
+              <div style="font-size:14px; font-weight:700; color:#10b981;">
+                ${isFull ? 'Super Access' : `${userPermissions.length} Granted`}
+              </div>
+            </div>
+          </div>
+          <div style="font-size:12px; font-weight:700; color:#64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">
+            Granted Permission Scopes:
+          </div>
+          ${permListHtml}
+        </div>
+      `,
+      confirmButtonText: 'Got It',
+      confirmButtonColor: '#ff5c0a'
+    });
+  };
 
   useEffect(() => {
     const p = location.pathname;
@@ -289,21 +370,17 @@ const Sidebar = () => {
 
   const isSectionOpen = (secKey) => {
     if (!!search.trim()) return true;
-    if (userRole === 'Staff') {
-      if (secKey === 'MAIN NAVIGATION' || secKey === 'DOCUMENTS') {
-        return !closedSections.includes(secKey);
-      }
-    }
+    if (closedSections.includes(secKey)) return false;
     return openSection === secKey;
   };
 
   const toggleSection = (sec) => {
-    if (userRole === 'Staff' && (sec === 'MAIN NAVIGATION' || sec === 'DOCUMENTS')) {
-      setClosedSections(prev => 
-        prev.includes(sec) ? prev.filter(s => s !== sec) : [...prev, sec]
-      );
+    if (openSection === sec) {
+      setOpenSection(null);
+      if (!closedSections.includes(sec)) setClosedSections(prev => [...prev, sec]);
     } else {
-      setOpenSection(prev => prev === sec ? null : sec);
+      setOpenSection(sec);
+      setClosedSections(prev => prev.filter(k => k !== sec));
     }
   };
 
@@ -357,6 +434,31 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* Role & Permissions Badge Bar */}
+      <div className="px-3 pt-2">
+        <div className="px-3 py-1.5 flex items-center justify-between bg-slate-900/90 rounded-xl border border-slate-800 shadow-xs">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-bold text-white truncate">{userRoleName}</span>
+              <span className="text-[9px] text-emerald-400 font-medium">
+                {userPermissions.includes('all') || userPermissions.includes('*') 
+                  ? 'Super Access' 
+                  : `${userPermissions.length} Active Permissions`}
+              </span>
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={showRolePermissionsModal}
+            title="Inspect Granted Permissions" 
+            className="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-[#ff5c0a] text-slate-300 hover:text-white text-[10px] font-bold transition-colors cursor-pointer"
+          >
+            View
+          </button>
+        </div>
+      </div>
+
       {/* Search Bar */}
       <div className="p-3 flex-shrink-0">
          <div className="flex bg-slate-900/90 rounded-xl overflow-hidden border border-slate-700/70 focus-within:border-[#ff5c0a] transition-colors">
@@ -384,7 +486,7 @@ const Sidebar = () => {
               <li><NavLink to="/" className={navLinkClass}><LayoutDashboard className="w-[18px] h-[18px]" /> {t('dashboard', 'Dashboard')}</NavLink></li>
               <li><NavLink to="/my-profile" className={navLinkClass}><User className="w-[18px] h-[18px] text-red-400" /> {t('myProfile', 'My Profile')}</NavLink></li>
               <li><NavLink to="/loans" className={navLinkClass}><DollarSign className="w-[18px] h-[18px] text-purple-400" /> {t('loans', 'My Loans & Advances')}</NavLink></li>
-              {userRole !== 'Staff' && (
+              {(hasAccess(['academics.timetable.manage', 'academics.live_classes', 'online_exams.manage', 'academics']) || userRole !== 'Staff') && (
                 <li><LiveClassesMenu t={t} isOpen={openSubmenu === 'Live Classes' || !!search.trim()} onToggle={() => toggleSubmenu('Live Classes')} /></li>
               )}
               <li><NavLink to="/complaints" className={navLinkClass}><AlertCircle className="w-[18px] h-[18px] text-orange-400" /> {t('complaints', 'Complaints')}</NavLink></li>
@@ -395,21 +497,25 @@ const Sidebar = () => {
           </div>
         </div>
         
-        {/* STUDENTS - TEACHER ONLY */}
-        {userRole !== 'Staff' && (
+        {/* STUDENTS */}
+        {(hasAccess(['students.list.view', 'students.attendance.manage', 'students.admission.create', 'students']) || userRole !== 'Staff') && (
           <div className="mb-2">
             {renderSectionHeader('STUDENTS', t('students', 'Students'))}
             <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen('STUDENTS') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
               <ul className="overflow-hidden space-y-1 pt-0.5">
-                <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> {t('studentList', 'Student List')}</NavLink></li>
-                <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> {t('studentAttendance', 'Student Attendance')}</NavLink></li>
+                {(hasAccess(['students.list.view', 'students.admission.create', 'students']) || userRole !== 'Staff') && (
+                  <li><NavLink to="/students" className={navLinkClass}><Users className="w-[18px] h-[18px] text-teal-400" /> {t('studentList', 'Student List')}</NavLink></li>
+                )}
+                {(hasAccess(['students.attendance.manage', 'students']) || userRole !== 'Staff') && (
+                  <li><NavLink to="/student-attendance" className={navLinkClass}><CheckCircle className="w-[18px] h-[18px] text-amber-400" /> {t('studentAttendance', 'Student Attendance')}</NavLink></li>
+                )}
               </ul>
             </div>
           </div>
         )}
 
-        {/* ONLINE EXAMS - TEACHER ONLY */}
-        {userRole !== 'Staff' && (
+        {/* ONLINE EXAMS */}
+        {(hasAccess(['online_exams.manage', 'online_exams.questions.manage', 'online_exams.results.manage', 'online_exams', 'exams']) || userRole !== 'Staff') && (
           <div className="mb-2">
             {renderSectionHeader('ONLINE EXAMS', t('onlineExams', 'Online Exams'))}
             <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen('ONLINE EXAMS') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
@@ -421,8 +527,8 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* EXAMS - TEACHER ONLY */}
-        {userRole !== 'Staff' && (
+        {/* EXAMS */}
+        {(hasAccess(['exams.datesheet.manage', 'exams.admit_cards.manage', 'exams.marks.entry', 'exams.report_cards.manage', 'exams']) || userRole !== 'Staff') && (
           <div className="mb-2">
             {renderSectionHeader('EXAMS', t('exams', 'Exams'))}
             <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen('EXAMS') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
@@ -437,8 +543,8 @@ const Sidebar = () => {
           </div>
         )}
 
-        {/* STUDY MANAGEMENT - TEACHER ONLY */}
-        {userRole !== 'Staff' && (
+        {/* STUDY MANAGEMENT */}
+        {(hasAccess(['academics.homework', 'academics.study_material', 'academics.subjects.manage', 'lesson_plan.submit', 'academics']) || userRole !== 'Staff') && (
           <div className="mb-2">
             {renderSectionHeader('STUDY MANAGEMENT', t('studyManagement', 'Study Management'))}
             <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen('STUDY MANAGEMENT') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
@@ -455,48 +561,44 @@ const Sidebar = () => {
           {renderSectionHeader('DOCUMENTS', userRole === 'Staff' ? t('officeServices', 'Office & Services') : t('documents', 'Documents'))}
           <div className={`grid transition-all duration-300 ease-in-out ${isSectionOpen('DOCUMENTS') ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
-              {userRole === 'Staff' ? (
-                <>
-                  <li>
-                    <NavLink to="/certificates" className={navLinkClass}>
-                      <Printer className="w-[18px] h-[18px] text-cyan-400" />
-                      <span className="flex-1">{t('certificates', 'Certificates & Documents')}</span>
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">TC/Cert</span>
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/lead-dashboard" className={navLinkClass}>
-                      <Filter className="w-[18px] h-[18px] text-teal-400" />
-                      <span className="flex-1">{t('leadManagement', 'Admissions & Leads')}</span>
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300">Leads</span>
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/my-surveys" className={navLinkClass}>
-                      <BarChart className="w-[18px] h-[18px] text-amber-400" />
-                      <span className="flex-1">{t('surveys', 'Surveys & Feedback')}</span>
-                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Polls</span>
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink to="/apps-center" className={navLinkClass}>
-                      <Grid className="w-[18px] h-[18px] text-orange-400" />
-                      <span className="flex-1">{t('appsCenter', 'Apps Center')}</span>
-                    </NavLink>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li><NavLink to="/certificates" className={navLinkClass}><Printer className="w-[18px] h-[18px] text-cyan-500" /> {t('certificates', 'Certificates & Documents')}</NavLink></li>
-                  <li><NavLink to="/apps-center" className={navLinkClass}><Grid className="w-[18px] h-[18px] text-orange-400" /> {t('appsCenter', 'Apps Center')}</NavLink></li>
-                  <PTMMenu t={t} isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
-                  <LessonPlannerMenu t={t} isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
-                  <OSMMenu t={t} isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
-                  <AssessmentMenu t={t} isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
-                  <LeadManagementMenu t={t} isOpen={openSubmenu === 'Lead Management' || !!search.trim()} onToggle={() => toggleSubmenu('Lead Management')} />
-                  <SurveysMenu t={t} isOpen={openSubmenu === 'Surveys & Feedback' || !!search.trim()} onToggle={() => toggleSubmenu('Surveys & Feedback')} />
-                </>
+              <li>
+                <NavLink to="/certificates" className={navLinkClass}>
+                  <Printer className="w-[18px] h-[18px] text-cyan-400" />
+                  <span className="flex-1">{t('certificates', 'Certificates & Documents')}</span>
+                  <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300">TC/Cert</span>
+                </NavLink>
+              </li>
+              {(hasAccess(['leads.pipeline.manage', 'front_office.enquiries.manage', 'leads']) || userRole === 'Staff') && (
+                <li>
+                  <NavLink to="/lead-dashboard" className={navLinkClass}>
+                    <Filter className="w-[18px] h-[18px] text-teal-400" />
+                    <span className="flex-1">{t('leadManagement', 'Admissions & Leads')}</span>
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300">Leads</span>
+                  </NavLink>
+                </li>
               )}
+              <li>
+                <NavLink to="/apps-center" className={navLinkClass}>
+                  <Grid className="w-[18px] h-[18px] text-orange-400" />
+                  <span className="flex-1">{t('appsCenter', 'Apps Center')}</span>
+                </NavLink>
+              </li>
+              {(hasAccess(['ptm.remarks.manage', 'ptm', 'academics']) || userRole !== 'Staff') && (
+                <PTMMenu t={t} isOpen={openSubmenu === 'PTM Meetings' || !!search.trim()} onToggle={() => toggleSubmenu('PTM Meetings')} />
+              )}
+              {(hasAccess(['lesson_plan.submit', 'academics.timetable.manage', 'academics']) || userRole !== 'Staff') && (
+                <LessonPlannerMenu t={t} isOpen={openSubmenu === 'Lesson Planner' || !!search.trim()} onToggle={() => toggleSubmenu('Lesson Planner')} />
+              )}
+              {(hasAccess(['exams', 'exams.marks.entry']) || userRole !== 'Staff') && (
+                <OSMMenu t={t} isOpen={openSubmenu === 'OSM Module' || !!search.trim()} onToggle={() => toggleSubmenu('OSM Module')} />
+              )}
+              {(hasAccess(['cbc.assessments.manage', 'cbc', 'exams']) || userRole !== 'Staff') && (
+                <AssessmentMenu t={t} isOpen={openSubmenu === 'Assessment' || !!search.trim()} onToggle={() => toggleSubmenu('Assessment')} />
+              )}
+              {(hasAccess(['leads.pipeline.manage', 'front_office.enquiries.manage', 'leads']) || userRole !== 'Staff') && (
+                <LeadManagementMenu t={t} isOpen={openSubmenu === 'Lead Management' || !!search.trim()} onToggle={() => toggleSubmenu('Lead Management')} />
+              )}
+              <SurveysMenu t={t} isOpen={openSubmenu === 'Surveys & Feedback' || !!search.trim()} onToggle={() => toggleSubmenu('Surveys & Feedback')} />
             </ul>
           </div>
         </div>
@@ -507,7 +609,7 @@ const Sidebar = () => {
           <div className={`grid transition-all duration-300 ease-in-out ${!!search.trim() || openSection === 'COMMUNICATION' ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 overflow-hidden'}`}>
             <ul className="overflow-hidden space-y-1 pt-0.5">
               <li><NavLink to="/messages" className={navLinkClass}><MessageCircle className="w-[18px] h-[18px] text-purple-400" /> {t('messages', 'Messages')}</NavLink></li>
-              {userRole !== 'Staff' && (
+              {(hasAccess(['cbc.reports.view', 'cbc', 'exams.report_cards.manage', 'exams']) || userRole !== 'Staff') && (
                 <HolisticProgressMenu t={t} isOpen={openSubmenu === 'Holistic Progress Card' || !!search.trim()} onToggle={() => toggleSubmenu('Holistic Progress Card')} />
               )}
             </ul>

@@ -104,9 +104,13 @@ const Login = () => {
 
       if (res.data?.success) {
         const token = res.data.data.token;
+        const serverRole = res.data.data.role;
+        const serverPermissions = res.data.data.permissions || [];
         const userData = {
           ...res.data.data,
-          role: selectedRole === 'staff' ? 'Staff' : (res.data.data.role || 'Teacher')
+          role: serverRole || (selectedRole === 'staff' ? 'Staff' : 'Teacher'),
+          roleName: res.data.data.roleName || serverRole || (selectedRole === 'staff' ? 'Staff' : 'Teacher'),
+          permissions: Array.isArray(serverPermissions) ? serverPermissions : []
         };
         sessionStorage.setItem('token', token);
         sessionStorage.setItem('user', JSON.stringify(userData));
@@ -152,6 +156,17 @@ const Login = () => {
           fullName: 'Priya Sharma',
           email: 'staff@school.edu',
           role: 'Staff',
+          roleName: 'Staff Administrator',
+          permissions: [
+            'staff.view', 'attendance.mark', 'attendance.view', 
+            'students.list.view', 'students.attendance.manage', 'students.admission.create',
+            'exams.datesheet.manage', 'exams.marks.entry',
+            'online_exams.manage',
+            'academics.homework', 'academics.study_material', 'lesson_plan.submit',
+            'front_office.enquiries.manage', 'leads.pipeline.manage',
+            'certificates.generate', 'ptm.remarks.manage',
+            'leave.apply', 'leave.view'
+          ],
           designation: 'Staff Faculty',
           department: 'Administration',
           tenantId: '6ad9bbe1c6514fd4a43099c6',
@@ -163,6 +178,14 @@ const Login = () => {
           name: 'Avani',
           email: 'avanikumari@gmail.com',
           role: 'Teacher',
+          roleName: 'Senior Teacher',
+          permissions: [
+            'teacher.dashboard', 'academics.timetable.manage', 'academics.homework', 'academics.study_material',
+            'exams.marks.entry', 'online_exams.manage', 'online_exams.questions.manage',
+            'students.list.view', 'students.attendance.manage', 'students.behavior.manage',
+            'lesson_plan.submit', 'ptm.remarks.manage', 'certificates.generate',
+            'communication.notices'
+          ],
           designation: 'Teacher',
           department: 'Academics',
           tenantId: '6ad9bbe1c6514fd4a43099c6',

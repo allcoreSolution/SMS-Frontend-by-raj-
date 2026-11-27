@@ -59,6 +59,140 @@ export default function StaffDashboard() {
   const staffDesignation = staffUser.designation || 'Staff Faculty';
   const staffDept = staffUser.department || 'Administration';
   const staffId = staffUser.staffId || staffUser.empId || '';
+  const staffRole = staffUser.roleName || staffUser.role || 'Staff';
+  const staffPermissions = Array.isArray(staffUser.permissions) ? staffUser.permissions : [];
+
+  const handleViewPermissions = () => {
+    const isFull = staffPermissions.includes('all') || staffPermissions.includes('*');
+    const permListHtml = isFull 
+      ? `<div style="padding:12px; border-radius:10px; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-weight:600; font-size:13px; text-align:center;">
+           ✨ All Administrative Privileges Granted (Full Super Access)
+         </div>`
+      : staffPermissions.length === 0
+        ? `<div style="padding:12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px; text-align:center;">
+             Standard staff baseline permissions active.
+           </div>`
+        : `<div style="max-height: 220px; overflow-y: auto; text-align: left; display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 0;">
+             ${staffPermissions.map(p => `
+               <span style="display:inline-flex; align-items:center; gap:4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 600; background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1;">
+                 <span style="color:#10b981; font-weight:bold;">✓</span> ${p}
+               </span>
+             `).join('')}
+           </div>`;
+
+    Swal.fire({
+      title: `<span style="font-size:18px; font-weight:800; color:#1e293b;">Active Role & Permissions</span>`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; font-size: 13px; color: #475569; text-align: left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Role & Position</div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a;">${staffRole}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Active Privileges</div>
+              <div style="font-size:14px; font-weight:700; color:#10b981;">
+                ${isFull ? 'Super Access' : `${staffPermissions.length} Active`}
+              </div>
+            </div>
+          </div>
+          <div style="font-size:12px; font-weight:700; color:#64748b; margin-bottom: 6px; text-transform: uppercase;">
+            Granted Permission Scopes:
+          </div>
+          ${permListHtml}
+        </div>
+      `,
+      confirmButtonText: 'Done',
+      confirmButtonColor: '#ff5c0a'
+    });
+  };
+
+  const hasStaffPerm = (keys) => {
+    if (staffPermissions.includes('all') || staffPermissions.includes('*')) return true;
+    if (!Array.isArray(keys)) keys = [keys];
+    return keys.some(k => {
+      if (staffPermissions.includes(k)) return true;
+      const mod = k.split('.')[0];
+      if (staffPermissions.includes(mod) || staffPermissions.includes(`${mod}.*`)) return true;
+      if (staffPermissions.some(p => p.startsWith(mod + '.') || p === mod)) return true;
+      return false;
+    });
+  };
+
+  const dynamicPermServices = [
+    hasStaffPerm(['students.list.view', 'students']) && {
+      title: t('studentList', 'Student Directory & Registry'),
+      desc: t('studentListDesc', 'Search active students, class rosters & profiles'),
+      icon: User,
+      color: 'text-teal-600 bg-teal-50 hover:border-teal-300',
+      iconBg: 'bg-teal-100',
+      path: '/students',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['students.attendance.manage', 'students']) && {
+      title: t('studentAttendance', 'Student Attendance Punch'),
+      desc: t('studentAttDesc', 'Mark and verify student attendance registers'),
+      icon: CheckCircle2,
+      color: 'text-amber-600 bg-amber-50 hover:border-amber-300',
+      iconBg: 'bg-amber-100',
+      path: '/student-attendance',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['exams.marks.entry', 'exams.datesheet.manage', 'exams']) && {
+      title: t('manageOfflineExams', 'Offline Exams & Marks Entry'),
+      desc: t('examsDesc', 'Record marks, prepare grade sheets and review results'),
+      icon: Award,
+      color: 'text-pink-600 bg-pink-50 hover:border-pink-300',
+      iconBg: 'bg-pink-100',
+      path: '/offline-exams',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['online_exams.manage', 'online_exams']) && {
+      title: t('onlineExams', 'Online CBT Examinations'),
+      desc: t('onlineExamsDesc', 'Manage online question papers and quizzes'),
+      icon: Sparkles,
+      color: 'text-purple-600 bg-purple-50 hover:border-purple-300',
+      iconBg: 'bg-purple-100',
+      path: '/online-exams',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['academics.homework', 'academics.study_material', 'academics']) && {
+      title: t('studyManagement', 'Homework & Classwork'),
+      desc: t('homeworkDesc', 'Track homework submissions and study material'),
+      icon: Briefcase,
+      color: 'text-yellow-600 bg-yellow-50 hover:border-yellow-300',
+      iconBg: 'bg-yellow-100',
+      path: '/assignments',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['lesson_plan.submit', 'academics.timetable.manage', 'academics']) && {
+      title: t('lessonPlanner', 'Lesson Planner Hub'),
+      desc: t('lessonDesc', 'Submit lesson plans and view curriculum coverage'),
+      icon: FileText,
+      color: 'text-emerald-600 bg-emerald-50 hover:border-emerald-300',
+      iconBg: 'bg-emerald-100',
+      path: '/lesson-planner',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['ptm.remarks.manage', 'ptm']) && {
+      title: t('ptmDashboard', 'PTM Parent Meetings'),
+      desc: t('ptmDesc', 'Parent-Teacher conference meetings & remarks'),
+      icon: User,
+      color: 'text-blue-600 bg-blue-50 hover:border-blue-300',
+      iconBg: 'bg-blue-100',
+      path: '/ptm-dashboard',
+      badge: 'Allowed'
+    },
+    hasStaffPerm(['leads.pipeline.manage', 'front_office.enquiries.manage', 'leads']) && {
+      title: t('leadManagement', 'Admissions & Inquiries Funnel'),
+      desc: t('leadsDesc', 'Track admission pipeline leads and walk-in enquiries'),
+      icon: Filter,
+      color: 'text-indigo-600 bg-indigo-50 hover:border-indigo-300',
+      iconBg: 'bg-indigo-100',
+      path: '/lead-dashboard',
+      badge: 'Allowed'
+    }
+  ].filter(Boolean);
 
   const handleDownloadPayslip = () => {
     Swal.fire({
@@ -235,6 +369,15 @@ export default function StaffDashboard() {
               <span className="text-[11px] bg-white/10 text-slate-200 px-2.5 py-0.5 rounded-lg font-medium">
                 {t('shiftTime', 'General Shift')}
               </span>
+              <button
+                type="button"
+                onClick={handleViewPermissions}
+                className="text-[11px] bg-gradient-to-r from-[#ff5c0a]/30 to-amber-500/20 text-amber-200 border border-amber-400/30 hover:border-amber-400 px-2.5 py-0.5 rounded-lg font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span>Role: {staffRole} ({staffPermissions.includes('all') || staffPermissions.includes('*') ? 'Super Access' : `${staffPermissions.length} Permissions`})</span>
+                <ChevronRight className="w-3 h-3 text-amber-300 opacity-70" />
+              </button>
             </div>
           </div>
 
@@ -305,6 +448,62 @@ export default function StaffDashboard() {
           );
         })}
       </div>
+
+      {/* ── 2.5. GRANTED ADMINISTRATIVE & ACADEMIC MODULES ── */}
+      {dynamicPermServices.length > 0 && (
+        <div className="bg-gradient-to-r from-orange-50/70 via-amber-50/50 to-orange-50/70 p-3 sm:p-4 rounded-2xl border border-orange-200/80 shadow-2xs">
+          <div className="flex items-center justify-between mb-2.5">
+            <div>
+              <h2 className="text-sm sm:text-base font-black text-slate-900 tracking-tight flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-[#ff5c0a]" />
+                <span>{t('assignedPermModules', 'Assigned Operational Modules')}</span>
+              </h2>
+              <p className="text-[11px] text-slate-600">
+                {t('assignedPermModulesSub', 'Modules unlocked by your administrator for this role & permissions')}
+              </p>
+            </div>
+            <span className="text-[10px] font-bold text-orange-700 bg-orange-100 px-2 py-0.5 rounded-md border border-orange-200">
+              {dynamicPermServices.length} Unlocked
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-2.5">
+            {dynamicPermServices.map((srv, idx) => {
+              const Icon = srv.icon;
+              return (
+                <div
+                  key={idx}
+                  onClick={() => navigate(srv.path)}
+                  className={`p-2.5 sm:p-3 rounded-xl border border-orange-200/60 bg-white hover:border-[#ff5c0a] hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <div className={`w-8 h-8 rounded-lg ${srv.iconBg} flex items-center justify-center font-bold group-hover:scale-105 transition-transform`}>
+                        <Icon className={`w-4 h-4 ${srv.color.split(' ')[0]}`} />
+                      </div>
+                      <span className="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        {srv.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xs sm:text-[12.5px] font-bold text-slate-900 group-hover:text-[#ff5c0a] transition-colors leading-snug">
+                      {srv.title}
+                    </h3>
+                    <p className="text-[10px] sm:text-[10.5px] text-slate-400 mt-0.5 line-clamp-2 leading-relaxed">
+                      {srv.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between text-[11px] font-bold text-slate-600 group-hover:text-[#ff5c0a]">
+                    <span>{t('openModule', 'Open')}</span>
+                    <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* ── 3. STAFF PRIMARY SERVICES GRID (8 TILES - Compact) ── */}
       <div>
