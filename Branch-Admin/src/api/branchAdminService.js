@@ -177,6 +177,112 @@ export const branchAdminService = {
   // Login Logs
   getLoginLogs: async () => {
     return { success: true, data: branchLocalDb.getLoginLogs() };
+  },
+
+  // Roles & Permissions (Central Backend with Local Storage Fallback)
+  getRoles: async () => {
+    try {
+      const res = await axiosInstance.get('/roles?scope=branch');
+      if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+        branchLocalDb.saveRoles(res.data.data);
+        return { success: true, data: res.data.data };
+      }
+    } catch (_) {}
+    return { success: true, data: branchLocalDb.getRoles() };
+  },
+
+  createRole: async (roleData) => {
+    try {
+      const res = await axiosInstance.post('/roles', { ...roleData, scope: 'branch' });
+      if (res.data?.success && res.data.data) {
+        const created = res.data.data;
+        const local = branchLocalDb.getRoles();
+        branchLocalDb.saveRoles([...local, created]);
+        return { success: true, data: created };
+      }
+    } catch (e) {
+      console.warn('API role creation fallback to local DB:', e.message);
+    }
+    const createdLocal = branchLocalDb.createRole(roleData);
+    return { success: true, data: createdLocal };
+  },
+
+  updateRole: async (id, updates) => {
+    try {
+      const res = await axiosInstance.put(`/roles/${id}`, updates);
+      if (res.data?.success && res.data.data) {
+        branchLocalDb.updateRole(id, res.data.data);
+        return { success: true, data: res.data.data };
+      }
+    } catch (e) {
+      console.warn('API role update fallback to local DB:', e.message);
+    }
+    const updatedLocal = branchLocalDb.updateRole(id, updates);
+    return { success: true, data: updatedLocal };
+  },
+
+  deleteRole: async (id) => {
+    try {
+      await axiosInstance.delete(`/roles/${id}`);
+    } catch (e) {
+      console.warn('API role delete fallback to local DB:', e.message);
+    }
+    branchLocalDb.deleteRole(id);
+    return { success: true };
+  },
+
+  // Role Users / HQ Staff
+  getRoleUsers: async (roleId = null) => {
+    try {
+      const res = await axiosInstance.get(roleId ? `/roles/users?role=${roleId}` : '/roles/users');
+      if (res.data?.success && Array.isArray(res.data.data) && res.data.data.length > 0) {
+        branchLocalDb.saveRoleUsers(res.data.data);
+        return { success: true, data: res.data.data };
+      }
+    } catch (_) {}
+    const users = branchLocalDb.getRoleUsers();
+    const filtered = roleId ? users.filter(u => u.roleId === roleId || u.role?._id === roleId) : users;
+    return { success: true, data: filtered };
+  },
+
+  addRoleUser: async (userData) => {
+    try {
+      const res = await axiosInstance.post('/roles/users', userData);
+      if (res.data?.success && res.data.data) {
+        const created = res.data.data;
+        const local = branchLocalDb.getRoleUsers();
+        branchLocalDb.saveRoleUsers([created, ...local]);
+        return { success: true, data: created };
+      }
+    } catch (e) {
+      console.warn('API user create fallback to local DB:', e.message);
+    }
+    const createdLocal = branchLocalDb.createRoleUser(userData);
+    return { success: true, data: createdLocal };
+  },
+
+  updateRoleUser: async (id, updates) => {
+    try {
+      const res = await axiosInstance.put(`/roles/users/${id}`, updates);
+      if (res.data?.success && res.data.data) {
+        branchLocalDb.updateRoleUser(id, res.data.data);
+        return { success: true, data: res.data.data };
+      }
+    } catch (e) {
+      console.warn('API user update fallback to local DB:', e.message);
+    }
+    const updatedLocal = branchLocalDb.updateRoleUser(id, updates);
+    return { success: true, data: updatedLocal };
+  },
+
+  deleteRoleUser: async (id) => {
+    try {
+      await axiosInstance.delete(`/roles/users/${id}`);
+    } catch (e) {
+      console.warn('API user delete fallback to local DB:', e.message);
+    }
+    branchLocalDb.deleteRoleUser(id);
+    return { success: true };
   }
 };
 

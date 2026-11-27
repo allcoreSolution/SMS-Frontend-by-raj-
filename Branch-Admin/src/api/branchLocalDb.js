@@ -22,6 +22,146 @@ const INITIAL_COLLECTIONS = [];
 
 const INITIAL_LOGIN_LOGS = [];
 
+const INITIAL_ROLES = [
+  {
+    id: "role_branch_super_admin",
+    _id: "role_branch_super_admin",
+    name: "Trust Director / Super Admin",
+    description: "Full administrative governance across all campuses, finances, policies, and branch staff.",
+    isSystem: true,
+    userCount: 1,
+    status: "Active",
+    permissions: [
+      "overview.view", "overview.kpis", "overview.export",
+      "branches.view", "branches.create", "branches.edit", "branches.status", "branches.delete", "branches.launch",
+      "finances.fees.view", "finances.fees.audit", "finances.expense.view", "finances.expense.audit", "finances.export",
+      "payments.view", "payments.invoices", "payments.manage",
+      "attendance.students.view", "attendance.staff.view", "attendance.trends.export",
+      "templates.view", "templates.create", "templates.edit", "templates.delete", "templates.download",
+      "communications.view", "communications.broadcast", "communications.export",
+      "audit.login_logs", "audit.engagement", "audit.telemetry",
+      "roles_staff.roles.manage", "roles_staff.staff.manage", "roles_staff.assign"
+    ]
+  },
+  {
+    id: "role_regional_manager",
+    _id: "role_regional_manager",
+    name: "Regional Branch Manager",
+    description: "Oversees branch operations, campus onboarding, attendance compliance, and multi-campus notices.",
+    isSystem: true,
+    userCount: 1,
+    status: "Active",
+    permissions: [
+      "overview.view", "overview.kpis",
+      "branches.view", "branches.create", "branches.edit", "branches.launch",
+      "finances.fees.view",
+      "payments.view",
+      "attendance.students.view", "attendance.staff.view", "attendance.trends.export",
+      "templates.view", "templates.create", "templates.edit", "templates.download",
+      "communications.view", "communications.broadcast",
+      "audit.login_logs", "audit.engagement"
+    ]
+  },
+  {
+    id: "role_chief_auditor",
+    _id: "role_chief_auditor",
+    name: "Multi-Campus Chief Auditor",
+    description: "Audits consolidated fee collections, cash flows, income & expenses, and payment receipts across campuses.",
+    isSystem: true,
+    userCount: 1,
+    status: "Active",
+    permissions: [
+      "overview.view", "overview.kpis", "overview.export",
+      "branches.view",
+      "finances.fees.view", "finances.fees.audit", "finances.expense.view", "finances.expense.audit", "finances.export",
+      "payments.view", "payments.invoices",
+      "audit.login_logs", "audit.engagement", "audit.telemetry"
+    ]
+  },
+  {
+    id: "role_academic_inspector",
+    _id: "role_academic_inspector",
+    name: "Academic & Quality Inspector",
+    description: "Inspects multi-campus student & teacher attendance trends, curriculum progress, and engagement telemetry.",
+    isSystem: false,
+    userCount: 1,
+    status: "Active",
+    permissions: [
+      "overview.view",
+      "branches.view",
+      "attendance.students.view", "attendance.staff.view", "attendance.trends.export",
+      "templates.view", "templates.download",
+      "audit.engagement"
+    ]
+  },
+  {
+    id: "role_comms_officer",
+    _id: "role_comms_officer",
+    name: "Branch Communications Officer",
+    description: "Broadcasts multi-campus notices, templates management, and emergency student/parent communications.",
+    isSystem: false,
+    userCount: 0,
+    status: "Active",
+    permissions: [
+      "overview.view",
+      "branches.view",
+      "templates.view", "templates.create", "templates.edit", "templates.download",
+      "communications.view", "communications.broadcast"
+    ]
+  }
+];
+
+const INITIAL_ROLE_USERS = [
+  {
+    id: "usr_101",
+    _id: "usr_101",
+    name: "Dr. Mahendra Varma",
+    email: "trust.director@allcoresolution.com",
+    phone: "+91 98200 11223",
+    roleId: "role_branch_super_admin",
+    roleName: "Trust Director / Super Admin",
+    status: "Active",
+    branchScope: "All Campuses",
+    joinedDate: "2025-04-01"
+  },
+  {
+    id: "usr_102",
+    _id: "usr_102",
+    name: "Rajesh Khurana",
+    email: "rajesh.branch@allcoresolution.com",
+    phone: "+91 98112 33445",
+    roleId: "role_regional_manager",
+    roleName: "Regional Branch Manager",
+    status: "Active",
+    branchScope: "North & Central Campuses",
+    joinedDate: "2025-06-15"
+  },
+  {
+    id: "usr_103",
+    _id: "usr_103",
+    name: "Anita Desai, CA",
+    email: "anita.audit@allcoresolution.com",
+    phone: "+91 99887 76655",
+    roleId: "role_chief_auditor",
+    roleName: "Multi-Campus Chief Auditor",
+    status: "Active",
+    branchScope: "All Campuses",
+    joinedDate: "2025-07-10"
+  },
+  {
+    id: "usr_104",
+    _id: "usr_104",
+    name: "Vikram Malhotra",
+    email: "vikram.inspector@allcoresolution.com",
+    phone: "+91 97766 55443",
+    roleId: "role_academic_inspector",
+    roleName: "Academic & Quality Inspector",
+    status: "Active",
+    branchScope: "West Zone Campuses",
+    joinedDate: "2025-09-01"
+  }
+];
+
 const INITIAL_PROFILE = { name: "", email: "", phone: "", role: "", department: "", staffId: "", avatar: "", timezone: "", language: "English" };
 
 const INITIAL_NOTIFICATIONS = [];
@@ -269,6 +409,107 @@ export const branchLocalDb = {
     } catch (_) {
       return { branchesCount: 0, activeBranches: 0, totalStudents: 0, totalStaff: 0, totalCollected: "₹0", totalCollectedRaw: 0, paymentsCount: 0 };
     }
+  },
+
+  // Roles Management
+  getRoles: () => {
+    return getStore('roles', INITIAL_ROLES);
+  },
+
+  saveRoles: (roles) => {
+    setStore('roles', roles);
+    return roles;
+  },
+
+  createRole: (roleData) => {
+    const roles = getStore('roles', INITIAL_ROLES);
+    const newId = `role_${Date.now()}`;
+    const newRole = {
+      id: newId,
+      _id: newId,
+      name: roleData.name || 'New Role',
+      description: roleData.description || '',
+      isSystem: false,
+      userCount: 0,
+      status: roleData.status || 'Active',
+      permissions: Array.isArray(roleData.permissions) ? roleData.permissions : []
+    };
+    const updated = [...roles, newRole];
+    setStore('roles', updated);
+    return newRole;
+  },
+
+  updateRole: (id, updates) => {
+    const roles = getStore('roles', INITIAL_ROLES);
+    const updated = roles.map(r => (r.id === id || r._id === id) ? { ...r, ...updates } : r);
+    setStore('roles', updated);
+    return updated.find(r => r.id === id || r._id === id);
+  },
+
+  deleteRole: (id) => {
+    const roles = getStore('roles', INITIAL_ROLES);
+    const updated = roles.filter(r => r.id !== id && r._id !== id);
+    setStore('roles', updated);
+    return true;
+  },
+
+  // Role Users / HQ Staff Management
+  getRoleUsers: () => {
+    return getStore('role_users', INITIAL_ROLE_USERS);
+  },
+
+  saveRoleUsers: (users) => {
+    setStore('role_users', users);
+    return users;
+  },
+
+  createRoleUser: (userData) => {
+    const users = getStore('role_users', INITIAL_ROLE_USERS);
+    const newId = `usr_${Date.now()}`;
+    const newUser = {
+      id: newId,
+      _id: newId,
+      name: userData.name || '',
+      email: userData.email || '',
+      phone: userData.phone || '',
+      roleId: userData.roleId || '',
+      roleName: userData.roleName || 'Branch Staff',
+      status: userData.status || 'Active',
+      branchScope: userData.branchScope || 'All Campuses',
+      joinedDate: new Date().toISOString().slice(0, 10)
+    };
+    const updated = [newUser, ...users];
+    setStore('role_users', updated);
+    
+    // Increment userCount in role
+    const roles = getStore('roles', INITIAL_ROLES);
+    const roleMatch = roles.find(r => r.id === newUser.roleId || r._id === newUser.roleId);
+    if (roleMatch) {
+      const updatedRoles = roles.map(r => (r.id === newUser.roleId || r._id === newUser.roleId) ? { ...r, userCount: (r.userCount || 0) + 1 } : r);
+      setStore('roles', updatedRoles);
+    }
+    return newUser;
+  },
+
+  updateRoleUser: (id, updates) => {
+    const users = getStore('role_users', INITIAL_ROLE_USERS);
+    const updated = users.map(u => (u.id === id || u._id === id) ? { ...u, ...updates } : u);
+    setStore('role_users', updated);
+    return updated.find(u => u.id === id || u._id === id);
+  },
+
+  deleteRoleUser: (id) => {
+    const users = getStore('role_users', INITIAL_ROLE_USERS);
+    const target = users.find(u => u.id === id || u._id === id);
+    const updated = users.filter(u => u.id !== id && u._id !== id);
+    setStore('role_users', updated);
+    
+    if (target && target.roleId) {
+      const roles = getStore('roles', INITIAL_ROLES);
+      const updatedRoles = roles.map(r => (r.id === target.roleId || r._id === target.roleId) ? { ...r, userCount: Math.max(0, (r.userCount || 0) - 1) } : r);
+      setStore('roles', updatedRoles);
+    }
+    return true;
   },
 
   // Real CSV Export Utility

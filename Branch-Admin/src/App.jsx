@@ -18,6 +18,7 @@ import IncomeExpense from './pages/IncomeExpense';
 import AttendanceTrends from './pages/AttendanceTrends';
 import EngagementAudit from './pages/EngagementAudit';
 import CommunicationsReport from './pages/CommunicationsReport';
+import RolesPermissions from './pages/RolesPermissions';
 import Login from './pages/Login';
 import Swal from 'sweetalert2';
 import branchLocalDb from './api/branchLocalDb';
@@ -93,6 +94,7 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
     { name: 'My Branches', path: '/branches', icon: <Building2 className="w-4 h-4" />, badge: branchesCount },
     { name: 'Payment History', path: '/payments', icon: <CreditCard className="w-4 h-4" /> },
     { name: 'Ready Templates', path: '/templates', icon: <LayoutTemplate className="w-4 h-4" /> },
+    { name: 'Roles & Permissions', path: '/roles-permissions', icon: <ShieldCheck className="w-4 h-4" /> },
     { name: 'Admin Profile', path: '/profile', icon: <User className="w-4 h-4" /> },
   ];
 
@@ -641,6 +643,7 @@ const App = () => {
                   <Route path="/reports/attendance-trends" element={<AttendanceTrends />} />
                   <Route path="/reports/engagement-audit" element={<EngagementAudit />} />
                   <Route path="/reports/communications" element={<CommunicationsReport />} />
+                  <Route path="/roles-permissions" element={<RolesPermissions />} />
                   {/* Fallback to Dashboard to avoid any dead ends */}
                   <Route path="*" element={<Dashboard />} />
                 </Routes>
