@@ -27,11 +27,9 @@ const navSections = [
       {
         icon: BarChart3, label: 'Reports', color: '#60a5fa', bg: 'rgba(96,165,250,0.15)',
         children: [
-          { to: '/reports/login-logs', label: 'Login Logs' },
           { to: '/reports/schools-usage', label: 'Schools Usage' },
           { to: '/reports/fee-collections', label: 'Fee Collections' },
-          { to: '/reports/attendance-trends', label: 'Attendance Trends' },
-          { to: '/reports/engagement-audit', label: 'Engagement Audit' },
+          { to: '/reports/login-logs', label: 'Login Logs' },
           { to: '/reports/communications', label: 'Communications' }
         ]
       },
