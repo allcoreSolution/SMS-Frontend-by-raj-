@@ -222,6 +222,51 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [logoError, setLogoError] = useState(false);
+
+  const [platformInfo, setPlatformInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || localStorage.getItem('superadmin_user') || '{}');
+      const savedSchool = localStorage.getItem('schoolName');
+      const name = savedSchool || localStorage.getItem('platform_name') || u.organization || u.schoolName || 'ALL CORE SOLUTION';
+      const shortName = savedSchool ? (localStorage.getItem('schoolShortName') || 'CAMPUS') : (localStorage.getItem('platform_badge') || 'SAAS');
+      const logo = localStorage.getItem('platform_logo') || localStorage.getItem('schoolLogo') || u.logo || u.avatar || '';
+      const ownerTitle = u.name || u.fullName || 'Raj Yadav (Super Admin)';
+      return { name, shortName, logo, ownerTitle };
+    } catch (_) {
+      return { name: 'ALL CORE SOLUTION', shortName: 'SAAS', logo: '', ownerTitle: 'SuperAdmin Platform Owner' };
+    }
+  });
+
+  const getInitials = (name) => {
+    if (!name) return 'ACS';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'ACS';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || localStorage.getItem('superadmin_user') || '{}');
+        const savedSchool = localStorage.getItem('schoolName');
+        const name = savedSchool || localStorage.getItem('platform_name') || u.organization || u.schoolName || 'ALL CORE SOLUTION';
+        const shortName = savedSchool ? (localStorage.getItem('schoolShortName') || 'CAMPUS') : (localStorage.getItem('platform_badge') || 'SAAS');
+        const logo = localStorage.getItem('platform_logo') || localStorage.getItem('schoolLogo') || u.logo || u.avatar || '';
+        const ownerTitle = u.name || u.fullName || 'Raj Yadav (Super Admin)';
+        setPlatformInfo({ name, shortName, logo, ownerTitle });
+      } catch (_) {}
+    };
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('user_profile_updated', handleStorage);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('user_profile_updated', handleStorage);
+    };
+  }, []);
 
   useEffect(() => {
     for (const section of navSections) {
@@ -283,24 +328,35 @@ const Sidebar = ({ open, desktopOpen = true, mobileOpen = false, onClose, onTogg
           to="/" 
           onClick={onClose}
           className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
-          title="ALL CORE SOLUTION - SuperAdmin Command Center"
+          title={`${platformInfo.name} - SuperAdmin Command Center`}
         >
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs flex-shrink-0 shadow-md shadow-amber-500/20 ring-1 ring-amber-500/40 group-hover:scale-105 transition-transform">
-            ACS
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 to-amber-600 text-slate-950 flex items-center justify-center font-black text-xs flex-shrink-0 shadow-md shadow-amber-500/20 ring-1 ring-amber-500/40 group-hover:scale-105 transition-transform overflow-hidden">
+            {platformInfo.logo && !logoError ? (
+              <img
+                src={platformInfo.logo}
+                alt={platformInfo.name}
+                onError={() => setLogoError(true)}
+                className="w-full h-full object-contain p-0.5"
+              />
+            ) : (
+              <span className="font-mono text-slate-950 font-black uppercase">
+                {getInitials(platformInfo.name)}
+              </span>
+            )}
           </div>
           <div className="min-w-0 flex flex-col justify-center">
             <div className="flex items-center gap-1.5">
-              <span className="text-white font-black text-[13px] tracking-tight truncate leading-none group-hover:text-amber-400 transition-colors">
-                ALL CORE SOLUTION
+              <span className="text-white font-black text-[13px] tracking-tight truncate leading-none group-hover:text-amber-400 transition-colors max-w-[135px]" title={platformInfo.name}>
+                {platformInfo.name}
               </span>
-              <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 leading-none uppercase">
-                SAAS
+              <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 leading-none uppercase shrink-0">
+                {platformInfo.shortName}
               </span>
             </div>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-[10px] text-slate-400 font-semibold tracking-wide leading-none truncate">
-                SuperAdmin Platform Owner
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+              <span className="text-[10px] text-slate-400 font-semibold tracking-wide leading-none truncate max-w-[150px]">
+                {platformInfo.ownerTitle} • SuperAdmin
               </span>
             </div>
           </div>

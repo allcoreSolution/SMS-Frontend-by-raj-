@@ -109,6 +109,30 @@ export default function DriverLayout() {
   const driverPhoto = getDriverPhoto(driver);
   const busNumber = vehicle?.vehicleNumber || driver?.assignedBus || 'Unassigned';
   const formattedBusNo = busNumber === 'Unassigned' ? 'Unassigned' : busNumber.startsWith('Bus') ? busNumber : `Bus ${busNumber}`;
+  const [logoError, setLogoError] = useState(false);
+
+  const [schoolInfo, setSchoolInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('driver_user') || localStorage.getItem('user') || '{}');
+      const savedSchool = JSON.parse(localStorage.getItem('schoolInfo') || '{}');
+      const name = localStorage.getItem('schoolName') || u.schoolName || u.school?.name || u.tenant?.name || savedSchool.name || 'School Campus Fleet';
+      const shortName = localStorage.getItem('schoolShortName') || u.schoolShortName || u.school?.shortName || u.tenant?.shortName || savedSchool.shortName || '';
+      const logo = localStorage.getItem('schoolLogo') || u.schoolLogo || u.school?.logo || u.tenant?.logo || savedSchool.logo || '';
+      return { name, shortName, logo };
+    } catch (_) {
+      return { name: 'School Campus Fleet', shortName: '', logo: '' };
+    }
+  });
+
+  const getSchoolInitials = (name) => {
+    if (!name) return 'BUS';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'BUS';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
@@ -147,19 +171,30 @@ export default function DriverLayout() {
             </button>
 
             {/* Desktop Brand Link */}
-            <NavLink to="/dashboard" className="hidden lg:flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center">
-                  <span className="text-[11px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+            <NavLink to="/dashboard" className="hidden lg:flex items-center gap-3 group" title={schoolInfo.name}>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+                <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
+                  {schoolInfo.logo && !logoError ? (
+                    <img
+                      src={schoolInfo.logo}
+                      alt={schoolInfo.name}
+                      onError={() => setLogoError(true)}
+                      className="w-full h-full object-contain p-1"
+                    />
+                  ) : (
+                    <span className="text-[11px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent font-mono uppercase">
+                      {getSchoolInitials(schoolInfo.name)}
+                    </span>
+                  )}
                 </div>
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="font-sans font-black text-base tracking-tight text-slate-900 dark:text-white uppercase leading-none">
-                    ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
+                  <h1 className="font-sans font-black text-sm tracking-tight text-slate-900 dark:text-white uppercase leading-none truncate max-w-[190px]" title={schoolInfo.name}>
+                    {schoolInfo.name}
                   </h1>
-                  <span className="text-[9.5px] bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400 font-bold px-1.5 py-0.5 rounded uppercase">
-                    DRIVER &amp; FLEET
+                  <span className="text-[9.5px] bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-400 font-bold px-1.5 py-0.5 rounded uppercase shrink-0">
+                    {schoolInfo.shortName ? schoolInfo.shortName.slice(0, 5) : 'FLEET'}
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-0.5">
@@ -170,8 +205,8 @@ export default function DriverLayout() {
 
             {/* Mobile Center Title */}
             <div className="lg:hidden text-left sm:text-center">
-              <h1 className="font-sans font-black text-sm sm:text-base tracking-tight text-slate-900 dark:text-white uppercase leading-tight">
-                ALL CORE <span className="bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">SOLUTION</span>
+              <h1 className="font-sans font-black text-sm sm:text-base tracking-tight text-slate-900 dark:text-white uppercase leading-tight truncate max-w-[180px]">
+                {schoolInfo.name}
               </h1>
             </div>
           </div>
@@ -475,14 +510,25 @@ export default function DriverLayout() {
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800 mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0">
-                    <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center">
-                      <span className="text-[10px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] shadow-sm flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
+                      {schoolInfo.logo && !logoError ? (
+                        <img
+                          src={schoolInfo.logo}
+                          alt={schoolInfo.name}
+                          onError={() => setLogoError(true)}
+                          className="w-full h-full object-contain p-1"
+                        />
+                      ) : (
+                        <span className="text-[10px] font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent font-mono uppercase">
+                          {getSchoolInitials(schoolInfo.name)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div>
-                    <h3 className="font-sans font-black text-xs uppercase text-slate-900 dark:text-white leading-tight">
-                      ALL CORE <span className="text-[#ff5c0a]">SOLUTION</span>
+                    <h3 className="font-sans font-black text-xs uppercase text-slate-900 dark:text-white leading-tight truncate max-w-[145px]" title={schoolInfo.name}>
+                      {schoolInfo.name}
                     </h3>
                     <p className="text-[10px] text-orange-600 font-bold">
                       {formattedBusNo} • Fleet Console

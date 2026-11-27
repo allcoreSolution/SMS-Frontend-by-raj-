@@ -221,6 +221,30 @@ const Sidebar = () => {
     }
   });
 
+  const [logoError, setLogoError] = useState(false);
+  const [schoolInfo, setSchoolInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      const savedSchool = JSON.parse(localStorage.getItem('schoolInfo') || '{}');
+      const schoolName = localStorage.getItem('schoolName') || u.schoolName || u.school?.name || u.tenant?.name || savedSchool.name || 'School Campus';
+      const shortName = localStorage.getItem('schoolShortName') || u.schoolShortName || u.school?.shortName || u.tenant?.shortName || savedSchool.shortName || '';
+      const logo = localStorage.getItem('schoolLogo') || u.schoolLogo || u.school?.logo || u.tenant?.logo || savedSchool.logo || '';
+      return { name: schoolName, shortName, logo };
+    } catch (_) {
+      return { name: 'School Campus', shortName: '', logo: '' };
+    }
+  });
+
+  const getSchoolInitials = (name) => {
+    if (!name) return 'EDU';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'EDU';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
+
   const userRole = userData?.role || 'Teacher';
   const userRoleName = userData?.roleName || userRole;
   const userPermissions = Array.isArray(userData?.permissions) ? userData.permissions : [];
@@ -230,10 +254,21 @@ const Sidebar = () => {
       try {
         const u = JSON.parse(localStorage.getItem('user') || '{}');
         setUserData(u);
+        const savedSchool = JSON.parse(localStorage.getItem('schoolInfo') || '{}');
+        const sName = localStorage.getItem('schoolName') || u.schoolName || u.school?.name || u.tenant?.name || savedSchool.name || 'School Campus';
+        const sShort = localStorage.getItem('schoolShortName') || u.schoolShortName || u.school?.shortName || u.tenant?.shortName || savedSchool.shortName || '';
+        const sLogo = localStorage.getItem('schoolLogo') || u.schoolLogo || u.school?.logo || u.tenant?.logo || savedSchool.logo || '';
+        setSchoolInfo({ name: sName, shortName: sShort, logo: sLogo });
       } catch (_) {}
     };
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    window.addEventListener('school_profile_updated', handleStorage);
+    window.addEventListener('user_profile_updated', handleStorage);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('school_profile_updated', handleStorage);
+      window.removeEventListener('user_profile_updated', handleStorage);
+    };
   }, []);
 
   // Universal dynamic permission evaluator
@@ -413,23 +448,45 @@ const Sidebar = () => {
     }`}>
       
       {/* Brand Header */}
-      <div className="h-16 px-4 flex items-center flex-shrink-0 border-b border-slate-800/80 bg-slate-950">
-        <div className="flex items-center gap-3">
+      <div 
+        className="h-16 px-3.5 flex items-center flex-shrink-0 border-b border-slate-800/80 bg-slate-950"
+        title={schoolInfo.name}
+      >
+        <div className="flex items-center gap-2.5 min-w-0">
           <div 
             className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-orange-500 to-amber-600 p-[1.5px] flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0 overflow-hidden"
             translate="no"
           >
             <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
-              <span className="text-xs font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent">ACS</span>
+              {schoolInfo.logo && !logoError ? (
+                <img
+                  src={schoolInfo.logo}
+                  alt={schoolInfo.name}
+                  onError={() => setLogoError(true)}
+                  className="w-full h-full object-contain p-1"
+                />
+              ) : (
+                <span className="text-xs font-black tracking-wider bg-gradient-to-r from-amber-200 via-orange-300 to-amber-400 bg-clip-text text-transparent font-mono uppercase">
+                  {getSchoolInitials(schoolInfo.name)}
+                </span>
+              )}
             </div>
           </div>
           <div className="flex flex-col min-w-0">
-            <span className="text-[13px] font-black text-white tracking-tight leading-tight truncate">
-              ALL CORE <span className="bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 bg-clip-text text-transparent">SOLUTION</span>
-            </span>
-            <span className="text-[10px] text-slate-400 font-semibold truncate">
-              {userRole === 'Staff' ? 'Staff Cloud Console' : 'Faculty Cloud Console'}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[13px] font-black text-white tracking-tight leading-tight truncate max-w-[130px]" title={schoolInfo.name}>
+                {schoolInfo.name}
+              </span>
+              <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none uppercase shrink-0">
+                {schoolInfo.shortName ? schoolInfo.shortName.slice(0, 5) : (userRole === 'Staff' ? 'STAFF' : 'FACULTY')}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+              <span className="text-[10px] text-slate-400 font-semibold truncate leading-none">
+                {userData?.name || userData?.fullName || userRoleName} • {userRole === 'Staff' ? 'Staff' : 'Faculty'}
+              </span>
+            </div>
           </div>
         </div>
       </div>

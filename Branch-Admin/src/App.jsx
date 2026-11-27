@@ -81,12 +81,50 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
   const location = useLocation();
   const [reportsOpen, setReportsOpen] = useState(location.pathname.startsWith('/reports'));
   const [branchesCount, setBranchesCount] = useState(5);
+  const [logoError, setLogoError] = useState(false);
+
+  const [branchInfo, setBranchInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('branch_admin_user') || localStorage.getItem('user') || '{}');
+      const profile = branchLocalDb.getProfile ? branchLocalDb.getProfile() : {};
+      const name = localStorage.getItem('branch_name') || localStorage.getItem('schoolName') || profile.organization || u.organization || u.schoolName || u.branchName || 'ALL CORE SOLUTION';
+      const shortName = localStorage.getItem('branch_code') || localStorage.getItem('schoolShortName') || 'BRANCH';
+      const logo = localStorage.getItem('branch_logo') || localStorage.getItem('schoolLogo') || profile.avatar || u.avatar || '';
+      return { name, shortName, logo };
+    } catch (_) {
+      return { name: 'ALL CORE SOLUTION', shortName: 'BRANCH', logo: '' };
+    }
+  });
+
+  const getBranchInitials = (name) => {
+    if (!name) return 'ACS';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'ACS';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
 
   useEffect(() => {
     try {
       const list = branchLocalDb.getBranches();
       if (Array.isArray(list)) setBranchesCount(list.length);
     } catch (_) {}
+
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('branch_admin_user') || localStorage.getItem('user') || '{}');
+        const profile = branchLocalDb.getProfile ? branchLocalDb.getProfile() : {};
+        const name = localStorage.getItem('branch_name') || localStorage.getItem('schoolName') || profile.organization || u.organization || u.schoolName || u.branchName || 'ALL CORE SOLUTION';
+        const shortName = localStorage.getItem('branch_code') || localStorage.getItem('schoolShortName') || 'BRANCH';
+        const logo = localStorage.getItem('branch_logo') || localStorage.getItem('schoolLogo') || profile.avatar || u.avatar || '';
+        setBranchInfo({ name, shortName, logo });
+      } catch (_) {}
+    };
+
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, [location.pathname]);
 
   const links = [
@@ -102,26 +140,44 @@ const Sidebar = ({ isOpen, isDesktopOpen = true, setOpen, onToggle, onLogout }) 
     <div className={`fixed inset-y-0 left-0 bg-[#070d1e] w-[250px] text-gray-300 flex flex-col z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} ${isDesktopOpen ? 'md:translate-x-0' : 'md:-translate-x-full'} shadow-[4px_0_24px_rgba(0,0,0,0.25)] border-r border-slate-800/80`}>
       
       {/* Branding Header */}
-      <div className="h-16 flex items-center justify-between px-4 border-b border-slate-800/80 bg-[#050a17]">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center font-black text-white shadow-md shadow-orange-500/25 ring-1 ring-white/20">
-            <span className="text-xs font-black tracking-tight text-white font-mono">ACS</span>
+      <div className="h-16 flex items-center justify-between px-3.5 border-b border-slate-800/80 bg-[#050a17]" title={branchInfo.name}>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center font-black text-white shadow-md shadow-orange-500/25 ring-1 ring-white/20 shrink-0 overflow-hidden">
+            {branchInfo.logo && !logoError ? (
+              <img
+                src={branchInfo.logo}
+                alt={branchInfo.name}
+                onError={() => setLogoError(true)}
+                className="w-full h-full object-contain p-1"
+              />
+            ) : (
+              <span className="text-xs font-black tracking-tight text-white font-mono uppercase">
+                {getBranchInitials(branchInfo.name)}
+              </span>
+            )}
           </div>
-          <div>
-            <span className="font-black text-sm text-white tracking-tight flex items-center gap-1 leading-tight">
-              <span>ALL CORE</span>
-              <span className="text-orange-500">SOLUTION</span>
-            </span>
-            <span className="text-[9.5px] font-bold text-slate-400 uppercase tracking-widest block">
-              Branch Console
-            </span>
+          <div className="min-w-0 flex flex-col">
+            <div className="flex items-center gap-1.5">
+              <span className="font-black text-[13px] text-white tracking-tight truncate max-w-[125px]" title={branchInfo.name}>
+                {branchInfo.name}
+              </span>
+              <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none uppercase shrink-0">
+                {branchInfo.shortName ? branchInfo.shortName.slice(0, 5) : 'HQ'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+              <span className="text-[9.5px] font-bold text-slate-400 truncate leading-none">
+                Branch Console
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Toggle / Close Button */}
         <button 
           onClick={onToggle || (() => setOpen(false))}
-          className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+          className="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
           title="Toggle Sidebar"
         >
           <X className="w-4 h-4" />

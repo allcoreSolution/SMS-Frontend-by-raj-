@@ -332,12 +332,20 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </div>
         </div>
         <div className="flex flex-col min-w-0">
-          <span className="font-extrabold text-[14px] text-white tracking-wide leading-tight truncate max-w-[155px]">
-            {schoolInfo.name || 'ALL CORE SOLUTION'}
-          </span>
-          <span className="text-[10px] text-orange-400/90 font-semibold truncate max-w-[155px]">
-            {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accounts & Finance Cloud Console'}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-extrabold text-[13.5px] text-white tracking-wide leading-tight truncate max-w-[140px]" title={schoolInfo.name}>
+              {schoolInfo.name || 'ALL CORE SOLUTION'}
+            </span>
+            <span className="text-[8px] font-black px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none uppercase shrink-0">
+              {schoolInfo.shortName ? schoolInfo.shortName.slice(0, 5) : 'ACCOUNTS'}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 mt-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+            <span className="text-[10px] text-slate-400 font-semibold truncate leading-none">
+              {userData?.name || userData?.fullName || userRoleName || 'Accountant'} • Finance
+            </span>
+          </div>
         </div>
       </div>
 

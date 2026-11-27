@@ -73,6 +73,30 @@ const Sidebar = ({ isCollapsed }) => {
     }
   });
 
+  const [logoError, setLogoError] = useState(false);
+  const [schoolInfo, setSchoolInfo] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      const savedSchool = JSON.parse(localStorage.getItem('schoolInfo') || '{}');
+      const schoolName = localStorage.getItem('schoolName') || u.schoolName || u.school?.name || u.tenant?.name || savedSchool.name || 'ALL CORE SOLUTION';
+      const shortName = localStorage.getItem('schoolShortName') || u.schoolShortName || u.school?.shortName || u.tenant?.shortName || savedSchool.shortName || '';
+      const logo = localStorage.getItem('schoolLogo') || u.schoolLogo || u.school?.logo || u.tenant?.logo || savedSchool.logo || '';
+      return { name: schoolName, shortName, logo };
+    } catch (_) {
+      return { name: 'ALL CORE SOLUTION', shortName: '', logo: '' };
+    }
+  });
+
+  const getSchoolInitials = (name) => {
+    if (!name) return 'ACS';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'ACS';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
+
   const userRole = userData?.role || 'Admin';
   const userRoleName = typeof userRole === 'object' ? (userRole?.name || 'Staff') : (userData?.roleName || userRole || 'Admin');
   const userPermissions = Array.isArray(userData?.permissions) 
@@ -84,10 +108,21 @@ const Sidebar = ({ isCollapsed }) => {
       try {
         const u = JSON.parse(localStorage.getItem('user') || '{}');
         setUserData(u);
+        const savedSchool = JSON.parse(localStorage.getItem('schoolInfo') || '{}');
+        const sName = localStorage.getItem('schoolName') || u.schoolName || u.school?.name || u.tenant?.name || savedSchool.name || 'ALL CORE SOLUTION';
+        const sShort = localStorage.getItem('schoolShortName') || u.schoolShortName || u.school?.shortName || u.tenant?.shortName || savedSchool.shortName || '';
+        const sLogo = localStorage.getItem('schoolLogo') || u.schoolLogo || u.school?.logo || u.tenant?.logo || savedSchool.logo || '';
+        setSchoolInfo({ name: sName, shortName: sShort, logo: sLogo });
       } catch (_) {}
     };
     window.addEventListener('storage', handleStorage);
-    return () => window.removeEventListener('storage', handleStorage);
+    window.addEventListener('school_profile_updated', handleStorage);
+    window.addEventListener('user_profile_updated', handleStorage);
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('school_profile_updated', handleStorage);
+      window.removeEventListener('user_profile_updated', handleStorage);
+    };
   }, []);
 
   const isSuperAdmin = userPermissions.includes('*') || 
@@ -861,17 +896,42 @@ const Sidebar = ({ isCollapsed }) => {
   return (
     <aside className={`${isCollapsed ? 'w-20' : 'w-[268px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
       {/* Brand & Logo Area */}
-      <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-5'} py-3.5 sticky top-0 bg-[#0c1220]/95 backdrop-blur-md z-20 border-b border-slate-800/80 min-h-[64px]`}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/25 ring-1 ring-white/20">
-          <span className="font-black text-xs tracking-tight text-white font-mono">ACS</span>
+      <div 
+        className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-3.5'} py-3 sticky top-0 bg-[#0c1220]/95 backdrop-blur-md z-20 border-b border-slate-800/80 min-h-[64px]`}
+        title={schoolInfo.name}
+      >
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 p-[1.5px] flex items-center justify-center flex-shrink-0 shadow-lg shadow-orange-500/25 ring-1 ring-white/20 overflow-hidden">
+          <div className="w-full h-full bg-slate-950 rounded-[9px] flex items-center justify-center overflow-hidden">
+            {schoolInfo.logo && !logoError ? (
+              <img
+                src={schoolInfo.logo}
+                alt={schoolInfo.name}
+                onError={() => setLogoError(true)}
+                className="w-full h-full object-contain p-1"
+              />
+            ) : (
+              <span className="font-black text-xs tracking-tight text-transparent bg-clip-text bg-gradient-to-tr from-amber-300 via-orange-400 to-[#ff5c0a] font-mono uppercase">
+                {getSchoolInitials(schoolInfo.name)}
+              </span>
+            )}
+          </div>
         </div>
         {!isCollapsed && (
           <div className="flex flex-col min-w-0">
-            <span className="text-white font-black text-sm tracking-tight leading-tight truncate flex items-center gap-1">
-              <span>ALL CORE</span>
-              <span className="text-orange-500">SOLUTION</span>
-            </span>
-            <span className="text-slate-400 text-[10px] font-bold tracking-wide uppercase">School ERP Suite</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-white font-black text-[13px] tracking-tight leading-tight truncate max-w-[145px]" title={schoolInfo.name}>
+                {schoolInfo.name}
+              </span>
+              <span className="text-[8.5px] font-black px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-400 border border-orange-500/30 leading-none uppercase shrink-0">
+                {schoolInfo.shortName ? schoolInfo.shortName.slice(0, 5) : 'CAMPUS'}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+              <span className="text-slate-400 text-[10px] font-semibold truncate leading-none">
+                {userData?.name || userData?.fullName || userRoleName || 'School Admin'} • Portal
+              </span>
+            </div>
           </div>
         )}
       </div>

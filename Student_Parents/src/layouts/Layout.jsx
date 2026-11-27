@@ -328,10 +328,15 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
     try {
       const stored = localStorage.getItem('portal_school_info');
       if (stored) return JSON.parse(stored);
-      const user = localStorage.getItem('parent_user');
+      const user = localStorage.getItem('parent_user') || localStorage.getItem('user');
+      const savedSchool = localStorage.getItem('schoolName');
       if (user) {
         const u = JSON.parse(user);
         if (u.school) return u.school;
+        if (u.schoolName) return { name: u.schoolName, logo: u.schoolLogo, shortName: u.schoolShortName || 'CAMPUS' };
+      }
+      if (savedSchool) {
+        return { name: savedSchool, logo: localStorage.getItem('schoolLogo'), shortName: localStorage.getItem('schoolShortName') || 'CAMPUS' };
       }
     } catch (e) {}
     return {
@@ -340,6 +345,16 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
       logo: null
     };
   });
+
+  const getSchoolInitials = (name) => {
+    if (!name) return 'ACS';
+    const clean = name.replace(/[^a-zA-Z0-9\s]/g, '').trim();
+    const parts = clean.split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return 'ACS';
+    if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase();
+    if (parts.length === 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+    return (parts[0][0] + parts[1][0] + parts[2][0]).toUpperCase();
+  };
 
   const isStudent = useMemo(() => {
     if (!currentUser) return false;
@@ -582,14 +597,14 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                   }}
                 />
                 <div className="hidden w-full h-full rounded-lg bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 items-center justify-center">
-                  <span className="font-black text-slate-950 text-xs font-mono">ACS</span>
+                  <span className="font-black text-slate-950 text-xs font-mono uppercase">{getSchoolInitials(schoolInfo?.name)}</span>
                 </div>
               </div>
             ) : (
               <div className="relative w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 p-0.5 flex items-center justify-center flex-shrink-0 shadow-md shadow-amber-500/20 border border-amber-400/30 overflow-hidden">
                 <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                  <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[10px] tracking-wider font-mono">
-                    ACS
+                  <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[10px] tracking-wider font-mono uppercase">
+                    {getSchoolInitials(schoolInfo?.name)}
                   </span>
                 </div>
               </div>
@@ -918,7 +933,7 @@ export default function Layout({ children: pageContent, activeChild, setActiveCh
                 ) : null}
                 <div className={`${schoolInfo?.logo ? 'hidden' : 'flex'} items-center justify-center w-full h-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 p-0.5`}>
                   <div className="w-full h-full bg-slate-950 rounded-md flex items-center justify-center">
-                    <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[9px] font-mono">ACS</span>
+                    <span className="font-black text-transparent bg-clip-text bg-gradient-to-tr from-amber-400 via-yellow-200 to-white text-[9px] font-mono uppercase">{getSchoolInitials(schoolInfo?.name)}</span>
                   </div>
                 </div>
               </div>
