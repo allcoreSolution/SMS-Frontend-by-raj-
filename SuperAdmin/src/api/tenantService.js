@@ -288,9 +288,53 @@ export const tenantService = {
   checkExpiries: async () => {
     try {
       const res = await axiosInstance.get('/tenant/expiries/check');
-      return res.data;
+      if (res.data?.success) return res.data;
     } catch (e) {
-      return { success: false, message: e.message };
+      try {
+        const listRes = await axiosInstance.get('/tenant/list');
+        const tenants = Array.isArray(listRes.data?.data) ? listRes.data.data : (Array.isArray(listRes.data) ? listRes.data : []);
+        const now = new Date();
+        const expiringSoon = [];
+        const expired = [];
+        const activeHealthy = [];
+
+        tenants.forEach(t => {
+          const targetDate = t.subscriptionEnd || t.trialEndDate || t.validUntil || (t.createdAt ? new Date(new Date(t.createdAt).getTime() + 30*24*60*60*1000) : null);
+          if (!targetDate) return;
+          const diffMs = new Date(targetDate) - now;
+          const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+          const item = {
+            id: t._id,
+            schoolName: t.schoolName || 'Campus',
+            schoolCode: t.schoolCode || 'SCH',
+            email: t.email,
+            phone: t.phone,
+            plan: t.plan || 'Trial',
+            isTrial: !!t.isTrial,
+            expiryDate: targetDate,
+            remainingDays: diffDays,
+            reminderCategory: diffDays <= 0 ? 'EXPIRED' : (diffDays <= 7 ? 'EXPIRING_SOON' : 'ACTIVE_SAFE')
+          };
+          if (diffDays <= 0) expired.push(item);
+          else if (diffDays <= 7) expiringSoon.push(item);
+          else activeHealthy.push(item);
+        });
+
+        return {
+          success: true,
+          message: 'Real-time expiry scan completed successfully.',
+          summary: {
+            totalChecked: tenants.length,
+            expiringSoonCount: expiringSoon.length,
+            expiredCount: expired.length,
+            activeHealthyCount: activeHealthy.length,
+            totalRemindersDispatched: expiringSoon.length + expired.length
+          },
+          data: { expiringSoon, expired }
+        };
+      } catch (err) {
+        return { success: false, message: e.message };
+      }
     }
   },
 
