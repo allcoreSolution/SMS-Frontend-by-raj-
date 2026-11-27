@@ -51,22 +51,22 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-3 pt-1">
-            <span className="text-sm sm:text-base font-bold text-gray-400 line-through decoration-2">₹39,999</span>
-            <span className="text-3xl sm:text-4xl font-black text-gray-900 leading-none">₹24,999</span>
-            <span className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase tracking-wider leading-tight">
-              FLAT / YEARLY LICENSE<br/>COMPLETE INSTITUTIONAL SAAS
+            <span className="text-sm sm:text-base font-bold text-gray-400 line-through decoration-2">₹24,999</span>
+            <span className="text-3xl sm:text-4xl font-black text-emerald-600 leading-none">₹0</span>
+            <span className="text-[10px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider leading-tight">
+              1ST MONTH 100% FREE TRIAL<br/><span className="text-emerald-700 font-black">ZERO UPFRONT COST • UPGRADE ANYTIME</span>
             </span>
           </div>
 
           <div className="flex flex-row items-center gap-3 sm:gap-4 pt-1.5 w-full sm:w-auto">
             <button 
-              onClick={() => openModal('purchase', { plan: 'Book Free School Demo & Consultation' })}
+              onClick={() => openModal('purchase', { plan: '30-Day Free Trial (1st Month ₹0 Free)' })}
               className="relative group cursor-pointer"
             >
               <div className="absolute inset-0 bg-gray-900 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-[2px] group-hover:translate-y-[2px] group-active:translate-x-0 group-active:translate-y-0" />
               <div className="relative bg-amber-400 border-[1.5px] border-gray-900 px-5 sm:px-6 py-2.5 sm:py-3 flex items-center justify-center transition-transform group-hover:-translate-x-[1px] group-hover:-translate-y-[1px] group-active:translate-x-0 group-active:translate-y-0 liquid-btn" style={{ '--liquid-bg': '#0f172a', '--liquid-text': '#ffffff' }}>
                 <span className="text-gray-900 font-black text-xs sm:text-[13px] uppercase tracking-wider whitespace-nowrap z-10 relative flex items-center gap-2">
-                  <span>Book Free School Demo</span>
+                  <span>Start 30-Day Free Trial</span>
                   <Sparkles className="w-4 h-4" />
                 </span>
               </div>
