@@ -46,10 +46,7 @@ const navSections = [
       {
         icon: Server, label: 'Server & Health', color: '#06b6d4', bg: 'rgba(6,182,212,0.15)',
         children: [
-          { to: '/server',           label: 'Server Health & Telemetry' },
-          { to: '/storage-center',   label: 'Storage Nodes' },
-          { to: '/backup-center',    label: 'Backups' },
-          { to: '/software-updates', label: 'Software Updates' },
+          { to: '/server',           label: 'Live Telemetry & Health' },
           { to: '/cron-monitor',     label: 'Cron Monitor' },
           { to: '/infrastructure',   label: 'Infrastructure' }
         ]
