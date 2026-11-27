@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Shield, AlertTriangle, CheckCircle2, Eye, Trash2, Flag, X,
+  Shield, ShieldCheck, AlertTriangle, CheckCircle2, Eye, Trash2, Flag, X,
   Search, Filter, ShieldAlert, Sparkles, RefreshCw, Lock, Unlock,
   MessageSquare, UserX, ExternalLink, Check, Ban, FileText, ArrowRight
 } from 'lucide-react';
