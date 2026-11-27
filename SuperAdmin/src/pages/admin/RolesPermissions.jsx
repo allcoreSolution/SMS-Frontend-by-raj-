@@ -345,11 +345,25 @@ export default function RolesPermissions() {
     setRoleDesc(role.description || '');
     setFilterQuery('');
 
-    if (role.permissions?.includes('all')) {
+    const rolePerms = role.permissions || [];
+    const isFullAccess = rolePerms.includes('all') || role.name === 'SuperAdmin';
+
+    if (isFullAccess) {
       const allSlugs = permissionsMatrix.flatMap((m) => m.permissions.map((p) => p.slug));
       setSelectedPermissions(new Set(allSlugs));
     } else {
-      setSelectedPermissions(new Set(role.permissions || []));
+      const expanded = new Set();
+      rolePerms.forEach(p => {
+        if (!p) return;
+        if (p.endsWith('.*')) {
+          const modKey = p.replace('.*', '');
+          const mod = permissionsMatrix.find(m => m.key === modKey);
+          if (mod) mod.permissions.forEach(mp => expanded.add(mp.slug));
+        } else {
+          expanded.add(p);
+        }
+      });
+      setSelectedPermissions(expanded);
     }
     setView('edit');
   };
@@ -1092,35 +1106,46 @@ export default function RolesPermissions() {
                           const isChecked = selectedPermissions.has(perm.slug);
 
                           return (
-                            <label
+                            <div
                               key={perm.slug}
                               onClick={() => handleTogglePermission(perm.slug)}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === ' ' || e.key === 'Enter') {
+                                  e.preventDefault();
+                                  handleTogglePermission(perm.slug);
+                                }
+                              }}
                               className={`flex items-start gap-3 p-3 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none ${
                                 isChecked
-                                  ? 'bg-purple-50/60 border-purple-300 text-purple-900 shadow-xs'
-                                  : 'bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50'
+                                  ? 'bg-purple-50/80 border-purple-400 text-purple-950 shadow-xs ring-1 ring-purple-400/30'
+                                  : 'bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
                               }`}
                             >
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => {}}
-                                className="sr-only"
-                              />
-                              <div className="mt-0.5 shrink-0">
+                              <div className="mt-0.5 shrink-0 pointer-events-none">
                                 {isChecked ? (
-                                  <div className="w-4 h-4 rounded bg-purple-600 text-white flex items-center justify-center">
+                                  <div className="w-4 h-4 rounded bg-purple-600 text-white flex items-center justify-center shadow-xs">
                                     <Check className="w-3 h-3 stroke-[3]" />
                                   </div>
                                 ) : (
                                   <div className="w-4 h-4 rounded border border-slate-300 bg-white" />
                                 )}
                               </div>
-                              <div className="space-y-0.5 min-w-0">
-                                <div className="font-bold text-slate-800 leading-tight">{perm.name}</div>
+                              <div className="space-y-0.5 min-w-0 flex-1 pointer-events-none">
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className={isChecked ? "font-black text-purple-950" : "font-bold text-slate-800"}>
+                                    {perm.name}
+                                  </span>
+                                  {isChecked && (
+                                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 shrink-0">
+                                      Allowed
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="text-[10px] text-slate-400 font-mono truncate">{perm.slug}</div>
                               </div>
-                            </label>
+                            </div>
                           );
                         })}
                       </div>

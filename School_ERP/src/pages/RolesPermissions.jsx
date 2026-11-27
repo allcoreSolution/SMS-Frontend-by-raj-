@@ -702,11 +702,45 @@ export default function RolesPermissions() {
     setFilterQuery("");
 
     const rolePerms = role.permissions || role.permissionSlugs || [];
-    if (rolePerms.includes("all")) {
+    const isFullAccess = rolePerms.includes("all") || 
+      role.name === 'Admin' || 
+      role.name === 'SuperAdmin' || 
+      role.name === 'Principal / Headmaster' ||
+      role.name === 'Principal / Academic Director';
+
+    if (isFullAccess) {
       const allSlugs = permissionModules.flatMap(m => m.permissions.map(p => p.slug));
       setSelectedPermissions(new Set(allSlugs));
     } else {
-      setSelectedPermissions(new Set(rolePerms));
+      const expanded = new Set();
+      rolePerms.forEach(p => {
+        if (!p) return;
+        if (p.endsWith('.*')) {
+          const modKey = p.replace('.*', '');
+          const mod = permissionModules.find(m => m.key === modKey);
+          if (mod) {
+            mod.permissions.forEach(mp => expanded.add(mp.slug));
+          }
+        } else {
+          expanded.add(p);
+          // Bidirectional alias mapping for legacy slugs
+          if (p === 'front_office.enquiries.manage') expanded.add('front_office.admission_enquiries.manage');
+          if (p === 'front_office.admission_enquiries.manage') expanded.add('front_office.enquiries.manage');
+          if (p === 'front_office.visitors.manage') expanded.add('front_office.visitor_book.manage');
+          if (p === 'front_office.visitor_book.manage') expanded.add('front_office.visitors.manage');
+          if (p === 'front_office.gate_pass.manage') expanded.add('front_office.gate_passes.manage');
+          if (p === 'front_office.gate_passes.manage') expanded.add('front_office.gate_pass.manage');
+          if (p === 'front_office.postal.manage') expanded.add('front_office.postal_records.manage');
+          if (p === 'front_office.postal_records.manage') expanded.add('front_office.postal.manage');
+          if (p === 'library.circulation.manage') expanded.add('library.issue_return.manage');
+          if (p === 'library.issue_return.manage') expanded.add('library.circulation.manage');
+          if (p === 'hr.leaves.manage') expanded.add('hr.leave.approve');
+          if (p === 'hr.leave.approve') expanded.add('hr.leaves.manage');
+          if (p === 'hostel.allocation.manage') expanded.add('hostel.assign.manage');
+          if (p === 'hostel.assign.manage') expanded.add('hostel.allocation.manage');
+        }
+      });
+      setSelectedPermissions(expanded);
     }
     setView("edit");
   };
@@ -1172,8 +1206,26 @@ export default function RolesPermissions() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {filteredRoles.map((role) => {
                 const perms = role.permissions || role.permissionSlugs || [];
-                const isAll = perms.includes("all");
-                const permCount = isAll ? totalSystemPerms : perms.length;
+                const isAll = perms.includes("all") || 
+                  role.name === 'Admin' || 
+                  role.name === 'SuperAdmin' || 
+                  role.name === 'Principal / Headmaster' ||
+                  role.name === 'Principal / Academic Director';
+                let permCount = isAll ? totalSystemPerms : 0;
+                if (!isAll) {
+                  const set = new Set();
+                  perms.forEach(p => {
+                    if (!p) return;
+                    if (p.endsWith('.*')) {
+                      const modKey = p.replace('.*', '');
+                      const mod = permissionModules.find(m => m.key === modKey);
+                      if (mod) mod.permissions.forEach(mp => set.add(mp.slug));
+                    } else {
+                      set.add(p);
+                    }
+                  });
+                  permCount = set.size;
+                }
 
                 return (
                   <div
@@ -1435,35 +1487,46 @@ export default function RolesPermissions() {
                           const isChecked = selectedPermissions.has(perm.slug);
 
                           return (
-                            <label
+                            <div
                               key={perm.slug}
                               onClick={() => handleTogglePermission(perm.slug)}
+                              role="button"
+                              tabIndex={0}
+                              onKeyDown={(e) => {
+                                if (e.key === ' ' || e.key === 'Enter') {
+                                  e.preventDefault();
+                                  handleTogglePermission(perm.slug);
+                                }
+                              }}
                               className={`flex items-start gap-3 p-3 rounded-xl border text-xs font-semibold cursor-pointer transition-all select-none ${
                                 isChecked
-                                  ? "bg-indigo-50/60 border-indigo-300 text-indigo-900 shadow-xs"
-                                  : "bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50"
+                                  ? "bg-indigo-50/80 border-indigo-400 text-indigo-950 shadow-xs ring-1 ring-indigo-400/30"
+                                  : "bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
                               }`}
                             >
-                              <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => {}}
-                                className="sr-only"
-                              />
-                              <div className="mt-0.5 shrink-0">
+                              <div className="mt-0.5 shrink-0 pointer-events-none">
                                 {isChecked ? (
-                                  <div className="w-4 h-4 rounded bg-indigo-600 text-white flex items-center justify-center">
+                                  <div className="w-4 h-4 rounded bg-indigo-600 text-white flex items-center justify-center shadow-xs">
                                     <Check className="w-3 h-3 stroke-[3]" />
                                   </div>
                                 ) : (
                                   <div className="w-4 h-4 rounded border border-slate-300 bg-white" />
                                 )}
                               </div>
-                              <div className="space-y-0.5 min-w-0">
-                                <div className="font-bold text-slate-800 leading-tight">{perm.name}</div>
+                              <div className="space-y-0.5 min-w-0 flex-1 pointer-events-none">
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className={isChecked ? "font-black text-indigo-950" : "font-bold text-slate-800"}>
+                                    {perm.name}
+                                  </span>
+                                  {isChecked && (
+                                    <span className="text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 shrink-0">
+                                      Allowed
+                                    </span>
+                                  )}
+                                </div>
                                 <div className="text-[10px] text-slate-400 font-mono truncate">{perm.slug}</div>
                               </div>
-                            </label>
+                            </div>
                           );
                         })}
                       </div>
