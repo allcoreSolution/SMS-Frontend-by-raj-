@@ -7,7 +7,8 @@ import {
   Video, Heart, CalendarDays, LayoutDashboard, Plus, Settings, UserCheck, Monitor, 
   UploadCloud, BookOpen, Award, ClipboardCheck, PhoneCall, PieChart, Clipboard, 
   Layers, BarChart, Edit, FileSpreadsheet, FileCheck, LineChart, LayoutTemplate, 
-  List, FileQuestion, MessageSquare, MessageCircle, Activity, CreditCard, X, ArrowRight
+  List, FileQuestion, MessageSquare, MessageCircle, Activity, CreditCard, X, ArrowRight,
+  ShieldCheck
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { useLanguage } from '../context/LanguageContext';
@@ -253,6 +254,15 @@ const TeacherDashboardView = () => {
     return 'Faculty Member';
   });
 
+  const [teacherRole] = useState(() => {
+    try {
+      const u = JSON.parse(localStorage.getItem('user') || '{}');
+      return u.roleName || u.role || 'Teacher';
+    } catch (_) {
+      return 'Teacher';
+    }
+  });
+
   // Dynamic School Name State
   const [schoolName, setSchoolName] = useState(() => {
     try {
@@ -412,8 +422,18 @@ const TeacherDashboardView = () => {
             
             {/* Header */}
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">{getTimeGreeting()}, {teacherName} 👋</h1>
-              <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{t("Here's what's happening at", "Here's what's happening at")} <span className="font-semibold text-gray-700">{schoolName}</span> {t("today —", "today —")} {new Date().toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">{getTimeGreeting()}, {teacherName} 👋</h1>
+                  <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{t("Here's what's happening at", "Here's what's happening at")} <span className="font-semibold text-gray-700">{schoolName}</span> {t("today —", "today —")} {new Date().toLocaleDateString(currentLang === 'Hindi' ? 'hi-IN' : 'en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-300 shadow-2xs">
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+                    <span>Role: {teacherRole}</span>
+                  </span>
+                </div>
+              </div>
             </div>
             
             {/* Layout Pattern 1: Analytics / Reversed Hub displays Hub at top */}

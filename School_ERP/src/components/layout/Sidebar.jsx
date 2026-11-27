@@ -48,6 +48,7 @@ import {
   LogOut
 } from "lucide-react";
 import { getTranslation } from "../../utils/translations";
+import Swal from "sweetalert2";
 
 const Sidebar = ({ isCollapsed }) => {
   const location = useLocation();
@@ -63,6 +64,97 @@ const Sidebar = ({ isCollapsed }) => {
       return 'English';
     }
   });
+
+  const [userData, setUserData] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch (_) {
+      return {};
+    }
+  });
+
+  const userRole = userData?.role || 'Admin';
+  const userRoleName = typeof userRole === 'object' ? (userRole?.name || 'Staff') : (userData?.roleName || userRole || 'Admin');
+  const userPermissions = Array.isArray(userData?.permissions) 
+    ? userData.permissions 
+    : (Array.isArray(userData?.role?.permissions) ? userData.role.permissions : []);
+
+  useEffect(() => {
+    const handleStorage = () => {
+      try {
+        const u = JSON.parse(localStorage.getItem('user') || '{}');
+        setUserData(u);
+      } catch (_) {}
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
+  }, []);
+
+  const isSuperAdmin = userPermissions.includes('*') || 
+                       userPermissions.includes('all') || 
+                       userRoleName.toLowerCase() === 'admin' || 
+                       userRoleName.toLowerCase() === 'superadmin' || 
+                       userRoleName.toLowerCase() === 'super admin' ||
+                       userData?.username?.toLowerCase().includes('admin');
+
+  const hasPermission = (requiredKeys) => {
+    if (isSuperAdmin) return true;
+    if (!requiredKeys || requiredKeys.length === 0) return true;
+    if (!Array.isArray(requiredKeys)) requiredKeys = [requiredKeys];
+
+    return requiredKeys.some(key => {
+      if (userPermissions.includes(key)) return true;
+      const [module] = key.split('.');
+      if (userPermissions.includes(module) || userPermissions.includes(`${module}.*`)) return true;
+      if (userPermissions.some(p => p.startsWith(module + '.') || p === module)) return true;
+      return false;
+    });
+  };
+
+  const showRolePermissionsModal = () => {
+    const isFull = isSuperAdmin;
+    const permListHtml = isFull 
+      ? `<div style="padding:12px; border-radius:10px; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-weight:600; font-size:13px; text-align:center;">
+           ✨ Full Institutional Super Admin Access (All modules unlocked)
+         </div>`
+      : userPermissions.length === 0
+        ? `<div style="padding:12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px; text-align:center;">
+             Standard baseline role permissions active.
+           </div>`
+        : `<div style="max-height: 220px; overflow-y: auto; text-align: left; display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 0;">
+             ${userPermissions.map(p => `
+               <span style="display:inline-flex; align-items:center; gap:4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 600; background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1;">
+                 <span style="color:#10b981; font-weight:bold;">✓</span> ${p}
+               </span>
+             `).join('')}
+           </div>`;
+
+    Swal.fire({
+      title: `<span style="font-size:18px; font-weight:800; color:#1e293b;">Active Role & Permissions</span>`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; font-size: 13px; color: #475569; text-align: left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Logged In Role</div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a; text-transform: capitalize;">${userRoleName}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Privileges</div>
+              <div style="font-size:14px; font-weight:700; color:#10b981;">
+                ${isFull ? 'Super Access' : `${userPermissions.length} Active`}
+              </div>
+            </div>
+          </div>
+          <div style="font-size:12px; font-weight:700; color:#64748b; margin-bottom: 6px; text-transform: uppercase;">
+            Authorized Permission Scopes:
+          </div>
+          ${permListHtml}
+        </div>
+      `,
+      confirmButtonText: 'Done',
+      confirmButtonColor: '#ff5c0a'
+    });
+  };
 
   useEffect(() => {
     const handleLangChange = (e) => {
@@ -82,9 +174,9 @@ const Sidebar = ({ isCollapsed }) => {
 
   const mainNav = [
     { name: "Dashboard", icon: LayoutDashboard, path: "/" },
-    { name: "Roles & Permissions", icon: ShieldCheck, path: "/roles-permissions" },
-    { name: "Lead Management", icon: TrendingUp, path: "/leads/dashboard" },
-    { name: "Competency-Based (CBC)", icon: Network, path: "/cbc/dashboard" },
+    { name: "Roles & Permissions", icon: ShieldCheck, path: "/roles-permissions", permissions: ['settings.roles-permissions', 'roles.manage', 'admin'] },
+    { name: "Lead Management", icon: TrendingUp, path: "/leads/dashboard", permissions: ['leads', 'front_office'] },
+    { name: "Competency-Based (CBC)", icon: Network, path: "/cbc/dashboard", permissions: ['cbc', 'exams'] },
     { name: "Contact Support", icon: Headset, path: "/contact-support" },
   ];
 
@@ -93,6 +185,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Finance & Fees", 
       icon: Wallet, 
       path: "#",
+      permissions: ['fees', 'fees.collect.manage', 'fees.structure.manage', 'fees.due.view', 'fees.challans.manage', 'fees.assign.manage'],
       children: [
         { name: "Fees Dashboard", path: "/finance/dashboard" },
         { name: "Collect Fees", path: "/finance/collect" },
@@ -102,7 +195,6 @@ const Sidebar = ({ isCollapsed }) => {
         { name: "Fee Challans", path: "/finance/challans" },
         { name: "Assign Fees", path: "/finance/assign" },
         { name: "Fees Carry Forward", path: "/finance/carry-forward" },
-
         { name: "Fee Groups", path: "/finance/groups" },
         { name: "Fees Discount", path: "/finance/discount" },
         { name: "Fee Types", path: "/finance/types" },
@@ -115,6 +207,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Accounts", 
       icon: Calculator, 
       path: "#",
+      permissions: ['accounts', 'accounts.income.manage', 'accounts.expense.manage', 'accounts.heads.manage', 'accounts.bank.manage'],
       children: [
         { name: "Accounts Dashboard", path: "/accounts/dashboard" },
         { name: "Income", path: "/accounts/income" },
@@ -128,6 +221,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Student Information", 
       icon: Users, 
       path: "#",
+      permissions: ['students', 'students.list.view', 'students.admission.create', 'students.attendance.manage'],
       children: [
         { name: "Student Dashboard", path: "/students/dashboard" },
         { name: "Student Admission", path: "/students/admission" },
@@ -146,6 +240,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Academics", 
       icon: BookOpen, 
       path: "#",
+      permissions: ['academics', 'academics.sessions.manage', 'academics.classes.manage', 'academics.subjects.manage', 'academics.timetable.manage'],
       children: [
         { name: "Academic Dashboard", path: "/academics/dashboard" },
         { name: "Academic Sessions", path: "/academics/sessions" },
@@ -164,6 +259,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Front Office", 
       icon: Monitor, 
       path: "#",
+      permissions: ['front_office', 'front_office.enquiries.manage', 'front_office.visitors.manage', 'front_office.complaints.manage', 'front_office.gate_pass.manage'],
       children: [
         { name: "Front Office Dashboard", path: "/front-office/dashboard" },
         { name: "Admission Enquiries", path: "/front-office/admission-enquiries" },
@@ -179,6 +275,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Lead Management", 
       icon: TrendingUp, 
       path: "#",
+      permissions: ['leads', 'leads.pipeline.manage', 'front_office'],
       children: [
         { name: "Lead Dashboard", path: "/leads/dashboard" },
         { name: "Lead Pipeline Board", path: "/leads/pipeline" },
@@ -191,6 +288,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Offline Examinations", 
       icon: FileText, 
       path: "#",
+      permissions: ['exams', 'exams.datesheet.manage', 'exams.marks.entry', 'exams.report_cards.manage', 'examination'],
       children: [
         { name: "Exam Dashboard", path: "/offline-exams/dashboard" },
         { name: "Manage Offline Exams", path: "/offline-exams/manage" },
@@ -212,6 +310,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "CBC Academics", 
       icon: ClipboardList, 
       path: "#",
+      permissions: ['cbc', 'cbc.strands.manage', 'cbc.assessments.manage'],
       children: [
         { name: "CBC Dashboard", path: "/cbc-academics/dashboard" },
         { name: "Strands & Outcomes", path: "/cbc-academics/strands-outcomes" },
@@ -225,6 +324,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Online Examinations", 
       icon: MonitorPlay, 
       path: "#",
+      permissions: ['online_exams', 'online_exams.manage', 'online_exams.questions.manage'],
       children: [
         { name: "Online Exam Dashboard", path: "/online-exams/dashboard" },
         { name: "Manage Online Exams", path: "/online-exams/manage" },
@@ -236,6 +336,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Human Resource", 
       icon: UserCog, 
       path: "#",
+      permissions: ['hr', 'hr.staff.manage', 'hr.attendance.manage', 'hr.payroll.manage', 'hr.leaves.manage'],
       children: [
         { name: "HR Dashboard", path: "/hr/dashboard" },
         { name: "Teacher Portal (:5177)", path: "http://localhost:5177", isExternal: true },
@@ -262,6 +363,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "PTM Meetings", 
       icon: Calendar, 
       path: "#",
+      permissions: ['ptm', 'ptm.remarks.manage', 'academics'],
       children: [
         { name: "PTM Dashboard", path: "/ptm/dashboard" },
         { name: "PTM Schedule Meetings", path: "/ptm/schedule" },
@@ -275,6 +377,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Lesson Planner", 
       icon: BookMarked, 
       path: "#",
+      permissions: ['lesson_plan', 'lesson_plan.submit', 'academics'],
       children: [
         { name: "Lesson Planner Dashboard", path: "/lesson-planner/dashboard" },
         { name: "Lesson Plans", path: "/lesson-planner/plans" },
@@ -290,6 +393,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "OSM Module", 
       icon: PenTool, 
       path: "#",
+      permissions: ['osm', 'exams', 'exams.marks.entry'],
       children: [
         { name: "OSM Dashboard", path: "/osm-module/dashboard" },
         { name: "OSM Sessions", path: "/osm-module/sessions" },
@@ -303,6 +407,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "QR Code Attendance", 
       icon: QrCode, 
       path: "#",
+      permissions: ['attendance', 'hr.attendance.manage', 'students.attendance.manage'],
       children: [
         { name: "QR Attendance", path: "/qr-attendance/attendance" },
         { name: "QR Attendance Setting", path: "/qr-attendance/setting" },
@@ -314,6 +419,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Biometric Devices", 
       icon: Fingerprint, 
       path: "#",
+      permissions: ['biometric', 'attendance', 'hr.attendance.manage'],
       children: [
         { name: "All Devices", path: "/biometric/all-devices" },
         { name: "Attendance Logs", path: "/biometric/attendance-logs" },
@@ -325,6 +431,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Assessment", 
       icon: ClipboardCheck, 
       path: "#",
+      permissions: ['assessment', 'cbc.assessments.manage', 'exams'],
       children: [
         { name: "Assessment Dashboard", path: "/assessment/dashboard" },
         { name: "Assessments", path: "/assessment/list" },
@@ -339,6 +446,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Surveys & Feedback", 
       icon: BarChart2, 
       path: "#",
+      permissions: ['surveys', 'communication'],
       children: [
         { name: "Survey Dashboard", path: "/surveys/dashboard" },
         { name: "All Surveys", path: "/surveys/all" },
@@ -351,6 +459,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Compliance & Governance", 
       icon: ShieldCheck, 
       path: "#",
+      permissions: ['compliance', 'admin'],
       children: [
         { name: "Compliance Overview", path: "/compliance/overview" },
         { name: "School Profile", path: "/compliance/school-profile" },
@@ -373,6 +482,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Live Classes", 
       icon: Video, 
       path: "#",
+      permissions: ['academics.live_classes', 'academics.timetable.manage', 'academics'],
       children: [
         { name: "Manage Live Classes", path: "/live-classes/manage" },
         { name: "Live Class Settings", path: "/live-classes/settings" },
@@ -382,6 +492,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Study Center", 
       icon: BookOpen, 
       path: "#",
+      permissions: ['academics.homework', 'academics.study_material', 'academics'],
       children: [
         { name: "Dashboard", path: "/study-center/dashboard" },
         { name: "Classwork & Logbook", path: "/study-center/classwork-logbook" },
@@ -394,6 +505,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Certificates", 
       icon: Award, 
       path: "#",
+      permissions: ['certificates', 'certificates.generate', 'students.exit.manage'],
       children: [
         { name: "Certificate Templates", path: "/certificates/templates" },
         { name: "Certificates & Document", path: "/certificates/documents" },
@@ -403,6 +515,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "ID Cards", 
       icon: IdCard, 
       path: "#",
+      permissions: ['id_cards', 'students.profile.edit', 'hr.staff.manage'],
       children: [
         { name: "Student ID Cards", path: "/id-cards/student" },
         { name: "Staff ID Cards", path: "/id-cards/staff" },
@@ -413,6 +526,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Communicate", 
       icon: Megaphone, 
       path: "#",
+      permissions: ['communication', 'communication.notices'],
       children: [
         { name: "Notice Board", path: "/communicate/notice-board" },
         { name: "Events & Holidays", path: "/communicate/events-holidays" },
@@ -425,6 +539,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Library", 
       icon: Library, 
       path: "#",
+      permissions: ['library', 'library.books.manage', 'library.circulation.manage'],
       children: [
         { name: "Library Dashboard", path: "/library/dashboard" },
         { name: "Issue/Return Book", path: "/library/issue-return" },
@@ -432,11 +547,11 @@ const Sidebar = ({ isCollapsed }) => {
         { name: "Book Categories", path: "/library/categories" },
       ]
     },
-
     { 
       name: "Transport", 
       icon: Bus, 
       path: "#",
+      permissions: ['transport', 'transport.vehicles.manage', 'transport.routes.manage'],
       children: [
         { name: "Transport Dashboard", path: "/transport/dashboard" },
         { name: "Live Operations", path: "/transport/live-operations" },
@@ -450,6 +565,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Hostel", 
       icon: Building, 
       path: "#",
+      permissions: ['hostel', 'hostel.rooms.manage', 'hostel.allocation.manage'],
       children: [
         { name: "Hostel Dashboard", path: "/hostel/dashboard" },
         { name: "Student Allocation", path: "/hostel/student-allocation" },
@@ -473,6 +589,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Asset Management", 
       icon: Package, 
       path: "#",
+      permissions: ['inventory', 'inventory.items.manage', 'assets'],
       children: [
         { name: "Asset Dashboard", path: "/asset-management/dashboard" },
         { name: "Asset Register", path: "/asset-management/register" },
@@ -489,6 +606,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Engagement", 
       icon: Megaphone, 
       path: "#",
+      permissions: ['engagement', 'communication'],
       children: [
         { name: "Creatives", path: "/engagement/creatives" },
         { name: "Birthday Manager", path: "/engagement/birthday-manager" },
@@ -500,13 +618,14 @@ const Sidebar = ({ isCollapsed }) => {
       name: "CCTV", 
       icon: Cctv, 
       path: "#",
+      permissions: ['cctv', 'admin'],
       children: [
         { name: "Camera Wall", path: "/cctv/camera-wall" },
         { name: "CCTV Cameras", path: "/cctv/cameras" },
         { name: "CCTV Access Log", path: "/cctv/access-log" },
       ]
     },
-    { name: "Reports & Analytics", icon: PieChart, path: "/reports" },
+    { name: "Reports & Analytics", icon: PieChart, path: "/reports", permissions: ['reports', 'admin', 'accounts.reports.view'] },
   ];
 
   const systemNav = [
@@ -514,6 +633,7 @@ const Sidebar = ({ isCollapsed }) => {
       name: "Settings & Billing", 
       icon: Settings, 
       path: "#",
+      permissions: ['settings', 'admin'],
       children: [
         { name: "School Settings", path: "/settings/school-settings" },
         { name: "Custom Fields", path: "/settings/custom-fields" },
@@ -529,12 +649,12 @@ const Sidebar = ({ isCollapsed }) => {
         { name: "Content Safety", path: "/settings/content-safety" },
       ]
     },
-    { name: "Backup Management", icon: HardDrive, path: "/backup" },
+    { name: "Backup Management", icon: HardDrive, path: "/backup", permissions: ['backup', 'admin'] },
   ];
 
   const communicationNav = [
-    { name: "Comms Wallet", icon: Wallet, path: "/comms-wallet" },
-    { name: "Chat Moderation", icon: MessageSquare, path: "/chat-moderation" },
+    { name: "Comms Wallet", icon: Wallet, path: "/comms-wallet", permissions: ['communication', 'fees', 'admin'] },
+    { name: "Chat Moderation", icon: MessageSquare, path: "/chat-moderation", permissions: ['communication', 'admin'] },
     { name: "Messages", icon: MessageCircle, path: "/messages" },
   ];
 
@@ -576,6 +696,14 @@ const Sidebar = ({ isCollapsed }) => {
     }
   }, [location.pathname]);
 
+  const filterByPermission = (items) => {
+    if (isSuperAdmin) return items;
+    return items.filter(item => {
+      if (!item.permissions || item.permissions.length === 0) return true;
+      return hasPermission(item.permissions);
+    });
+  };
+
   const filterItems = (items) => {
     if (!searchQuery.trim()) return items;
     const q = searchQuery.toLowerCase().trim();
@@ -597,7 +725,10 @@ const Sidebar = ({ isCollapsed }) => {
   };
 
   const renderNavSection = (title, items) => {
-    const filtered = filterItems(items);
+    const permissionFiltered = filterByPermission(items);
+    if (permissionFiltered.length === 0) return null;
+
+    const filtered = filterItems(permissionFiltered);
     if (filtered.length === 0) return null;
 
     const isSectionExpanded = isCollapsed || !!searchQuery.trim() || openSection === title;
@@ -725,7 +856,7 @@ const Sidebar = ({ isCollapsed }) => {
     );
   };
 
-  const filteredMainNav = filterItems(mainNav);
+  const filteredMainNav = filterItems(filterByPermission(mainNav));
 
   return (
     <aside className={`${isCollapsed ? 'w-20' : 'w-[268px]'} transition-all duration-300 bg-[#131927] border-r border-[#1e2638] h-screen flex flex-col overflow-hidden flex-shrink-0 shadow-xl`}>
@@ -744,6 +875,31 @@ const Sidebar = ({ isCollapsed }) => {
           </div>
         )}
       </div>
+
+      {/* Role & Permissions Info Badge */}
+      {!isCollapsed && (
+        <div className="px-3.5 pt-2 pb-1 border-b border-slate-800/40">
+          <div className="px-2.5 py-1.5 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between shadow-xs">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <div className="flex flex-col min-w-0">
+                <span className="text-[11px] font-bold text-white truncate capitalize">{userRoleName}</span>
+                <span className="text-[9px] text-emerald-400 font-medium">
+                  {isSuperAdmin ? 'Full School Access' : `${userPermissions.length} Active Permissions`}
+                </span>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={showRolePermissionsModal}
+              title="Inspect Active Role & Permissions"
+              className="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-[#ff5c0a] text-slate-300 hover:text-white text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+            >
+              Inspect
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Real-time Search Menu */}
       {!isCollapsed && (

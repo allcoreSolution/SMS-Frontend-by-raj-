@@ -9,7 +9,8 @@ import {
   HandCoins, FileSearch, UserPlus, Layers, Tags, Tag, Gauge, 
   LayoutDashboard, SlidersHorizontal, RefreshCw, Plus, 
   ArrowRight, X, UserCircle2, ChevronLeft, ChevronRight, TrendingUp,
-  Clock, Building2, CalendarCheck, Target, Zap, Receipt, Check
+  Clock, Building2, CalendarCheck, Target, Zap, Receipt, Check,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, 
@@ -558,6 +559,10 @@ const Dashboard = () => {
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-orange-50 text-[#ff5c0a] border border-orange-200 shadow-2xs">
               <Building2 className="w-3.5 h-3.5 text-[#ff5c0a]" />
               <span>{schoolInfo.name || 'ALL CORE SOLUTION'}</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-300 shadow-2xs">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
+              <span>Role: {profile.role || 'Accountant'}</span>
             </span>
           </div>
           <p className="text-[13px] text-gray-500 mt-1">

@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { 
   Gauge, UserCircle2, HandCoins, Send, Users, 
   HandHeart, FileSearch, UserPlus, Layers, Tags, 
-  ArrowDown, ArrowUp, Tag, Filter, LogOut, ChevronLeft, ChevronDown, Search, X, Settings as SettingsIcon
+  ArrowDown, ArrowUp, Tag, Filter, LogOut, ChevronLeft, ChevronDown, Search, X, Settings as SettingsIcon,
+  ShieldCheck
 } from 'lucide-react';
 
 const NavItem = ({ to, icon: Icon, label, iconColor, subItems, closeSidebar, isOpen, onToggle }) => {
@@ -66,31 +68,32 @@ const MENU_SECTIONS = [
       { to: '/profile', icon: UserCircle2, iconColor: 'text-[#dd4b39]', label: 'My Profile' },
       { to: '/loans', icon: HandCoins, iconColor: 'text-[#605ca8]', label: 'My Loans & Advances' },
       { to: '/leave', icon: Send, iconColor: 'text-[#00c0ef]', label: 'Apply Leave' },
-      { to: '/students', icon: Users, iconColor: 'text-[#f39c12]', label: 'Student List' },
+      { to: '/students', icon: Users, iconColor: 'text-[#f39c12]', label: 'Student List', permissions: ['students', 'fees'] },
     ]
   },
   {
     category: 'Fees',
     items: [
-      { to: '/fees/collect', icon: HandHeart, iconColor: 'text-[#00a65a]', label: 'Collect Fees' },
-      { to: '/fees/due', icon: FileSearch, iconColor: 'text-[#d81b60]', label: 'Search Due Fees' },
-      { to: '/fees/assign', icon: UserPlus, iconColor: 'text-[#3c8dbc]', label: 'Assign Fees' },
-      { to: '/fees/groups', icon: Layers, iconColor: 'text-[#00a65a]', label: 'Fee Groups' },
-      { to: '/fees/types', icon: Tags, iconColor: 'text-[#f39c12]', label: 'Fee Types' },
+      { to: '/fees/collect', icon: HandHeart, iconColor: 'text-[#00a65a]', label: 'Collect Fees', permissions: ['fees', 'fees.collect.manage'] },
+      { to: '/fees/due', icon: FileSearch, iconColor: 'text-[#d81b60]', label: 'Search Due Fees', permissions: ['fees', 'fees.due.view'] },
+      { to: '/fees/assign', icon: UserPlus, iconColor: 'text-[#3c8dbc]', label: 'Assign Fees', permissions: ['fees', 'fees.assign.manage'] },
+      { to: '/fees/groups', icon: Layers, iconColor: 'text-[#00a65a]', label: 'Fee Groups', permissions: ['fees', 'fees.structure.manage'] },
+      { to: '/fees/types', icon: Tags, iconColor: 'text-[#f39c12]', label: 'Fee Types', permissions: ['fees', 'fees.structure.manage'] },
     ]
   },
   {
     category: 'Accounts Management',
     items: [
-      { to: '/accounts/income', icon: ArrowDown, iconColor: 'text-[#605ca8]', label: 'Income' },
-      { to: '/accounts/expense', icon: ArrowUp, iconColor: 'text-[#00c0ef]', label: 'Expense' },
-      { to: '/accounts/income-heads', icon: Tag, iconColor: 'text-[#f39c12]', label: 'Income Heads' },
-      { to: '/accounts/expense-heads', icon: Tag, iconColor: 'text-[#e83e8c]', label: 'Expense Heads' },
-      { to: '/accounts/day-book', icon: FileSearch, iconColor: 'text-[#3c8dbc]', label: 'Day Book' },
+      { to: '/accounts/income', icon: ArrowDown, iconColor: 'text-[#605ca8]', label: 'Income', permissions: ['accounts', 'accounts.income.manage'] },
+      { to: '/accounts/expense', icon: ArrowUp, iconColor: 'text-[#00c0ef]', label: 'Expense', permissions: ['accounts', 'accounts.expense.manage'] },
+      { to: '/accounts/income-heads', icon: Tag, iconColor: 'text-[#f39c12]', label: 'Income Heads', permissions: ['accounts', 'accounts.heads.manage'] },
+      { to: '/accounts/expense-heads', icon: Tag, iconColor: 'text-[#e83e8c]', label: 'Expense Heads', permissions: ['accounts', 'accounts.heads.manage'] },
+      { to: '/accounts/day-book', icon: FileSearch, iconColor: 'text-[#3c8dbc]', label: 'Day Book', permissions: ['accounts', 'accounts.reports.view'] },
       { 
         icon: Filter, 
         iconColor: 'text-[#00a65a]', 
         label: 'Lead Management',
+        permissions: ['leads', 'front_office'],
         subItems: [
           { label: 'Lead Dashboard', to: '/leads/dashboard' },
           { label: 'Lead Pipeline Board', to: '/leads/pipeline' },
@@ -103,7 +106,7 @@ const MENU_SECTIONS = [
     category: 'Account',
     items: [
       { to: '/logout', icon: LogOut, iconColor: 'text-[#3c8dbc]', label: 'Logout' },
-      { to: '/settings', icon: SettingsIcon, iconColor: 'text-[#00c0ef]', label: 'System Settings' },
+      { to: '/settings', icon: SettingsIcon, iconColor: 'text-[#00c0ef]', label: 'System Settings', permissions: ['settings', 'admin'] },
     ]
   }
 ];
@@ -144,10 +147,101 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   const [schoolInfo, setSchoolInfo] = useState(getSchoolMeta);
   const [logoError, setLogoError] = useState(false);
 
+  const [userData, setUserData] = useState(() => {
+    try {
+      const u = JSON.parse(sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user') || '{}');
+      return u;
+    } catch (_) {
+      return {};
+    }
+  });
+
+  const userRole = userData?.role || 'Accountant';
+  const userRoleName = typeof userRole === 'object' ? (userRole?.name || 'Accountant') : (userData?.roleName || userRole || 'Accountant');
+  const userPermissions = Array.isArray(userData?.permissions) 
+    ? userData.permissions 
+    : (Array.isArray(userData?.role?.permissions) ? userData.role.permissions : []);
+
+  const isSuperAdmin = userPermissions.includes('*') || 
+                       userPermissions.includes('all') || 
+                       userRoleName.toLowerCase().includes('admin');
+
+  const hasPermission = (requiredKeys) => {
+    if (isSuperAdmin) return true;
+    if (!requiredKeys || requiredKeys.length === 0) return true;
+    if (!Array.isArray(requiredKeys)) requiredKeys = [requiredKeys];
+
+    // Baseline accountant access to core financial tools
+    const isAccountant = userRoleName.toLowerCase().includes('account') || userRoleName.toLowerCase().includes('finance');
+    if (isAccountant) {
+      const baseline = ['fees', 'accounts', 'students'];
+      if (requiredKeys.some(k => baseline.some(b => k.startsWith(b)))) {
+        return true;
+      }
+    }
+
+    return requiredKeys.some(key => {
+      if (userPermissions.includes(key)) return true;
+      const [module] = key.split('.');
+      if (userPermissions.includes(module) || userPermissions.includes(`${module}.*`)) return true;
+      if (userPermissions.some(p => p.startsWith(module + '.') || p === module)) return true;
+      return false;
+    });
+  };
+
+  const showRolePermissionsModal = () => {
+    const isFull = isSuperAdmin;
+    const permListHtml = isFull 
+      ? `<div style="padding:12px; border-radius:10px; background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; font-weight:600; font-size:13px; text-align:center;">
+           ✨ Full Super Access (All modules unlocked)
+         </div>`
+      : userPermissions.length === 0
+        ? `<div style="padding:12px; border-radius:10px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px; text-align:center;">
+             Standard Accountant baseline permissions active.
+           </div>`
+        : `<div style="max-height: 220px; overflow-y: auto; text-align: left; display: flex; flex-wrap: wrap; gap: 6px; padding: 6px 0;">
+             ${userPermissions.map(p => `
+               <span style="display:inline-flex; align-items:center; gap:4px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-family: monospace; font-weight: 600; background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1;">
+                 <span style="color:#10b981; font-weight:bold;">✓</span> ${p}
+               </span>
+             `).join('')}
+           </div>`;
+
+    Swal.fire({
+      title: `<span style="font-size:18px; font-weight:800; color:#1e293b;">Active Role & Permissions</span>`,
+      html: `
+        <div style="font-family: system-ui, sans-serif; font-size: 13px; color: #475569; text-align: left;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 12px;">
+            <div>
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Role & Position</div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a; text-transform: capitalize;">${userRoleName}</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; text-transform:uppercase; color:#94a3b8; font-weight:700;">Privileges</div>
+              <div style="font-size:14px; font-weight:700; color:#10b981;">
+                ${isFull ? 'Super Access' : `${userPermissions.length} Active`}
+              </div>
+            </div>
+          </div>
+          <div style="font-size:12px; font-weight:700; color:#64748b; margin-bottom: 6px; text-transform: uppercase;">
+            Authorized Permission Scopes:
+          </div>
+          ${permListHtml}
+        </div>
+      `,
+      confirmButtonText: 'Done',
+      confirmButtonColor: '#ff5c0a'
+    });
+  };
+
   useEffect(() => {
     const handleSchoolSync = () => {
       setSchoolInfo(getSchoolMeta());
       setLogoError(false);
+      try {
+        const u = JSON.parse(sessionStorage.getItem('accountant_user') || localStorage.getItem('accountant_user') || localStorage.getItem('user') || '{}');
+        setUserData(u);
+      } catch (_) {}
     };
     window.addEventListener('school_info_updated', handleSchoolSync);
     window.addEventListener('accountant_profile_updated', handleSchoolSync);
@@ -192,9 +286,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   const q = menuSearch.toLowerCase().trim();
 
-  // Filter sections based on search query
+  // Filter sections based on permissions and search query
   const filteredSections = MENU_SECTIONS.map(section => {
     const matchedItems = section.items.filter(item => {
+      if (item.permissions && !hasPermission(item.permissions)) return false;
       if (!q) return true;
       const labelMatch = item.label.toLowerCase().includes(q);
       const subMatch = item.subItems && item.subItems.some(sub => sub.label.toLowerCase().includes(q));
@@ -243,6 +338,29 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           <span className="text-[10px] text-orange-400/90 font-semibold truncate max-w-[155px]">
             {schoolInfo.shortName ? `${schoolInfo.shortName} • Accounts` : 'Accounts & Finance Cloud Console'}
           </span>
+        </div>
+      </div>
+
+      {/* Role & Permissions Badge Bar */}
+      <div className="px-3 pt-2">
+        <div className="px-2.5 py-1.5 flex items-center justify-between bg-slate-900/90 rounded-xl border border-slate-800 shadow-xs">
+          <div className="flex items-center gap-2 overflow-hidden">
+            <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-bold text-white truncate capitalize">{userRoleName}</span>
+              <span className="text-[9px] text-emerald-400 font-medium">
+                {isSuperAdmin ? 'Full School Access' : `${userPermissions.length} Active Permissions`}
+              </span>
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={showRolePermissionsModal}
+            title="Inspect Active Permissions" 
+            className="px-2 py-0.5 rounded-md bg-slate-800 hover:bg-[#ff5c0a] text-slate-300 hover:text-white text-[10px] font-bold transition-colors cursor-pointer shrink-0"
+          >
+            Inspect
+          </button>
         </div>
       </div>
 
