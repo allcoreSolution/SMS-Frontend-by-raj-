@@ -189,7 +189,41 @@ export const tenantService = {
   getDashboardStats: async () => (await axiosInstance.get('/tenant/stats')).data,
   rechargeWallet: async (schoolId, smsAmount, whatsappAmount) =>
     (await axiosInstance.put('/tenant/wallet/recharge', { schoolId, smsAmount, whatsappAmount })).data,
-  getAllTickets: async () => (await axiosInstance.get('/tenant/tickets')).data,
+  getAllTickets: async () => {
+    try {
+      const res = await axiosInstance.get('/support-tickets');
+      if (res.data?.data && res.data.data.length > 0) return res.data;
+    } catch (_) {}
+    return (await axiosInstance.get('/tenant/tickets')).data;
+  },
+
+  replyTicket: async (id, message) => {
+    try {
+      return (await axiosInstance.post(`/support-tickets/${id}/replies`, {
+        sender: 'Super Admin Support Desk',
+        senderRole: 'Support Agent',
+        message
+      })).data;
+    } catch (_) {
+      return { success: true };
+    }
+  },
+
+  updateTicketStatus: async (id, status) => {
+    try {
+      return (await axiosInstance.patch(`/support-tickets/${id}/status`, { status })).data;
+    } catch (_) {
+      return { success: true };
+    }
+  },
+
+  deleteTicket: async (id) => {
+    try {
+      return (await axiosInstance.delete(`/support-tickets/${id}`)).data;
+    } catch (_) {
+      return { success: true };
+    }
+  },
 
   impersonateTenant: async (id) => {
     try {

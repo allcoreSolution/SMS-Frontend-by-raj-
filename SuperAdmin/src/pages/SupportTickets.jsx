@@ -36,20 +36,22 @@ export default function SupportTickets() {
       if(res.data && res.data.length > 0) {
          setTickets(res.data.map(t => ({
            id: t._id,
-           tkt: 'TKT-' + t._id.substring(t._id.length - 6).toUpperCase(),
+           tkt: t.ticketCode || ('TKT-' + String(t._id).substring(String(t._id).length - 6).toUpperCase()),
            subject: t.title,
-           school: t.schoolId?.schoolName || 'Unknown School',
-           category: 'Support', // Or parse from dynamic tags if available
-           priority: t.priority,
-           status: t.status,
-           updated: new Date(t.updatedAt).toLocaleDateString()
+           description: t.description || t.title,
+           school: t.schoolName || t.schoolId?.schoolName || 'Campus Academy',
+           category: t.category || 'Support Query',
+           priority: t.priority || 'Normal',
+           status: t.status || 'Open',
+           updated: new Date(t.updatedAt || t.createdAt || Date.now()).toLocaleDateString(),
+           replies: t.replies || []
          })));
       } else {
-         setTickets([]); // removed fallback
+         setTickets([]);
       }
     } catch(err) {
       console.log(err);
-      setTickets([]); // removed fallback
+      setTickets([]);
     }
   };
 
@@ -73,18 +75,48 @@ export default function SupportTickets() {
     return true;
   }), [tickets, search, statusFilter, priorityFilter, schoolFilter]);
 
-  const handleReply = () => {
+  const handleReply = async () => {
     if (!reply.trim() || !viewTicket) return;
-    const msg = { from: 'Support', text: reply.trim(), time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) };
+    const currentReplyText = reply.trim();
+    const msg = { from: 'Support', text: currentReplyText, time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) };
+    
     setMessages(prev => ({ ...prev, [viewTicket.id]: [...(prev[viewTicket.id] || []), msg] }));
     setTickets(prev => prev.map(t => t.id === viewTicket.id ? { ...t, status: 'In Progress', updated: 'just now' } : t));
+    setViewTicket(prev => prev ? { ...prev, status: 'In Progress' } : null);
     setReply('');
+
+    try {
+      await tenantService.replyTicket(viewTicket.id, currentReplyText);
+      await tenantService.updateTicketStatus(viewTicket.id, 'In Progress');
+    } catch (e) {
+      console.warn('Live reply notice:', e);
+    }
   };
 
-  const handleDelete = () => {
-    setTickets(prev => prev.filter(t => t.id !== deleteTicket.id));
+  const handleStatusUpdate = async (newStatus) => {
+    if (!viewTicket) return;
+    setViewTicket(prev => ({ ...prev, status: newStatus }));
+    setTickets(prev => prev.map(t => t.id === viewTicket.id ? { ...t, status: newStatus } : t));
+
+    try {
+      await tenantService.updateTicketStatus(viewTicket.id, newStatus);
+    } catch (e) {
+      console.warn('Live status update notice:', e);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTicket) return;
+    const targetId = deleteTicket.id;
+    setTickets(prev => prev.filter(t => t.id !== targetId));
     setDeleteTicket(null);
-    if (viewTicket?.id === deleteTicket?.id) setViewTicket(null);
+    if (viewTicket?.id === targetId) setViewTicket(null);
+
+    try {
+      await tenantService.deleteTicket(targetId);
+    } catch (e) {
+      console.warn('Live delete ticket notice:', e);
+    }
   };
 
   const StatCard = ({ icon, value, label, iconBg }) => (
@@ -259,8 +291,8 @@ export default function SupportTickets() {
               <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Update Status:</label>
               {['Open', 'In Progress', 'Resolved'].map(s => (
                 <button key={s}
-                  onClick={() => setTickets(prev => prev.map(t => t.id === viewTicket.id ? { ...t, status: s } : t))}
-                  className={`px-3 py-1 rounded-none text-[11px] font-bold border transition-all
+                  onClick={() => handleStatusUpdate(s)}
+                  className={`px-3 py-1 rounded-none text-[11px] font-bold border transition-all cursor-pointer
                     ${viewTicket.status === s ? (STATUS_BADGE[s] + ' border-current') : 'border-gray-200 text-gray-500 hover:bg-gray-50'}`}>
                   {s}
                 </button>
@@ -270,11 +302,24 @@ export default function SupportTickets() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
               <div className="bg-white border border-gray-200 rounded-none p-3 text-[13px] text-gray-700">
-                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Original Message · {viewTicket.school}</p>
-                <p>{viewTicket.subject}</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Issue Description · {viewTicket.school}</p>
+                <p className="font-medium text-slate-800">{viewTicket.description || viewTicket.subject}</p>
               </div>
+
+              {/* Render historic replies from DB if any */}
+              {(viewTicket.replies || []).map((rep, idx) => (
+                <div key={'hist-' + idx} className={`flex ${rep.senderRole === 'Support Agent' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-xs rounded-none px-3 py-2 text-[13px] ${rep.senderRole === 'Support Agent' ? 'bg-[#554bb9] text-white' : 'bg-white border border-gray-200 text-gray-800'}`}>
+                    <p className="text-[10px] font-bold uppercase opacity-70 mb-1">{rep.sender || 'Client'}</p>
+                    <p>{rep.message}</p>
+                    <p className="text-[10px] opacity-60 mt-1">{new Date(rep.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                  </div>
+                </div>
+              ))}
+
+              {/* Render newly added replies */}
               {(messages[viewTicket.id] || []).map((msg, i) => (
-                <div key={i} className={`flex ${msg.from === 'Support' ? 'justify-end' : 'justify-start'}`}>
+                <div key={'live-' + i} className={`flex ${msg.from === 'Support' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-xs rounded-none px-3 py-2 text-[13px] ${msg.from === 'Support' ? 'bg-[#554bb9] text-white' : 'bg-white border border-gray-200 text-gray-800'}`}>
                     <p className="text-[10px] font-bold uppercase opacity-70 mb-1">{msg.from}</p>
                     <p>{msg.text}</p>
