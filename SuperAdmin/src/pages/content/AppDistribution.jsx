@@ -62,6 +62,24 @@ const initialMobileApps = [
     accentColor: '#10b981',
     activeDevices: '840',
     crashFreeRate: '99.9%'
+  },
+  {
+    id: 'accountant-app',
+    name: 'Accountant & Fee POS App',
+    packageName: 'com.allcoresolution.accountant',
+    version: 'v3.6.5',
+    buildNumber: 88,
+    targetSdk: 'Android 14 (API 34)',
+    size: '22.1 MB',
+    status: 'Production Live',
+    downloads: '1,850',
+    rating: 4.9,
+    apkUrl: '/apk/Accountant.apk',
+    downloadName: 'Accountant.apk',
+    updatedAt: '05 Nov 2026',
+    accentColor: '#8b5cf6',
+    activeDevices: '620',
+    crashFreeRate: '99.8%'
   }
 ];
 
@@ -69,6 +87,7 @@ const initialReleases = [
   { version: 'v3.7.2', app: 'Teacher & Staff App', platform: 'Android (APK)', date: '02 Nov 2026', notes: 'Added Smart Offline Attendance cache, CBC assessment rubrics & instant mark-sheets.', status: 'Live Rollout' },
   { version: 'v3.7.0', app: 'Student & Parent App', platform: 'Android (APK)', date: '30 Oct 2026', notes: 'Integrated Razorpay/UPI in-app fee receipts, real-time GPS school bus map & timetable.', status: 'Live Rollout' },
   { version: 'v3.6.8', app: 'Driver GPS Fleet App', platform: 'Android (APK)', date: '25 Oct 2026', notes: 'Sub-second background telemetry sync with geofence arrival notifications for parents.', status: 'Live Rollout' },
+  { version: 'v3.6.5', app: 'Accountant POS App', platform: 'Android (APK)', date: '05 Nov 2026', notes: '80mm Bluetooth thermal printer receipts & fast offline counter fee collection.', status: 'Live Rollout' },
   { version: 'v3.6.0', app: 'All Platforms', platform: 'Android & PWA', date: '15 Oct 2026', notes: 'Major framework migration to React 18 & Flutter v3.24 multi-tenant architecture.', status: 'Archived' },
 ];
 
