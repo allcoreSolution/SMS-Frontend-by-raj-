@@ -715,72 +715,108 @@ export default function RolesPermissions() {
     fetchRolesData();
   }, [fetchRolesData]);
 
-  // ─── SVG CONSULTANCY MATRIX HELPERS ───
-  // Standard Action Slugs per module: view, create, edit, delete, export
-  const getActionSlug = (modKey, action) => {
-    return `${modKey}.${action}`;
-  };
-
-  const isActionChecked = (modKey, action) => {
-    const slug = getActionSlug(modKey, action);
-    if (selectedPermissions.has(slug)) return true;
-    // Check if relevant granular permissions are present
-    const mod = permissionModules.find(m => m.key === modKey);
-    if (!mod) return false;
-
-    if (action === "view") {
-      return mod.permissions.some(p => p.slug.includes("view") && selectedPermissions.has(p.slug));
+  // ─── SVG CONSULTANCY CRUD MATRIX ENGINE ───
+  const getCrudSlugsForAction = useCallback((mod, action) => {
+    if (!mod) return [];
+    const modKey = mod.key;
+    if (action === "create" || action === "add") {
+      const slugs = [`${modKey}.create`, `${modKey}.add`];
+      mod.permissions.forEach(p => {
+        if (p.slug.includes("create") || p.slug.includes("admission") || p.slug.includes("add") || p.slug.includes("submit") || p.slug.includes("datesheet")) {
+          slugs.push(p.slug);
+        }
+      });
+      return slugs;
     }
-    if (action === "create") {
-      return mod.permissions.some(p => (p.slug.includes("create") || p.slug.includes("admission") || p.slug.includes("submit")) && selectedPermissions.has(p.slug));
+    if (action === "read" || action === "view") {
+      const slugs = [`${modKey}.view`, `${modKey}.read`];
+      mod.permissions.forEach(p => {
+        if (p.slug.includes("view") || p.slug.includes("list") || p.slug.includes("get") || p.slug.includes("due") || p.slug.includes("read") || p.slug.includes("profile")) {
+          slugs.push(p.slug);
+        }
+      });
+      return slugs;
     }
-    if (action === "edit") {
-      return mod.permissions.some(p => (p.slug.includes("edit") || p.slug.includes("manage") || p.slug.includes("setup")) && selectedPermissions.has(p.slug));
+    if (action === "update" || action === "edit") {
+      const slugs = [`${modKey}.edit`, `${modKey}.update`];
+      mod.permissions.forEach(p => {
+        if (p.slug.includes("edit") || p.slug.includes("update") || p.slug.includes("manage") || p.slug.includes("setup") || p.slug.includes("entry") || p.slug.includes("collect") || p.slug.includes("assign")) {
+          slugs.push(p.slug);
+        }
+      });
+      return slugs;
     }
     if (action === "delete") {
-      return selectedPermissions.has(`${modKey}.delete`) || selectedPermissions.has(`${modKey}.revert.manage`);
+      const slugs = [`${modKey}.delete`, `${modKey}.remove`];
+      mod.permissions.forEach(p => {
+        if (p.slug.includes("delete") || p.slug.includes("remove") || p.slug.includes("revert") || p.slug.includes("exit")) {
+          slugs.push(p.slug);
+        }
+      });
+      return slugs;
     }
     if (action === "export") {
-      return selectedPermissions.has(`${modKey}.export`) || mod.permissions.some(p => (p.slug.includes("print") || p.slug.includes("reports")) && selectedPermissions.has(p.slug));
+      const slugs = [`${modKey}.export`, `${modKey}.download`];
+      mod.permissions.forEach(p => {
+        if (p.slug.includes("export") || p.slug.includes("print") || p.slug.includes("reports") || p.slug.includes("challans") || p.slug.includes("admit_cards") || p.slug.includes("report_cards")) {
+          slugs.push(p.slug);
+        }
+      });
+      return slugs;
     }
-    return false;
-  };
+    return [`${modKey}.${action}`];
+  }, []);
+
+  const isActionChecked = useCallback((modKey, action) => {
+    const mod = permissionModules.find(m => m.key === modKey);
+    if (!mod) return false;
+    const slugs = getCrudSlugsForAction(mod, action);
+    return slugs.some(s => selectedPermissions.has(s));
+  }, [permissionModules, selectedPermissions, getCrudSlugsForAction]);
 
   const toggleAction = (modKey, action) => {
-    const mainSlug = getActionSlug(modKey, action);
     const mod = permissionModules.find(m => m.key === modKey);
+    if (!mod) return;
+    const slugs = getCrudSlugsForAction(mod, action);
     const currentlyChecked = isActionChecked(modKey, action);
 
     setSelectedPermissions(prev => {
       const next = new Set(prev);
       if (currentlyChecked) {
-        next.delete(mainSlug);
-        // Also remove related granular slugs
-        if (mod) {
-          mod.permissions.forEach(p => {
-            if (action === "view" && p.slug.includes("view")) next.delete(p.slug);
-            if (action === "create" && (p.slug.includes("create") || p.slug.includes("admission"))) next.delete(p.slug);
-            if (action === "export" && (p.slug.includes("print") || p.slug.includes("reports"))) next.delete(p.slug);
-          });
-        }
+        slugs.forEach(s => next.delete(s));
       } else {
-        next.add(mainSlug);
-        // Also add related granular slugs
-        if (mod) {
-          mod.permissions.forEach(p => {
-            if (action === "view" && p.slug.includes("view")) next.add(p.slug);
-            if (action === "create" && (p.slug.includes("create") || p.slug.includes("admission"))) next.add(p.slug);
-            if (action === "export" && (p.slug.includes("print") || p.slug.includes("reports"))) next.add(p.slug);
-          });
-        }
+        slugs.forEach(s => next.add(s));
       }
       return next;
     });
   };
 
-  // Toggle entire row (all actions + all granular slugs of the module)
+  // Check if an entire CRUD column is checked across all filtered modules
+  const isColumnAllChecked = (action) => {
+    if (!filteredMatrixModules.length) return false;
+    return filteredMatrixModules.every(mod => isActionChecked(mod.key, action));
+  };
+
+  // Toggle entire CRUD column across all modules
+  const toggleColumnAll = (action) => {
+    const allChecked = isColumnAllChecked(action);
+    setSelectedPermissions(prev => {
+      const next = new Set(prev);
+      filteredMatrixModules.forEach(mod => {
+        const slugs = getCrudSlugsForAction(mod, action);
+        if (allChecked) {
+          slugs.forEach(s => next.delete(s));
+        } else {
+          slugs.forEach(s => next.add(s));
+        }
+      });
+      return next;
+    });
+  };
+
+  // Toggle entire row (all CRUD actions + all granular slugs of the module)
   const isRowAllChecked = (mod) => {
-    const actions = ["view", "create", "edit", "delete", "export"];
+    const actions = ["create", "read", "update", "delete", "export"];
     const actionsAll = actions.every(act => isActionChecked(mod.key, act));
     const granularAll = mod.permissions.every(p => selectedPermissions.has(p.slug));
     return actionsAll && granularAll;
@@ -790,8 +826,11 @@ export default function RolesPermissions() {
     const isAll = isRowAllChecked(mod);
     const allSlugsInMod = [
       `${mod.key}.view`,
+      `${mod.key}.read`,
       `${mod.key}.create`,
+      `${mod.key}.add`,
       `${mod.key}.edit`,
+      `${mod.key}.update`,
       `${mod.key}.delete`,
       `${mod.key}.export`,
       ...mod.permissions.map(p => p.slug)
@@ -808,6 +847,19 @@ export default function RolesPermissions() {
     });
   };
 
+  // Live CRUD metrics
+  const crudStats = useMemo(() => {
+    let c = 0, r = 0, u = 0, d = 0, e = 0;
+    permissionModules.forEach(mod => {
+      if (isActionChecked(mod.key, "create")) c++;
+      if (isActionChecked(mod.key, "read")) r++;
+      if (isActionChecked(mod.key, "update")) u++;
+      if (isActionChecked(mod.key, "delete")) d++;
+      if (isActionChecked(mod.key, "export")) e++;
+    });
+    return { c, r, u, d, e, total: permissionModules.length };
+  }, [permissionModules, isActionChecked]);
+
   // Toggle single granular permission slug
   const handleToggleSlug = (slug) => {
     setSelectedPermissions(prev => {
@@ -818,12 +870,15 @@ export default function RolesPermissions() {
     });
   };
 
-  // Quick Presets: All, Clear, Read-Only
+  // Quick Presets: All, Clear, Read-Only, Read+Create
   const handlePresetSelectAll = () => {
     const allSlugs = permissionModules.flatMap(m => [
       `${m.key}.view`,
+      `${m.key}.read`,
       `${m.key}.create`,
+      `${m.key}.add`,
       `${m.key}.edit`,
+      `${m.key}.update`,
       `${m.key}.delete`,
       `${m.key}.export`,
       ...m.permissions.map(p => p.slug)
@@ -836,16 +891,16 @@ export default function RolesPermissions() {
   };
 
   const handlePresetReadOnly = () => {
-    const readSlugs = permissionModules.flatMap(m => {
-      const views = [`${m.key}.view`];
-      m.permissions.forEach(p => {
-        if (p.slug.includes("view") || p.slug.includes("list") || p.slug.includes("coverage")) {
-          views.push(p.slug);
-        }
-      });
-      return views;
-    });
+    const readSlugs = permissionModules.flatMap(m => getCrudSlugsForAction(m, "read"));
     setSelectedPermissions(new Set(readSlugs));
+  };
+
+  const handlePresetReadCreate = () => {
+    const slugs = permissionModules.flatMap(m => [
+      ...getCrudSlugsForAction(m, "read"),
+      ...getCrudSlugsForAction(m, "create")
+    ]);
+    setSelectedPermissions(new Set(slugs));
   };
 
   // Toggle accordion expansion for granular slugs inside matrix table
@@ -1697,7 +1752,15 @@ export default function RolesPermissions() {
                   className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-xl transition-all cursor-pointer border border-indigo-200 flex items-center gap-1.5"
                 >
                   <CheckCheck className="w-3.5 h-3.5" />
-                  <span>Grant All</span>
+                  <span>CRUD Full Access</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePresetReadCreate}
+                  className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-xl transition-all cursor-pointer border border-emerald-200 flex items-center gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  <span>Read + Create [R+C]</span>
                 </button>
                 <button
                   type="button"
@@ -1705,7 +1768,7 @@ export default function RolesPermissions() {
                   className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer border border-slate-200 flex items-center gap-1.5"
                 >
                   <Eye className="w-3.5 h-3.5" />
-                  <span>Read-Only Preset</span>
+                  <span>Read-Only [R]</span>
                 </button>
                 <button
                   type="button"
@@ -1747,59 +1810,215 @@ export default function RolesPermissions() {
                 );
               })}
             </div>
+
+            {/* Live CRUD Operations Summary Strip */}
+            <div className="pt-2 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-5 gap-2">
+              <div 
+                onClick={() => toggleColumnAll("create")}
+                className="bg-emerald-50/80 border border-emerald-200 rounded-xl p-2 flex items-center justify-between cursor-pointer hover:bg-emerald-100 transition-colors shadow-2xs"
+                title="Click to toggle Create [C] across all modules"
+              >
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-emerald-800">Create [C]</div>
+                  <div className="text-xs font-bold text-emerald-950 mt-0.5">{crudStats.c} / {crudStats.total} Modules</div>
+                </div>
+                <div className="p-1.5 bg-emerald-600 text-white rounded-lg">
+                  <Plus className="w-3.5 h-3.5" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => toggleColumnAll("read")}
+                className="bg-indigo-50/80 border border-indigo-200 rounded-xl p-2 flex items-center justify-between cursor-pointer hover:bg-indigo-100 transition-colors shadow-2xs"
+                title="Click to toggle Read [R] across all modules"
+              >
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-indigo-800">Read [R]</div>
+                  <div className="text-xs font-bold text-indigo-950 mt-0.5">{crudStats.r} / {crudStats.total} Modules</div>
+                </div>
+                <div className="p-1.5 bg-indigo-600 text-white rounded-lg">
+                  <Eye className="w-3.5 h-3.5" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => toggleColumnAll("update")}
+                className="bg-amber-50/80 border border-amber-200 rounded-xl p-2 flex items-center justify-between cursor-pointer hover:bg-amber-100 transition-colors shadow-2xs"
+                title="Click to toggle Update [U] across all modules"
+              >
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-amber-800">Update [U]</div>
+                  <div className="text-xs font-bold text-amber-950 mt-0.5">{crudStats.u} / {crudStats.total} Modules</div>
+                </div>
+                <div className="p-1.5 bg-amber-600 text-white rounded-lg">
+                  <Edit2 className="w-3.5 h-3.5" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => toggleColumnAll("delete")}
+                className="bg-rose-50/80 border border-rose-200 rounded-xl p-2 flex items-center justify-between cursor-pointer hover:bg-rose-100 transition-colors shadow-2xs"
+                title="Click to toggle Delete [D] across all modules"
+              >
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-rose-800">Delete [D]</div>
+                  <div className="text-xs font-bold text-rose-950 mt-0.5">{crudStats.d} / {crudStats.total} Modules</div>
+                </div>
+                <div className="p-1.5 bg-rose-600 text-white rounded-lg">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </div>
+              </div>
+
+              <div 
+                onClick={() => toggleColumnAll("export")}
+                className="bg-cyan-50/80 border border-cyan-200 rounded-xl p-2 flex items-center justify-between cursor-pointer hover:bg-cyan-100 transition-colors shadow-2xs col-span-2 sm:col-span-1"
+                title="Click to toggle Export [E] across all modules"
+              >
+                <div>
+                  <div className="text-[10px] font-black uppercase tracking-wider text-cyan-800">Export [E]</div>
+                  <div className="text-xs font-bold text-cyan-950 mt-0.5">{crudStats.e} / {crudStats.total} Modules</div>
+                </div>
+                <div className="p-1.5 bg-cyan-600 text-white rounded-lg">
+                  <Download className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* ─── SVG CONSULTANCY MATRIX TABLE ─── */}
+          {/* ─── SVG CONSULTANCY CRUD MATRIX TABLE ─── */}
           <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse text-xs">
                 <thead>
                   <tr className="bg-slate-900 text-white text-[11px] font-black uppercase tracking-wider border-b border-slate-800">
                     <th className="py-4 px-5 min-w-[260px]">ERP Module / Domain</th>
-                    <th className="py-4 px-4 text-center min-w-[90px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <Eye className="w-3.5 h-3.5 text-indigo-400" />
-                        <span>View</span>
-                      </span>
+
+                    {/* C: CREATE (ADD) */}
+                    <th className="py-3 px-3 text-center min-w-[100px] border-l border-slate-800">
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleColumnAll("create")}
+                          className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-bold cursor-pointer transition-colors"
+                          title="Toggle Create for all modules"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Create [C]</span>
+                        </button>
+                        <input
+                          type="checkbox"
+                          checked={isColumnAllChecked("create")}
+                          onChange={() => toggleColumnAll("create")}
+                          className="w-3.5 h-3.5 text-emerald-600 rounded border-slate-700 bg-slate-800 focus:ring-emerald-500 cursor-pointer"
+                          title="Select / Unselect Create for all modules"
+                        />
+                      </div>
                     </th>
-                    <th className="py-4 px-4 text-center min-w-[90px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <Plus className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>Add</span>
-                      </span>
+
+                    {/* R: READ (VIEW) */}
+                    <th className="py-3 px-3 text-center min-w-[100px] border-l border-slate-800">
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleColumnAll("read")}
+                          className="flex items-center gap-1 text-indigo-400 hover:text-indigo-300 font-bold cursor-pointer transition-colors"
+                          title="Toggle Read for all modules"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Read [R]</span>
+                        </button>
+                        <input
+                          type="checkbox"
+                          checked={isColumnAllChecked("read")}
+                          onChange={() => toggleColumnAll("read")}
+                          className="w-3.5 h-3.5 text-indigo-600 rounded border-slate-700 bg-slate-800 focus:ring-indigo-500 cursor-pointer"
+                          title="Select / Unselect Read for all modules"
+                        />
+                      </div>
                     </th>
-                    <th className="py-4 px-4 text-center min-w-[90px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <Edit2 className="w-3.5 h-3.5 text-amber-400" />
-                        <span>Edit</span>
-                      </span>
+
+                    {/* U: UPDATE (EDIT) */}
+                    <th className="py-3 px-3 text-center min-w-[100px] border-l border-slate-800">
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleColumnAll("update")}
+                          className="flex items-center gap-1 text-amber-400 hover:text-amber-300 font-bold cursor-pointer transition-colors"
+                          title="Toggle Update for all modules"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                          <span>Update [U]</span>
+                        </button>
+                        <input
+                          type="checkbox"
+                          checked={isColumnAllChecked("update")}
+                          onChange={() => toggleColumnAll("update")}
+                          className="w-3.5 h-3.5 text-amber-600 rounded border-slate-700 bg-slate-800 focus:ring-amber-500 cursor-pointer"
+                          title="Select / Unselect Update for all modules"
+                        />
+                      </div>
                     </th>
-                    <th className="py-4 px-4 text-center min-w-[90px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <Trash2 className="w-3.5 h-3.5 text-rose-400" />
-                        <span>Delete</span>
-                      </span>
+
+                    {/* D: DELETE */}
+                    <th className="py-3 px-3 text-center min-w-[100px] border-l border-slate-800">
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleColumnAll("delete")}
+                          className="flex items-center gap-1 text-rose-400 hover:text-rose-300 font-bold cursor-pointer transition-colors"
+                          title="Toggle Delete for all modules"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>Delete [D]</span>
+                        </button>
+                        <input
+                          type="checkbox"
+                          checked={isColumnAllChecked("delete")}
+                          onChange={() => toggleColumnAll("delete")}
+                          className="w-3.5 h-3.5 text-rose-600 rounded border-slate-700 bg-slate-800 focus:ring-rose-500 cursor-pointer"
+                          title="Select / Unselect Delete for all modules"
+                        />
+                      </div>
                     </th>
-                    <th className="py-4 px-4 text-center min-w-[90px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <Download className="w-3.5 h-3.5 text-cyan-400" />
-                        <span>Export</span>
-                      </span>
+
+                    {/* EXPORT */}
+                    <th className="py-3 px-3 text-center min-w-[95px] border-l border-slate-800">
+                      <div className="flex flex-col items-center justify-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleColumnAll("export")}
+                          className="flex items-center gap-1 text-cyan-400 hover:text-cyan-300 font-bold cursor-pointer transition-colors"
+                          title="Toggle Export for all modules"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Export</span>
+                        </button>
+                        <input
+                          type="checkbox"
+                          checked={isColumnAllChecked("export")}
+                          onChange={() => toggleColumnAll("export")}
+                          className="w-3.5 h-3.5 text-cyan-600 rounded border-slate-700 bg-slate-800 focus:ring-cyan-500 cursor-pointer"
+                          title="Select / Unselect Export for all modules"
+                        />
+                      </div>
                     </th>
-                    <th className="py-4 px-4 text-center min-w-[100px]">
-                      <span className="flex items-center justify-center gap-1">
-                        <CheckSquare className="w-3.5 h-3.5 text-purple-400" />
+
+                    {/* ALL (ROW TOGGLE) */}
+                    <th className="py-3 px-3 text-center min-w-[90px] border-l border-slate-800">
+                      <span className="flex items-center justify-center gap-1 text-purple-400">
+                        <CheckSquare className="w-3.5 h-3.5" />
                         <span>All</span>
                       </span>
                     </th>
-                    <th className="py-4 px-3 text-center min-w-[70px]">Details</th>
+
+                    <th className="py-3 px-3 text-center min-w-[70px] border-l border-slate-800">Details</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {filteredMatrixModules.map((mod, idx) => {
-                    const isViewChecked = isActionChecked(mod.key, "view");
-                    const isAddChecked = isActionChecked(mod.key, "create");
-                    const isEditChecked = isActionChecked(mod.key, "edit");
+                    const isCreateChecked = isActionChecked(mod.key, "create");
+                    const isReadChecked = isActionChecked(mod.key, "read");
+                    const isUpdateChecked = isActionChecked(mod.key, "update");
                     const isDeleteChecked = isActionChecked(mod.key, "delete");
                     const isExportChecked = isActionChecked(mod.key, "export");
                     const isAll = isRowAllChecked(mod);
@@ -1830,44 +2049,44 @@ export default function RolesPermissions() {
                             </div>
                           </td>
 
-                          {/* View Action Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
+                          {/* 1. Create [C] Action Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <label className="inline-flex items-center justify-center cursor-pointer p-1">
                               <input
                                 type="checkbox"
-                                checked={isViewChecked}
-                                onChange={() => toggleAction(mod.key, "view")}
-                                className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer"
-                              />
-                            </label>
-                          </td>
-
-                          {/* Add Action Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
-                            <label className="inline-flex items-center justify-center cursor-pointer p-1">
-                              <input
-                                type="checkbox"
-                                checked={isAddChecked}
+                                checked={isCreateChecked}
                                 onChange={() => toggleAction(mod.key, "create")}
                                 className="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer"
                               />
                             </label>
                           </td>
 
-                          {/* Edit Action Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
+                          {/* 2. Read [R] Action Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <label className="inline-flex items-center justify-center cursor-pointer p-1">
                               <input
                                 type="checkbox"
-                                checked={isEditChecked}
-                                onChange={() => toggleAction(mod.key, "edit")}
+                                checked={isReadChecked}
+                                onChange={() => toggleAction(mod.key, "read")}
+                                className="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer"
+                              />
+                            </label>
+                          </td>
+
+                          {/* 3. Update [U] Action Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
+                            <label className="inline-flex items-center justify-center cursor-pointer p-1">
+                              <input
+                                type="checkbox"
+                                checked={isUpdateChecked}
+                                onChange={() => toggleAction(mod.key, "update")}
                                 className="w-4 h-4 text-amber-600 rounded border-slate-300 focus:ring-amber-500 cursor-pointer"
                               />
                             </label>
                           </td>
 
-                          {/* Delete Action Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
+                          {/* 4. Delete [D] Action Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <label className="inline-flex items-center justify-center cursor-pointer p-1">
                               <input
                                 type="checkbox"
@@ -1878,8 +2097,8 @@ export default function RolesPermissions() {
                             </label>
                           </td>
 
-                          {/* Export Action Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
+                          {/* 5. Export [E] Action Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <label className="inline-flex items-center justify-center cursor-pointer p-1">
                               <input
                                 type="checkbox"
@@ -1890,8 +2109,8 @@ export default function RolesPermissions() {
                             </label>
                           </td>
 
-                          {/* All Toggle Checkbox */}
-                          <td className="py-3.5 px-4 text-center">
+                          {/* 6. All (Row) Toggle Checkbox */}
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <label className="inline-flex items-center justify-center cursor-pointer p-1">
                               <input
                                 type="checkbox"
@@ -1903,7 +2122,7 @@ export default function RolesPermissions() {
                           </td>
 
                           {/* Granular Details Accordion Toggle */}
-                          <td className="py-3.5 px-3 text-center">
+                          <td className="py-3.5 px-3 text-center border-l border-slate-100">
                             <button
                               type="button"
                               onClick={() => toggleModuleExpansion(mod.key)}
