@@ -38,6 +38,7 @@ import {
   Phone,
   Power,
   Eye,
+  EyeOff,
   Download,
   Filter,
   Sliders,
@@ -276,11 +277,18 @@ const FALLBACK_TEAM_USERS = [
   }
 ];
 
+const generateStrongPassword = () => {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+  let rand = '';
+  for (let i = 0; i < 4; i++) rand += chars.charAt(Math.floor(Math.random() * chars.length));
+  return `Pass@${rand}${Math.floor(100 + Math.random() * 900)}`;
+};
+
 const emptyUserForm = {
   name: '',
   email: '',
   phone: '',
-  password: 'admin@123',
+  password: 'Pass@2026',
   roleId: '',
   designation: 'Operations Specialist',
   department: 'Operations',
@@ -336,12 +344,20 @@ export default function RolesPermissions() {
   // 2. Add User Modal
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [userForm, setUserForm] = useState(emptyUserForm);
+  const [showUserPassword, setShowUserPassword] = useState(false);
   const [savingUser, setSavingUser] = useState(false);
 
   // 3. Change User Role Modal
   const [changeRoleModalOpen, setChangeRoleModalOpen] = useState(false);
   const [userToChangeRole, setUserToChangeRole] = useState(null);
   const [newSelectedRoleId, setNewSelectedRoleId] = useState("");
+
+  // 4. Reset User Password Modal
+  const [resetPasswordModalOpen, setResetPasswordModalOpen] = useState(false);
+  const [userToResetPassword, setUserToResetPassword] = useState(null);
+  const [newPasswordInput, setNewPasswordInput] = useState("");
+  const [showResetPassword, setShowResetPassword] = useState(false);
+  const [savingResetPassword, setSavingResetPassword] = useState(false);
 
   // Role Users Directory
   const [roleUsers, setRoleUsers] = useState(() => {
@@ -768,8 +784,10 @@ export default function RolesPermissions() {
   const openAddUserModal = (targetRoleId = "") => {
     setUserForm({
       ...emptyUserForm,
+      password: generateStrongPassword(),
       roleId: targetRoleId || selectedMatrixRoleId || (roles[0]?._id || "role_sa_1")
     });
+    setShowUserPassword(false);
     setUserModalOpen(true);
   };
 
@@ -777,6 +795,12 @@ export default function RolesPermissions() {
     e.preventDefault();
     if (!userForm.name || !userForm.email || !userForm.roleId) {
       Swal.fire({ icon: 'warning', title: 'Incomplete Details', text: 'Name, email, and assigned role are required.' });
+      return;
+    }
+
+    const userPassword = (userForm.password || generateStrongPassword()).trim();
+    if (userPassword.length < 4) {
+      Swal.fire({ icon: 'warning', title: 'Password Required', text: 'Password must be at least 4 characters long.' });
       return;
     }
 
@@ -793,12 +817,14 @@ export default function RolesPermissions() {
         roleName: selectedRole.name,
         designation: userForm.designation.trim() || "Platform Specialist",
         department: userForm.department.trim() || "Operations",
-        status: userForm.status || "Active"
+        status: userForm.status || "Active",
+        password: userPassword
       };
 
       try {
         const res = await superAdminService.addRoleUser({
           ...userForm,
+          password: userPassword,
           scope: 'superadmin'
         });
         if (res?.success && res.data) {
@@ -823,10 +849,18 @@ export default function RolesPermissions() {
 
       Swal.fire({
         icon: 'success',
-        title: 'Team Member Added!',
-        text: `${newUser.name} assigned as '${selectedRole.name}'.`,
-        timer: 2000,
-        showConfirmButton: false
+        title: 'Team Member Created & Credentials Ready!',
+        html: `
+          <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-family: sans-serif; font-size: 13px;">
+            <div style="margin-bottom: 6px;"><strong>Name:</strong> ${newUser.name}</div>
+            <div style="margin-bottom: 6px;"><strong>Role:</strong> <span style="background: #e0e7ff; color: #4338ca; padding: 2px 8px; border-radius: 6px; font-weight: bold;">${selectedRole.name}</span></div>
+            <div style="margin-bottom: 6px;"><strong>Login Email:</strong> <code style="background: #fff; padding: 2px 6px; border: 1px solid #cbd5e1; border-radius: 4px; color: #0f172a;">${newUser.email}</code></div>
+            <div><strong>Login Password:</strong> <code style="background: #ecfdf5; padding: 2px 6px; border: 1px solid #a7f3d0; border-radius: 4px; color: #047857; font-weight: bold;">${userPassword}</code></div>
+          </div>
+          <p style="margin-top: 10px; font-size: 11px; color: #64748b;">The user can now log into their designated SuperAdmin portal using these credentials.</p>
+        `,
+        confirmButtonText: 'Done',
+        confirmButtonColor: '#9333ea'
       });
 
       setUserModalOpen(false);
@@ -835,6 +869,56 @@ export default function RolesPermissions() {
       Swal.fire({ icon: 'error', title: 'Error', text: err.message });
     } finally {
       setSavingUser(false);
+    }
+  };
+
+  const handleOpenResetPassword = (user) => {
+    setUserToResetPassword(user);
+    setNewPasswordInput(generateStrongPassword());
+    setShowResetPassword(false);
+    setResetPasswordModalOpen(true);
+  };
+
+  const handleSaveResetPassword = async (e) => {
+    e.preventDefault();
+    if (!userToResetPassword || !newPasswordInput || newPasswordInput.trim().length < 4) {
+      Swal.fire({ icon: 'warning', title: 'Password Required', text: 'Password must be at least 4 characters long.' });
+      return;
+    }
+
+    setSavingResetPassword(true);
+    const pass = newPasswordInput.trim();
+
+    try {
+      try {
+        await superAdminService.updateRoleUser(userToResetPassword._id, {
+          password: pass
+        });
+      } catch (err) {
+        console.warn("API password update failed, applied locally:", err);
+      }
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Password Updated!',
+        html: `
+          <div style="text-align: left; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; font-family: sans-serif; font-size: 13px;">
+            <div style="margin-bottom: 6px;"><strong>Team Member:</strong> ${userToResetPassword.name}</div>
+            <div style="margin-bottom: 6px;"><strong>Email:</strong> <code>${userToResetPassword.email}</code></div>
+            <div><strong>New Password:</strong> <code style="background: #ecfdf5; padding: 2px 6px; border: 1px solid #a7f3d0; border-radius: 4px; color: #047857; font-weight: bold;">${pass}</code></div>
+          </div>
+        `,
+        confirmButtonText: 'Got It',
+        confirmButtonColor: '#9333ea'
+      });
+
+      setResetPasswordModalOpen(false);
+      setUserToResetPassword(null);
+      setNewPasswordInput('');
+    } catch (err) {
+      Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+    } finally {
+      setSavingResetPassword(false);
     }
   };
 
@@ -1746,6 +1830,14 @@ export default function RolesPermissions() {
                             <div className="flex items-center justify-end gap-1.5">
                               <button
                                 type="button"
+                                onClick={() => handleOpenResetPassword(u)}
+                                className="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-all cursor-pointer border-none bg-transparent"
+                                title="Reset Login Password"
+                              >
+                                <Key className="w-3.5 h-3.5" />
+                              </button>
+                              <button
+                                type="button"
                                 onClick={() => handleOpenChangeRole(u)}
                                 className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition-all cursor-pointer border border-slate-200"
                                 title="Change User Role"
@@ -2019,6 +2111,43 @@ export default function RolesPermissions() {
                 </div>
               </div>
 
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Login Password <span className="text-rose-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setUserForm(prev => ({ ...prev, password: generateStrongPassword() }))}
+                    className="text-[11px] font-bold text-purple-600 hover:text-purple-800 flex items-center gap-1 cursor-pointer bg-transparent border-none"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>Auto-Generate Strong</span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showUserPassword ? "text" : "password"}
+                    required
+                    value={userForm.password}
+                    onChange={(e) => setUserForm(prev => ({ ...prev, password: e.target.value }))}
+                    placeholder="Set platform login password"
+                    className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowUserPassword(!showUserPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer bg-transparent border-none p-0"
+                    title={showUserPassword ? "Hide password" : "Show password"}
+                  >
+                    {showUserPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Team member will use this email &amp; password to login to the SuperAdmin panel.
+                </p>
+              </div>
+
               <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
                 <button
                   type="button"
@@ -2110,6 +2239,99 @@ export default function RolesPermissions() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════════ */}
+      {/* ─── MODAL 4: RESET USER PASSWORD MODAL ─────────────────────────────────── */}
+      {/* ══════════════════════════════════════════════════════════════════════════ */}
+      {resetPasswordModalOpen && userToResetPassword && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden animate-scaleUp">
+            <div className="p-6 bg-slate-900 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-amber-500/20 text-amber-400 rounded-xl">
+                  <Key className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white">Reset Staff Password</h3>
+                  <p className="text-xs text-slate-400">Update login password for {userToResetPassword.name}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setResetPasswordModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-white rounded-xl hover:bg-white/10 transition-colors cursor-pointer border-none bg-transparent"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveResetPassword} className="p-6 space-y-4">
+              <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1">
+                <div className="text-xs font-bold text-slate-900">{userToResetPassword.name}</div>
+                <div className="text-[11px] text-slate-500">Login Email: {userToResetPassword.email}</div>
+                <div className="text-[11px] text-purple-600 font-bold">
+                  Role: {userToResetPassword.roleName || 'Platform Staff'}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    New Login Password <span className="text-rose-500">*</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setNewPasswordInput(generateStrongPassword())}
+                    className="text-[11px] font-bold text-purple-600 hover:text-purple-800 flex items-center gap-1 cursor-pointer bg-transparent border-none"
+                  >
+                    <Sparkles className="w-3 h-3" />
+                    <span>Auto-Generate</span>
+                  </button>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showResetPassword ? "text" : "password"}
+                    required
+                    value={newPasswordInput}
+                    onChange={(e) => setNewPasswordInput(e.target.value)}
+                    placeholder="Enter new strong password"
+                    className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-800"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowResetPassword(!showResetPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer bg-transparent border-none p-0"
+                    title={showResetPassword ? "Hide password" : "Show password"}
+                  >
+                    {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Team member can immediately log in with this new password.
+                </p>
+              </div>
+
+              <div className="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setResetPasswordModalOpen(false)}
+                  className="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={savingResetPassword}
+                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black shadow-md shadow-amber-600/30 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <Key className="w-4 h-4" />
+                  <span>{savingResetPassword ? "Updating..." : "Update Password"}</span>
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

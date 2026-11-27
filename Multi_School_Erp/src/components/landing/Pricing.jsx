@@ -28,11 +28,8 @@ export default function Pricing() {
            </h2>
            
            <div className="flex items-end gap-2.5 pt-0.5">
-              <span className="text-slate-500 font-bold text-xs sm:text-sm line-through decoration-slate-600 decoration-2 mb-0.5">
-                ₹24,999/yr
-              </span>
               <span className="text-emerald-400 font-black text-3xl sm:text-4xl tracking-tight leading-none">
-                ₹0
+                ₹0 FREE
               </span>
               <span className="text-slate-300 font-bold text-[10px] sm:text-xs uppercase tracking-wider mb-0.5">
                 / 1st Month (30 Days 100% Free Trial)

@@ -51,10 +51,9 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center gap-3 pt-1">
-            <span className="text-sm sm:text-base font-bold text-gray-400 line-through decoration-2">₹24,999</span>
-            <span className="text-3xl sm:text-4xl font-black text-emerald-600 leading-none">₹0</span>
-            <span className="text-[10px] sm:text-xs font-bold text-gray-700 uppercase tracking-wider leading-tight">
-              1ST MONTH 100% FREE TRIAL<br/><span className="text-emerald-700 font-black">ZERO UPFRONT COST • UPGRADE ANYTIME</span>
+            <span className="text-3xl sm:text-4xl font-black text-emerald-600 leading-none">100% FREE</span>
+            <span className="text-[10px] sm:text-xs font-bold text-gray-800 uppercase tracking-wider leading-tight">
+              1ST MONTH ₹0 FREE TRIAL<br/><span className="text-emerald-700 font-black">ZERO UPFRONT COST • COMPLETE SAAS ACCESS FREE</span>
             </span>
           </div>
 

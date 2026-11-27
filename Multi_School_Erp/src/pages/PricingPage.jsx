@@ -65,9 +65,8 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex items-baseline gap-2 mb-4">
-                  <span className="text-slate-500 line-through text-sm font-bold">₹24,999</span>
-                  <span className="text-3xl sm:text-4xl font-black text-emerald-400 leading-none">₹0</span>
-                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">/ 1st month free</span>
+                  <span className="text-3xl sm:text-4xl font-black text-emerald-400 leading-none">₹0 FREE</span>
+                  <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">/ 1st month 100% free trial</span>
                 </div>
 
                 <div className="text-xs text-emerald-400 font-bold bg-emerald-950/40 border border-emerald-800/40 px-3 py-1.5 rounded-lg mb-6">
