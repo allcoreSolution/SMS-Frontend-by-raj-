@@ -37,8 +37,8 @@ export default function Login() {
   });
 
   const [roleTab, setRoleTab] = useState('student');
-  const [userId, setUserId] = useState('YIS-2024-101');
-  const [password, setPassword] = useState('secret_access_24');
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');

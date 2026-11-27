@@ -47,8 +47,8 @@ const Login = () => {
   const [selectedRole, setSelectedRole] = useState('teacher');
 
   const [formData, setFormData] = useState({ 
-    identifier: 'avanikumari@gmail.com', 
-    password: 'admin@123' 
+    identifier: '', 
+    password: '' 
   });
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);

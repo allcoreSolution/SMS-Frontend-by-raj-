@@ -11,7 +11,7 @@ const PREFIX = 'acc_';
 (function clearLegacyDemoData() {
   if (typeof window === 'undefined' || !window.localStorage) return;
   try {
-    const isCleaned = localStorage.getItem('acc_prod_clean_2026_v8');
+    const isCleaned = localStorage.getItem('acc_prod_clean_2026_fresh_all');
     const hasLegacyData = () => {
       try {
         const stats = JSON.parse(localStorage.getItem('acc_live_dashboard_stats') || '{}');
@@ -81,7 +81,7 @@ const PREFIX = 'acc_';
         }
       });
 
-      localStorage.setItem('acc_prod_clean_2026_v8', 'true');
+      localStorage.setItem('acc_prod_clean_2026_fresh_all', 'true');
     }
   } catch (_e) {}
 })();

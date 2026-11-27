@@ -11,8 +11,8 @@ import accountantLoginHero from '../assets/accountant_login_hero.png';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [identifier, setIdentifier] = useState('accountant@allcoresolution.com');
-  const [password, setPassword] = useState('admin@123');
+  const [identifier, setIdentifier] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);

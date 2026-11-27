@@ -10,7 +10,7 @@ import schoolHeroImg from '../assets/school_erp_login_hero.png';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ identifier: 'ryadavy498@gmail.com', password: 'admin@123' });
+  const [formData, setFormData] = useState({ identifier: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
