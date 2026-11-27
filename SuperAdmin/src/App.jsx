@@ -91,7 +91,6 @@ import WebsiteMenu from './pages/website/WebsiteMenu';
 import Sitemap from './pages/website/Sitemap';
 import VisualBuilder from './pages/website/VisualBuilder';
 import FullTemplates from './pages/website/FullTemplates';
-import SchoolSiteTemplates from './pages/website/SchoolSiteTemplates';
 import PreviewSite from './pages/website/PreviewSite';
 
 // Content & AI
@@ -298,7 +297,7 @@ function AppRoutes() {
               <Route path="/sitemap" element={<Sitemap />} />
               <Route path="/landing-page/visual-builder" element={<VisualBuilder />} />
               <Route path="/landing-page/full-templates" element={<FullTemplates />} />
-              <Route path="/landing-page/school-templates" element={<SchoolSiteTemplates />} />
+              <Route path="/landing-page/school-templates" element={<Navigate to="/landing-templates" replace />} />
               <Route path="/landing-page/preview" element={<PreviewSite />} />
 
               {/* Content & AI */}
